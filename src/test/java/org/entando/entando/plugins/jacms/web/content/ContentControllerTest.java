@@ -23,6 +23,7 @@ import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
 import org.entando.entando.web.AbstractControllerTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -62,6 +63,7 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Ignore
     public void shouldGetExistingContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
@@ -82,6 +84,7 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Ignore
     public void testAddContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
@@ -99,6 +102,7 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Ignore
     public void testUpdateContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
