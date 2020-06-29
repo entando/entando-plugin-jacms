@@ -26,6 +26,8 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 
+import static com.agiletec.plugins.jacms.aps.system.services.Jdk11CompatibleDateFormatter.formatMediumDate;
+
 /**
  * @author W.Ambu - E.Santoboni
  */
@@ -277,7 +279,7 @@ public class TestContentDispenser extends BaseTestCase {
             + "Titolo Contenuto 2 Coach;\n"
             + "Home jAPS,#!U;http://www.japsportal.org!#;\n"
             + ",;\n"
-            + "4-gen-2007;";
+            + formatMediumDate("4-gen-2007") + ";";
 
     private String _attendedItART104
             = "ART104;\n"
@@ -288,19 +290,19 @@ public class TestContentDispenser extends BaseTestCase {
             + "Titolo Contenuto 2 Coach;\n"
             + "Home jAPS,http://www.japsportal.org;\n"
             + ",;\n"
-            + "4-gen-2007;";
+            + formatMediumDate("4-gen-2007") + ";";
 
     private String _attendedItART120_cached
             = "ART120;\n"
             + "Titolo Contenuto degli &quot;Amministratori&quot;;\n"
             + "Pagina Iniziale jAPSPortal,#!U;http://www.japsportal.org!#;\n,;\n"
-            + "28-mar-2009;";
+            + formatMediumDate("28-mar-2009") + ";";
 
     private String _attendedItART120
             = "ART120;\n"
             + "Titolo Contenuto degli &quot;Amministratori&quot;;\n"
             + "Pagina Iniziale jAPSPortal,http://www.japsportal.org;\n,;\n"
-            + "28-mar-2009;";
+            + formatMediumDate("28-mar-2009") + ";";
 
     private String _attendedEnART120_cached
             = "ART120;\n"
@@ -318,7 +320,7 @@ public class TestContentDispenser extends BaseTestCase {
             = "ART121;\n"
             + "Titolo Contenuto degli &quot;Amministratori&quot; 2;\n"
             + "Pagina Iniziale W3C,#!U;http://www.w3.org/!#;\n,;\n"
-            + "30-mar-2009;";
+            + formatMediumDate("30-mar-2009") + ";";
 
     private String _attendedEnART121_cached
             = "ART121;\n"

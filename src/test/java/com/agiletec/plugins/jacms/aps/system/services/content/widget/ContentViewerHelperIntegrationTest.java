@@ -23,6 +23,8 @@ import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.util.ApsProperties;
 
+import static com.agiletec.plugins.jacms.aps.system.services.Jdk11CompatibleDateFormatter.formatMediumDate;
+
 /**
  * @author W.Ambu
  */
@@ -47,7 +49,7 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
                     + "  - TITOLO (Text): testo=Il titolo;\n"
                     + "  - VEDI ANCHE (Link): testo=Spiderman, dest=http://www.spiderman.org;\n"
                     + "  - FOTO (Image): testo=Image description, src(1)=/Entando/resources/cms/images/lvback_d1.jpg;\n"
-                    + "  - DATA (Date): data_media = 10-mar-2004;\n"
+                    + "  - DATA (Date): data_media = " + formatMediumDate("10-mar-2004") + ";\n"
                     + "------ END ------";
             assertEquals(replaceNewLine(expected.trim()), replaceNewLine(renderedContent.trim()));
         } catch (Throwable t) {
