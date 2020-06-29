@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>6.2.3</version>
+        <version>6.2.4</version>
     </parent>
     <artifactId>entando-plugin-jacms</artifactId>
     <packaging>war</packaging>
@@ -121,7 +121,7 @@
         <entando-engine.version>6.2.6</entando-engine.version>
         <entando-admin-console.version>6.2.7</entando-admin-console.version>
         <entando-portal-ui.version>6.2.2</entando-portal-ui.version>
-        <tika-version>1.22</tika-version>
+        <tika-version>1.24.1</tika-version>
         <c3p0.version>0.9.5.4</c3p0.version>
         <vorbis-java-tika.version>0.8</vorbis-java-tika.version>
         <metadata-extractor.version>2.11.0</metadata-extractor.version>
