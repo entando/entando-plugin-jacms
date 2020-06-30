@@ -4,8 +4,9 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>6.2.4</version>
+        <version>6.2.5</version>
     </parent>
+    <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
     <packaging>war</packaging>
     <version>6.2.0-SNAPSHOT</version>
@@ -70,29 +71,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.3</version><!--$NO-MVN-MAN-VER$ -->
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.0-beta-1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.0.0</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <version>1.7</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -117,81 +96,29 @@
     </build>
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
-        <allTestsSuiteClass>com.agiletec.plugins.jacms.AllTests</allTestsSuiteClass>
+        <allTestsSuiteClass>org.entando.entando.plugins.jacms.apsadmin.common.TestActivityStream</allTestsSuiteClass>
+<!--        <allTestsSuiteClass>com.agiletec.plugins.jacms.AllTests</allTestsSuiteClass>-->
         <entando-engine.version>6.2.6</entando-engine.version>
         <entando-admin-console.version>6.2.7</entando-admin-console.version>
         <entando-portal-ui.version>6.2.2</entando-portal-ui.version>
-        <tika-version>1.24.1</tika-version>
-        <c3p0.version>0.9.5.4</c3p0.version>
-        <vorbis-java-tika.version>0.8</vorbis-java-tika.version>
-        <metadata-extractor.version>2.11.0</metadata-extractor.version>
-        <commons-collections4.version>4.1</commons-collections4.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>${tika-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>${tika-version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>joda-time</groupId>
-                    <artifactId>joda-time</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>edu.usc.ir</groupId>
-                    <artifactId>sentiment-analysis-parser</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>c3p0</groupId>
-                    <artifactId>c3p0</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.gagravarr</groupId>
-                    <artifactId>vorbis-java-tika</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- fixes for tike-parser vulnerabilities -->
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
-            <version>${c3p0.version}</version>
         </dependency>
         <dependency>
             <groupId>org.gagravarr</groupId>
             <artifactId>vorbis-java-tika</artifactId>
-            <version>${vorbis-java-tika.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tika</groupId>
-                    <artifactId>tika-parsers</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
 
@@ -246,13 +173,10 @@
         <dependency>
             <groupId>com.drewnoakes</groupId>
             <artifactId>metadata-extractor</artifactId>
-            <version>${metadata-extractor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections4.version}</version>
-            <type>jar</type>
         </dependency>
 
         <dependency>
@@ -343,7 +267,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
