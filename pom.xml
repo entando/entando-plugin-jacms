@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>6.2.10</version>
+        <version>6.2.12</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -28,11 +28,9 @@
     </repositories>
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
-        <allTestsSuiteClass>org.entando.entando.plugins.jacms.apsadmin.common.TestActivityStream</allTestsSuiteClass>
-        <!--        <allTestsSuiteClass>com.agiletec.plugins.jacms.AllTests</allTestsSuiteClass>-->
-        <entando-engine.version>6.2.7</entando-engine.version>
-        <entando-admin-console.version>6.2.8</entando-admin-console.version>
-        <entando-portal-ui.version>6.2.3</entando-portal-ui.version>
+        <entando-engine.version>6.2.9</entando-engine.version>
+        <entando-admin-console.version>6.2.10</entando-admin-console.version>
+        <entando-portal-ui.version>6.2.4</entando-portal-ui.version>
     </properties>
     <build>
         <resources>
@@ -180,6 +178,7 @@
             <groupId>org.entando.entando</groupId>
             <artifactId>entando-portal-ui</artifactId>
             <version>${entando-portal-ui.version}</version>
+            <classifier>classes</classifier>
             <scope>provided</scope>
         </dependency>
         <dependency>
