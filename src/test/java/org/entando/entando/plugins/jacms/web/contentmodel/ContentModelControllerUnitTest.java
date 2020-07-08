@@ -1,35 +1,55 @@
 package org.entando.entando.plugins.jacms.web.contentmodel;
 
-import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionary;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.entando.entando.aps.system.exception.ResourceNotFoundException;
-import org.entando.entando.plugins.jacms.aps.system.services.ContentModelService;
-import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
-import org.entando.entando.web.AbstractControllerTest;
-import org.entando.entando.web.common.model.PagedMetadata;
-import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.*;
-import org.mockito.*;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.*;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionary;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import org.entando.entando.aps.system.exception.ResourceNotFoundException;
+import org.entando.entando.plugins.jacms.aps.system.services.ContentModelService;
+import org.entando.entando.plugins.jacms.apsadmin.tags.CmsAdminPagerTag;
+import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
+import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelReferencesValidator;
+import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelUsageDetailsValidator;
+import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
+import org.entando.entando.web.AbstractControllerTest;
+import org.entando.entando.web.common.model.PagedMetadata;
+import org.entando.entando.web.common.model.RestListRequest;
+import org.entando.entando.web.component.ComponentUsageEntity;
+import org.entando.entando.web.utils.OAuth2TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 public class ContentModelControllerUnitTest extends AbstractControllerTest {
+    private static final Logger logger = LoggerFactory.getLogger(CmsAdminPagerTag.class);
 
     private static final String BASE_URI = "/plugins/cms/contentmodels";
     private final ObjectMapper mapper = new ObjectMapper();
@@ -40,10 +60,18 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
     @Spy
     private ContentModelValidator contentModelValidator;
 
+    @Mock
+    private ContentModelReferencesValidator contentModelReferencesValidator;
+
+    @Mock
+    private ContentModelUsageDetailsValidator contentModelUsageDetailsValidator;
+
     @InjectMocks
     private ContentModelResourceController controller;
 
     private Map<Long, ContentModelDto> mockedContentModels;
+    private List<ContentModelReferenceDTO> mockedReferences;
+    private List<ComponentUsageEntity> mockedUsageDetails;
 
     @Before
     public void setUp() throws Exception {
@@ -54,6 +82,8 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
                 .build();
 
         initMockedContentModels();
+        initMockedContentModelReferences();
+        initMockedUsageDetails();
         initContentModelServiceMocks();
     }
 
@@ -157,8 +187,29 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
     public void shouldGetContentModelReferences() throws Exception {
         ResultActions result = performRequest(get(BASE_URI + "/{id}/pagereferences", 1));
         result.andExpect(status().isOk());
-        result.andExpect(jsonPath("$.payload", hasSize(1)));
-        result.andExpect(jsonPath("$.payload[0].online", is(false)));
+        result.andExpect(jsonPath("$.payload[0].pageCode", is("AAA")));
+        result.andExpect(jsonPath("$.payload[0].online", is(true)));
+        result.andExpect(jsonPath("$.payload[1].pageCode", is("ABC")));
+        result.andExpect(jsonPath("$.payload[1].online", is(false)));
+        result.andExpect(jsonPath("$.payload[2].pageCode", is("BBB")));
+        result.andExpect(jsonPath("$.payload[2].online", is(true)));
+        result.andExpect(jsonPath("$.payload[3].pageCode", is("BCD")));
+        result.andExpect(jsonPath("$.payload[3].online", is(false)));
+    }
+
+    @Test
+    public void shouldGetContentModelUsageDetails() throws Exception {
+        ResultActions result = performRequest(get(BASE_URI + "/{id}/usage/details", 1));
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.payload[0].code", is("AAA")));
+        result.andExpect(jsonPath("$.payload[0].status", is("online")));
+        result.andExpect(jsonPath("$.payload[0].type", is("page")));
+        result.andExpect(jsonPath("$.payload[1].code", is("ABC")));
+        result.andExpect(jsonPath("$.payload[1].status", is("offline")));
+        result.andExpect(jsonPath("$.payload[1].type", is("page")));
+        result.andExpect(jsonPath("$.payload[2].code", is("BBB")));
+        result.andExpect(jsonPath("$.payload[2].status", is("")));
+        result.andExpect(jsonPath("$.payload[2].type", is("contentType")));
     }
 
     @Test
@@ -192,6 +243,7 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
         }
 
         ResultActions result = mockMvc.perform(requestBuilder);
+
         return result;
     }
 
@@ -202,12 +254,47 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
         addMockedModelToMap(3l, "CCC");
     }
 
+    private void initMockedContentModelReferences() {
+        mockedReferences = new ArrayList<>();
+        addMockedReferences("AAA", true,1);
+        addMockedReferences("ABC", false,2);
+        addMockedReferences("BBB", true,3);
+        addMockedReferences("BCD", false,4);
+    }
+    private void initMockedUsageDetails() {
+        mockedUsageDetails = new ArrayList<>();
+        addMockedUsageDetail("AAA", "online","page");
+        addMockedUsageDetail("ABC", "offline","page");
+        addMockedUsageDetail("BBB", "","contentType");
+
+    }
     private void addMockedModelToMap(long id, String contentType) {
         ContentModelDto contentModelDto = new ContentModelDto();
         contentModelDto.setId(id);
         contentModelDto.setContentType(contentType);
         contentModelDto.setDescr("description");
         mockedContentModels.put(id, contentModelDto);
+    }
+
+    private void addMockedReferences(String id, Boolean online, int widgetPosition) {
+        logger.info("addMockedReferences {} - online : {} , widgetPosition {}",id, online, widgetPosition);
+
+        ContentModelReferenceDTO contentModelReferenceDTO = new ContentModelReferenceDTO();
+        contentModelReferenceDTO.setPageCode(id);
+        contentModelReferenceDTO.setWidgetPosition(widgetPosition);
+        contentModelReferenceDTO.setOnline(online);
+        mockedReferences.add(contentModelReferenceDTO);
+    }
+
+
+    private void addMockedUsageDetail(String id, String status, String type) {
+        logger.info("addMockedUsageDetail {} - status : {} , type {}",id, status, type);
+
+        ComponentUsageEntity componentUsageEntity = new ComponentUsageEntity();
+        componentUsageEntity.setCode(id);
+        componentUsageEntity.setStatus(status);
+        componentUsageEntity.setType(type);
+        mockedUsageDetails.add(componentUsageEntity);
     }
 
     private void initContentModelServiceMocks() {
@@ -227,11 +314,21 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
         pagedMetadata.setBody(new ArrayList<>(mockedContentModels.values()));
         when(contentModelService.findMany(any())).thenReturn(pagedMetadata);
 
-        when(contentModelService.getContentModelReferences(1l))
-                .thenReturn(Collections.singletonList(new ContentModelReference()));
+        PagedMetadata<ContentModelReferenceDTO> pagedMetadataReferences = new PagedMetadata<>();
+        pagedMetadataReferences.setBody(mockedReferences);
+
+        PagedMetadata<ComponentUsageEntity> pagedMetadataUsageDetails = new PagedMetadata<>();
+        pagedMetadataUsageDetails.setBody(mockedUsageDetails);
+
+        when(contentModelService.findMany(any())).thenReturn(pagedMetadata);
+
+        when(contentModelService.getContentModelReferences(anyLong(), Mockito.any(RestListRequest.class)))
+                .thenReturn(pagedMetadataReferences);
 
         when(contentModelService.getContentModelDictionary(any()))
                 .thenReturn(getContentModelDictionary());
+        when(contentModelService.getComponentUsageDetails(anyLong(), Mockito.any(RestListRequest.class))).thenReturn(pagedMetadataUsageDetails);;
+
     }
 
     private ContentModelDictionary getContentModelDictionary() {
