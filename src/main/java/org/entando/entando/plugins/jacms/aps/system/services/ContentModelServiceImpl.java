@@ -13,29 +13,40 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services;
 
-import com.agiletec.aps.system.common.entity.model.*;
+import com.agiletec.aps.system.common.entity.model.IApsEntity;
+import com.agiletec.aps.system.common.entity.model.SmallEntityType;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
 import com.agiletec.aps.system.exception.ApsSystemException;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.*;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionaryProvider;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.*;
-import java.lang.reflect.Array;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.entando.entando.aps.system.exception.*;
-import org.entando.entando.aps.system.services.*;
+import org.entando.entando.aps.system.exception.ResourceNotFoundException;
+import org.entando.entando.aps.system.exception.RestServerError;
+import org.entando.entando.aps.system.services.DtoBuilder;
+import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
+import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelReferencesRequestListProcessor;
+import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelRequestListProcessor;
+import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
-import org.entando.entando.web.common.model.*;
-import org.slf4j.*;
+import org.entando.entando.web.common.model.PagedMetadata;
+import org.entando.entando.web.common.model.RestListRequest;
+import org.entando.entando.web.component.ComponentUsage;
+import org.entando.entando.web.component.ComponentUsageEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
-
-import java.util.*;
-import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelRequestListProcessor;
 
 @Service
 public class ContentModelServiceImpl implements ContentModelService {
@@ -47,6 +58,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     private final ContentModelDictionaryProvider dictionaryProvider;
     private final IDtoBuilder<ContentModel, ContentModelDto> dtoBuilder;
     private final ContentTypeService contentTypeService;
+
     @Autowired
     public ContentModelServiceImpl(IContentManager contentManager, IContentModelManager contentModelManager,
             ContentModelDictionaryProvider dictionaryProvider,
@@ -81,7 +93,8 @@ public class ContentModelServiceImpl implements ContentModelService {
         //page
         List<ContentModel> subList = requestList.getSublist(contentModels);
         List<ContentModelDto> dtoSlice = this.dtoBuilder.convert(subList);
-        SearcherDaoPaginatedResult<ContentModelDto> paginatedResult = new SearcherDaoPaginatedResult<>(contentModels.size(), dtoSlice);
+        SearcherDaoPaginatedResult<ContentModelDto> paginatedResult = new SearcherDaoPaginatedResult<>(
+                contentModels.size(), dtoSlice);
         PagedMetadata<ContentModelDto> pagedMetadata = new PagedMetadata<>(requestList, paginatedResult);
         pagedMetadata.setBody(dtoSlice);
         return pagedMetadata;
@@ -92,7 +105,8 @@ public class ContentModelServiceImpl implements ContentModelService {
         ContentModel contentModel = this.contentModelManager.getContentModel(modelId);
         if (null == contentModel) {
             logger.warn("no contentModel found with id {}", modelId);
-            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel", String.valueOf(modelId));
+            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel",
+                    String.valueOf(modelId));
         }
         ContentModelDto dto = this.dtoBuilder.convert(contentModel);
         return dto;
@@ -133,7 +147,8 @@ public class ContentModelServiceImpl implements ContentModelService {
             ContentModel contentModel = this.contentModelManager.getContentModel(entity.getId());
             if (null == contentModel) {
                 logger.warn("no contentModel found with id {}", modelId);
-                throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel", String.valueOf(modelId));
+                throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND,
+                        "contentModel", String.valueOf(modelId));
             }
 
             BeanPropertyBindingResult validationResult = this.validateForUpdate(entity, contentModel);
@@ -171,13 +186,139 @@ public class ContentModelServiceImpl implements ContentModelService {
     }
 
     @Override
-    public List<ContentModelReference> getContentModelReferences(Long modelId) {
+    public ComponentUsage getComponentUsage(Long modelId) {
+        final List<ContentModelReference> contentModelReferences = contentModelManager
+                .getContentModelReferences(modelId);
+        final long onlineCount = contentModelReferences.stream()
+                .filter(f -> f.isOnline()).count();
+        final long offlineCount = contentModelReferences.stream()
+                .filter(f -> !f.isOnline()).count();
+        final List<SmallEntityType> defaultContentTemplateUsedList = this.contentManager.getSmallEntityTypes().stream()
+                .filter(
+                        f -> {
+                            final String defaultModel = contentManager.getDefaultModel(f.getCode());
+                            final boolean defaultModelUsed = String.valueOf(modelId)
+                                    .equals(defaultModel);
+                            return defaultModelUsed;
+                        }
+                ).collect(Collectors.toList());
+        final List<SmallEntityType> defaultContentListTemplateUsedList = this.contentManager.getSmallEntityTypes()
+                .stream()
+                .filter(
+                        f -> {
+                            final String listModel = contentManager.getListModel(f.getCode());
+                            final boolean listModelUsed = String.valueOf(modelId)
+                                    .equals(listModel);
+                            return listModelUsed;
+                        }
+                ).collect(Collectors.toList());
+        int countContentDefaultTemplateReferences = defaultContentTemplateUsedList.size();
+        int countContentListDefaultTemplateReferences = defaultContentListTemplateUsedList.size();
+        Integer usage = Math.toIntExact(onlineCount + offlineCount + countContentDefaultTemplateReferences
+                + countContentListDefaultTemplateReferences);
+        ComponentUsage componentUsage = new ComponentUsage();
+        componentUsage.setType("contentTemplate");
+        componentUsage.setCode(String.valueOf(modelId));
+        componentUsage.setStatus("");
+        componentUsage.setUsage(usage);
+        return componentUsage;
+    }
+
+    @Override
+    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(Long modelId, RestListRequest restListRequest) {
+
+        final List<ContentModelReference> contentModelReferences = contentModelManager
+                .getContentModelReferences(modelId);
+
+        final List<ComponentUsageEntity> componentUsageDetails = contentModelReferences.stream()
+                .map(f -> createToComponentUsageEntity(f.getPageCode(), getStatusString(f.isOnline()),
+                        ComponentUsageEntity.TYPE_PAGE)).collect(Collectors.toList());
+
+        final List<SmallEntityType> defaultContentTemplateUsedList = this.contentManager.getSmallEntityTypes().stream()
+                .filter(
+                        f -> {
+                            final String defaultModel = contentManager.getDefaultModel(f.getCode());
+                            final boolean defaultModelUsed = String.valueOf(modelId)
+                                    .equals(defaultModel);
+                            final String listModel = contentManager.getListModel(f.getCode());
+                            final boolean listModelUsed = String.valueOf(modelId)
+                                    .equals(listModel);
+                            return (defaultModelUsed || listModelUsed);
+                        }
+                ).collect(Collectors.toList());
+
+        final List<ComponentUsageEntity> contentTemplateUsageDetails = defaultContentTemplateUsedList.stream()
+                .map(f -> createToComponentUsageEntity(f.getCode(), "",
+                       "contentType" )).collect(Collectors.toList());
+
+        componentUsageDetails.addAll(contentTemplateUsageDetails);
+
+        final List<ComponentUsageEntity> contentModelUsageDetails = new ContentModelUsageDetailsRequestListProcessor(
+                restListRequest, componentUsageDetails)
+                .filterAndSort().toList();
+
+        final List<ComponentUsageEntity> subList = restListRequest.getSublist(contentModelUsageDetails);
+        SearcherDaoPaginatedResult<ComponentUsageEntity> paginatedResult = new SearcherDaoPaginatedResult<>(
+                contentModelUsageDetails.size(), subList);
+
+        PagedMetadata<ComponentUsageEntity> pagedMetadata = new PagedMetadata<>(restListRequest, paginatedResult);
+        pagedMetadata.setBody(subList);
+        return pagedMetadata;
+    }
+
+    private String getStatusString(boolean online) {
+        if (online) {
+            return "online";
+        }
+        return "offline";
+    }
+
+    private ComponentUsageEntity createToComponentUsageEntity(String code, String status, String type) {
+        ComponentUsageEntity componentUsage = new ComponentUsageEntity();
+        componentUsage.setCode(code);
+        componentUsage.setStatus(status);
+        componentUsage.setType(type);
+        return componentUsage;
+    }
+    
+    @Override
+    public PagedMetadata<ContentModelReferenceDTO> getContentModelReferences(Long modelId,
+            RestListRequest requestList) {
         ContentModel contentModel = this.contentModelManager.getContentModel(modelId);
         if (null == contentModel) {
-            logger.info("contentModel {} does not exists", modelId);
-            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel", String.valueOf(modelId));
+            logger.debug("contentModel {} does not exists", modelId);
+            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel",
+                    String.valueOf(modelId));
         }
-        return this.contentModelManager.getContentModelReferences(modelId);
+
+        final List<ContentModelReference> contentModelReferences = new ContentModelReferencesRequestListProcessor(
+                requestList, this.contentModelManager
+                .getContentModelReferences(modelId))
+                .filterAndSort().toList();
+
+        final List<ContentModelReference> subList = requestList.getSublist(contentModelReferences);
+        final List<ContentModelReferenceDTO> contentModelReferenceDTOS = mapContentModelReferencesToDTOs(subList);
+        SearcherDaoPaginatedResult<ContentModelReferenceDTO> paginatedResult = new SearcherDaoPaginatedResult<>(
+                contentModelReferences.size(), contentModelReferenceDTOS);
+        PagedMetadata<ContentModelReferenceDTO> pagedMetadata = new PagedMetadata<>(requestList, paginatedResult);
+        pagedMetadata.setBody(contentModelReferenceDTOS);
+        return pagedMetadata;
+    }
+
+    private List<ContentModelReferenceDTO> mapContentModelReferencesToDTOs(
+            List<ContentModelReference> contentModelReferences) {
+        final List<ContentModelReferenceDTO> contentModelReferencesDTOs = contentModelReferences.stream().map(cmr ->
+                mapContentModelReferenceToDTO(cmr)
+        ).collect(Collectors.toList());
+        return contentModelReferencesDTOs;
+    }
+
+    private ContentModelReferenceDTO mapContentModelReferenceToDTO(ContentModelReference cmr) {
+        ContentModelReferenceDTO contentModelReferenceDTO = new ContentModelReferenceDTO();
+        contentModelReferenceDTO.setPageCode(cmr.getPageCode());
+        contentModelReferenceDTO.setOnline(cmr.isOnline());
+        contentModelReferenceDTO.setWidgetPosition(cmr.getWidgetPosition());
+        return contentModelReferenceDTO;
     }
 
     @Override
@@ -188,7 +329,8 @@ public class ContentModelServiceImpl implements ContentModelService {
         IApsEntity prototype = this.contentManager.getEntityPrototype(typeCode);
         if (null == prototype) {
             logger.warn("no contentModel found with id {}", typeCode);
-            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND, "contentType", typeCode);
+            throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND,
+                    "contentType", typeCode);
         }
         return this.dictionaryProvider.buildDictionary(prototype);
     }
@@ -216,7 +358,8 @@ public class ContentModelServiceImpl implements ContentModelService {
 
     protected BeanPropertyBindingResult validateForDelete(ContentModel contentModel) throws ApsSystemException {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(contentModel, "contentModel");
-        List<ContentModelReference> references = this.contentModelManager.getContentModelReferences(contentModel.getId());
+        List<ContentModelReference> references = this.contentModelManager
+                .getContentModelReferences(contentModel.getId());
         if (!references.isEmpty()) {
             errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_REFERENCES, null, "contentmodel.page.references");
         }
@@ -233,13 +376,14 @@ public class ContentModelServiceImpl implements ContentModelService {
                         }
                 ).collect(Collectors.toList());
 
-        if (defaultContentTemplateUsedList.size()>0){
+        if (defaultContentTemplateUsedList.size() > 0) {
             ArrayList defList = new ArrayList();
-            defaultContentTemplateUsedList.stream().forEach(f->defList.add(f.getCode()));
+            defaultContentTemplateUsedList.stream().forEach(f -> defList.add(f.getCode()));
             final String defListString = String.join(", ", defList);
             ArrayList args = new ArrayList();
             args.add(defListString);
-            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES, args.toArray(), "contentmodel.defaultMetadata.references");
+            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES, args.toArray(),
+                    "contentmodel.defaultMetadata.references");
         }
         return errors;
     }
@@ -256,19 +400,22 @@ public class ContentModelServiceImpl implements ContentModelService {
         ContentModel dummyModel = this.contentModelManager.getContentModel(modelId);
         if (dummyModel != null) {
             Object[] args = {String.valueOf(modelId)};
-            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_ALREADY_EXISTS, args, "contentmodel.id.already.present");
+            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_ALREADY_EXISTS, args,
+                    "contentmodel.id.already.present");
         }
         SmallEntityType utilizer = this.contentModelManager.getDefaultUtilizer(modelId);
         if (null != utilizer && !utilizer.getCode().equals(contentModel.getContentType())) {
             Object[] args = {String.valueOf(modelId), utilizer.getDescription()};
-            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_WRONG_UTILIZER, args, "contentmodel.id.wrongUtilizer");
+            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_WRONG_UTILIZER, args,
+                    "contentmodel.id.wrongUtilizer");
         }
     }
 
     protected void validateContentType(String contentType, BeanPropertyBindingResult errors) {
         if (!this.contentManager.getSmallContentTypesMap().containsKey(contentType)) {
             Object[] args = {contentType};
-            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND, args, "contentmodel.contentType.notFound");
+            errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND, args,
+                    "contentmodel.contentType.notFound");
         }
     }
 }
