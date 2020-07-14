@@ -1,13 +1,12 @@
 package org.entando.entando.plugins.jacms.web.contentsettings.model;
 
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.constraints.NotEmpty;
 
 @Getter@Setter
 public class ContentSettingsCropRatioRequest {
 
-    @NotEmpty
+    @NotNull
     private String ratio;
 }
