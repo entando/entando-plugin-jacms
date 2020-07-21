@@ -27,6 +27,9 @@ public class RestContentListRequest extends RestEntityListRequest {
     private boolean orClauseCategoryFilter;
     private String text;
 
+    private String forLinkingWithOwnerGroup;
+    private String forLinkingWithExtraGroups;
+
     public String getModel() {
         return model;
     }
@@ -83,4 +86,19 @@ public class RestContentListRequest extends RestEntityListRequest {
         this.text = text;
     }
 
+    public String getForLinkingWithOwnerGroup() {
+        return forLinkingWithOwnerGroup;
+    }
+
+    public void setForLinkingWithOwnerGroup(String forLinkingWithOwnerGroup) {
+        this.forLinkingWithOwnerGroup = forLinkingWithOwnerGroup;
+    }
+
+    public String getForLinkingWithExtraGroups() {
+        return forLinkingWithExtraGroups;
+    }
+
+    public void setForLinkingWithExtraGroups(String forLinkingWithOwnerExtraGroups) {
+        this.forLinkingWithExtraGroups = forLinkingWithOwnerExtraGroups;
+    }
 }
