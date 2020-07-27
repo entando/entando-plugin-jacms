@@ -427,10 +427,13 @@ public class ContentDto extends EntityDto implements Serializable {
     private void fillCompositeAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (CompositeAttribute.class.isAssignableFrom(attribute.getClass())) {
             CompositeAttribute compositeAttribute = (CompositeAttribute) attribute;
-            int index = 0;
             for (EntityAttributeDto element : attributeDto.getCompositeElements()) {
-                fillAttribute(compositeAttribute.getAttributes().get(index), element);
-                index++;
+                for (AttributeInterface att : compositeAttribute.getAttributes()) {
+                    if (element.getCode().equals(att.getName())) {
+                        fillAttribute(att, element);
+                        break;
+                    }
+                }
             }
         }
     }
