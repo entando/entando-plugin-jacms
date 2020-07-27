@@ -1,0 +1,29 @@
+[
+    {
+        "mainGroup":"free",
+        "description":"Composite of Images And Text",
+        "attributes":[
+            {
+                "code":"composite",
+                "compositeelements":[
+                    {
+                        "code":"image",
+                        "values":{
+                            "it":{
+                                "id":"resourceIdPlaceHolder"
+                            }
+                        }
+                    },
+                    {
+                        "code": "author",
+                        "values":{
+                            "it":"author name goes here"
+                        }
+                    }
+                ],
+                "name":"CompositeOfImagesAndText"
+            }
+        ],
+        "typeCode":"CIT"
+    }
+]

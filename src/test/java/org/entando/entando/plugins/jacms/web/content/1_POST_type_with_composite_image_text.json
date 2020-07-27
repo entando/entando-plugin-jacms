@@ -1,0 +1,24 @@
+{
+    "code": "CIT",
+    "name": "Content Type CIT",
+    "attributes": [
+        {
+            "code": "composite",
+            "type": "Composite",
+            "name": "Composite Description",
+            "mandatory": false,
+            "compositeAttributes":[
+                {
+                    "code": "image",
+                    "type": "Image",
+                    "name": "Description of image attribute"
+                },
+                {
+                    "code": "author",
+                    "type": "Text",
+                    "name": "Description of text attribute"
+                }
+            ]
+        }
+    ]
+}
