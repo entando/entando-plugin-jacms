@@ -51,7 +51,8 @@ import static org.entando.entando.plugins.jacms.web.resource.ResourcesController
 
 @Service
 @RequiredArgsConstructor
-public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements IComponentUsageService {
+public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements
+        IComponentUsageService {
 
     private static final String CONTENT_MODEL_MANAGER = "jacmsContentManager";
 
@@ -152,7 +153,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
 
     @Override
     protected Content createEntityType(IEntityManager entityManager, EntityTypeDtoRequest dto,
-                                       BindingResult bindingResult) throws Throwable {
+            BindingResult bindingResult) throws Throwable {
         ContentTypeDtoRequest request = (ContentTypeDtoRequest) dto;
         Content result = super.createEntityType(entityManager, dto, bindingResult);
         result.setViewPage(request.getViewPage());
@@ -164,21 +165,19 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
 
     @Override
     public Integer getComponentUsage(String componentCode) {
-        try {
-            return contentService.countContentsByType(componentCode);
-        } catch (ResourceNotFoundException e) {
-            return 0;
-        }
+        return contentService.countContentsByType(componentCode);
     }
 
     @Override
-    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode, RestListRequest restListRequest) {
+    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode,
+            RestListRequest restListRequest) {
 
         RestContentListRequest contentListRequest = new RestContentListRequest();
         contentListRequest.setFilters(restListRequest.getFilters());
         contentListRequest.setSort("typeCode");
 
-        PagedMetadata<ContentDto> pagedData = contentService.getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
+        PagedMetadata<ContentDto> pagedData = contentService
+                .getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
         List<ComponentUsageEntity> componentUsageEntityList = pagedData.getBody().stream()
                 .map(contentDto -> new ComponentUsageEntity(
                         ComponentUsageEntity.TYPE_CONTENT,
@@ -186,7 +185,8 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
                         ContentStatusState.calculateState(contentDto).toString()))
                 .collect(Collectors.toList());
 
-        return pagedMetadataMapper.getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
+        return pagedMetadataMapper
+                .getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
     }
 
 
