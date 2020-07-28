@@ -169,15 +169,13 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     }
 
     @Override
-    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode,
-            RestListRequest restListRequest) {
+    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode, RestListRequest restListRequest) {
 
         RestContentListRequest contentListRequest = new RestContentListRequest();
         contentListRequest.setFilters(restListRequest.getFilters());
         contentListRequest.setSort("typeCode");
 
-        PagedMetadata<ContentDto> pagedData = contentService
-                .getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
+        PagedMetadata<ContentDto> pagedData = contentService.getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
         List<ComponentUsageEntity> componentUsageEntityList = pagedData.getBody().stream()
                 .map(contentDto -> new ComponentUsageEntity(
                         ComponentUsageEntity.TYPE_CONTENT,
@@ -185,8 +183,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
                         ContentStatusState.calculateState(contentDto).toString()))
                 .collect(Collectors.toList());
 
-        return pagedMetadataMapper
-                .getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
+        return pagedMetadataMapper.getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
     }
 
 
