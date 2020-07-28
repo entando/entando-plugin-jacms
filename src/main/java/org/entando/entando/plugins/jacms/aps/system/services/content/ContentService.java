@@ -72,6 +72,7 @@ import org.entando.entando.aps.system.services.entity.AbstractEntityService;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.group.GroupServiceUtilizer;
 import org.entando.entando.aps.system.services.page.PageServiceUtilizer;
+import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.content.ContentController;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
@@ -367,12 +368,11 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             return true;
         }
 
-        return org.entando.entando.aps.util.GenericResourceUtils.isResourceLinkableByContent(
+        return GenericResourceUtils.isResourceLinkableByContent(
                 dto.getMainGroup(),
                 dto.getGroups(),
                 requestList.getForLinkingWithOwnerGroup(),
                 Optional.ofNullable(requestList.getForLinkingWithExtraGroups())
-                        .map(x -> x.split(",")).map(Arrays::asList)
                         .orElse(null)
         );
     }

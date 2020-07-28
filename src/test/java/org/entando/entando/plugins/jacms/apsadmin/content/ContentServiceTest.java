@@ -250,7 +250,7 @@ public class ContentServiceTest {
         UserDetails user = Mockito.mock(UserDetails.class);
         RestContentListRequest requestList = prepareGetContentTest(user);
         requestList.setForLinkingWithOwnerGroup("GROUP1");
-        requestList.setForLinkingWithExtraGroups("GROUP2");
+        requestList.setForLinkingWithExtraGroups(Arrays.asList("GROUP2"));
 
         this.addMockedContent(FOUND_CONTENT_01, "ART", "GROUP1", "GROUP2");
         this.addMockedContent(FOUND_CONTENT_02, "ART", "GROUP1", null);

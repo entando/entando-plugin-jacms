@@ -13,6 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.web.content.validator;
 
+import java.util.List;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.web.common.model.RestEntityListRequest;
 
@@ -28,7 +29,7 @@ public class RestContentListRequest extends RestEntityListRequest {
     private String text;
 
     private String forLinkingWithOwnerGroup;
-    private String forLinkingWithExtraGroups;
+    private List<String> forLinkingWithExtraGroups;
 
     public String getModel() {
         return model;
@@ -94,11 +95,11 @@ public class RestContentListRequest extends RestEntityListRequest {
         this.forLinkingWithOwnerGroup = forLinkingWithOwnerGroup;
     }
 
-    public String getForLinkingWithExtraGroups() {
+    public List<String> getForLinkingWithExtraGroups() {
         return forLinkingWithExtraGroups;
     }
 
-    public void setForLinkingWithExtraGroups(String forLinkingWithOwnerExtraGroups) {
-        this.forLinkingWithExtraGroups = forLinkingWithOwnerExtraGroups;
+    public void setForLinkingWithExtraGroups(List<String> forLinkingWithExtraGroups) {
+        this.forLinkingWithExtraGroups = forLinkingWithExtraGroups;
     }
 }
