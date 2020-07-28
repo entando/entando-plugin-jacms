@@ -187,40 +187,45 @@ public class ContentModelServiceImpl implements ContentModelService {
 
     @Override
     public ComponentUsage getComponentUsage(Long modelId) {
-        final List<ContentModelReference> contentModelReferences = contentModelManager
-                .getContentModelReferences(modelId);
-        final long onlineCount = contentModelReferences.stream()
-                .filter(f -> f.isOnline()).count();
-        final long offlineCount = contentModelReferences.stream()
-                .filter(f -> !f.isOnline()).count();
-        final List<SmallEntityType> defaultContentTemplateUsedList = this.contentManager.getSmallEntityTypes().stream()
-                .filter(
-                        f -> {
-                            final String defaultModel = contentManager.getDefaultModel(f.getCode());
-                            final boolean defaultModelUsed = String.valueOf(modelId)
-                                    .equals(defaultModel);
-                            return defaultModelUsed;
-                        }
-                ).collect(Collectors.toList());
-        final List<SmallEntityType> defaultContentListTemplateUsedList = this.contentManager.getSmallEntityTypes()
-                .stream()
-                .filter(
-                        f -> {
-                            final String listModel = contentManager.getListModel(f.getCode());
-                            final boolean listModelUsed = String.valueOf(modelId)
-                                    .equals(listModel);
-                            return listModelUsed;
-                        }
-                ).collect(Collectors.toList());
-        int countContentDefaultTemplateReferences = defaultContentTemplateUsedList.size();
-        int countContentListDefaultTemplateReferences = defaultContentListTemplateUsedList.size();
-        Integer usage = Math.toIntExact(onlineCount + offlineCount + countContentDefaultTemplateReferences
-                + countContentListDefaultTemplateReferences);
+
         ComponentUsage componentUsage = new ComponentUsage();
         componentUsage.setType("contentTemplate");
         componentUsage.setCode(String.valueOf(modelId));
         componentUsage.setStatus("");
-        componentUsage.setUsage(usage);
+
+        try {
+            final List<ContentModelReference> contentModelReferences = contentModelManager
+                    .getContentModelReferences(modelId);
+            final long onlineCount = contentModelReferences.stream()
+                    .filter(f -> f.isOnline()).count();
+            final long offlineCount = contentModelReferences.stream()
+                    .filter(f -> !f.isOnline()).count();
+            final List<SmallEntityType> defaultContentTemplateUsedList = this.contentManager.getSmallEntityTypes().stream()
+                    .filter(
+                            f -> {
+                                final String defaultModel = contentManager.getDefaultModel(f.getCode());
+                                return String.valueOf(modelId).equals(defaultModel);
+                            }
+                    ).collect(Collectors.toList());
+            final List<SmallEntityType> defaultContentListTemplateUsedList = this.contentManager.getSmallEntityTypes()
+                    .stream()
+                    .filter(
+                            f -> {
+                                final String listModel = contentManager.getListModel(f.getCode());
+                                return String.valueOf(modelId).equals(listModel);
+                            }
+                    ).collect(Collectors.toList());
+            int countContentDefaultTemplateReferences = defaultContentTemplateUsedList.size();
+            int countContentListDefaultTemplateReferences = defaultContentListTemplateUsedList.size();
+            Integer usage = Math.toIntExact(onlineCount + offlineCount + countContentDefaultTemplateReferences
+                    + countContentListDefaultTemplateReferences);
+
+            componentUsage.setUsage(usage);
+            return componentUsage;
+        } catch (ResourceNotFoundException e) {
+            componentUsage.setUsage(0);
+        }
+
         return componentUsage;
     }
 
