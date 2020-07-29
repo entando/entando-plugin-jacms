@@ -51,7 +51,8 @@ import static org.entando.entando.plugins.jacms.web.resource.ResourcesController
 
 @Service
 @RequiredArgsConstructor
-public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements IComponentUsageService {
+public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements
+        IComponentUsageService {
 
     private static final String CONTENT_MODEL_MANAGER = "jacmsContentManager";
 
@@ -152,7 +153,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
 
     @Override
     protected Content createEntityType(IEntityManager entityManager, EntityTypeDtoRequest dto,
-                                       BindingResult bindingResult) throws Throwable {
+            BindingResult bindingResult) throws Throwable {
         ContentTypeDtoRequest request = (ContentTypeDtoRequest) dto;
         Content result = super.createEntityType(entityManager, dto, bindingResult);
         result.setViewPage(request.getViewPage());

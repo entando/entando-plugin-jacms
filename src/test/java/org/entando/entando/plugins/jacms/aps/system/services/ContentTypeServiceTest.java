@@ -84,6 +84,14 @@ public class ContentTypeServiceTest {
 
 
     @Test
+    public void getContentTypeUsageForNonExistingCodeShouldReturnZero() {
+
+        int componentUsage = contentTypeService.getComponentUsage("not_existing");
+        assertEquals(0, componentUsage);
+    }
+
+
+    @Test
     public void getContentTypeUsageDetailsTest() {
 
         int relatedContents = 3;
