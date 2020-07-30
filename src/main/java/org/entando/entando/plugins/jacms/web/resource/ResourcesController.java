@@ -28,6 +28,7 @@ import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesS
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ListAssetsFolderResponse;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
+import org.entando.entando.plugins.jacms.web.resource.request.ListResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
@@ -69,12 +70,11 @@ public class ResourcesController {
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets")
     @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
-    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(@RequestParam(value = "type", required = false) String type,
-            RestListRequest requestList) {
+    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(ListResourceRequest requestList) {
         logger.debug("REST request - list image resources");
 
         resourceValidator.validateRestListRequest(requestList, AssetDto.class);
-        PagedMetadata<AssetDto> result = service.listAssets(type, requestList);
+        PagedMetadata<AssetDto> result = service.listAssets(requestList);
         resourceValidator.validateRestListResult(requestList, result);
         return ResponseEntity.ok(new PagedRestResponse<>(result));
     }
