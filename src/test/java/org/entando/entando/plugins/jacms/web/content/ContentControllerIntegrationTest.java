@@ -15,6 +15,7 @@ package org.entando.entando.plugins.jacms.web.content;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -98,7 +99,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     private ObjectMapper mapper = new ObjectMapper();
 
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
-    
+
     @Test
     public void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -110,7 +111,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         String html1 = JsonPath.read(result1, "$.payload.html");
         Assert.assertTrue(!StringUtils.isBlank(html1));
-        
+
         result.andExpect(MockMvcResultMatchers.jsonPath("$.payload.html", Matchers.anything()));
         result = this.performGetContent("ART180", "11", true, null, true, user);
         String result2 = result.andReturn().getResponse().getContentAsString();
@@ -127,7 +128,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String htmlCopy = JsonPath.read(result1_copy, "$.payload.html");
         Assert.assertTrue(!StringUtils.isBlank(htmlCopy));
         Assert.assertEquals(html1, htmlCopy);
-        
+
         result = this.performGetContent("ART180", "list", true, null, true, user);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.payload.html", Matchers.anything()));
         String result2_copy = result.andReturn().getResponse().getContentAsString();
@@ -248,6 +249,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             result5.andExpect(jsonPath("$.payload[0].mainGroup", is("group1")))
                     .andExpect(jsonPath("$.payload[0].restriction", is("RESTRICTED")));
 
+            executeContentPut("1_PUT_groups.json", newContentId, accessToken, status().isOk())
+                    .andExpect(jsonPath("$.payload[0].groups", hasSize(1)))
+                    .andExpect(jsonPath("$.payload[0].groups[0]", is("group1")));
+
         } finally {
             if (null != newContentId) {
                 Content newContent = this.contentManager.loadContent(newContentId, false);
@@ -272,42 +277,42 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             Assert.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_links.json", accessToken, status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.payload.size()", is(1)))
-                .andExpect(jsonPath("$.errors.size()", is(0)))
-                .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
 
-                .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
-                .andExpect(jsonPath("$.payload[0].attributes[0].code", is("link1")))
-                .andExpect(jsonPath("$.payload[0].attributes[0].value.destType", is(SymbolicLink.URL_TYPE)))
-                .andExpect(jsonPath("$.payload[0].attributes[0].value.urlDest", is("https://myurl.com")))
-                .andExpect(jsonPath("$.payload[0].attributes[0].value.symbolicDestination", is("#!U;https://myurl.com!#")))
-                .andExpect(jsonPath("$.payload[0].attributes[0].values.it", is("My URL Link")))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("link1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.destType", is(SymbolicLink.URL_TYPE)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.urlDest", is("https://myurl.com")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.symbolicDestination", is("#!U;https://myurl.com!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].values.it", is("My URL Link")))
 
-                .andExpect(jsonPath("$.payload[0].attributes[1].code", is("link2")))
-                .andExpect(jsonPath("$.payload[0].attributes[1].value.destType", is(SymbolicLink.PAGE_TYPE)))
-                .andExpect(jsonPath("$.payload[0].attributes[1].value.pageDest", is("pagina_11")))
-                .andExpect(jsonPath("$.payload[0].attributes[1].value.symbolicDestination", is("#!P;pagina_11!#")))
-                .andExpect(jsonPath("$.payload[0].attributes[1].values.it", is("My Page Link")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].code", is("link2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].value.destType", is(SymbolicLink.PAGE_TYPE)))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].value.pageDest", is("pagina_11")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].value.symbolicDestination", is("#!P;pagina_11!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].values.it", is("My Page Link")))
 
-                .andExpect(jsonPath("$.payload[0].attributes[2].code", is("link3")))
-                .andExpect(jsonPath("$.payload[0].attributes[2].value.destType", is(SymbolicLink.CONTENT_TYPE)))
-                .andExpect(jsonPath("$.payload[0].attributes[2].value.contentDest", is("ART1")))
-                .andExpect(jsonPath("$.payload[0].attributes[2].value.symbolicDestination", is("#!C;ART1!#")))
-                .andExpect(jsonPath("$.payload[0].attributes[2].values.it", is("My Content Link")))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].code", is("link3")))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].value.destType", is(SymbolicLink.CONTENT_TYPE)))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].value.contentDest", is("ART1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].value.symbolicDestination", is("#!C;ART1!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].values.it", is("My Content Link")))
 
-                .andExpect(jsonPath("$.payload[0].attributes[3].code", is("link4")))
-                .andExpect(jsonPath("$.payload[0].attributes[3].value.destType", is(SymbolicLink.CONTENT_ON_PAGE_TYPE)))
-                .andExpect(jsonPath("$.payload[0].attributes[3].value.pageDest", is("pagina_11")))
-                .andExpect(jsonPath("$.payload[0].attributes[3].value.contentDest", is("ART1")))
-                .andExpect(jsonPath("$.payload[0].attributes[3].value.symbolicDestination", is("#!O;ART1;pagina_11!#")))
-                .andExpect(jsonPath("$.payload[0].attributes[3].values.it", is("My Page with Content Link")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].code", is("link4")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].value.destType", is(SymbolicLink.CONTENT_ON_PAGE_TYPE)))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].value.pageDest", is("pagina_11")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].value.contentDest", is("ART1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].value.symbolicDestination", is("#!O;ART1;pagina_11!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].values.it", is("My Page with Content Link")))
 
-                .andExpect(jsonPath("$.payload[0].attributes[4].code", is("link5")))
-                .andExpect(jsonPath("$.payload[0].attributes[4].value.destType", is(SymbolicLink.RESOURCE_TYPE)))
-                .andExpect(jsonPath("$.payload[0].attributes[4].value.resourceDest", is("44")))
-                .andExpect(jsonPath("$.payload[0].attributes[4].value.symbolicDestination", is("#!R;44!#")))
-                .andExpect(jsonPath("$.payload[0].attributes[4].values.it", is("My Resource Link")));
+                    .andExpect(jsonPath("$.payload[0].attributes[4].code", is("link5")))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].value.destType", is(SymbolicLink.RESOURCE_TYPE)))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].value.resourceDest", is("44")))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].value.symbolicDestination", is("#!R;44!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].values.it", is("My Resource Link")));
 
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
@@ -1817,8 +1822,8 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             Assert.assertNotNull(contentManager.getEntityPrototype("TST"));
 
             executeContentPost("1_POST_invalid_resource.json", accessToken, status().isBadRequest())
-                .andDo(print())
-                .andExpect(jsonPath("$.errors.size()", is(1)));
+                    .andDo(print())
+                    .andExpect(jsonPath("$.errors.size()", is(1)));
         } finally {
             if (null != contentManager.getEntityPrototype("TST")) {
                 ((IEntityTypesConfigurer) contentManager).removeEntityPrototype("TST");
@@ -1856,32 +1861,32 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = executeContentPost("1_POST_valid.json", accessToken, status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.payload.size()", is(1)))
-                .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
-                .andExpect(jsonPath("$.payload[0].firstEditor", is("jack_bauer")))
-                .andExpect(jsonPath("$.payload[0].lastEditor", is("jack_bauer")))
-                .andExpect(jsonPath("$.payload[0].version", is("0.1")))
-                .andExpect(jsonPath("$.payload[0].attributes.size()", is(13)))
-                .andExpect(jsonPath("$.errors.size()", is(0)))
-                .andExpect(jsonPath("$.metaData.size()", is(0)));
+                    .andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].firstEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].lastEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].version", is("0.1")))
+                    .andExpect(jsonPath("$.payload[0].attributes.size()", is(13)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)));
 
             newContentId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload[0].id");
 
             result = executeContentPut("1_PUT_categories.json", newContentId, accessToken, status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(1)))
-                .andExpect(jsonPath("$.errors.size()", is(0)))
-                .andExpect(jsonPath("$.metaData.size()", is(0)))
-                .andExpect(jsonPath("$.payload[0].id", is(newContentId)))
-                .andExpect(jsonPath("$.payload[0].attributes.size()", is(13)))
-                .andExpect(jsonPath("$.payload[0].firstEditor", is("jack_bauer")))
-                .andExpect(jsonPath("$.payload[0].lastEditor", is("jack_bauer")))
-                .andExpect(jsonPath("$.payload[0].description", is("New Content for test")))
-                .andExpect(jsonPath("$.payload[0].mainGroup", is("free")))
-                .andExpect(jsonPath("$.payload[0].categories.size()", is(2)))
-                .andExpect(jsonPath("$.payload[0].categories[0]", is("resCat1")))
-                .andExpect(jsonPath("$.payload[0].categories[1]", is("resCat2")))
-                .andExpect(jsonPath("$.payload[0].version", is("0.2")));
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", is(newContentId)))
+                    .andExpect(jsonPath("$.payload[0].attributes.size()", is(13)))
+                    .andExpect(jsonPath("$.payload[0].firstEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].lastEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].description", is("New Content for test")))
+                    .andExpect(jsonPath("$.payload[0].mainGroup", is("free")))
+                    .andExpect(jsonPath("$.payload[0].categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0].categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload[0].categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload[0].version", is("0.2")));
         } finally {
             if (null != newContentId) {
                 Content newContent = this.contentManager.loadContent(newContentId, false);
@@ -2230,8 +2235,8 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String accessToken = mockOAuthInterceptor(user);
         return mockMvc.perform(
                 get(path, code)
-                .sessionAttr("user", user)
-                .header("Authorization", "Bearer " + accessToken));
+                        .sessionAttr("user", user)
+                        .header("Authorization", "Bearer " + accessToken));
     }
 
     private ResultActions executeContentPost(String fileName, String accessToken, ResultMatcher expected) throws Exception {
@@ -2485,7 +2490,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
         String[] expected = {"EVN25", "EVN21", "EVN20", "EVN41", "EVN193",
-            "EVN192", "EVN103", "EVN23", "EVN24"};
+                "EVN192", "EVN103", "EVN23", "EVN24"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
         Assert.assertEquals(expected.length, payloadSize);
         for (int i = 0; i < expected.length; i++) {
@@ -2547,7 +2552,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
         String[] expectedFreeContentsId = {"EVN24", "EVN23",
-            "EVN191", "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
+                "EVN191", "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
         Assert.assertEquals(expectedFreeContentsId.length, payloadSize);
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
@@ -2569,7 +2574,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                         .param("filters[0].value", "EVN"));
         result.andExpect(status().isOk());
         String[] expectedFreeOrderedContentsId_1 = {"EVN191", "EVN192",
-            "EVN193", "EVN194", "EVN20", "EVN23", "EVN24", "EVN25", "EVN21"};
+                "EVN193", "EVN194", "EVN20", "EVN23", "EVN24", "EVN25", "EVN21"};
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(expectedFreeOrderedContentsId_1.length)));
         for (int i = 0; i < expectedFreeOrderedContentsId_1.length; i++) {
             String expectedId = expectedFreeOrderedContentsId_1[expectedFreeOrderedContentsId_1.length - i - 1];
@@ -2617,7 +2622,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
         String[] expectedFreeOrderedContentsId_1 = {"EVN194", "EVN193", "EVN24",
-            "EVN23", "EVN25"};
+                "EVN23", "EVN25"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
         Assert.assertEquals(expectedFreeOrderedContentsId_1.length, payloadSize);
         for (int i = 0; i < expectedFreeOrderedContentsId_1.length; i++) {
@@ -2676,7 +2681,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             result.andExpect(status().isOk());
             String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(),
-                "EVN193", "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
+                    "EVN193", "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
             int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
             Assert.assertEquals(expectedFreeOrderedContentsId.length, payloadSize);
             for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
@@ -3152,7 +3157,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(0)));
     }
-    
+
     @Test
     public void testFilteredContent_14() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -3173,7 +3178,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(3)));
     }
-    
+
     @Test
     public void testFilteredContent_15() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -3200,7 +3205,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(1)));
     }
-    
+
     @Test
     public void testFilteredContent_16() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
