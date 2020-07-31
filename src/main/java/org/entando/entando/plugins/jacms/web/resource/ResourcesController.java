@@ -69,7 +69,7 @@ public class ResourcesController {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets")
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(ListResourceRequest requestList) {
         logger.debug("REST request - list image resources");
 
@@ -84,7 +84,7 @@ public class ResourcesController {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets/folder")
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<RestResponse<List<AssetDto>, Map<String, Object>>> listAssetsFolder(
             @RequestParam(value = "folderPath", required = false) String folderPath) {
         logger.debug("REST request - list resources folder");
