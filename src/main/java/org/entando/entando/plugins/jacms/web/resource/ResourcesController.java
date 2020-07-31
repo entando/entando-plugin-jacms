@@ -14,13 +14,18 @@
 package org.entando.entando.plugins.jacms.web.resource;
 
 import com.agiletec.aps.system.services.role.Permission;
-import com.agiletec.aps.system.services.user.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.util.HttpSessionHelper;
@@ -34,20 +39,19 @@ import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidat
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
-import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController

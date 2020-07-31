@@ -14,6 +14,7 @@
 package org.entando.entando.plugins.jacms.web.resource.request;
 
 import java.util.List;
+import java.util.Objects;
 import org.entando.entando.web.common.model.RestListRequest;
 
 public class ListResourceRequest extends RestListRequest {
@@ -44,5 +45,27 @@ public class ListResourceRequest extends RestListRequest {
 
     public void setForLinkingWithExtraGroups(List<String> forLinkingWithExtraGroups) {
         this.forLinkingWithExtraGroups = forLinkingWithExtraGroups;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ListResourceRequest that = (ListResourceRequest) o;
+        return Objects.equals(type, that.type) &&
+                Objects.equals(forLinkingWithOwnerGroup, that.forLinkingWithOwnerGroup) &&
+                Objects.equals(forLinkingWithExtraGroups, that.forLinkingWithExtraGroups);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), type, forLinkingWithOwnerGroup, forLinkingWithExtraGroups);
     }
 }
