@@ -6,10 +6,10 @@
 		<c:if test="${'1' != group.currItem}">
 			<c:if test="${group.advanced}">
 				<%-- Back to start --%>
-				<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" >1</wp:parameter></wp:url>" title="<wp:i18n key="PAGER_FIRST" />"><i class="icon-fast-backward"></i></a></li>
+				<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" >1</wp:parameter></wp:url>" title="<wp:i18n key="PAGER_FIRST" />"><i class="icon-fast-backward" aria-hidden="true"></i></a></li>
 				<%-- Back of ${group.offset} pages --%>
 				<c:if test="${1 != group.beginItemAnchor}">
-					<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.currItem - group.offset}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_STEP_BACKWARD" />&#32;<c:out value="${group.offset}" />"><i class="icon-step-backward"></i></a></li>
+					<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.currItem - group.offset}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_STEP_BACKWARD" />&#32;<c:out value="${group.offset}" />"><i class="icon-step-backward" aria-hidden="true"></i></a></li>
 				</c:if>
 			</c:if>
 			<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.prevItem}"/></wp:parameter></wp:url>"><wp:i18n key="PAGER_PREV" /></a></li>
@@ -25,10 +25,10 @@
 			<c:if test="${group.advanced}">
 				<%-- Forward of ${group.offset} pages --%>
 				<c:if test="${group.maxItem != group.endItemAnchor}">
-					<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.currItem + group.offset}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_STEP_FORWARD" />&#32;<c:out value="${group.offset}" />"><i class="icon-step-forward"></i></a></li>
+					<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.currItem + group.offset}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_STEP_FORWARD" />&#32;<c:out value="${group.offset}" />"><i class="icon-step-forward" aria-hidden="true"></i></a></li>
 				</c:if>
 				<%-- Go to last page --%>
-				<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.maxItem}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_LAST" />"><i class="icon-fast-forward"></i></a></li>
+				<li><a href="<wp:url paramRepeat="true" ><wp:parameter name="${group.paramItemName}" ><c:out value="${group.maxItem}" /></wp:parameter></wp:url>" title="<wp:i18n key="PAGER_LAST" />"><i class="icon-fast-forward" aria-hidden="true"></i></a></li>
 			</c:if>
 		</c:if>
 		</ul>

@@ -12,7 +12,7 @@
 
 <c:if test="${hasUserFilterError}">
 <div class="alert alert-error">
-	<a class="close" data-dismiss="alert" href="#"><i class="icon-remove"></i></a>
+	<a class="close" data-dismiss="alert" href="#"><i class="icon-remove" aria-hidden="true"></i></a>
 	<h2 class="alert-heading"><wp:i18n key="ERRORS" /></h2>
 	<ul>
 		<c:forEach var="userFilterOptionVar" items="${userFilterOptionsVar}">
@@ -29,7 +29,7 @@
 </c:if>
 <c:set var="hasUserFilterError" value="${false}" />
 
-<p><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#content-viewer-list-filters"><wp:i18n key="SEARCH_FILTERS_BUTTON" /> <i class="icon-zoom-in icon-white"></i></button></p>
+<p><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#content-viewer-list-filters"><wp:i18n key="SEARCH_FILTERS_BUTTON" /> <i class="icon-zoom-in icon-white" aria-hidden="true"></i></button></p>
 
 <%-- search form with user filters --%>
 <form action="<wp:url />" method="post" class="form-horizontal collapse" id="content-viewer-list-filters">
