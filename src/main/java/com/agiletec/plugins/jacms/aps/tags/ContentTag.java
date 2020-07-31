@@ -17,6 +17,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,7 @@ public class ContentTag extends TagSupport {
 	 * @return The model ID
 	 */
 	public String getModelId() {
-		return _modelId;
+		return StringUtils.isEmpty(_modelId) ? "default" : _modelId;
 	}
 	
 	/**
