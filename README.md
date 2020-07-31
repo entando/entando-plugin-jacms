@@ -29,7 +29,3 @@ In order to install the CMS plugin, you must insert the following dependency in 
        <type>war</type>
 </dependency>
 ```
-
-**License
-LGPL v2.1
-
