@@ -33,8 +33,8 @@ INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH',
 
 INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">search form</property>
-<property key="it">Barra ricerca</property>
+<property key="en">Search - Search form</property>
+<property key="it">Ricerca - Barra ricerca</property>
 </properties>',NULL,'jacms',NULL,NULL,0,'free');
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
