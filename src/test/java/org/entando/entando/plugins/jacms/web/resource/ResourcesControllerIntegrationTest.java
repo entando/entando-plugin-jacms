@@ -33,6 +33,7 @@ import com.agiletec.aps.system.services.role.IRoleManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Arrays;
@@ -72,7 +73,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testListAssetsAuthorized() throws Exception {
+    public void testListAssetsManageResources() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
                 .build();
@@ -82,7 +83,27 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testListAssetsFolderAuthorized() throws Exception {
+    public void testListAssetsAuthorizedContentSupervisor() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testListAssetsAuthorizedContentEditor() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testListAssetsFolderManageResource() throws Exception {
         Role role = createRole("manageResources", "descr");
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
@@ -1648,6 +1669,23 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                         .andExpect(jsonPath("$.payload.size()", is(3)));
             }
         }
+    }
+
+    @Test
+    public void testGetResourcesWithLinkability() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
+        String accessToken = mockOAuthInterceptor(user);
+
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/assets")
+                        .param("forLinkingWithOwnerGroup", "GROUP1")
+                        .param("forLinkingWithExtraGroups[0]", "GROUP2")
+                        .param("forLinkingWithExtraGroups[1]", "GROUP3")
+                        .sessionAttr("user", user)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
     }
 
     /* Auxiliary methods */
