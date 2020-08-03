@@ -35,9 +35,7 @@ INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defa
 <properties>
 <property key="en">search form</property>
 <property key="it">Barra ricerca</property>
-</properties>
-
-',NULL,'jacms',NULL,NULL,0,'free');
+</properties>',NULL,'jacms',NULL,NULL,0,'free');
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Contents - Publish a Content</property>
@@ -83,13 +81,12 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
 	<action name="rowListViewerConfig" />
 </config>', 'jacms', NULL, NULL, 1, 'free');
-
-INSERT INTO guifragment (code,widgettypecode,plugincode,gui,defaultgui,locked, maingroup) VALUES ('search_form','search_form',NULL,'<#assign wp=JspTaglibs["/aps-core"]>
+INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('search_form','search_form','jacms',NULL,'<#assign wp=JspTaglibs["/aps-core"]>
 <@wp.pageWithWidget var="searchResultPageVar" widgetTypeCode="search_result" />
 <form class="navbar-search " action="<#if (searchResultPageVar??) ><@wp.url page="${searchResultPageVar.code}" /></#if>" method="get">
 <i class="fas fa-search"></i>
 <input type="text" name="search" class="search-query" placeholder="<@wp.i18n key="ESSF_SEARCH" />" />
-</form>',NULL, 1, 'free');
+</form>', 1);
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('jacms_content_viewer_list_userfilter_ent_Enumer', NULL, 'jacms', NULL, '<#assign wp=JspTaglibs["/aps-core"]>
 <#assign formFieldNameVar = userFilterOptionVar.formFieldNames[0] >
 <#assign formFieldValue = userFilterOptionVar.getFormFieldValue(formFieldNameVar) >
