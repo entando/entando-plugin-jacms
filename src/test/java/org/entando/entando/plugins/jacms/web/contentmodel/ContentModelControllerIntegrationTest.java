@@ -1,18 +1,5 @@
 package org.entando.entando.plugins.jacms.web.contentmodel;
 
-import com.agiletec.aps.system.common.FieldSearchFilter;
-import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.entando.entando.web.AbstractControllerIntegrationTest;
-import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -23,20 +10,48 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.agiletec.aps.system.common.FieldSearchFilter;
+import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.entando.entando.plugins.jacms.web.content.ContentTypeResourceController;
+import org.entando.entando.web.AbstractControllerIntegrationTest;
+import org.entando.entando.web.MockMvcHelper;
+import org.entando.entando.web.utils.OAuth2TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
+
 public class ContentModelControllerIntegrationTest extends AbstractControllerIntegrationTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String BASE_URI = "/plugins/cms/contentmodels";
 
     @Autowired
     private IContentModelManager contentModelManager;
 
+    private MockMvcHelper mockMvcHelper;
+    private String accessToken;
+
     private ObjectMapper mapper = new ObjectMapper();
+
+    @Before
+    public void init() {
+        mockMvcHelper = new MockMvcHelper(mockMvc);
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
+        this.accessToken = mockOAuthInterceptor(user);
+    }
 
     @Test
     public void testGetContentModelsSortId() throws Exception {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
                         .param("sort", "id")
@@ -56,8 +71,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
     @Test
     public void testGetContentModelDefaultSorting() throws Exception {
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
                         .header("Authorization", "Bearer " + accessToken));
@@ -70,8 +83,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelsSortByDescr() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
                         .param("direction", FieldSearchFilter.ASC_ORDER)
@@ -93,8 +104,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelsWithFilters() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
                         .param("direction", FieldSearchFilter.ASC_ORDER)
@@ -121,8 +130,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelOk() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{modelId}", "1")
                         .header("Authorization", "Bearer " + accessToken));
@@ -134,8 +141,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelKo() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{modelId}", "0")
                         .header("Authorization", "Bearer " + accessToken));
@@ -146,8 +151,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelDictionary() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
                         .header("Authorization", "Bearer " + accessToken));
@@ -158,8 +161,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelDictionaryWithTypeCode() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
                         .param("typeCode", "EVN")
@@ -172,8 +173,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetContentModelDictionaryValidTypeCodeInvalid() throws Exception {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
                         .param("typeCode", "LOL")
@@ -187,9 +186,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         long modelId = 2001;
         try {
             String payload = null;
-
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
 
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
@@ -262,9 +258,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         try {
             String payload = null;
 
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
-
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
             request.setContentType("XXX");
@@ -296,9 +289,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         long modelId = new Long("2147483648");
         try {
             String payload = null;
-
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
 
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
@@ -332,9 +322,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         try {
             String payload = null;
 
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
-
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
             request.setContentType("ART");
@@ -367,8 +354,8 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
                             .header("Authorization", "Bearer " + accessToken));
 
             result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors.size()", is(0)))
-                .andExpect(jsonPath("$.payload.contentType", is("EVN")));
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.payload.contentType", is("EVN")));
 
         } finally {
             ContentModel model = this.contentModelManager.getContentModel(modelId);
@@ -384,9 +371,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         long modelId = 2001;
         try {
             String payload = null;
-
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
 
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
@@ -435,9 +419,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
         try {
             String payload = null;
 
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-            String accessToken = mockOAuthInterceptor(user);
-
             ContentModelDto request = new ContentModelDto();
             request.setId(modelId);
             request.setContentType("ART");
@@ -485,9 +466,6 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testDeleteReferencedModel() throws Throwable {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
-
         ResultActions result = mockMvc
                 .perform(delete(BASE_URI + "/{id}", 2)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -500,15 +478,47 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     @Test
     public void testGetModelPageReferences() throws Throwable {
 
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        String accessToken = mockOAuthInterceptor(user);
-
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{id}/pagereferences", 2)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("Authorization", "Bearer " + accessToken));
-
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetTemplateUsage() throws Throwable {
+        ResultActions result = mockMvc
+                .perform(get(BASE_URI + "/{id}/usage", 2)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andExpect(jsonPath("$.payload.type", is("contentTemplate")));
+        result.andExpect(jsonPath("$.payload.code", is("2")));
+        result.andExpect(jsonPath("$.payload.usage", is(2)));
+    }
+
+    @Test
+    public void testGetTemplateUsageCount() throws Throwable {
+        ResultActions result = mockMvc
+                .perform(get(BASE_URI + "/{id}/usage/details", 2)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andExpect(jsonPath("$.payload[0].type", is("page")));
+        result.andExpect(jsonPath("$.payload[0].code", is("homepage")));
+        result.andExpect(jsonPath("$.payload[0].status", is("offline")));
+    }
+
+
+    @Test
+    public void askingForUsageCountForNotExistingCodeShouldReturnZero() throws Throwable {
+
+        String code = "9999";
+
+        this.mockMvcHelper.setAccessToken(this.accessToken);
+        this.mockMvcHelper.getMockMvc(BASE_URI + "/{code}/usage", null, code)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.type", is("contentTemplate")))
+                .andExpect(jsonPath("$.payload.code", is(code)))
+                .andExpect(jsonPath("$.payload.usage", is(0)));
     }
 
 }

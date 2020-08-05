@@ -16,7 +16,6 @@ package org.entando.entando.plugins.jacms.aps.system.services.content;
 import static org.entando.entando.plugins.jacms.web.content.ContentController.ERRCODE_CONTENT_NOT_FOUND;
 import static org.entando.entando.plugins.jacms.web.content.ContentController.ERRCODE_CONTENT_REFERENCES;
 
-import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
@@ -54,14 +53,15 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
@@ -72,6 +72,7 @@ import org.entando.entando.aps.system.services.entity.AbstractEntityService;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.group.GroupServiceUtilizer;
 import org.entando.entando.aps.system.services.page.PageServiceUtilizer;
+import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.content.ContentController;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
@@ -342,8 +343,15 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             PagedMetadata<ContentDto> pagedMetadata = new PagedMetadata<>(requestList, result.size());
             List<ContentDto> masterList = new ArrayList<>();
             for (String contentId : sublist) {
-                masterList.add(this.buildContentDto(contentId, online,
-                        requestList.getModel(), requestList.getLang(), requestList.isResolveLink(), user, bindingResult));
+                ContentDto dto = this.buildContentDto(contentId, online,
+                        requestList.getModel(), requestList.getLang(), requestList.isResolveLink(), user,
+                        bindingResult);
+
+                boolean compatible = isCompatibleWithLinkabilityFilter(dto, requestList);
+
+                if (compatible) {
+                    masterList.add(dto);
+                }
             }
             pagedMetadata.setBody(masterList);
             return pagedMetadata;
@@ -355,11 +363,25 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         }
     }
 
+    private boolean isCompatibleWithLinkabilityFilter(ContentDto dto, RestContentListRequest requestList) {
+        if (requestList.getForLinkingWithOwnerGroup() == null) {
+            return true;
+        }
+
+        return GenericResourceUtils.isResourceLinkableByContent(
+                dto.getMainGroup(),
+                dto.getGroups(),
+                requestList.getForLinkingWithOwnerGroup(),
+                Optional.ofNullable(requestList.getForLinkingWithExtraGroups())
+                        .orElse(null)
+        );
+    }
+
     @Override
     public Integer countContentsByType(String contentType) {
         try {
-            EntitySearchFilter[] filters = new EntitySearchFilter[] {
-                new EntitySearchFilter("typeCode", false, contentType, false)
+            EntitySearchFilter[] filters = new EntitySearchFilter[]{
+                    new EntitySearchFilter("typeCode", false, contentType, false)
             };
 
             List<String> userGroupCodes = Collections.singletonList("administrators");

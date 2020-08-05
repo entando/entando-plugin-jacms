@@ -274,8 +274,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </properties>', NULL, 'jacms', NULL, NULL, 1, NULL);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Contents - Publish a Content</property>
-<property key="it">Contenuti - Pubblica un Contenuto</property>
+<property key="en">Content</property>
+<property key="it">Singolo Contenuto</property>
 </properties>', '<config>
 	<parameter name="contentId">
 		Identificativo del Contenuto
@@ -288,8 +288,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 ', 'jacms', NULL, NULL, 1, NULL);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Contents - Publish a List of Contents</property>
-<property key="it">Contenuti - Pubblica una Lista di Contenuti</property>
+<property key="en">Content Search Query</property>
+<property key="it">Elenco dinamico di contenuti</property>
 </properties>', '<config>
 	<parameter name="contentType">Content Type (mandatory)</parameter>
 	<parameter name="modelId">Content Model</parameter>
@@ -306,8 +306,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </config>', 'jacms', NULL, NULL, 1, NULL);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Contents - Publish Contents</property>
-<property key="it">Contenuti - Pubblica Contenuti</property>
+<property key="en">Content List</property>
+<property key="it">Elenco di Contenuti</property>
 </properties>', '<config>
 	<parameter name="contents">Contents to Publish (mandatory)</parameter>
 	<parameter name="maxElemForItem">Contents for each page</parameter>

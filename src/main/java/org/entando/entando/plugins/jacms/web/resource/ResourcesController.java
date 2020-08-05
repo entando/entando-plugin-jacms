@@ -14,13 +14,18 @@
 package org.entando.entando.plugins.jacms.web.resource;
 
 import com.agiletec.aps.system.services.role.Permission;
-import com.agiletec.aps.system.services.user.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.util.HttpSessionHelper;
@@ -28,25 +33,25 @@ import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesS
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ListAssetsFolderResponse;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
+import org.entando.entando.plugins.jacms.web.resource.request.ListResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
-import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -68,13 +73,12 @@ public class ResourcesController {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets")
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(@RequestParam(value = "type", required = false) String type,
-            RestListRequest requestList) {
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
+    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(ListResourceRequest requestList) {
         logger.debug("REST request - list image resources");
 
         resourceValidator.validateRestListRequest(requestList, AssetDto.class);
-        PagedMetadata<AssetDto> result = service.listAssets(type, requestList);
+        PagedMetadata<AssetDto> result = service.listAssets(requestList);
         resourceValidator.validateRestListResult(requestList, result);
         return ResponseEntity.ok(new PagedRestResponse<>(result));
     }
@@ -84,7 +88,7 @@ public class ResourcesController {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets/folder")
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<RestResponse<List<AssetDto>, Map<String, Object>>> listAssetsFolder(
             @RequestParam(value = "folderPath", required = false) String folderPath) {
         logger.debug("REST request - list resources folder");
@@ -128,7 +132,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping(value = "/plugins/cms/assets")
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
     public ResponseEntity<SimpleRestResponse<AssetDto>> createAsset(
             @RequestParam(value = "metadata") String request,
             @RequestParam(value = "file") MultipartFile file) throws JsonProcessingException {
@@ -153,7 +157,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping("/plugins/cms/assets/{resourceId}/clone")
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
     public ResponseEntity<SimpleRestResponse<AssetDto>> cloneAsset(@PathVariable("resourceId") String resourceId) {
         logger.debug("REST request - clone resource");
         AssetDto result = service.cloneAsset(resourceId);
@@ -165,7 +169,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping(value = "/plugins/cms/assets/{resourceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
     public ResponseEntity<SimpleRestResponse<AssetDto>> editAsset(@PathVariable("resourceId") String resourceId,
             @RequestParam(value = "metadata") String request,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
@@ -188,7 +192,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @DeleteMapping("/plugins/cms/assets/{resourceId}")
-    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
     public ResponseEntity<SimpleRestResponse<Map>> deleteAsset(@PathVariable("resourceId") String resourceId) {
         logger.debug("REST request - delete resource with id {}", resourceId);
         service.deleteAsset(resourceId);

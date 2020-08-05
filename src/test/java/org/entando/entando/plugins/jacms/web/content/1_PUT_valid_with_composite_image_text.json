@@ -1,0 +1,28 @@
+[{
+    "mainGroup":"free",
+    "description":"Composite of Images And Text Changed",
+    "attributes":[
+        {
+            "code": "composite",
+            "name":"CompositeOfImagesAndText",
+            "compositeelements":[
+                {
+                    "code": "author",
+                    "values":{
+                        "it":"author name goes here changed"
+                    }
+                },
+                {
+                    "code":"image",
+                    "values":{
+                        "it":{
+                            "id":"resourceIdPlaceHolder"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "id":"**MARKER**",
+    "typeCode":"CIT"
+}]

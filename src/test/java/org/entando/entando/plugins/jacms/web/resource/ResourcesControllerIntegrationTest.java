@@ -29,8 +29,11 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.system.services.role.IRoleManager;
 import com.agiletec.aps.system.services.role.Permission;
+import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Arrays;
@@ -57,6 +60,9 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     @Autowired
     private ICategoryManager categoryManager;
 
+    @Autowired
+    private IRoleManager roleManager;
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Test
@@ -64,6 +70,178 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
         performGetResources(null, "image", null)
             .andDo(print())
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testListAssetsManageResources() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testListAssetsAuthorizedContentSupervisor() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testListAssetsAuthorizedContentEditor() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testListAssetsFolderManageResource() throws Exception {
+        Role role = createRole("manageResources", "descr");
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .build();
+        String createdId = null;
+
+        try {
+            roleManager.addRole(role);
+
+            String type = "image";
+            String group = "free";
+            String folderPath = "folderPath123";
+            List<String> categories = Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList());
+            String mimeType = "application/jpeg";
+
+            ResultActions result = performCreateResource(user, type, group, categories, folderPath, mimeType)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            performGetResourcesFolder(user, folderPath)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            performGetResourcesFolder(user, null)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+        } finally {
+            roleManager.removeRole(role);
+
+            if (createdId != null) {
+                performDeleteResource(user, "image", createdId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
+    }
+
+    @Test
+    public void testCreateEditDeleteFileResourceAuthorization() throws Exception {
+        Role role = createRole("manageResources", "descr");
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .build();
+        String createdId = null;
+
+        try {
+            roleManager.addRole(role);
+
+            ResultActions result = performCreateResource(user, "file", "free",
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            performGetResources(user, "file", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(4)));
+
+            List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
+
+            performEditResource(user, "file", createdId, "new file description", categories, true)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        } finally {
+            roleManager.removeRole(role);
+            if (createdId != null) {
+                performDeleteResource(user, "file", createdId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "file", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
+    }
+
+    @Test
+    public void testCreateCloneAssetAuthorization() throws Exception {
+        Role role = createRole("manageResources", "descr");
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .build();
+        String createdId = null;
+        String clonedId = null;
+
+        try {
+            roleManager.addRole(role);
+
+            ResultActions result = performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            ResultActions result2 = performCloneResource(user, createdId)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            clonedId = JsonPath.read(result2.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+        } finally {
+
+            roleManager.removeRole(role);
+
+            if (clonedId != null) {
+                performDeleteResource(user, "file", clonedId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "file", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(4)));
+            }
+
+            if (createdId != null) {
+                performDeleteResource(user, "file", createdId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "file", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
     }
 
     @Test
@@ -1493,6 +1671,23 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
         }
     }
 
+    @Test
+    public void testGetResourcesWithLinkability() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
+        String accessToken = mockOAuthInterceptor(user);
+
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/assets")
+                        .param("forLinkingWithOwnerGroup", "GROUP1")
+                        .param("forLinkingWithExtraGroups[0]", "GROUP2")
+                        .param("forLinkingWithExtraGroups[1]", "GROUP3")
+                        .sessionAttr("user", user)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
+    }
+
     /* Auxiliary methods */
 
     private UserDetails createAccessToken() throws Exception {
@@ -1659,6 +1854,13 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
 
         return mockMvc.perform(post(path)
                 .header("Authorization", "Bearer " + mockOAuthInterceptor(user)));
+    }
+
+    private Role createRole(String name, String descr) {
+        Role role = new Role();
+        role.setName(name);
+        role.setDescription(descr);
+        return role;
     }
 
 }

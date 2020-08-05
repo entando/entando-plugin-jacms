@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,17 +41,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanComparator;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
+import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.FileAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageMetadataDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ListAssetsFolderResponse;
+import org.entando.entando.plugins.jacms.web.resource.request.ListResourceRequest;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.FilterOperator;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
-import org.entando.entando.web.common.model.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -84,14 +84,18 @@ public class ResourcesService {
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
 
-    public PagedMetadata<AssetDto> listAssets(String type, RestListRequest requestList) {
+    public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList) {
         List<AssetDto> assets = new ArrayList<>();
         try {
-            List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(type, requestList),
+            List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(requestList),
                     extractCategoriesFromFilters(requestList));
 
             for(String id : resourceIds) {
-                assets.add(convertResourceToDto(resourceManager.loadResource(id)));
+                AssetDto resource = convertResourceToDto(resourceManager.loadResource(id));
+
+                if (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList)) {
+                    assets.add(resource);
+                }
             }
 
         } catch (ApsException e) {
@@ -135,6 +139,19 @@ public class ResourcesService {
         }
 
         return response;
+    }
+
+    private boolean isCompatibleWithLinkabilityFilter(String resourceMainGroup, ListResourceRequest requestList) {
+        if (requestList.getForLinkingWithOwnerGroup() == null) {
+            return true;
+        }
+        return GenericResourceUtils.isResourceLinkableByContent(
+                resourceMainGroup,
+                null,
+                requestList.getForLinkingWithOwnerGroup(),
+                Optional.ofNullable(requestList.getForLinkingWithExtraGroups())
+                        .orElse(null)
+        );
     }
 
     private boolean shouldAddAsset(String folderPath, String assetFolderPath) {
@@ -381,12 +398,12 @@ public class ResourcesService {
         return dimensions;
     }
 
-    private FieldSearchFilter[] createSearchFilters(String type, RestListRequest requestList) {
+    private FieldSearchFilter[] createSearchFilters(ListResourceRequest requestList) {
         List<FieldSearchFilter> filters = new ArrayList<>();
 
-        if (type != null) {
+        if (requestList.getType() != null) {
             filters.add(
-                    new FieldSearchFilter(IResourceManager.RESOURCE_TYPE_FILTER_KEY, convertResourceType(type), false)
+                    new FieldSearchFilter(IResourceManager.RESOURCE_TYPE_FILTER_KEY, convertResourceType(requestList.getType()), false)
             );
         }
 
