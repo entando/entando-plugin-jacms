@@ -28,7 +28,7 @@
     </repositories>
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
-        <entando-engine.version>6.2.25</entando-engine.version>
+        <entando-engine.version>6.2.29</entando-engine.version>
         <entando-admin-console.version>6.2.38</entando-admin-console.version>
         <entando-portal-ui.version>6.2.6</entando-portal-ui.version>
     </properties>
