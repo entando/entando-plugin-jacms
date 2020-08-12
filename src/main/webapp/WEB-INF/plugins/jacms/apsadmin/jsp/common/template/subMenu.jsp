@@ -12,8 +12,8 @@
 <wp:ifauthorized permission="manageCategories" var="isCategories" />
 
 <c:if test="${isEditContents || isManageResources}">
-    <c:if test="${isEditContents}">
-        <ul class="list-group">
+    <ul class="list-group">
+        <c:if test="${isEditContents}">
             <li class="list-group-item">
                 <s:if test="#appBuilderIntegrationEnabled == 'true'">
                     <a href='<c:out value="${appBuilderBaseURL}"/>cms/contents'>
@@ -69,6 +69,8 @@
                     </s:else>
                 </li>
             </c:if>
+        </c:if>
+        <c:if test="${isSuperUser || isEditContents || isManageResources}">
             <li class="list-group-item">
                 <s:if test="#appBuilderIntegrationEnabled == 'true'">
                     <a href='<c:out value="${appBuilderBaseURL}"/>cms/versioning'>
@@ -81,6 +83,8 @@
                     </a>
                 </s:else>
             </li>
+        </c:if>
+        <c:if test="${isSuperUser}">
             <li class="list-group-item">
                 <a href="<s:url action="viewItem" namespace="/do/jpcontentscheduler/config" />">
                     <span class="list-group-item-value"><s:text name="jpcontentscheduler.admin.menu" /></span>
@@ -111,6 +115,6 @@
                     </a>
                 </s:else>
             </li>
-        </ul>
-    </c:if>
+        </c:if>
+    </ul>
 </c:if>
