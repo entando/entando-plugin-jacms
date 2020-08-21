@@ -70,7 +70,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     }
 
     public ContentTypeDto create(ContentTypeDtoRequest contentType, BindingResult bindingResult) {
-        return addEntityType(CONTENT_MODEL_MANAGER, contentType, bindingResult);
+        return addEntityType(CONTENT_MODEL_MANAGER, contentType, bindingResult, true);
     }
 
     public void delete(String code) {
