@@ -96,7 +96,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
         Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
-        content.setDescription("My content type " + typeCode);
+        content.setTypeDescription("My content type " + typeCode);
         content.setDefaultModel("My Model");
         content.setListModel("Model list");
         ContentTypeDtoRequest contentTypeRequest = new ContentTypeDtoRequest(content);
@@ -117,7 +117,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
             Content content = new Content();
             content.setTypeCode(typeCode);
-            content.setDescription("My content type " + typeCode);
+            content.setTypeDescription("My content type " + typeCode);
             content.setDefaultModel("My Model");
             content.setListModel("Model list");
             content.setViewPage("View Page");
@@ -268,6 +268,62 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                     .andReturn();
             ContentTypeDto contentTypeDto = stringToContentTypeDto(mvcResult);
             assertThat(contentTypeDto).isEqualToComparingFieldByField(createdContentTypeDto);
+        } finally {
+            if (null != this.contentManager.getEntityPrototype(typeCode)) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
+            }
+            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        }
+    }
+
+    @Test
+    public void testCreateExistingContentType() throws Exception {
+        String typeCode = "TX1";
+        String description = "My content type " + typeCode;
+        try {
+            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Content content = new Content();
+            content.setTypeCode(typeCode);
+            content.setTypeDescription(description);
+            content.setDefaultModel("My Model");
+            content.setListModel("Model list");
+            content.setViewPage("View Page");
+            ContentTypeDtoRequest contentTypeRequest = new ContentTypeDtoRequest(content);
+
+            mockMvc.perform(post("/plugins/cms/contentTypes")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
+                    .accept(MediaType.APPLICATION_JSON_UTF8))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.payload.code", is(typeCode)))
+                    .andExpect(jsonPath("$.payload.name", is(description)))
+                    .andExpect(jsonPath("$.payload.viewPage", is("View Page")))
+                    .andExpect(jsonPath("$.payload.defaultContentModel", is("My Model")))
+                    .andExpect(jsonPath("$.payload.defaultContentModelList", is("Model list")));
+
+            //Same request returns 201 Created
+            mockMvc.perform(post("/plugins/cms/contentTypes")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
+                    .accept(MediaType.APPLICATION_JSON_UTF8))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.payload.code", is(typeCode)));
+
+            //Same code, different object, returns 409 Conflict
+            contentTypeRequest.setName("Different description...");
+            mockMvc.perform(post("/plugins/cms/contentTypes")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
+                    .accept(MediaType.APPLICATION_JSON_UTF8))
+                    .andDo(print())
+                    .andExpect(status().isConflict());
+
+            Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
@@ -854,7 +910,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
         Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
-        content.setDescription("My content type " + typeCode);
+        content.setTypeDescription("My content type " + typeCode);
         content.setDefaultModel("My Model");
         content.setListModel("Model list");
         ContentTypeDtoRequest contentTypeRequest = new ContentTypeDtoRequest(content);
