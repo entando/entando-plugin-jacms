@@ -290,6 +290,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             content.setViewPage("View Page");
             ContentTypeDtoRequest contentTypeRequest = new ContentTypeDtoRequest(content);
 
+            //Create ContentType
             mockMvc.perform(post("/plugins/cms/contentTypes")
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
