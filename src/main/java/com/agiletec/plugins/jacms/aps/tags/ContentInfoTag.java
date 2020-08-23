@@ -13,6 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.tags;
 
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -70,7 +71,7 @@ public class ContentInfoTag extends TagSupport {
 				if ("contentId".equals(this.getParam())) {
 					value = authInfo.getContentId();
 				} else if ("modelId".equals(this.getParam())) {
-					value = this.extractModelId(authInfo, reqCtx);
+					value = this.extractSafeModelId(authInfo, reqCtx);
 				} else if ("mainGroup".equals(this.getParam())) {
 					value = authInfo.getMainGroup();
 				} else if ("authToEdit".equals(this.getParam())) {
@@ -97,7 +98,7 @@ public class ContentInfoTag extends TagSupport {
 		return super.doStartTag();
 	}
 	
-	private Object extractModelId(PublicContentAuthorizationInfo authInfo, RequestContext reqCtx) {
+	private Object extractSafeModelId(PublicContentAuthorizationInfo authInfo, RequestContext reqCtx) {
 		Widget widget = (Widget) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET);
         ApsProperties showletConfig = widget.getConfig();
 		String modelId = (String) showletConfig.get("modelId");
@@ -108,6 +109,10 @@ public class ContentInfoTag extends TagSupport {
 			IContentManager contentManager = (IContentManager) ApsWebApplicationUtils.getBean(JacmsSystemConstants.CONTENT_MANAGER, this.pageContext);
 			modelId = contentManager.getDefaultModel(authInfo.getContentId());
 		}
+		if (ContentModel.isValidModelId(modelId)) {
+			throw new RuntimeException("Invalid modelId detected");
+		}
+
 		return modelId;
 	}
 	
