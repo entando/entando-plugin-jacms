@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.web.content;
+package org.entando.entando.plugins.jacms.web.contenttype;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.aps.util.FileTextReader;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDto;
@@ -36,13 +37,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeAttributeFullDto;
+import org.entando.entando.plugins.jacms.web.content.ContentTypeResourceController;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.MockMvcHelper;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.utils.OAuth2TestUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +56,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTest {
 
@@ -278,51 +284,25 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
 
     @Test
     public void testCreateExistingContentType() throws Exception {
-        String typeCode = "TX1";
-        String description = "My content type " + typeCode;
-        try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
-            Content content = new Content();
-            content.setTypeCode(typeCode);
-            content.setTypeDescription(description);
-            content.setDefaultModel("My Model");
-            content.setListModel("Model list");
-            content.setViewPage("View Page");
-            ContentTypeDtoRequest contentTypeRequest = new ContentTypeDtoRequest(content);
+        String typeCode = "FIR";
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("**MARKER**", typeCode);
+        placeholders.put("**NAME**", "My Content Type");
 
+        try {
             //Create ContentType
-            mockMvc.perform(post("/plugins/cms/contentTypes")
-                    .header("Authorization", "Bearer " + accessToken)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
-                    .accept(MediaType.APPLICATION_JSON_UTF8))
+            executeContentTypePost("1_type_valid.json", placeholders, accessToken, status().isCreated())
                     .andDo(print())
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.payload.code", is(typeCode)))
-                    .andExpect(jsonPath("$.payload.name", is(description)))
-                    .andExpect(jsonPath("$.payload.viewPage", is("View Page")))
-                    .andExpect(jsonPath("$.payload.defaultContentModel", is("My Model")))
-                    .andExpect(jsonPath("$.payload.defaultContentModelList", is("Model list")));
+                    .andExpect(jsonPath("$.payload.code", is(typeCode)));
 
             //Same request returns 201 Created
-            mockMvc.perform(post("/plugins/cms/contentTypes")
-                    .header("Authorization", "Bearer " + accessToken)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
-                    .accept(MediaType.APPLICATION_JSON_UTF8))
+            executeContentTypePost("1_type_valid.json", placeholders, accessToken, status().isCreated())
                     .andDo(print())
-                    .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.payload.code", is(typeCode)));
 
             //Same code, different object, returns 409 Conflict
-            contentTypeRequest.setName("Different description...");
-            mockMvc.perform(post("/plugins/cms/contentTypes")
-                    .header("Authorization", "Bearer " + accessToken)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content(jsonMapper.writeValueAsString(contentTypeRequest))
-                    .accept(MediaType.APPLICATION_JSON_UTF8))
-                    .andDo(print())
-                    .andExpect(status().isConflict());
+            placeholders.put("**NAME**", "Different name...");
+            executeContentTypePost("1_type_valid.json", placeholders, accessToken, status().isConflict());
 
             Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
@@ -887,7 +867,8 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.type", is(ContentTypeResourceController.COMPONENT_ID)))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.payload.type", CoreMatchers.is(ContentTypeResourceController.COMPONENT_ID)))
                 .andExpect(jsonPath("$.payload.code", is(code)))
                 .andExpect(jsonPath("$.payload.usage", is(11)))
                 .andReturn();
@@ -905,6 +886,23 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .andExpect(jsonPath("$.payload.type", is(ContentTypeResourceController.COMPONENT_ID)))
                 .andExpect(jsonPath("$.payload.code", is(code)))
                 .andExpect(jsonPath("$.payload.usage", is(0)));
+    }
+
+    private ResultActions executeContentTypePost(String fileName, Map<String, String> placeholders, String accessToken, ResultMatcher expected) throws Exception {
+        InputStream file = this.getClass().getResourceAsStream(fileName);
+        String body = FileTextReader.getText(file);
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            body = body.replace(entry.getKey(), entry.getValue());
+        }
+
+        ResultActions result = mockMvc
+                .perform(post("/plugins/cms/contentTypes")
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andDo(print()).andExpect(expected);
+        return result;
     }
 
     private ContentTypeDto createContentType(String typeCode) throws Exception {
