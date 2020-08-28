@@ -71,7 +71,10 @@ public class ContentModelServiceImplTest {
 
         when(contentManager.getSmallContentTypesMap()).thenReturn(mockedContentTypes);
 
-        when(contentModelManager.getContentModelReferences(1L))
+        when(contentModelManager.getContentModelReferences(1L, true))
+                .thenReturn(Collections.singletonList(new ContentModelReference()));
+
+        when(contentModelManager.getContentModelReferences(1L, false))
                 .thenReturn(Collections.singletonList(new ContentModelReference()));
 
         dictionaryProvider.setContentMap(new ArrayList<>());

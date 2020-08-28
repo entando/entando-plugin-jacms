@@ -57,16 +57,13 @@ public class ContentModelServiceImpl implements ContentModelService {
     private final IContentModelManager contentModelManager;
     private final ContentModelDictionaryProvider dictionaryProvider;
     private final IDtoBuilder<ContentModel, ContentModelDto> dtoBuilder;
-    private final ContentTypeService contentTypeService;
 
     @Autowired
     public ContentModelServiceImpl(IContentManager contentManager, IContentModelManager contentModelManager,
-            ContentModelDictionaryProvider dictionaryProvider,
-            ContentTypeService contentTypeService) {
+            ContentModelDictionaryProvider dictionaryProvider) {
         this.contentManager = contentManager;
         this.contentModelManager = contentModelManager;
         this.dictionaryProvider = dictionaryProvider;
-        this.contentTypeService = contentTypeService;
 
         this.dtoBuilder = new DtoBuilder<ContentModel, ContentModelDto>() {
 
@@ -108,8 +105,7 @@ public class ContentModelServiceImpl implements ContentModelService {
             throw new ResourceNotFoundException(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND, "contentModel",
                     String.valueOf(modelId));
         }
-        ContentModelDto dto = this.dtoBuilder.convert(contentModel);
-        return dto;
+        return this.dtoBuilder.convert(contentModel);
     }
 
     @Override
@@ -131,8 +127,7 @@ public class ContentModelServiceImpl implements ContentModelService {
                 throw new ValidationConflictException(validationResult);
             }
             this.contentModelManager.addContentModel(contentModel);
-            ContentModelDto dto = this.dtoBuilder.convert(contentModel);
-            return dto;
+            return this.dtoBuilder.convert(contentModel);
         } catch (ApsSystemException e) {
             logger.error("Error saving a content model", e);
             throw new RestServerError("Error saving a content model", e);
@@ -158,8 +153,7 @@ public class ContentModelServiceImpl implements ContentModelService {
             this.copyProperties(entity, contentModel);
 
             this.contentModelManager.updateContentModel(contentModel);
-            ContentModelDto dto = this.dtoBuilder.convert(contentModel);
-            return dto;
+            return this.dtoBuilder.convert(contentModel);
         } catch (ApsSystemException e) {
             logger.error("Error saving a content model", e);
             throw new RestServerError("Error saving a content model", e);
@@ -188,18 +182,17 @@ public class ContentModelServiceImpl implements ContentModelService {
     @Override
     public ComponentUsage getComponentUsage(Long modelId) {
         final List<ContentModelReference> contentModelReferences = contentModelManager
-                .getContentModelReferences(modelId);
+                .getContentModelReferences(modelId, false );
         final long onlineCount = contentModelReferences.stream()
-                .filter(f -> f.isOnline()).count();
+                .filter(ContentModelReference::isOnline).count();
         final long offlineCount = contentModelReferences.stream()
                 .filter(f -> !f.isOnline()).count();
         final List<SmallEntityType> defaultContentTemplateUsedList = this.contentManager.getSmallEntityTypes().stream()
                 .filter(
                         f -> {
                             final String defaultModel = contentManager.getDefaultModel(f.getCode());
-                            final boolean defaultModelUsed = String.valueOf(modelId)
+                            return String.valueOf(modelId)
                                     .equals(defaultModel);
-                            return defaultModelUsed;
                         }
                 ).collect(Collectors.toList());
         final List<SmallEntityType> defaultContentListTemplateUsedList = this.contentManager.getSmallEntityTypes()
@@ -207,9 +200,8 @@ public class ContentModelServiceImpl implements ContentModelService {
                 .filter(
                         f -> {
                             final String listModel = contentManager.getListModel(f.getCode());
-                            final boolean listModelUsed = String.valueOf(modelId)
+                            return String.valueOf(modelId)
                                     .equals(listModel);
-                            return listModelUsed;
                         }
                 ).collect(Collectors.toList());
         int countContentDefaultTemplateReferences = defaultContentTemplateUsedList.size();
@@ -228,7 +220,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(Long modelId, RestListRequest restListRequest) {
 
         final List<ContentModelReference> contentModelReferences = contentModelManager
-                .getContentModelReferences(modelId);
+                .getContentModelReferences(modelId, false);
 
         final List<ComponentUsageEntity> componentUsageDetails = contentModelReferences.stream()
                 .map(f -> createToComponentUsageEntity(f.getPageCode(), getStatusString(f.isOnline()),
@@ -249,7 +241,7 @@ public class ContentModelServiceImpl implements ContentModelService {
 
         final List<ComponentUsageEntity> contentTemplateUsageDetails = defaultContentTemplateUsedList.stream()
                 .map(f -> createToComponentUsageEntity(f.getCode(), "",
-                       "contentType" )).collect(Collectors.toList());
+                        "contentType")).collect(Collectors.toList());
 
         componentUsageDetails.addAll(contentTemplateUsageDetails);
 
@@ -280,7 +272,7 @@ public class ContentModelServiceImpl implements ContentModelService {
         componentUsage.setType(type);
         return componentUsage;
     }
-    
+
     @Override
     public PagedMetadata<ContentModelReferenceDTO> getContentModelReferences(Long modelId,
             RestListRequest requestList) {
@@ -293,7 +285,7 @@ public class ContentModelServiceImpl implements ContentModelService {
 
         final List<ContentModelReference> contentModelReferences = new ContentModelReferencesRequestListProcessor(
                 requestList, this.contentModelManager
-                .getContentModelReferences(modelId))
+                .getContentModelReferences(modelId, true))
                 .filterAndSort().toList();
 
         final List<ContentModelReference> subList = requestList.getSublist(contentModelReferences);
@@ -305,12 +297,12 @@ public class ContentModelServiceImpl implements ContentModelService {
         return pagedMetadata;
     }
 
+
+
     private List<ContentModelReferenceDTO> mapContentModelReferencesToDTOs(
             List<ContentModelReference> contentModelReferences) {
-        final List<ContentModelReferenceDTO> contentModelReferencesDTOs = contentModelReferences.stream().map(cmr ->
-                mapContentModelReferenceToDTO(cmr)
+        return contentModelReferences.stream().map(this::mapContentModelReferenceToDTO
         ).collect(Collectors.toList());
-        return contentModelReferencesDTOs;
     }
 
     private ContentModelReferenceDTO mapContentModelReferenceToDTO(ContentModelReference cmr) {
@@ -356,10 +348,10 @@ public class ContentModelServiceImpl implements ContentModelService {
         return errors;
     }
 
-    protected BeanPropertyBindingResult validateForDelete(ContentModel contentModel) throws ApsSystemException {
+    protected BeanPropertyBindingResult validateForDelete(ContentModel contentModel) {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(contentModel, "contentModel");
         List<ContentModelReference> references = this.contentModelManager
-                .getContentModelReferences(contentModel.getId());
+                .getContentModelReferences(contentModel.getId(), false);
         if (!references.isEmpty()) {
             errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_REFERENCES, null, "contentmodel.page.references");
         }
@@ -377,10 +369,10 @@ public class ContentModelServiceImpl implements ContentModelService {
                 ).collect(Collectors.toList());
 
         if (defaultContentTemplateUsedList.size() > 0) {
-            ArrayList defList = new ArrayList();
-            defaultContentTemplateUsedList.stream().forEach(f -> defList.add(f.getCode()));
+            ArrayList<String> defList = new ArrayList<>();
+            defaultContentTemplateUsedList.forEach(f -> defList.add(f.getCode()));
             final String defListString = String.join(", ", defList);
-            ArrayList args = new ArrayList();
+            ArrayList<String> args = new ArrayList<>();
             args.add(defListString);
             errors.reject(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES, args.toArray(),
                     "contentmodel.defaultMetadata.references");
