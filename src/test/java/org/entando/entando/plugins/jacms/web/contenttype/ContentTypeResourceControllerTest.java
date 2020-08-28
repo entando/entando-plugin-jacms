@@ -11,12 +11,13 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.web.content;
+package org.entando.entando.plugins.jacms.web.contenttype;
 
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.*;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeShortDto;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
+import org.entando.entando.plugins.jacms.web.content.ContentTypeResourceController;
 import org.entando.entando.plugins.jacms.web.contentmodel.util.RestControllerTestUtil;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentTypeValidator;
 import org.entando.entando.web.common.model.*;
