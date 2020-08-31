@@ -15,8 +15,6 @@ package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
 import java.io.Serializable;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -137,9 +135,4 @@ public class ContentModel implements Comparable, Serializable {
 	private String _contentShape;
 	private String _stylesheet;
 	
-	private static final Pattern REGEX_MODEL_ID = Pattern.compile("^[a-zA-Z0-9_.-]*$");
-
-	public static boolean isValidModelId(String identifier) {
-		return identifier != null && REGEX_MODEL_ID.matcher(identifier).matches();
-	}
 }
