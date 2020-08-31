@@ -30,7 +30,6 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.cache.IResourceMa
 import com.agiletec.plugins.jacms.aps.system.services.resource.event.ResourceChangedEvent;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.*;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceHandler;
-import javax.xml.XMLConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -468,11 +467,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws ApsSystemException {
         try {
-            SAXParserFactory parseFactory = SAXParserFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl", null);
+            SAXParserFactory parseFactory = SAXParserFactory.newInstance();
             SAXParser parser = parseFactory.newSAXParser();
-            // *1: Restricts fetching of external XML resources to avoid SSRFs.
-            parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");       // *1
-            parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");    // *1
             InputSource is = new InputSource(new StringReader(xml));
             ResourceHandler handler = new ResourceHandler(resource, this.getCategoryManager());
             parser.parse(is, handler);
