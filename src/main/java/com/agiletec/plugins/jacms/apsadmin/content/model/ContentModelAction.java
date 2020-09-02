@@ -13,19 +13,6 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.model;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.exception.ApsSystemException;
@@ -39,9 +26,20 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe action delegata alle operazioni sugli oggetti modelli di contenuti.
@@ -117,7 +115,7 @@ public class ContentModelAction extends BaseAction implements IContentModelActio
         String check = null;
         long modelId = this.getModelId().longValue();
 
-        List<ContentModelReference> references = this.getContentModelManager().getContentModelReferences(modelId);
+        List<ContentModelReference> references = this.getContentModelManager().getContentModelReferences(modelId,false);
         if (!references.isEmpty()) {
             // sort by page code, status (draft first) and then widget position
             Collections.sort(references, (ref1, ref2) -> {

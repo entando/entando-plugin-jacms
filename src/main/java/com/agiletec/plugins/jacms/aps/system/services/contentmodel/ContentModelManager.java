@@ -13,14 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import com.agiletec.aps.system.common.AbstractService;
 import com.agiletec.aps.system.exception.ApsSystemException;
 import com.agiletec.aps.system.services.page.IPage;
@@ -31,6 +23,13 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.cache.IContentModelManagerCacheWrapper;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.event.ContentModelChangedEvent;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,26 +199,27 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * @return the list of all references
      */
     @Override
-    public List<ContentModelReference> getContentModelReferences(long modelId) {
+    public List<ContentModelReference> getContentModelReferences(long modelId, boolean includeDefaultTemplateReferences) {
         List<ContentModelReference> references = new ArrayList<>();
         IPage root = this.getPageManager().getDraftRoot();
-        this.searchContentModelReferences(modelId, root, false, references);
+        this.searchContentModelReferences(modelId, root, false, references, includeDefaultTemplateReferences);
         root = this.getPageManager().getOnlineRoot();
-        this.searchContentModelReferences(modelId, root, true, references);
+        this.searchContentModelReferences(modelId, root, true, references, includeDefaultTemplateReferences);
         return references;
     }
 
     /**
      * Recursively adds ContentModel references visiting the page tree.
      */
-    private void searchContentModelReferences(Long modelId, IPage page, boolean online, List<ContentModelReference> references) {
-        addPageReferences(modelId, page, online, references);
+    private void searchContentModelReferences(Long modelId, IPage page, boolean online,
+            List<ContentModelReference> references, boolean includeDefaultTemplateReferences) {
+        addPageReferences(modelId, page, online, references, includeDefaultTemplateReferences);
         for (String childCode : page.getChildrenCodes()) {
             IPage child = online
                     ? this.getPageManager().getOnlinePage(childCode)
                     : this.getPageManager().getDraftPage(childCode);
             if (null != child) {
-                this.searchContentModelReferences(modelId, child, online, references);
+                this.searchContentModelReferences(modelId, child, online, references, includeDefaultTemplateReferences);
             }
         }
     }
@@ -227,7 +227,7 @@ public class ContentModelManager extends AbstractService implements IContentMode
     /**
      * Searches for ContentModel references inside all page widgets.
      */
-    private void addPageReferences(Long modelId, IPage page, boolean online, List<ContentModelReference> references) {
+    private void addPageReferences(Long modelId, IPage page, boolean online, List<ContentModelReference> references, boolean includeDefaultTemplateReferences) {
         Widget[] widgets = page.getWidgets();
         for (int i = 0; i < widgets.length; i++) {
             Widget widget = widgets[i];
@@ -237,13 +237,14 @@ public class ContentModelManager extends AbstractService implements IContentMode
 
                 switch (widget.getType().getCode()) {
                     case "content_viewer":
-                        reference = getSingleContentWidgetReference(modelId, widget);
+                    case "jpseo_content_viewer":
+                        reference = getSingleContentWidgetReference(modelId, widget, includeDefaultTemplateReferences);
                         break;
                     case "content_viewer_list":
-                        reference = getContentListWidgetReference(modelId, widget);
+                        reference = getContentListWidgetReference(modelId, widget, includeDefaultTemplateReferences);
                         break;
                     case "row_content_viewer_list":
-                        reference = getMultipleContentsWidgetReference(modelId, widget);
+                        reference = getMultipleContentsWidgetReference(modelId, widget, includeDefaultTemplateReferences);
                         break;
                 }
 
@@ -262,11 +263,19 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * "content_viewer" (Publish a Content), if the reference exists, null
      * otherwise.
      */
-    private ContentModelReference getSingleContentWidgetReference(Long modelId, Widget widget) {
+    private ContentModelReference getSingleContentWidgetReference(Long modelId, Widget widget ,boolean includeDefaultTemplateReferences) {
         String id = widget.getConfig().getProperty("modelId");
-        if (null != id && String.valueOf(modelId).equals(id)) {
+        String contentId;
+
+        if (includeDefaultTemplateReferences) {
+            if ((null == id) || (id.equals("default"))) {
+                contentId = widget.getConfig().getProperty("contentId");
+                id = contentManager.getDefaultModel(contentId);
+            }
+        }
+        if (String.valueOf(modelId).equals(id)) {
             ContentModelReference reference = new ContentModelReference();
-            String contentId = widget.getConfig().getProperty("contentId");
+            contentId = widget.getConfig().getProperty("contentId");
             reference.setContentsId(Collections.singletonList(contentId));
             return reference;
         }
@@ -278,11 +287,20 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * "content_viewer_list" (Publish a List of Contents), if the reference
      * exists, null otherwise.
      */
-    private ContentModelReference getContentListWidgetReference(Long modelId, Widget widget) {
+    private ContentModelReference getContentListWidgetReference(Long modelId, Widget widget, boolean includeDefaultTemplateReferences) {
         String id = widget.getConfig().getProperty("modelId");
-        if (null != id && String.valueOf(modelId).equals(id)) {
+        String contentType = widget.getConfig().getProperty("contentType");
+        if (includeDefaultTemplateReferences) {
+            final Content entityPrototype = (Content) contentManager.getEntityPrototype(contentType);
+            if (null!=entityPrototype) {
+                if ((null == id) || (id.equals("default"))) {
+                    id = entityPrototype.getListModel();
+                }
+            }
+        }
+
+        if (String.valueOf(modelId).equals(id)) {
             ContentModelReference reference = new ContentModelReference();
-            String contentType = widget.getConfig().getProperty("contentType");
             try {
                 List<String> ids = contentManager.searchId(contentType, null);
                 reference.setContentsId(ids);
@@ -299,15 +317,21 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * "row_content_viewer_list" (Publish Contents), if the reference exists,
      * null otherwise.
      */
-    private ContentModelReference getMultipleContentsWidgetReference(Long modelId, Widget widget) {
+    private ContentModelReference getMultipleContentsWidgetReference(Long modelId, Widget widget, boolean includeDefaultTemplateReferences) {
         String contents = widget.getConfig().getProperty("contents");
         List<Properties> contentsProperties = RowContentListHelper.fromParameterToContents(contents);
 
         List<String> contentsId = new ArrayList<>();
         for (Properties properties : contentsProperties) {
+            String contentId = properties.getProperty("contentId");
             String id = properties.getProperty("modelId");
-            if (null != id && String.valueOf(modelId).equals(id)) {
-                String contentId = properties.getProperty("contentId");
+
+            if (includeDefaultTemplateReferences) {
+                if ((null == id) || (id.equals("default"))) {
+                    id = contentManager.getListModel(contentId);
+                }
+            }
+            if (String.valueOf(modelId).equals(id)) {
                 contentsId.add(contentId);
             }
         }
