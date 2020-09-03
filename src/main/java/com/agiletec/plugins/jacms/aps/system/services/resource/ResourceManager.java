@@ -33,6 +33,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceHan
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntSafeXmlUtils;
 import org.xml.sax.InputSource;
 
 import javax.xml.bind.JAXBContext;
@@ -467,8 +468,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws EntException {
         try {
-            SAXParserFactory parseFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parseFactory.newSAXParser();
+            SAXParser parser = EntSafeXmlUtils.newSafeSAXParser();
             InputSource is = new InputSource(new StringReader(xml));
             ResourceHandler handler = new ResourceHandler(resource, this.getCategoryManager());
             parser.parse(is, handler);
