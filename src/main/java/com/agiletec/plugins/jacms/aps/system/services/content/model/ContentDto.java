@@ -202,7 +202,6 @@ public class ContentDto extends EntityDto implements Serializable {
     @Override
     public void fillEntity(IApsEntity prototype, ICategoryManager categoryManager, BindingResult bindingResult) {
         Content content = (Content) prototype;
-        clearAttributeData(content);
 
         super.fillEntity(prototype, categoryManager, bindingResult);
 
@@ -210,25 +209,25 @@ public class ContentDto extends EntityDto implements Serializable {
         content.setLastEditor(getLastEditor());
         content.setRestriction(ContentRestriction.getRestrictionValue(getMainGroup()));
         content.setStatus(getStatus() == null ? content.getStatus() : getStatus());
-
-        // Load Resources from DTO ids
-        fillAttributeData(bindingResult, content);
     }
 
-    private void clearAttributeData(Content content) {
-        for (AttributeInterface attribute : content.getAttributeList()) {
-            clearAttribute(attribute);
-        }
-    }
-
-    private void clearAttribute(AttributeInterface attribute) {
+    @Override
+    protected void clearAttribute(AttributeInterface attribute) {
         clearAbstractResourceAttribute(attribute);
         clearLinkAttribute(attribute);
-        clearBooleanAttribute(attribute);
-        clearDateAttribute(attribute);
-        clearListAttribute(attribute);
-        clearMonolistAttribute(attribute);
-        clearCompositeAttribute(attribute);
+        super.clearAttribute(attribute);
+    }
+
+    @Override
+    protected void fillAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto, BindingResult bindingResult) {
+        super.fillAttribute(attribute, attributeDto, bindingResult);
+        fillAbstractResourceAttribute(attribute, attributeDto);
+        fillLinkAttribute(attribute, attributeDto);
+    }
+
+    @Override
+    protected void rejectAttributeNotFound (BindingResult bindingResult, EntityAttributeDto attributeDto) {
+        bindingResult.reject(ContentValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()}, "content.attribute.code.invalid");
     }
 
     private void clearAbstractResourceAttribute(AttributeInterface attribute) {
@@ -246,67 +245,6 @@ public class ContentDto extends EntityDto implements Serializable {
             linkAttribute.getTextMap().clear();
             linkAttribute.setSymbolicLink(null);
         }
-    }
-
-    private void clearBooleanAttribute(AttributeInterface attribute) {
-        if (BooleanAttribute.class.isAssignableFrom(attribute.getClass())) {
-            BooleanAttribute booleanAttribute = (BooleanAttribute) attribute;
-            booleanAttribute.setBooleanValue(null);
-        }
-    }
-
-    private void clearDateAttribute(AttributeInterface attribute) {
-        if (DateAttribute.class.isAssignableFrom(attribute.getClass())) {
-            DateAttribute dateAttribute = (DateAttribute) attribute;
-            dateAttribute.setDate(null);
-        }
-    }
-
-    private void clearListAttribute(AttributeInterface attribute) {
-        if (ListAttribute.class.isAssignableFrom(attribute.getClass())) {
-            ListAttribute listAttribute = (ListAttribute) attribute;
-            for (Entry<String, List<AttributeInterface>> entry : listAttribute.getAttributeListMap().entrySet()) {
-                for (AttributeInterface element : entry.getValue()) {
-                    clearAttribute(element);
-                }
-            }
-        }
-    }
-
-    private void clearMonolistAttribute(AttributeInterface attribute) {
-        if (MonoListAttribute.class.isAssignableFrom(attribute.getClass())) {
-            MonoListAttribute monolistAttribute = (MonoListAttribute) attribute;
-            monolistAttribute.getAttributes().clear();
-        }
-    }
-
-    private void clearCompositeAttribute(AttributeInterface attribute) {
-        if (CompositeAttribute.class.isAssignableFrom(attribute.getClass())) {
-            CompositeAttribute compositeAttribute = (CompositeAttribute) attribute;
-            for (AttributeInterface element : compositeAttribute.getAttributes()) {
-                clearAttribute(element);
-            }
-        }
-    }
-
-    private void fillAttributeData(BindingResult bindingResult, Content content) {
-        for (EntityAttributeDto attributeDto : this.getAttributes()) {
-            AttributeInterface attribute = content.getAttributeMap().get(attributeDto.getCode());
-            if (attribute != null) {
-                fillAttribute(attribute, attributeDto);
-            } else {
-                bindingResult.reject(ContentValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()}, "content.attribute.code.invalid");
-            }
-        }
-    }
-
-    private void fillAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
-        fillAbstractResourceAttribute(attribute, attributeDto);
-        fillLinkAttribute(attribute, attributeDto);
-        fillDateAttribute(attribute, attributeDto);
-        fillListAttribute(attribute, attributeDto);
-        fillMonolistAttribute(attribute, attributeDto);
-        fillCompositeAttribute(attribute, attributeDto);
     }
 
     private void fillAbstractResourceAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
@@ -370,71 +308,6 @@ public class ContentDto extends EntityDto implements Serializable {
                 }
             }
             linkAttribute.setSymbolicLink(link);
-        }
-    }
-
-    private void fillDateAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
-        if (DateAttribute.class.isAssignableFrom(attribute.getClass())) {
-            DateAttribute dateAttribute = (DateAttribute)attribute;
-            if (dateAttribute.getDate() != null) {
-                return;
-            }
-            String value = (String) attributeDto.getValue();
-            Date data = null;
-            if (value != null) {
-                value = value.trim();
-            }
-            if (CheckFormatUtil.isValidDate(value)) {
-                try {
-                    SimpleDateFormat dataF = new SimpleDateFormat("dd/MM/yyyy");
-                    data = dataF.parse(value);
-                    dateAttribute.setFailedDateString(null);
-                } catch (ParseException ex) {
-                    throw new RuntimeException(
-                            StringUtils.join("Error while parsing the date submitted - ", value, " -"), ex);
-                }
-            } else {
-                dateAttribute.setFailedDateString(value);
-            }
-            dateAttribute.setDate(data);
-        }
-    }
-
-    private void fillListAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
-        if (ListAttribute.class.isAssignableFrom(attribute.getClass())) {
-            ListAttribute listAttribute = (ListAttribute) attribute;
-            int index = 0;
-            for (Entry<String, List<EntityAttributeDto>> entry : attributeDto.getListElements().entrySet()) {
-                for (EntityAttributeDto element : entry.getValue()) {
-                    fillAttribute(listAttribute.getAttributes().get(index), element);
-                    index++;
-                }
-            }
-        }
-    }
-
-    private void fillMonolistAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
-        if (MonoListAttribute.class.isAssignableFrom(attribute.getClass())) {
-            MonoListAttribute monolistAttribute = (MonoListAttribute) attribute;
-            int index = 0;
-            for (EntityAttributeDto element : attributeDto.getElements()) {
-                fillAttribute(monolistAttribute.getAttribute(index), element);
-                index++;
-            }
-        }
-    }
-
-    private void fillCompositeAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
-        if (CompositeAttribute.class.isAssignableFrom(attribute.getClass())) {
-            CompositeAttribute compositeAttribute = (CompositeAttribute) attribute;
-            for (EntityAttributeDto element : attributeDto.getCompositeElements()) {
-                for (AttributeInterface att : compositeAttribute.getAttributes()) {
-                    if (element.getCode().equals(att.getName())) {
-                        fillAttribute(att, element);
-                        break;
-                    }
-                }
-            }
         }
     }
 }
