@@ -1,10 +1,12 @@
 package org.entando.entando.plugins.jacms.web.page;
 
+import com.agiletec.aps.system.exception.ApsSystemException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.util.FileTextReader;
 import com.opensymphony.xwork2.mock.MockResult;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.agiletec.aps.system.services.page.IPage;
@@ -19,13 +21,17 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.ApsProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.entando.entando.aps.system.services.page.IPageService;
+import org.entando.entando.aps.system.services.page.model.PagesStatusDto;
 import org.entando.entando.aps.system.services.page.model.WidgetConfigurationDto;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
+import org.entando.entando.web.page.model.WidgetConfigurationRequest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -36,7 +42,10 @@ import org.hamcrest.Matchers;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -661,6 +670,128 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
         } finally {
             this.pageManager.deletePage(pageCode);
         }
+    }
+
+
+    @Test
+    public void testRestoreWithPageChangedShouldUpdatePageStatus() throws ApsSystemException {
+
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,
+                        Permission.ENTER_BACKEND)
+                .build();
+        String accessToken = mockOAuthInterceptor(user);
+
+        String pageCode = "draft_page_1005";
+        String widgetCode = "login_form";
+
+        try {
+            // create a page and set it as online
+            PageModel pageModel = this.pageModelManager.getPageModel("internal");
+            Page mockPage = createPage(pageCode, pageModel);
+            this.pageManager.addPage(mockPage);
+            this.pageManager.setPageOnline(pageCode);
+            PagesStatusDto pageStatusBeforeSettingWidget = getPageStatus(accessToken);
+
+            assertTrue(this.pageManager.getDraftPage(pageCode).isOnline());
+            assertFalse(this.pageManager.getDraftPage(pageCode).isChanged());
+
+            // add a widget to the page
+            WidgetConfigurationRequest widgetRequest = new WidgetConfigurationRequest();
+            widgetRequest.setCode(widgetCode);
+            widgetRequest.setConfig(new HashMap<>());
+
+            mockMvc.perform(put("/pages/{pageCode}/widgets/{frameId}", pageCode, 0)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(widgetRequest)))
+                    .andExpect(status().isOk());
+            PagesStatusDto pageStatusBeforeRestore = getPageStatus(accessToken);
+
+            assertTrue(this.pageManager.getDraftPage(pageCode).isOnline());
+            assertTrue(this.pageManager.getDraftPage(pageCode).isChanged());
+            assertEquals(pageStatusBeforeSettingWidget.getDraft() + 1, pageStatusBeforeRestore.getDraft());
+            assertEquals(pageStatusBeforeSettingWidget.getPublished() - 1, pageStatusBeforeRestore.getPublished());
+            assertEquals(pageStatusBeforeSettingWidget.getUnpublished(), pageStatusBeforeRestore.getUnpublished());
+
+            // restore the page
+            mockMvc.perform(put("/pages/{code}/configuration/restore", pageCode)
+                    .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isOk());
+            PagesStatusDto pageStatusAfterRestore = getPageStatus(accessToken);
+
+            assertTrue(this.pageManager.getDraftPage(pageCode).isOnline());
+            assertFalse(this.pageManager.getDraftPage(pageCode).isChanged());
+
+            assertEquals(pageStatusBeforeRestore.getDraft() - 1, pageStatusAfterRestore.getDraft());
+            assertEquals(pageStatusBeforeRestore.getPublished() + 1, pageStatusAfterRestore.getPublished());
+            assertEquals(pageStatusBeforeRestore.getUnpublished(), pageStatusAfterRestore.getUnpublished());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        } finally {
+            pageManager.deletePage(pageCode);
+        }
+    }
+
+
+    @Test
+    public void testRestoreWithPageNotChangedShouldNOTUpdatePageStatus() throws ApsSystemException {
+
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,
+                        Permission.ENTER_BACKEND)
+                .build();
+        String accessToken = mockOAuthInterceptor(user);
+
+        String pageCode = "draft_page_1005";
+        String widgetCode = "login_form";
+
+        try {
+            // create a page and set it as online
+            PageModel pageModel = this.pageModelManager.getPageModel("internal");
+            Page mockPage = createPage(pageCode, pageModel);
+            this.pageManager.addPage(mockPage);
+            this.pageManager.setPageOnline(pageCode);
+            PagesStatusDto pageStatusBeforeRestore = getPageStatus(accessToken);
+
+            assertTrue(this.pageManager.getDraftPage(pageCode).isOnline());
+            assertFalse(this.pageManager.getDraftPage(pageCode).isChanged());
+
+            // restore the page that is not modified => should not update pagestatus
+            mockMvc.perform(put("/pages/{code}/configuration/restore", pageCode)
+                    .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isOk());
+            PagesStatusDto pageStatusAfterRestore = getPageStatus(accessToken);
+
+            assertTrue(this.pageManager.getDraftPage(pageCode).isOnline());
+            assertFalse(this.pageManager.getDraftPage(pageCode).isChanged());
+
+            assertEquals(pageStatusBeforeRestore.getDraft(), pageStatusAfterRestore.getDraft());
+            assertEquals(pageStatusBeforeRestore.getPublished(), pageStatusAfterRestore.getPublished());
+            assertEquals(pageStatusBeforeRestore.getUnpublished(), pageStatusAfterRestore.getUnpublished());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        } finally {
+            pageManager.deletePage(pageCode);
+        }
+    }
+
+
+    private PagesStatusDto getPageStatus(String accessToken) throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(get("/dashboard/pageStatus")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString().replace("{\"payload\":", "").replace(",\"metaData\":{},\"errors\":[]}", "");
+
+        return mapper.readValue(contentAsString, PagesStatusDto.class);
     }
 
     /**

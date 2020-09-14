@@ -108,6 +108,7 @@ public class ContentInfoTag extends TagSupport {
 			IContentManager contentManager = (IContentManager) ApsWebApplicationUtils.getBean(JacmsSystemConstants.CONTENT_MANAGER, this.pageContext);
 			modelId = contentManager.getDefaultModel(authInfo.getContentId());
 		}
+
 		return modelId;
 	}
 	
