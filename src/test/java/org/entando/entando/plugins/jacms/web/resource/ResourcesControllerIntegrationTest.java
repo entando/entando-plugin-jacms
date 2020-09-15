@@ -33,7 +33,6 @@ import com.agiletec.aps.system.services.role.IRoleManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Arrays;
@@ -49,7 +48,6 @@ import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -985,6 +983,44 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
+    public void testDeleteResourceNotValidGroup() throws Exception {
+        final UserDetails editor = createEditor();
+        final UserDetails admin = createAdmin();
+
+        String type = "image";
+        String group = Group.ADMINS_GROUP_NAME;
+        String folderPath = null;
+        List<String> categories = Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList());
+        String mimeType = "application/jpeg";
+
+        ResultActions result = performCreateResource(admin, type, group, categories, folderPath, mimeType)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                .andExpect(jsonPath("$.payload.group", is("administrators")))
+                .andExpect(jsonPath("$.payload.description", is("image_test.jpeg")))
+                .andExpect(jsonPath("$.payload.owner", is("jack_bauer")))
+                .andExpect(jsonPath("$.payload.folderPath", is(folderPath)))
+                .andExpect(jsonPath("$.payload.versions.size()", is(4)))
+                .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")));
+                //.andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")));
+
+        String createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+        performDeleteResource(editor, "image", createdId)
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        performDeleteResource(admin, "image", createdId)
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
     public void testDeleteResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
 
@@ -1693,6 +1729,17 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     private UserDetails createAccessToken() throws Exception {
         return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR).grantedToRoleAdmin()
+                .build();
+    }
+    private UserDetails createEditor() throws Exception {
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR).withGroup(Group.FREE_GROUP_NAME)
+                .build();
+    }
+
+    private UserDetails createAdmin() throws Exception {
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.ADMINS_GROUP_NAME, "administrator", Permission.SUPERUSER).grantedToRoleAdmin()
                 .build();
     }
 

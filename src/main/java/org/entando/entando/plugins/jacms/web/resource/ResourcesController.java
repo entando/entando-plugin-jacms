@@ -13,6 +13,9 @@
  */
 package org.entando.entando.plugins.jacms.web.resource;
 
+import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
+
+import com.agiletec.aps.system.exception.ApsSystemException;
 import com.agiletec.aps.system.services.role.Permission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.util.HttpSessionHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
@@ -78,7 +82,7 @@ public class ResourcesController {
         logger.debug("REST request - list image resources");
 
         resourceValidator.validateRestListRequest(requestList, AssetDto.class);
-        PagedMetadata<AssetDto> result = service.listAssets(requestList);
+        PagedMetadata<AssetDto> result = service.listAssets(requestList,HttpSessionHelper.extractCurrentUser(httpSession));
         resourceValidator.validateRestListResult(requestList, result);
         return ResponseEntity.ok(new PagedRestResponse<>(result));
     }
@@ -148,7 +152,7 @@ public class ResourcesController {
 
         AssetDto result = service
                 .createAsset(resourceRequest.getType(), file, resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(),
-                        HttpSessionHelper.extractCurrentUser(httpSession));
+                        extractCurrentUser(httpSession));
         return ResponseEntity.ok(new SimpleRestResponse<>(result));
     }
 
@@ -193,8 +197,11 @@ public class ResourcesController {
             @ApiResponse(code = 401, message = "Unauthorized")})
     @DeleteMapping("/plugins/cms/assets/{resourceId}")
     @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
-    public ResponseEntity<SimpleRestResponse<Map>> deleteAsset(@PathVariable("resourceId") String resourceId) {
+    public ResponseEntity<SimpleRestResponse<Map>> deleteAsset(@PathVariable("resourceId") String resourceId) throws ApsSystemException {
         logger.debug("REST request - delete resource with id {}", resourceId);
+        if (!resourceValidator.isResourceDeletableByUser(resourceId, extractCurrentUser(httpSession))) {
+            throw new ResourceNotFoundException(ResourcesValidator.ERRCODE_RESOURCE_NOT_DELETABLE, "RESOURCE", resourceId);
+        }
         service.deleteAsset(resourceId);
         return ResponseEntity.ok(new SimpleRestResponse<>(new HashMap()));
     }
