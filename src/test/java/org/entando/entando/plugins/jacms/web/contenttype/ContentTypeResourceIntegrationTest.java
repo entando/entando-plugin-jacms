@@ -888,6 +888,73 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .andExpect(jsonPath("$.payload.usage", is(0)));
     }
 
+    @Test
+    public void testCreateContentTypeAttributeWithMultipleLanguagesName() throws Exception {
+        String typeCode = "TX5";
+        try {
+            ContentTypeDto contentType = this.createContentType(typeCode);
+            EntityTypeAttributeFullDto attribute = new EntityTypeAttributeFullDto();
+            attribute.setCode("MyAttribute");
+            attribute.setType("Text");
+            attribute.setName("Attribute Name");
+            Map<String, String> names = new HashMap<>();
+            names.put("en", "English Name");
+            names.put("it", "Italian Name");
+            names.put("ka", "Georgiam Name");
+
+            attribute.setNames(names);
+            mockMvc.perform(
+                    post("/plugins/cms/contentTypes/{code}/attributes", contentType.getCode())
+                            .header("Authorization", "Bearer " + accessToken)
+                            .contentType(MediaType.APPLICATION_JSON_UTF8)
+                            .content(jsonMapper.writeValueAsString(attribute))
+                            .accept(MediaType.APPLICATION_JSON_UTF8))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                    .andExpect(jsonPath("$.metaData.contentTypeCode").value(contentType.getCode()))
+                    .andExpect(jsonPath("$.payload.code").value(attribute.getCode()))
+                    .andExpect(jsonPath("$.payload.type").value(attribute.getType()))
+                    .andExpect(jsonPath("$.payload.name").value("Attribute Name"))
+                    .andExpect(jsonPath("$.payload.names.size()").value(3))
+                    .andExpect(jsonPath("$.payload.names.en").value("English Name"))
+                    .andExpect(jsonPath("$.payload.names.it").value("Italian Name"))
+                    .andExpect(jsonPath("$.payload.names.ka").value("Georgiam Name"))
+                    .andReturn();
+
+            names.clear();
+            names.put("en", "English Name 2");
+            names.put("it", "Italian Name 3");
+            names.put("ka", "Georgiam Name 4");
+            attribute.setNames(names);
+
+            mockMvc.perform(
+                    put("/plugins/cms/contentTypes/{code}/attributes/{attributeCode}", contentType.getCode(), attribute.getCode())
+                            .header("Authorization", "Bearer " + accessToken)
+                            .contentType(MediaType.APPLICATION_JSON_UTF8)
+                            .content(jsonMapper.writeValueAsString(attribute))
+                            .accept(MediaType.APPLICATION_JSON_UTF8))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                    .andExpect(jsonPath("$.metaData.contentTypeCode").value(contentType.getCode()))
+                    .andExpect(jsonPath("$.payload.code").value(attribute.getCode()))
+                    .andExpect(jsonPath("$.payload.type").value(attribute.getType()))
+                    .andExpect(jsonPath("$.payload.name").value("Attribute Name"))
+                    .andExpect(jsonPath("$.payload.names.size()").value(3))
+                    .andExpect(jsonPath("$.payload.names.en").value("English Name 2"))
+                    .andExpect(jsonPath("$.payload.names.it").value("Italian Name 3"))
+                    .andExpect(jsonPath("$.payload.names.ka").value("Georgiam Name 4"))
+                    .andReturn();
+
+        } finally {
+            if (null != this.contentManager.getEntityPrototype(typeCode)) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
+            }
+            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        }
+    }
+
     private ResultActions executeContentTypePost(String fileName, Map<String, String> placeholders, String accessToken, ResultMatcher expected) throws Exception {
         InputStream file = this.getClass().getResourceAsStream(fileName);
         String body = FileTextReader.getText(file);
