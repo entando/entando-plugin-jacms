@@ -28,7 +28,6 @@ import org.springframework.validation.Errors;
 
 @Component
 public class ResourcesValidator extends AbstractPaginationValidator {
-    public static final String ERRCODE_RESOURCE_NOT_DELETABLE = "1";
 
     @Autowired
     private ResourceManager resourceManager;
@@ -36,12 +35,19 @@ public class ResourcesValidator extends AbstractPaginationValidator {
     public boolean isResourceDeletableByUser(String resourceId, UserDetails user) throws ApsSystemException {
         final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
         final ResourceInterface resource = resourceManager.loadResource(resourceId);
-        boolean resourceAccessibleByGroup = allowedGroupCodes.stream().anyMatch(group ->
+        if (resource != null)  {
+            return allowedGroupCodes.stream().anyMatch(group ->
                 GenericResourceUtils
                         .isResourceAccessibleByGroup(group, resource.getMainGroup(), null)
         );
-        if (resourceAccessibleByGroup){
-            return  true;
+        }
+        return false;
+    }
+
+    public boolean resourceExists(String resourceId) throws ApsSystemException {
+        final ResourceInterface resource = resourceManager.loadResource(resourceId);
+        if (resource!=null){
+            return true;
         }
         return false;
     }
