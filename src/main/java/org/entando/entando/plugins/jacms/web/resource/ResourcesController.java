@@ -13,6 +13,9 @@
  */
 package org.entando.entando.plugins.jacms.web.resource;
 
+import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
+
+import com.agiletec.aps.system.exception.ApsSystemException;
 import com.agiletec.aps.system.services.role.Permission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.util.HttpSessionHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
@@ -37,6 +41,7 @@ import org.entando.entando.plugins.jacms.web.resource.request.ListResourceReques
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
+import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
 import org.entando.entando.web.common.model.RestResponse;
@@ -45,6 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,6 +68,7 @@ public class ResourcesController {
     public static final String ERRCODE_GROUP_NOT_FOUND = "3";
     public static final String ERRCODE_INVALID_FILE_TYPE = "4";
     public static final String ERRCODE_INVALID_RESOURCE_TYPE = "5";
+    public static final String ERRCODE_RESOURCE_FORBIDDEN = "6";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -78,7 +86,7 @@ public class ResourcesController {
         logger.debug("REST request - list image resources");
 
         resourceValidator.validateRestListRequest(requestList, AssetDto.class);
-        PagedMetadata<AssetDto> result = service.listAssets(requestList);
+        PagedMetadata<AssetDto> result = service.listAssets(requestList,HttpSessionHelper.extractCurrentUser(httpSession));
         resourceValidator.validateRestListResult(requestList, result);
         return ResponseEntity.ok(new PagedRestResponse<>(result));
     }
@@ -148,7 +156,7 @@ public class ResourcesController {
 
         AssetDto result = service
                 .createAsset(resourceRequest.getType(), file, resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(),
-                        HttpSessionHelper.extractCurrentUser(httpSession));
+                        extractCurrentUser(httpSession));
         return ResponseEntity.ok(new SimpleRestResponse<>(result));
     }
 
@@ -190,13 +198,23 @@ public class ResourcesController {
     @ApiOperation(value = "DELETE Resource", nickname = "deleteResource", tags = {"resources-controller"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 401, message = "Unauthorized")})
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found")})
     @DeleteMapping("/plugins/cms/assets/{resourceId}")
     @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
-    public ResponseEntity<SimpleRestResponse<Map>> deleteAsset(@PathVariable("resourceId") String resourceId) {
+    public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws ApsSystemException {
         logger.debug("REST request - delete resource with id {}", resourceId);
+        if (!resourceValidator.resourceExists(resourceId)) {
+            throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
+        }
+        if (!resourceValidator.isResourceDeletableByUser(resourceId, extractCurrentUser(httpSession))) {
+            DataBinder binder = new DataBinder(resourceId);
+            BindingResult bindingResult = binder.getBindingResult();
+            bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{resourceId}, "plugins.jacms.resources.resourceManager.error.delete");
+            throw new ResourcePermissionsException(bindingResult);
+        }
         service.deleteAsset(resourceId);
         return ResponseEntity.ok(new SimpleRestResponse<>(new HashMap()));
     }
-
 }

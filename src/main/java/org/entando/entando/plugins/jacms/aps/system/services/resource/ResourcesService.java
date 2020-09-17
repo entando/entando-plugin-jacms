@@ -17,6 +17,7 @@ import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
@@ -27,6 +28,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -84,7 +86,7 @@ public class ResourcesService {
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
 
-    public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList) {
+    public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList, UserDetails user) {
         List<AssetDto> assets = new ArrayList<>();
         try {
             List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(requestList),
@@ -92,8 +94,12 @@ public class ResourcesService {
 
             for(String id : resourceIds) {
                 AssetDto resource = convertResourceToDto(resourceManager.loadResource(id));
-
-                if (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList)) {
+                final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
+                boolean resourceAccessibleByGroup = allowedGroupCodes.stream().anyMatch(group ->
+                    GenericResourceUtils
+                        .isResourceAccessibleByGroup(group,resource.getGroup(), null)
+                );
+                if ((resourceAccessibleByGroup) && (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList))){
                     assets.add(resource);
                 }
             }

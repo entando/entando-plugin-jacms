@@ -33,7 +33,6 @@ import com.agiletec.aps.system.services.role.IRoleManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Arrays;
@@ -49,14 +48,12 @@ import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 public class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTest {
-
     @Autowired
     private ICategoryManager categoryManager;
 
@@ -144,7 +141,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -170,7 +167,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
             performGetResources(user, "file", null)
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(4)));
+                    .andExpect(jsonPath("$.payload.size()", is(3)));
 
             List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
 
@@ -187,7 +184,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -228,7 +225,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
 
             if (createdId != null) {
@@ -239,7 +236,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -985,6 +982,43 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
+    public void testDeleteResourceNotValidGroup() throws Exception {
+        final UserDetails editor = createEditor();
+        final UserDetails admin = createAdmin();
+
+        String type = "image";
+        String group = Group.ADMINS_GROUP_NAME;
+        String folderPath = null;
+        List<String> categories = Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList());
+        String mimeType = "application/jpeg";
+
+        ResultActions result = performCreateResource(admin, type, group, categories, folderPath, mimeType)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                .andExpect(jsonPath("$.payload.group", is("administrators")))
+                .andExpect(jsonPath("$.payload.description", is("image_test.jpeg")))
+                .andExpect(jsonPath("$.payload.owner", is("jack_bauer")))
+                .andExpect(jsonPath("$.payload.folderPath", is(folderPath)))
+                .andExpect(jsonPath("$.payload.versions.size()", is(4)))
+                .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")));
+
+        String createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+        performDeleteResource(editor, "image", createdId)
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        performDeleteResource(admin, "image", createdId)
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
     public void testDeleteResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
 
@@ -1688,11 +1722,132 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
     }
 
+    @Test
+    public void testListAssetUserGroupsPermissions() throws Exception {
+        UserDetails editor = createEditor();
+        UserDetails admin = createAdmin();
+
+        String createdId1Admin = null;
+        String createdId2Admin = null;
+        String createdId3Admin = null;
+        String createdId4Free = null;
+        String createdId5Editor = null;
+
+        try {
+            ResultActions image1Admin = performCreateResource(admin, "image", Group.ADMINS_GROUP_NAME,
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            ResultActions image2Admin = performCreateResource(admin, "image", Group.ADMINS_GROUP_NAME,
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            ResultActions image3Admin = performCreateResource(admin, "image", Group.ADMINS_GROUP_NAME,
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            ResultActions image4Free = performCreateResource(admin, "image", "free",
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            ResultActions image5Editor = performCreateResource(editor, "image", "editor",
+                    Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            createdId1Admin = JsonPath.read(image1Admin.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            createdId2Admin = JsonPath.read(image2Admin.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            createdId3Admin = JsonPath.read(image3Admin.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            createdId4Free = JsonPath.read(image4Free.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            createdId5Editor = JsonPath.read(image5Editor.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            performGetResources(admin, "image", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(8)));
+
+
+            performGetResources(editor, "image", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(4)));
+
+        } finally {
+            if (createdId1Admin != null) {
+                performDeleteResource(admin, "image", createdId1Admin)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(admin, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(7)));
+            }
+            if (createdId2Admin != null) {
+                performDeleteResource(admin, "image", createdId2Admin)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(admin, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(6)));
+            }
+            if (createdId3Admin != null) {
+                performDeleteResource(admin, "image", createdId3Admin)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(admin, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(5)));
+            }
+
+            if (createdId4Free != null) {
+                performDeleteResource(admin, "image", createdId4Free)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(admin, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(4)));
+            }
+            if (createdId5Editor!= null) {
+                performDeleteResource(admin, "image", createdId5Editor)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(admin, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
+    }
+
+
     /* Auxiliary methods */
 
     private UserDetails createAccessToken() throws Exception {
         return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR).grantedToRoleAdmin()
+                .build();
+    }
+    private UserDetails createEditor() throws Exception {
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization("editor", "editor", Permission.MANAGE_RESOURCES)
+                .build();
+    }
+
+    private UserDetails createAdmin() throws Exception {
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.ADMINS_GROUP_NAME, "administrator", Permission.SUPERUSER).grantedToRoleAdmin()
                 .build();
     }
 
