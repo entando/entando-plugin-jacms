@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
@@ -68,7 +68,7 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     private IContentAuthorizationHelper contentAuthorizationHelper;
 
     @Override
-    public boolean provideProtectedResource(HttpServletRequest request, HttpServletResponse response) throws ApsSystemException {
+    public boolean provideProtectedResource(HttpServletRequest request, HttpServletResponse response) throws EntException {
         try {
             String[] uriSegments = request.getRequestURI().split("/");
             int segments = uriSegments.length;
@@ -121,7 +121,7 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
             }
         } catch (Throwable t) {
             logger.error("Error extracting protected resource", t);
-            throw new ApsSystemException("Error extracting protected resource", t);
+            throw new EntException("Error extracting protected resource", t);
         }
         return false;
     }

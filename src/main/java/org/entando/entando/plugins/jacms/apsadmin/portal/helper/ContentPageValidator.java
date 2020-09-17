@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.portal.helper;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.PageUtilizer;
@@ -68,7 +68,7 @@ public class ContentPageValidator implements IExternalPageValidator, Application
         }
     }
 
-    private void checkReferencingContents(IPage page, Set<String> pageGroups, BaseAction action) throws ApsSystemException {
+    private void checkReferencingContents(IPage page, Set<String> pageGroups, BaseAction action) throws EntException {
         if (pageGroups.contains(Group.FREE_GROUP_NAME)) {
             return;
         }
@@ -92,7 +92,7 @@ public class ContentPageValidator implements IExternalPageValidator, Application
         }
     }
 
-    private void checkPublishedContents(IPage page, Set<String> pageGroups, BaseAction action) throws ApsSystemException {
+    private void checkPublishedContents(IPage page, Set<String> pageGroups, BaseAction action) throws EntException {
         if (pageGroups.contains(Group.ADMINS_GROUP_NAME)) {
             return;
         }
@@ -105,7 +105,7 @@ public class ContentPageValidator implements IExternalPageValidator, Application
         }
     }
 
-    private void checkPublishedContent(Content content, Set<String> pageGroups, BaseAction action) throws ApsSystemException {
+    private void checkPublishedContent(Content content, Set<String> pageGroups, BaseAction action) throws EntException {
         if (null == content) {
             return;
         }
@@ -142,14 +142,14 @@ public class ContentPageValidator implements IExternalPageValidator, Application
                     this.checkContent(action, contentId);
                 }
             }
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("error checking draft page - content references", e);
             return false;
         }
         return true;
     }
 
-    protected void checkContent(ActionSupport action, String contentId) throws ApsSystemException {
+    protected void checkContent(ActionSupport action, String contentId) throws EntException {
         if (StringUtils.isNotBlank(contentId)) {
             Content content = this.getContentManager().loadContent(contentId, true);
             if (null == content || !content.isOnLine()) {

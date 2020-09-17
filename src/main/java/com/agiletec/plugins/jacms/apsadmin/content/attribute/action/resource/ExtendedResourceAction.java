@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute.action.resource;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class ExtendedResourceAction extends MultipleResourceAction {
         return SUCCESS;
     }
 
-    protected List<ResourceInterface> saveFiles() throws ApsSystemException {
+    protected List<ResourceInterface> saveFiles() throws EntException {
         List<ResourceInterface> addedResources = new ArrayList<>();
         logger.debug("Save in multiple resource action for id {}", this.getResourceId());
         int index = 0;
@@ -127,7 +127,7 @@ public class ExtendedResourceAction extends MultipleResourceAction {
                                 new String[]{filename}));
                         addedResources.add(addedResource);
                     }
-                } catch (ApsSystemException ex) {
+                } catch (EntException ex) {
                     hasError = true;
                     logger.error("error loading file {} ", this.getFileUploadFileName().get(index), ex);
                     this.addFieldError(String.valueOf(index), this.getText("error.resource.filename.uploadError",
@@ -142,11 +142,11 @@ public class ExtendedResourceAction extends MultipleResourceAction {
             }
         } catch (Throwable t) {
             logger.error("error in save", t);
-            throw new ApsSystemException("Error validating");
+            throw new EntException("Error validating");
         }
         if (hasError) {
             logger.error("error uploading one or more resources");
-            throw new ApsSystemException("Error validating");
+            throw new EntException("Error validating");
         }
         return addedResources;
     }

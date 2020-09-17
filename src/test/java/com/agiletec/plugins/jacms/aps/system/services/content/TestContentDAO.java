@@ -21,7 +21,7 @@ import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoTextAttribute;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -57,13 +57,13 @@ public class TestContentDAO extends BaseTestCase {
 		}
     }
 	
-	private void deleteContent(Content content) throws ApsSystemException {
+	private void deleteContent(Content content) throws EntException {
 		this._contentDao.deleteEntity(content.getId());
 		ContentRecordVO contentRecord = (ContentRecordVO) this._contentDao.loadEntityRecord(content.getId());
 		assertNull(contentRecord);
 	}
 	
-	private void addContent(Content mockContent) throws ApsSystemException {
+	private void addContent(Content mockContent) throws EntException {
 		_contentDao.addEntity(mockContent);
 		ContentRecordVO contentRecord = (ContentRecordVO) this._contentDao.loadEntityRecord(mockContent.getId());
 		assertEquals(mockContent.getDescription(), contentRecord.getDescr());
@@ -92,18 +92,18 @@ public class TestContentDAO extends BaseTestCase {
 		}
     }
 	
-	private void insertOnLineContent(Content mockContent) throws ApsSystemException {
+	private void insertOnLineContent(Content mockContent) throws EntException {
 		this._contentDao.insertOnLineContent(mockContent);
 		ContentRecordVO contentRecord = (ContentRecordVO) this._contentDao.loadEntityRecord(mockContent.getId());
 		assertTrue(contentRecord.isOnLine());
 	}
 	
-	private void getAllContentsOnLine(Content mockContent) throws ApsSystemException {  
+	private void getAllContentsOnLine(Content mockContent) throws EntException {  
 		List<String> list = this._contentDao.getAllEntityId();
         assertTrue(list.contains(mockContent.getId()));
     }
     
-	private void removeOnLineContent(Content content) throws ApsSystemException {
+	private void removeOnLineContent(Content content) throws EntException {
 		this._contentDao.removeOnLineContent(content);
 		ContentRecordVO contentRecord = (ContentRecordVO) this._contentDao.loadEntityRecord(content.getId());
 		assertFalse(contentRecord.isOnLine());
@@ -158,7 +158,7 @@ public class TestContentDAO extends BaseTestCase {
 		assertTrue(contentIds.contains("ALL4"));
     }
 	
-	private void updateContent(Content mockContent) throws ApsSystemException {
+	private void updateContent(Content mockContent) throws EntException {
 		this._contentDao.updateEntity(mockContent);
 		ContentRecordVO contentRecord = (ContentRecordVO) this._contentDao.loadEntityRecord(mockContent.getId());
 		assertEquals(mockContent.getDescription(), contentRecord.getDescription());

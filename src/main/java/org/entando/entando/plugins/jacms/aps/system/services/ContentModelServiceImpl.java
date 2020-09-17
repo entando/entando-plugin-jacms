@@ -16,7 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.SmallEntityType;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -128,7 +128,7 @@ public class ContentModelServiceImpl implements ContentModelService {
             }
             this.contentModelManager.addContentModel(contentModel);
             return this.dtoBuilder.convert(contentModel);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error saving a content model", e);
             throw new RestServerError("Error saving a content model", e);
         }
@@ -154,7 +154,7 @@ public class ContentModelServiceImpl implements ContentModelService {
 
             this.contentModelManager.updateContentModel(contentModel);
             return this.dtoBuilder.convert(contentModel);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error saving a content model", e);
             throw new RestServerError("Error saving a content model", e);
         }
@@ -173,7 +173,7 @@ public class ContentModelServiceImpl implements ContentModelService {
                 throw new ValidationConflictException(validationResult);
             }
             this.contentModelManager.removeContentModel(contentModel);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error in delete contentModel {}", modelId, e);
             throw new RestServerError("error in delete contentModel", e);
         }

@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.content.parse;
 
 import com.agiletec.aps.BaseTestCase;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -30,7 +30,7 @@ public class TestContentDOM extends BaseTestCase {
         this.init();
     }
     
-    public void testGetXMLDocument() throws ApsSystemException {
+    public void testGetXMLDocument() throws EntException {
     	Content contentTest = this._contentManager.createContentType("ART");
     	assertNotNull(contentTest);
     	contentTest.addGroup("tempGroupName");

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.ITextAttribute;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
@@ -193,7 +193,7 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
     }
 
     @Override
-    public Map getReferencingObjects(Content content, HttpServletRequest request) throws ApsSystemException {
+    public Map getReferencingObjects(Content content, HttpServletRequest request) throws EntException {
         return this.getContentHelper().getReferencingObjects(content);
     }
 
@@ -211,10 +211,10 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
      *
      * @param content Il contenuto da analizzare.
      * @param action L'action da valorizzare con i messaggi di errore.
-     * @throws ApsSystemException In caso di errore.
+     * @throws EntException In caso di errore.
      */
     @Override
-    public void scanReferences(Content content, ActionSupport action) throws ApsSystemException {
+    public void scanReferences(Content content, ActionSupport action) throws EntException {
         if (!Group.FREE_GROUP_NAME.equals(content.getMainGroup()) && !content.getGroups().contains(Group.FREE_GROUP_NAME)) {
             HttpServletRequest request = ServletActionContext.getRequest();
             try {
@@ -264,7 +264,7 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
                     }
                 }
             } catch (Throwable t) {
-                throw new ApsSystemException("Error in hasReferencingObject method", t);
+                throw new EntException("Error in hasReferencingObject method", t);
             }
         }
     }

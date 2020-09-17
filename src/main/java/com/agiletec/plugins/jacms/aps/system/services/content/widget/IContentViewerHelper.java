@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.content.widget;
 
 import com.agiletec.aps.system.RequestContext;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.PublicContentAuthorizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
 
@@ -30,14 +30,14 @@ public interface IContentViewerHelper {
      * @param modelId Il modello del contenuto ricavato dal tag.
      * @param reqCtx Il contesto della richiesta.
      * @return Il contenuto da visualizzare nella showlet.
-     * @throws ApsSystemException In caso di errore
+     * @throws EntException In caso di errore
      */
-	public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws ApsSystemException;
+	public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws EntException;
 
-	public String getRenderedContent(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx) throws ApsSystemException;
+	public String getRenderedContent(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx) throws EntException;
 	
-	public ContentRenderizationInfo getRenderizationInfo(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx) throws ApsSystemException;
+	public ContentRenderizationInfo getRenderizationInfo(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx) throws EntException;
 	
-	public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, RequestContext reqCtx) throws ApsSystemException;
+	public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, RequestContext reqCtx) throws EntException;
 	
 }

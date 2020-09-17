@@ -18,7 +18,7 @@ import java.util.List;
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.helper.IEntityFilterBean;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 
 /**
@@ -71,9 +71,9 @@ public interface IContentListWidgetHelper extends com.agiletec.plugins.jacms.aps
 	 * @param bean The container of the base informations.
 	 * @param reqCtx The request context.
 	 * @return The list of the filter options.
-	 * @throws ApsSystemException in case of error.
+	 * @throws EntException in case of error.
 	 */
-	public List<UserFilterOptionBean> getConfiguredUserFilters(IContentListTagBean bean, RequestContext reqCtx) throws ApsSystemException;
+	public List<UserFilterOptionBean> getConfiguredUserFilters(IContentListTagBean bean, RequestContext reqCtx) throws EntException;
 	
 	public static final String[] allowedMetadataFilterKeys = 
 		{IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, IContentManager.CONTENT_DESCR_FILTER_KEY, IContentManager.CONTENT_STATUS_FILTER_KEY, 

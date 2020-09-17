@@ -14,7 +14,7 @@
 package org.entando.entando.plugins.jacms.aps.system.services.contentsettings;
 
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.baseconfig.SystemParamsUtils;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -83,7 +83,7 @@ public class ContentSettingsService {
     private void saveMetadata(Map<String, List<String>> metadata) {
         try {
             resourceManager.updateMetadataMapping(metadata);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             throw new RestServerError("plugins.jacms.contentsettings.error.metadata.save", ex);
         }
     }
@@ -133,7 +133,7 @@ public class ContentSettingsService {
     public void reloadContentsIndex() {
         try {
             searchEngineManager.startReloadContentsReferences();
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             throw new RestServerError("plugins.jacms.contentsettings.error.reloadReference", ex);
         }
 

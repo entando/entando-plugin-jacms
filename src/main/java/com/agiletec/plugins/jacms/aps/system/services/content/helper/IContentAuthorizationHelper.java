@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.helper;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
@@ -28,9 +28,9 @@ public interface IContentAuthorizationHelper {
 	 * @param user The user
 	 * @param content The content.
 	 * @return True if the given user can view the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuth(UserDetails user, Content content) throws ApsSystemException;
+	public boolean isAuth(UserDetails user, Content content) throws EntException;
 	
 	/**
 	 * Return true if the given user can view the given content.
@@ -38,27 +38,27 @@ public interface IContentAuthorizationHelper {
 	 * @param contentId The content id.
 	 * @param publicVersion true if the control should be carried out in the public version
 	 * @return True if the given user can view the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuth(UserDetails user, String contentId, boolean publicVersion) throws ApsSystemException;
+	public boolean isAuth(UserDetails user, String contentId, boolean publicVersion) throws EntException;
 	
 	/**
 	 * Return true if the given user can view the given content.
 	 * @param user The user
 	 * @param info The content authorization info.
 	 * @return True if the given user can view the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuth(UserDetails user, PublicContentAuthorizationInfo info) throws ApsSystemException;
+	public boolean isAuth(UserDetails user, PublicContentAuthorizationInfo info) throws EntException;
 	
 	/**
 	 * Return true if the given user can edit the given content.
 	 * @param user The user
 	 * @param content The content.
 	 * @return True if the given user can edit the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuthToEdit(UserDetails user, Content content) throws ApsSystemException;
+	public boolean isAuthToEdit(UserDetails user, Content content) throws EntException;
 	
 	/**
 	 * Return true if the given user can edit the given content.
@@ -66,18 +66,18 @@ public interface IContentAuthorizationHelper {
 	 * @param contentId The content id.
 	 * @param publicVersion true if the control should be carried out in the public version
 	 * @return True if the given user can edit the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuthToEdit(UserDetails user, String contentId, boolean publicVersion) throws ApsSystemException;
+	public boolean isAuthToEdit(UserDetails user, String contentId, boolean publicVersion) throws EntException;
 	
 	/**
 	 * Return true if the given user can edit the given content.
 	 * @param user The user
 	 * @param info The content authorization info.
 	 * @return True if the given user can edit the content.
-	 * @throws ApsSystemException In case of error
+	 * @throws EntException In case of error
 	 */
-	public boolean isAuthToEdit(UserDetails user, PublicContentAuthorizationInfo info) throws ApsSystemException;
+	public boolean isAuthToEdit(UserDetails user, PublicContentAuthorizationInfo info) throws EntException;
 	
 	/**
 	 * Return the object that contains the authorization info of the content.

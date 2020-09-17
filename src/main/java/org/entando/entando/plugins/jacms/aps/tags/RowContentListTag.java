@@ -15,7 +15,7 @@ package org.entando.entando.plugins.jacms.aps.tags;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.plugins.jacms.aps.tags.ContentListTag;
 
@@ -65,7 +65,7 @@ public class RowContentListTag extends ContentListTag {
 		return EVAL_PAGE;
 	}
 	
-	protected List<Properties> getContents(RequestContext reqCtx) throws ApsSystemException {
+	protected List<Properties> getContents(RequestContext reqCtx) throws EntException {
 		List<Properties> contents = null;
 		try {
 			Widget currentWidget = (Widget) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET);
@@ -79,7 +79,7 @@ public class RowContentListTag extends ContentListTag {
 			}
 		} catch (Throwable t) {
 			_logger.error("Error extracting contents", t);
-			throw new ApsSystemException("Error extracting contents", t);
+			throw new EntException("Error extracting contents", t);
 		}
 		return contents;
 	}

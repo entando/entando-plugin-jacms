@@ -27,7 +27,7 @@ import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import com.agiletec.aps.system.ApsSystemUtils;
 import com.agiletec.aps.system.common.AbstractService;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.category.ReloadingCategoryReferencesThread;
 import com.agiletec.aps.system.services.group.Group;
@@ -73,7 +73,7 @@ public class ContentUpdaterService extends AbstractService implements IContentUp
 	}
 
 	@Override
-	public Set<String> getContentsId(String categoryCode) throws ApsSystemException {
+	public Set<String> getContentsId(String categoryCode) throws EntException {
 		Set<String> allContents = new HashSet<String>();
 		try {
 			//Ricerca contenuti per
@@ -97,7 +97,7 @@ public class ContentUpdaterService extends AbstractService implements IContentUp
 
 		} catch (Throwable t) {
 			ApsSystemUtils.logThrowable(t, this, "getContentsId");
-			throw new ApsSystemException("Error loading contents to update", t);
+			throw new EntException("Error loading contents to update", t);
 		}
 		return allContents;
 	}

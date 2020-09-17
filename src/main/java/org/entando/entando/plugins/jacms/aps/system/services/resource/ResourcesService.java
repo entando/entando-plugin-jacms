@@ -10,8 +10,8 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsException;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -104,7 +104,7 @@ public class ResourcesService {
                 }
             }
 
-        } catch (ApsException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
 
@@ -140,7 +140,7 @@ public class ResourcesService {
             response.setFolderPath(folderPath);
             response.setSubfolders(getSubfolders(folderPath, allFolders));
 
-        } catch (ApsException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
 
@@ -235,7 +235,7 @@ public class ResourcesService {
 
             ResourceInterface resource = resourceManager.addResource(resourceFile);
             return convertResourceToDto(resourceManager.loadResource(resource.getId()));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         } catch (IOException e) {
             log.error("Error reading file input stream", e);
@@ -251,7 +251,7 @@ public class ResourcesService {
             resourceManager.addResource(clonedResource);
 
             return convertResourceToDto(resourceManager.loadResource(clonedResource.getId()));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
     }
@@ -264,7 +264,7 @@ public class ResourcesService {
             }
 
             return convertResourceToDto(resource);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.get", e);
         }
     }
@@ -276,7 +276,7 @@ public class ResourcesService {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
             }
             resourceManager.deleteResource(resource);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.delete", e);
         }
     }
@@ -290,7 +290,7 @@ public class ResourcesService {
             }
 
             return resource;
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.persistence", e);
         }
     }
@@ -335,7 +335,7 @@ public class ResourcesService {
 
             resourceManager.updateResource(resourceFile);
             return convertResourceToDto(resourceManager.loadResource(resourceId));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.persistence", e);
         } catch (IOException e) {
             log.error("Error reading file input stream", e);

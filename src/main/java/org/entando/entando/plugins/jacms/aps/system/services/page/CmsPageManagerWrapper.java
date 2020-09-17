@@ -21,7 +21,7 @@ import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowC
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
@@ -41,19 +41,19 @@ public class CmsPageManagerWrapper implements ContentUtilizer {
     }
 
     @Override
-    public List getContentUtilizers(String contentId) throws ApsSystemException {
+    public List getContentUtilizers(String contentId) throws EntException {
         List<IPage> pages = new ArrayList<>();
         try {
             IPage root = this.getPageManager().getOnlineRoot();
             this.searchContentUtilizers(root, pages, contentId);
         } catch (Throwable t) {
             _logger.error("Error loading referenced pages", t);
-            throw new ApsSystemException("Error loading referenced pages with content " + contentId, t);
+            throw new EntException("Error loading referenced pages with content " + contentId, t);
         }
         return pages;
     }
 
-    public void searchContentUtilizers(IPage targetPage, List<IPage> pages, String contentId) throws ApsSystemException {
+    public void searchContentUtilizers(IPage targetPage, List<IPage> pages, String contentId) throws EntException {
         if (null == contentId || null == targetPage) {
             return;
         }
@@ -74,11 +74,11 @@ public class CmsPageManagerWrapper implements ContentUtilizer {
             }
         } catch (Throwable t) {
             _logger.error("Error loading referenced pages", t);
-            throw new ApsSystemException("Error loading referenced pages with content " + contentId, t);
+            throw new EntException("Error loading referenced pages with content " + contentId, t);
         }
     }
 
-    public boolean findContentUtilizers(Widget[] widgets, String contentId) throws ApsSystemException {
+    public boolean findContentUtilizers(Widget[] widgets, String contentId) throws EntException {
         boolean found = false;
         if (null != widgets) {
             for (Widget widget : widgets) {

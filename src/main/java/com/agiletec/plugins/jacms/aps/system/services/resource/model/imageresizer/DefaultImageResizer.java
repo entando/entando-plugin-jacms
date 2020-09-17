@@ -26,7 +26,7 @@ import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 
 /**
@@ -39,7 +39,7 @@ public class DefaultImageResizer extends AbstractImageResizer {
 	
 	@Override
 	@Deprecated
-	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws ApsSystemException {
+	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws EntException {
 		BufferedImage outImage = this.getResizedImage(imageIcon, dimension.getDimx(), dimension.getDimy());
 		try {
 			File file = new File(filePath);
@@ -48,12 +48,12 @@ public class DefaultImageResizer extends AbstractImageResizer {
 			_logger.error("Error creating resized Image", t);
 			//String msg = "Error creating resigned Image";
 			//ApsSystemUtils.logThrowable(t, this, "saveImageResized", msg);
-			throw new ApsSystemException("Error creating resized Image", t);
+			throw new EntException("Error creating resized Image", t);
 		}
 	}
 	
 	@Override
-	protected BufferedImage getResizedImage(ImageIcon imageIcon, int dimensionX, int dimensionY) throws ApsSystemException {
+	protected BufferedImage getResizedImage(ImageIcon imageIcon, int dimensionX, int dimensionY) throws EntException {
 		try {
 			Image image = imageIcon.getImage();
 			double scale = this.computeScale(image.getWidth(null), image.getHeight(null), dimensionX, dimensionY);
@@ -72,7 +72,7 @@ public class DefaultImageResizer extends AbstractImageResizer {
 		} catch (Throwable t) {
 			_logger.error("Error creating resized Image", t);
 			//ApsSystemUtils.logThrowable(t, this, "getResizedImage", msg);
-			throw new ApsSystemException("Error creating resized Image", t);
+			throw new EntException("Error creating resized Image", t);
 		}
 	}
 	
