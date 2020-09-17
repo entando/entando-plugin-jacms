@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.lang.Lang;
@@ -209,7 +209,7 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 		return SUCCESS;
 	}
 
-	public List<SelectItem> getAllowedUserFilterTypes() throws ApsSystemException {
+	public List<SelectItem> getAllowedUserFilterTypes() throws EntException {
 		List<SelectItem> types = new ArrayList<SelectItem>();
 		try {
 			types.add(new SelectItem(UserFilterOptionBean.KEY_FULLTEXT, this.getText("label.fulltext")));
@@ -225,12 +225,12 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 			}
 		} catch (Throwable t) {
 			_logger.error("Error extracting allowed user filter types", t);
-			throw new ApsSystemException("Error extracting allowed user filter types", t);
+			throw new EntException("Error extracting allowed user filter types", t);
 		}
 		return types;
 	}
 
-	public List<SelectItem> getAllowedFilterTypes() throws ApsSystemException {
+	public List<SelectItem> getAllowedFilterTypes() throws EntException {
 		List<SelectItem> types = new ArrayList<SelectItem>();
 		try {
 			types.add(new SelectItem(IContentListFilterAction.METADATA_KEY_PREFIX + IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, this.getText("label.creationDate")));
@@ -246,7 +246,7 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 			}
 		} catch (Throwable t) {
 			_logger.error("Error extracting allowed filter types", t);
-			throw new ApsSystemException("Error extracting allowed filter types", t);
+			throw new EntException("Error extracting allowed filter types", t);
 		}
 		return types;
 	}
@@ -278,7 +278,7 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 		return SUCCESS;
 	}
 
-	protected Properties createUserFilterProperties() throws ApsSystemException {
+	protected Properties createUserFilterProperties() throws EntException {
 		String filterKey = this.getUserFilterKey();
 		if (null == filterKey) {
 			return null;
@@ -304,7 +304,7 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 			}
 		} catch (Throwable t) {
 			_logger.error("Error creating user filter", t);
-			throw new ApsSystemException("Error creating user filter", t);
+			throw new EntException("Error creating user filter", t);
 		}
 		return properties;
 	}
@@ -411,7 +411,7 @@ public class ContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 			this.extractCategories(config);
 		} catch (Throwable t) {
 			_logger.error("Error creating user filter", t);
-			throw new ApsSystemException("Error creating user filter", t);
+			throw new EntException("Error creating user filter", t);
 		}
 	}
 

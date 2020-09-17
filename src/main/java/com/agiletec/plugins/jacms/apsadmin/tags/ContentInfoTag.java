@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
 import com.agiletec.apsadmin.tags.AbstractObjectInfoTag;
@@ -91,7 +91,7 @@ public class ContentInfoTag extends AbstractObjectInfoTag {
 			_logger.error("Error extracting content : id '{}' - record {} - work version {}", keyValue, this.isRecord(), this.isWorkVersion(), t);
 			String message = "Error extracting content : id '" + keyValue + "' - " + "record " + this.isRecord() + "' - work version " + this.isWorkVersion();
 			//ApsSystemUtils.logThrowable(t, this, "getMasterObject", message);
-			throw new ApsSystemException(message, t);
+			throw new EntException(message, t);
 		}
 		return this.getMasterObject();
 	}

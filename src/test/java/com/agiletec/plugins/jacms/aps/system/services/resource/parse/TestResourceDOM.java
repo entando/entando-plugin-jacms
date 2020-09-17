@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.resource.parse;
 
 import com.agiletec.aps.BaseTestCase;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * @version 1.0
@@ -22,7 +22,7 @@ import com.agiletec.aps.system.exception.ApsSystemException;
  */
 public class TestResourceDOM extends BaseTestCase {
 	
-    public void testGetXMLDocument() throws ApsSystemException {  
+    public void testGetXMLDocument() throws EntException {  
 		ResourceDOM resourceDom = new ResourceDOM();
         resourceDom.addCategory("tempcategory");
         int index = resourceDom.getXMLDocument().indexOf("tempcategory");

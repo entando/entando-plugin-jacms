@@ -21,7 +21,7 @@ import java.util.Set;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.Lang;
@@ -43,9 +43,9 @@ public class SearcherTagHelper {
 	 * @param word La parola con cui effettuare la ricerca.
 	 * @param reqCtx Il contesto della richiesta.
 	 * @return La lista di identificativi di contenuto.
-	 * @throws ApsSystemException
+	 * @throws EntException
 	 */
-	public List<String> executeSearch(String word, RequestContext reqCtx) throws ApsSystemException {
+	public List<String> executeSearch(String word, RequestContext reqCtx) throws EntException {
 		List<String> result = new ArrayList<String>();
 		if (null != word && word.trim().length() > 0) {
 			UserDetails currentUser = (UserDetails) reqCtx.getRequest().getSession().getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER);

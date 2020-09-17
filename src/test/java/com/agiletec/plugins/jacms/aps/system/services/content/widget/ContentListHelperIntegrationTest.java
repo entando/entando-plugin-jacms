@@ -23,7 +23,7 @@ import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.ITextAttribute;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.page.IPage;
@@ -318,7 +318,7 @@ public class ContentListHelperIntegrationTest extends BaseTestCase {
         }
     }
 
-    private void deleteTestContent(String newContentId) throws ApsSystemException {
+    private void deleteTestContent(String newContentId) throws EntException {
         if (null != newContentId) {
             Content newContent = this.contentManager.loadContent(newContentId, false);
             if (null != newContent) {
@@ -351,7 +351,7 @@ public class ContentListHelperIntegrationTest extends BaseTestCase {
         return reqCtx;
     }
 
-    private void setPageWidgets(String pageCode, int frame, Widget widget) throws ApsSystemException {
+    private void setPageWidgets(String pageCode, int frame, Widget widget) throws EntException {
         IPage page = this.pageManager.getDraftPage(pageCode);
         page.getWidgets()[frame] = widget;
         page.getWidgets()[frame] = widget;

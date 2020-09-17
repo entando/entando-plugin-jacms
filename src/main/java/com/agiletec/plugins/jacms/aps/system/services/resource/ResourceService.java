@@ -19,7 +19,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import com.agiletec.aps.system.common.IManager;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractResource;
@@ -79,7 +79,7 @@ public class ResourceService implements IResourceService,
         try {
             List<String> resourcesId = ((GroupUtilizer<String>) this.getResourceManager()).getGroupUtilizers(groupCode);
             return this.buildDtoList(resourcesId);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading resource references for group {}", groupCode, ex);
             throw new RestServerError("Error loading resource references for group", ex);
         }
@@ -90,7 +90,7 @@ public class ResourceService implements IResourceService,
         try {
             List<String> resourcesId = ((CategoryUtilizer) this.getResourceManager()).getCategoryUtilizers(categoryCode);
             return this.buildDtoList(resourcesId);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading resource references for category {}", categoryCode, ex);
             throw new RestServerError("Error loading resource references for category", ex);
         }
@@ -102,7 +102,7 @@ public class ResourceService implements IResourceService,
             idList.stream().forEach(i -> {
                 try {
                     dtoList.add(this.getDtoBuilder().convert(this.getResourceManager().loadResource(i)));
-                } catch (ApsSystemException e) {
+                } catch (EntException e) {
                     logger.error("error loading {}", i, e);
 
                 }

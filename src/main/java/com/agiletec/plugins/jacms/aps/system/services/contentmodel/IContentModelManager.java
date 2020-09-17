@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
@@ -31,25 +31,25 @@ public interface IContentModelManager {
      * Aggiunge un modello di contenuto nel sistema.
      *
      * @param model Il modello da aggiungere.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
-    public void addContentModel(ContentModel model) throws ApsSystemException;
+    public void addContentModel(ContentModel model) throws EntException;
 
     /**
      * Rimuove un modello di contenuto dal sistema.
      *
      * @param model Il modello di contenuto da rimuovere.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
-    public void removeContentModel(ContentModel model) throws ApsSystemException;
+    public void removeContentModel(ContentModel model) throws EntException;
 
     /**
      * Aggiorna un modello di contenuto.
      *
      * @param model Il modello di contenuto da aggiornare.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
-    public void updateContentModel(ContentModel model) throws ApsSystemException;
+    public void updateContentModel(ContentModel model) throws EntException;
 
     /**
      * Restituisce il modello relativo all'identificativo immesso.

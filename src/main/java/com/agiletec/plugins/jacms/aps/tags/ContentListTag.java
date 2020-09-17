@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.Widget;
@@ -95,7 +95,7 @@ public class ContentListTag extends TagSupport implements IContentListTagBean {
 		return EVAL_PAGE;
 	}
 	
-	protected List<String> getContentsId(IContentListWidgetHelper helper, RequestContext reqCtx) throws ApsSystemException {
+	protected List<String> getContentsId(IContentListWidgetHelper helper, RequestContext reqCtx) throws EntException {
 		List<String> contents = null;
 		try {
 			contents = helper.getContentsId(this, reqCtx);
@@ -115,7 +115,7 @@ public class ContentListTag extends TagSupport implements IContentListTagBean {
 			}
 		} catch (Throwable t) {
 			_logger.error("Error extracting content ids", t);
-			throw new ApsSystemException("Error extracting content ids", t);
+			throw new EntException("Error extracting content ids", t);
 		}
 		return contents;
 	}

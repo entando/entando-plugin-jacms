@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer.IImageResizer;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
 import com.drew.imaging.ImageMetadataReader;
@@ -118,7 +118,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     @Override
-    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws ApsSystemException {
+    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException {
         try {
             String masterImageFileName = getNewInstanceFileName(bean.getFileName(), 0, null);
             String subPath = this.getDiskSubFolder() + masterImageFileName;
@@ -147,12 +147,12 @@ public class ImageResource extends AbstractMultiInstanceResource {
             }
         } catch (Throwable t) {
             logger.error("Error saving image resource instances", t);
-            throw new ApsSystemException("Error saving image resource instances", t);
+            throw new EntException("Error saving image resource instances", t);
         }
     }
 
     @Override
-    public void saveResourceInstances(ResourceDataBean bean) throws ApsSystemException {
+    public void saveResourceInstances(ResourceDataBean bean) throws EntException {
         saveResourceInstances(bean, new ArrayList<>());
     }
 
@@ -179,7 +179,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     @Override
-    public void reloadResourceInstances() throws ApsSystemException {
+    public void reloadResourceInstances() throws EntException {
         try {
             ResourceInstance masterInstance = this.getInstance(0, null);
             String masterImageFileName = masterInstance.getFileName();
@@ -200,11 +200,11 @@ public class ImageResource extends AbstractMultiInstanceResource {
 
         } catch (Throwable t) {
             logger.error("Error reloading image resource instances", t);
-            throw new ApsSystemException("Error reloading image resource instances", t);
+            throw new EntException("Error reloading image resource instances", t);
         }
     }
 
-    private void saveResizedInstances(ResourceDataBean bean, String masterFilePath) throws ApsSystemException {
+    private void saveResizedInstances(ResourceDataBean bean, String masterFilePath) throws EntException {
         try {
             Map<Integer, ImageResourceDimension> dimensions = this.getImageDimensionReader().getImageDimensions();
             for (ImageResourceDimension dimension : dimensions.values()) {
@@ -218,14 +218,14 @@ public class ImageResource extends AbstractMultiInstanceResource {
             }
         } catch (Throwable t) {
             logger.error("Error saving resized image resource instances", t);
-            throw new ApsSystemException("Error saving resized image resource instances", t);
+            throw new EntException("Error saving resized image resource instances", t);
         }
     }
 
     /**
      * Resize images using im4Java
      */
-    private void saveResizedImage(ResourceDataBean bean, ImageResourceDimension dimension) throws ApsSystemException {
+    private void saveResizedImage(ResourceDataBean bean, ImageResourceDimension dimension) throws EntException {
         if (dimension.getIdDim() == 0) {
             // skips element with id zero that shouldn't be resized
             return;
@@ -272,12 +272,12 @@ public class ImageResource extends AbstractMultiInstanceResource {
             }
         } catch (Throwable t) {
             logger.error("Error creating resource file instance '{}'", subPath, t);
-            throw new ApsSystemException("Error creating resource file instance '" + subPath + "'", t);
+            throw new EntException("Error creating resource file instance '" + subPath + "'", t);
         }
     }
 
     private void saveResizedImage(ResourceDataBean bean,
-            ImageIcon imageIcon, ImageResourceDimension dimension) throws ApsSystemException {
+            ImageIcon imageIcon, ImageResourceDimension dimension) throws EntException {
         if (dimension.getIdDim() == 0) {
             // skips element with id zero that shouldn't be resized
             return;
@@ -306,7 +306,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
             }
         } catch (Throwable t) {
             logger.error("Error creating resource file instance '{}'", subPath, t);
-            throw new ApsSystemException("Error creating resource file instance '" + subPath + "'", t);
+            throw new EntException("Error creating resource file instance '" + subPath + "'", t);
         }
     }
 

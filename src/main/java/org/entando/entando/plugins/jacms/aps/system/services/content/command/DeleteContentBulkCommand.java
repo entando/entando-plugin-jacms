@@ -17,7 +17,7 @@ import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCo
 import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.BaseContentBulkCommand;
 import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.ContentBulkCommandContext;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
 public class DeleteContentBulkCommand extends BaseContentBulkCommand<ContentBulkCommandContext> {
@@ -31,7 +31,7 @@ public class DeleteContentBulkCommand extends BaseContentBulkCommand<ContentBulk
 	}
 
 	@Override
-	protected boolean apply(Content content) throws ApsSystemException {
+	protected boolean apply(Content content) throws EntException {
 		if (content.isOnLine()) {
 			this.getTracer().traceError(content.getId(), ApsCommandErrorCode.NOT_APPLICABLE);
 			return false;

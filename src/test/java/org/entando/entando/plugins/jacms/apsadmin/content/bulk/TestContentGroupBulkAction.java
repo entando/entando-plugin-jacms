@@ -23,7 +23,7 @@ import org.entando.entando.aps.system.services.command.IBulkCommandManager;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
 
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.apsadmin.system.BaseAction;
@@ -155,7 +155,7 @@ public class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 		}
 	}
 
-	private void checkContentGroups(String[] contentIds, String[] groupCodes, boolean expectedWork, boolean expectedOnline) throws ApsSystemException {
+	private void checkContentGroups(String[] contentIds, String[] groupCodes, boolean expectedWork, boolean expectedOnline) throws EntException {
 		for (String contentId : contentIds) {
 			Content current = this._contentManager.loadContent(contentId, false);
 			Collection<String> contentGroups = current.getGroups();
@@ -172,7 +172,7 @@ public class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 		}
 	}
 
-	private List<String> addContents(String masterContentId, int size) throws ApsSystemException {
+	private List<String> addContents(String masterContentId, int size) throws EntException {
 		List<String> contentIds = new ArrayList<String>(size);
 		for (int i = 0; i < size; i++) {
 			Content current = this._contentManager.loadContent(masterContentId, false);
@@ -186,7 +186,7 @@ public class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 		return contentIds;
 	}
 	
-	private void deleteContents(List<String> contentIds) throws ApsSystemException {
+	private void deleteContents(List<String> contentIds) throws EntException {
 		for (String contentId : contentIds) {
 			Content current = this._contentManager.loadContent(contentId, false);
 			this._contentManager.deleteContent(current);

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
 import com.agiletec.apsadmin.system.BaseActionHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceUtilizer;
@@ -37,7 +37,7 @@ public class ResourceActionHelper extends BaseActionHelper implements IResourceA
 	private static final Logger _logger = LoggerFactory.getLogger(ResourceActionHelper.class);
 	
 	@Override
-	public Map<String, List> getReferencingObjects(ResourceInterface resource, HttpServletRequest request) throws ApsSystemException {
+	public Map<String, List> getReferencingObjects(ResourceInterface resource, HttpServletRequest request) throws EntException {
 		Map<String, List> references = new HashMap<String, List>();
     	if (null != resource) {
     		return this.getReferencingObjects(resource.getId(), request);
@@ -46,7 +46,7 @@ public class ResourceActionHelper extends BaseActionHelper implements IResourceA
 	}
 	
 	@Override
-	public Map<String, List> getReferencingObjects(String resourceId, HttpServletRequest request) throws ApsSystemException {
+	public Map<String, List> getReferencingObjects(String resourceId, HttpServletRequest request) throws EntException {
 		Map<String, List> references = new HashMap<String, List>();
     	try {
     		String[] defNames = ApsWebApplicationUtils.getWebApplicationContext(request).getBeanNamesForType(ResourceUtilizer.class);
@@ -68,7 +68,7 @@ public class ResourceActionHelper extends BaseActionHelper implements IResourceA
 			}
     	} catch (Throwable t) {
     		_logger.error("Error extracting referencing objects by resource '{}'", resourceId, t);
-    		throw new ApsSystemException("Errore in getReferencingObjects", t);
+    		throw new EntException("Errore in getReferencingObjects", t);
     	}
     	return references;
 	}

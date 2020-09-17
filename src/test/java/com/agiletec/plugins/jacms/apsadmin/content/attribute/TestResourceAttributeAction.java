@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
 import javax.servlet.http.HttpSession;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -84,7 +84,7 @@ public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
         assertNull(imageAttribute.getResource("en"));
     }
 
-    private String initForImageRemovingTest() throws Throwable, ApsSystemException {
+    private String initForImageRemovingTest() throws Throwable, EntException {
         String contentId = "ART180";
         Content content = this.getContentManager().loadContent(contentId, false);
         this.executeEdit(contentId, "admin");

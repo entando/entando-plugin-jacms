@@ -20,7 +20,7 @@ import java.util.Map;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
@@ -97,9 +97,9 @@ public interface IContentManager extends IEntityManager {
      * @param onLine Specifica quale contenuto deve caricare, true carica il
      * contenuto online, false carica il contenuto libero.
      * @return Il contenuto OnLine.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public Content loadContent(String id, boolean onLine) throws ApsSystemException;
+    public Content loadContent(String id, boolean onLine) throws EntException;
 
     /**
      * Restituisce un VO contenente le informazioni del record su db
@@ -107,9 +107,9 @@ public interface IContentManager extends IEntityManager {
      *
      * @param id L'identificativo del contenuto.
      * @return L'oggetto VO corrispondente al contenuto cercato.
-     * @throws ApsSystemException In caso di errore in accesso al db.
+     * @throws EntException In caso di errore in accesso al db.
      */
-    public ContentRecordVO loadContentVO(String id) throws ApsSystemException;
+    public ContentRecordVO loadContentVO(String id) throws EntException;
 
     /**
      * Salva un contenuto sul DB. Il metodo viene utilizzato sia nel caso di
@@ -117,27 +117,27 @@ public interface IContentManager extends IEntityManager {
      * sarà nullo) o di aggiornamento di contenuto già esistente (id non nullo).
      *
      * @param content Il contenuto da aggiungere o modificare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void saveContent(Content content) throws ApsSystemException;
+    public void saveContent(Content content) throws EntException;
 
-    public void saveContentAndContinue(Content content) throws ApsSystemException;
+    public void saveContentAndContinue(Content content) throws EntException;
 
     /**
      * Save a content in the DB.
      *
      * @param content The content to add.
-     * @throws ApsSystemException in case of error.
+     * @throws EntException in case of error.
      */
-    public void addContent(Content content) throws ApsSystemException;
+    public void addContent(Content content) throws EntException;
 
     /**
      * Inserisce il contenuto OnLine.
      *
      * @param content Il contenuto da rendere visibile online.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void insertOnLineContent(Content content) throws ApsSystemException;
+    public void insertOnLineContent(Content content) throws EntException;
 
     /**
      * Rimuove un contenuto OnLine. L'operazione non cancella il contenuto ma ne
@@ -145,19 +145,19 @@ public interface IContentManager extends IEntityManager {
      * ancora presente verrà messo in stato cancellato.
      *
      * @param content Il contenuto da rimuovere.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void removeOnLineContent(Content content) throws ApsSystemException;
+    public void removeOnLineContent(Content content) throws EntException;
 
     /**
      * Cancella un contenuto dal db.
      *
      * @param content Il contenuto da cancellare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void deleteContent(Content content) throws ApsSystemException;
+    public void deleteContent(Content content) throws EntException;
 
-    public void deleteContent(String contentId) throws ApsSystemException;
+    public void deleteContent(String contentId) throws EntException;
 
     /**
      * Carica una lista di identificativi di contenuti publici in base ai
@@ -173,13 +173,13 @@ public interface IContentManager extends IEntityManager {
      * libero". Nel caso nella collezione sia presente il codice del gruppo
      * degli amministratori, non sarà applicato alcun il filtro sul gruppo.
      * @return La lista degli id dei contenuti cercati.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
     public List<String> loadPublicContentsId(String contentType, String[] categories,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
     public List<String> loadPublicContentsId(String contentType, String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
     /**
      * Carica una lista di identificativi di contenuti publici in base ai
@@ -194,27 +194,27 @@ public interface IContentManager extends IEntityManager {
      * libero". Nel caso nella collezione sia presente il codice del gruppo
      * degli amministratori, non sarà applicato alcun il filtro sul gruppo.
      * @return La lista degli id dei contenuti cercati.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
     public List<String> loadPublicContentsId(String[] categories,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
     public List<String> loadPublicContentsId(String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
-    public List<String> loadWorkContentsId(EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+    public List<String> loadWorkContentsId(EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
-    public List<String> loadWorkContentsId(String[] categories, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+    public List<String> loadWorkContentsId(String[] categories, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
-    public List<String> loadWorkContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+    public List<String> loadWorkContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
 
-    public Integer countWorkContents(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+    public Integer countWorkContents(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
     
     public SearcherDaoPaginatedResult<String> getPaginatedWorkContentsId(String[] categories, 
-            boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
     
     public SearcherDaoPaginatedResult<String> getPaginatedPublicContentsId(String[] categories, 
-            boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException;
+            boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException;
     
     /**
      * Extract contents statistics
@@ -227,11 +227,11 @@ public interface IContentManager extends IEntityManager {
      * Restituisce la lista di tutti identificativi dei contenuti.
      *
      * @return La lista di tutti identificativi dei contenuti.
-     * @throws ApsSystemException In caso di errore
+     * @throws EntException In caso di errore
      * @deprecated From jAPS 2.0 version 2.0.9, use
      * searchId(EntitySearchFilter[]) method
      */
-    public List<String> getAllContentsId() throws ApsSystemException;
+    public List<String> getAllContentsId() throws EntException;
 
     /**
      * Restituisce lo stato del servizio.

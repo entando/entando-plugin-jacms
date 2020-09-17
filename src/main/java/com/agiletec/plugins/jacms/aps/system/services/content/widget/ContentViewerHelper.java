@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.Widget;
@@ -49,7 +49,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
     private IContentAuthorizationHelper contentAuthorizationHelper;
 
     @Override
-    public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws ApsSystemException {
+    public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws EntException {
         return this.getRenderedContent(contentId, modelId, false, reqCtx);
     }
 
@@ -61,11 +61,11 @@ public class ContentViewerHelper implements IContentViewerHelper {
      * @param publishExtraTitle
      * @param reqCtx Il contesto della richiesta.
      * @return Il contenuto da visualizzare nella widget.
-     * @throws ApsSystemException In caso di errore.
+     * @throws EntException In caso di errore.
      */
     @Override
     public String getRenderedContent(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx)
-            throws ApsSystemException {
+            throws EntException {
         String renderedContent = null;
         ContentRenderizationInfo renderInfo = this.getRenderizationInfo(contentId, modelId, publishExtraTitle, reqCtx);
         if (null != renderInfo) {
@@ -79,7 +79,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
 
     @Override
     public ContentRenderizationInfo getRenderizationInfo(String contentId, String modelId, boolean publishExtraTitle, RequestContext reqCtx)
-            throws ApsSystemException {
+            throws EntException {
         ContentRenderizationInfo renderizationInfo = null;
         try {
             Lang currentLang = (Lang) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG);
@@ -103,13 +103,13 @@ public class ContentViewerHelper implements IContentViewerHelper {
             }
         } catch (Throwable t) {
             logger.error("Error extracting renderization info", t);
-            throw new ApsSystemException("Error extracting renderization info", t);
+            throw new EntException("Error extracting renderization info", t);
         }
         return renderizationInfo;
     }
 
     @Override
-    public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, RequestContext reqCtx) throws ApsSystemException {
+    public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, RequestContext reqCtx) throws EntException {
         PublicContentAuthorizationInfo authInfo = null;
         try {
             Widget widget = (Widget) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET);
@@ -124,7 +124,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
             }
         } catch (Throwable t) {
             logger.error("Error extracting content authorization info by content {}", contentId, t);
-            throw new ApsSystemException("Error extracting content authorization info by content '" + contentId + "'", t);
+            throw new EntException("Error extracting content authorization info by content '" + contentId + "'", t);
         }
         return authInfo;
     }

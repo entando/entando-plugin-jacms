@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Interfaccia base per i servizi gestori della mappa 
@@ -24,9 +24,9 @@ public interface IContentPageMapperManager {
 	
 	/**
      * Effettua il caricamento della mappa contenuti pubblicati / pagine
-     * @throws ApsSystemException
+     * @throws EntException
      */
-    public void reloadContentPageMapper() throws ApsSystemException;
+    public void reloadContentPageMapper() throws EntException;
     
     /**
      * Restituisce il codice pagina nel quale è stato publicato il contenuto specificato. 

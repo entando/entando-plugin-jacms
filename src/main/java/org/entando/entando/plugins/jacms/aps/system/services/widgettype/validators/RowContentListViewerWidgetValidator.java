@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -78,7 +78,7 @@ public class RowContentListViewerWidgetValidator extends AbstractListViewerWidge
         return bindingResult;
     }
 
-    private void validateContents(WidgetConfigurationRequest widget, IPage page, BeanPropertyBindingResult errors) throws ApsSystemException {
+    private void validateContents(WidgetConfigurationRequest widget, IPage page, BeanPropertyBindingResult errors) throws EntException {
         List<Object> contentsConfig = extractContentsConfiguration(widget);
 
         if (null == contentsConfig) {

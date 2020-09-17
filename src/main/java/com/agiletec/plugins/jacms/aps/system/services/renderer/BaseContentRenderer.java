@@ -27,7 +27,7 @@ import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.renderer.BaseEntityRenderer;
 import com.agiletec.aps.system.common.renderer.EntityWrapper;
 import com.agiletec.aps.system.common.renderer.TextAttributeCharReplaceInfo;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.i18n.I18nManagerWrapper;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
@@ -60,7 +60,7 @@ public class BaseContentRenderer extends BaseEntityRenderer implements IContentR
 			StringWriter stringWriter = new StringWriter();
 			boolean isEvaluated = Velocity.evaluate(velocityContext, stringWriter, "render", contentModel);
 			if (!isEvaluated) {
-				throw new ApsSystemException("Error rendering content");
+				throw new EntException("Error rendering content");
 			}
 			stringWriter.flush();
 			renderedEntity = stringWriter.toString();

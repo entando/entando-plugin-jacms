@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.apsadmin.system.BaseAction;
@@ -196,7 +196,7 @@ public class ContentAdminActionTest {
         Enumeration mockedEnumerator = Mockito.mock(Enumeration.class);
         when(mockedEnumerator.hasMoreElements()).thenReturn(false);
         when(request.getParameterNames()).thenReturn(mockedEnumerator);
-        Mockito.doThrow(ApsSystemException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
+        Mockito.doThrow(EntException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
         String result = action.updateSystemParams();
         Assert.assertEquals(BaseAction.FAILURE, result);
         Mockito.verify(resourceManager, Mockito.times(0)).updateMetadataMapping(Mockito.any(Map.class));
@@ -208,7 +208,7 @@ public class ContentAdminActionTest {
         Enumeration mockedEnumerator = Mockito.mock(Enumeration.class);
         when(mockedEnumerator.hasMoreElements()).thenReturn(false);
         when(request.getParameterNames()).thenReturn(mockedEnumerator);
-        //Mockito.doThrow(ApsSystemException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
+        //Mockito.doThrow(EntException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
         String result = action.updateSystemParams();
         Assert.assertEquals(BaseAction.SUCCESS, result);
         Mockito.verify(resourceManager, Mockito.times(1)).updateMetadataMapping(Mockito.any(Map.class));
@@ -218,7 +218,7 @@ public class ContentAdminActionTest {
     @Test
     public void reloadContentsIndex_1() throws Exception {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
-        when(searchEngineManager.startReloadContentsReferences()).thenThrow(ApsSystemException.class);
+        when(searchEngineManager.startReloadContentsReferences()).thenThrow(EntException.class);
         String result = action.reloadContentsIndex();
         Assert.assertEquals(BaseAction.FAILURE, result);
     }

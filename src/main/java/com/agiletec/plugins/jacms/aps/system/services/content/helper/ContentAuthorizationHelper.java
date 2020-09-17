@@ -21,7 +21,7 @@ import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
@@ -41,7 +41,7 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     private static final Logger _logger = LoggerFactory.getLogger(ContentAuthorizationHelper.class);
 
     @Override
-    public boolean isAuth(UserDetails user, Content content) throws ApsSystemException {
+    public boolean isAuth(UserDetails user, Content content) throws EntException {
         if (null == content) {
             _logger.error("Null content");
             return false;
@@ -52,13 +52,13 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     }
 
     @Override
-    public boolean isAuth(UserDetails user, PublicContentAuthorizationInfo info) throws ApsSystemException {
+    public boolean isAuth(UserDetails user, PublicContentAuthorizationInfo info) throws EntException {
         List<Group> userGroups = this.getAuthorizationManager().getUserGroups(user);
         return info.isUserAllowed(userGroups);
     }
 
     @Override
-    public boolean isAuth(UserDetails user, String contentId, boolean publicVersion) throws ApsSystemException {
+    public boolean isAuth(UserDetails user, String contentId, boolean publicVersion) throws EntException {
         if (publicVersion) {
             PublicContentAuthorizationInfo authorizationInfo = this.getAuthorizationInfo(contentId);
             return this.isAuth(user, authorizationInfo);
@@ -67,7 +67,7 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
         return this.isAuth(user, content);
     }
 
-    protected boolean isAuth(UserDetails user, Set<String> groupCodes) throws ApsSystemException {
+    protected boolean isAuth(UserDetails user, Set<String> groupCodes) throws EntException {
         if (null == user) {
             _logger.error("Null user");
             return false;
@@ -76,7 +76,7 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     }
 
     @Override
-    public boolean isAuthToEdit(UserDetails user, Content content) throws ApsSystemException {
+    public boolean isAuthToEdit(UserDetails user, Content content) throws EntException {
         if (null == content) {
             _logger.error("Null content");
             return false;
@@ -88,12 +88,12 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     }
 
     @Override
-    public boolean isAuthToEdit(UserDetails user, PublicContentAuthorizationInfo info) throws ApsSystemException {
+    public boolean isAuthToEdit(UserDetails user, PublicContentAuthorizationInfo info) throws EntException {
         String mainGroupName = info.getMainGroup();
         return this.isAuthToEdit(user, mainGroupName);
     }
 
-    private boolean isAuthToEdit(UserDetails user, String mainGroupName) throws ApsSystemException {
+    private boolean isAuthToEdit(UserDetails user, String mainGroupName) throws EntException {
         if (null == user) {
             _logger.error("Null user");
             return false;
@@ -103,7 +103,7 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     }
 
     @Override
-    public boolean isAuthToEdit(UserDetails user, String contentId, boolean publicVersion) throws ApsSystemException {
+    public boolean isAuthToEdit(UserDetails user, String contentId, boolean publicVersion) throws EntException {
         Content content = this.getContentManager().loadContent(contentId, publicVersion);
         return this.isAuth(user, content);
     }

@@ -15,7 +15,7 @@ package org.entando.entando.plugins.jacms.web.resource;
 
 import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.role.Permission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -203,7 +203,7 @@ public class ResourcesController {
             @ApiResponse(code = 404, message = "Not Found")})
     @DeleteMapping("/plugins/cms/assets/{resourceId}")
     @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
-    public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws ApsSystemException {
+    public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws EntException {
         logger.debug("REST request - delete resource with id {}", resourceId);
         if (!resourceValidator.resourceExists(resourceId)) {
             throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);

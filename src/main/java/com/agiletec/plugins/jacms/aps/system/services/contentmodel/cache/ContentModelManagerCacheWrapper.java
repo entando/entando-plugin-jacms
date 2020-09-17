@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.agiletec.aps.system.common.AbstractGenericCacheWrapper;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelDAO;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class ContentModelManagerCacheWrapper extends AbstractGenericCacheWrapper
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public void initCache(IContentModelDAO contentModelDao) throws ApsSystemException {
+	public void initCache(IContentModelDAO contentModelDao) throws EntException {
 		try {
 			Cache cache = this.getCache();
 			this.releaseCachedObjects(cache);
@@ -39,7 +39,7 @@ public class ContentModelManagerCacheWrapper extends AbstractGenericCacheWrapper
 			super.insertObjectsOnCache(cache, modelsMap);
 		} catch (Throwable t) {
 			logger.error("Error bootstrapping models map cache", t);
-			throw new ApsSystemException("Error bootstrapping models map cache", t);
+			throw new EntException("Error bootstrapping models map cache", t);
 		}
 	}
 
