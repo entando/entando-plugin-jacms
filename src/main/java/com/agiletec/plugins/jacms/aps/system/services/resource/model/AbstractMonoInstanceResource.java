@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceDOM;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,7 +59,7 @@ public abstract class AbstractMonoInstanceResource extends AbstractResource {
 	}
     
 	@Override
-	public void deleteResourceInstances() throws ApsSystemException {
+	public void deleteResourceInstances() throws EntException {
 		try {
 			if (instance == null) {
 				logger.debug("Null instance for resource {}", getId());
@@ -70,7 +70,7 @@ public abstract class AbstractMonoInstanceResource extends AbstractResource {
 			this.getStorageManager().deleteFile(subPath, this.isProtectedResource());
 		} catch (Throwable t) {
 			logger.error("Error on deleting resource instances", t);
-			throw new ApsSystemException("Error on deleting resource instances", t);
+			throw new EntException("Error on deleting resource instances", t);
 		}
 	}
     

@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content.command.category;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCode;
@@ -32,7 +32,7 @@ public class JoinCategoryBulkCommand extends BaseContentPropertyBulkCommand<Cate
     }
 
     @Override
-    protected boolean apply(Content content) throws ApsSystemException {
+    protected boolean apply(Content content) throws EntException {
         Collection<Category> categories = this.getItemProperties();
         if (null == categories || categories.isEmpty()) {
             this.getTracer().traceError(content.getId(), ApsCommandErrorCode.PARAMS_NOT_VALID);

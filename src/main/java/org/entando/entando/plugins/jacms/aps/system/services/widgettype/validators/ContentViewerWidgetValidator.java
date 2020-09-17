@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.widgettype.validators;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -70,7 +70,7 @@ public class ContentViewerWidgetValidator implements WidgetConfigurationValidato
 
                 this.validateContentModel(widget, bindingResult);
             }
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("error in validate wiget {} in page {}", widget.getCode(), page.getCode());
             throw new RestServerError("error in widget config validation", e);
         }

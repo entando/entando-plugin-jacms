@@ -32,7 +32,7 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.helper.IEntityFilterBean;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.Widget;
@@ -96,7 +96,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
             contentsId = this.executeFullTextSearch(bean, contentsId, reqCtx);
         } catch (Throwable t) {
             _logger.error("Error extracting contents id", t);
-            throw new ApsSystemException("Error extracting contents id", t);
+            throw new EntException("Error extracting contents id", t);
         }
         return contentsId;
     }
@@ -125,7 +125,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
         return false;
     }
 
-    protected List<String> extractContentsId(IContentListTagBean bean, RequestContext reqCtx) throws ApsSystemException {
+    protected List<String> extractContentsId(IContentListTagBean bean, RequestContext reqCtx) throws EntException {
         List<String> contentsId = null;
         try {
             List<UserFilterOptionBean> userFilters = bean.getUserFilterOptions();
@@ -135,7 +135,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
                 bean.setContentType(config.getProperty(WIDGET_PARAM_CONTENT_TYPE));
             }
             if (null == bean.getContentType()) {
-                throw new ApsSystemException("Tipo contenuto non definito");
+                throw new EntException("Tipo contenuto non definito");
             }
             if (null == bean.getCategory() && null != config && null != config.getProperty(SHOWLET_PARAM_CATEGORY)) {
                 bean.setCategory(config.getProperty(SHOWLET_PARAM_CATEGORY));
@@ -156,7 +156,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
                     categories, orCategoryFilterClause, filtersToUse, userGroupCodes);
         } catch (Throwable t) {
             _logger.error("Error extracting contents id", t);
-            throw new ApsSystemException("Error extracting contents id", t);
+            throw new EntException("Error extracting contents id", t);
         }
         return contentsId;
     }
@@ -173,7 +173,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
     }
 
     protected List<String> executeFullTextSearch(IContentListTagBean bean,
-            List<String> masterContentsId, RequestContext reqCtx) throws ApsSystemException {
+            List<String> masterContentsId, RequestContext reqCtx) throws EntException {
         UserFilterOptionBean fullTextUserFilter = null;
         List<UserFilterOptionBean> userFilterOptions = bean.getUserFilterOptions();
         if (null != userFilterOptions) {
@@ -295,7 +295,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
     }
 
     @Override
-    public List<UserFilterOptionBean> getConfiguredUserFilters(IContentListTagBean bean, RequestContext reqCtx) throws ApsSystemException {
+    public List<UserFilterOptionBean> getConfiguredUserFilters(IContentListTagBean bean, RequestContext reqCtx) throws EntException {
         List<UserFilterOptionBean> userEntityFilters = null;
         try {
             Widget widget = (Widget) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET);
@@ -317,7 +317,7 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
             }
         } catch (Throwable t) {
             _logger.error("Error extracting user filters", t);
-            throw new ApsSystemException("Error extracting user filters", t);
+            throw new EntException("Error extracting user filters", t);
         }
         return userEntityFilters;
     }

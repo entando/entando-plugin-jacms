@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
@@ -56,7 +56,7 @@ public class WidgetValidatorCmsHelper {
         }
     }
 
-    public static void validateSingleContentOnPage(String widgetCode, IPage page, String contentId, IContentManager contentManager, BeanPropertyBindingResult errors) throws ApsSystemException {
+    public static void validateSingleContentOnPage(String widgetCode, IPage page, String contentId, IContentManager contentManager, BeanPropertyBindingResult errors) throws EntException {
         if (StringUtils.isBlank(contentId)) {
             errors.reject(ERRCODE_CONTENT_ID_NULL, new String[]{}, widgetCode + ".contentId.required");
             return;

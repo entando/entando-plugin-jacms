@@ -14,7 +14,7 @@
 package org.entando.entando.plugins.jacms.aps.system.services.content.command;
 
 import com.agiletec.aps.system.common.entity.model.FieldError;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.IGroupManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 	}
 
 	@Override
-	protected boolean apply(Content content) throws ApsSystemException {
+	protected boolean apply(Content content) throws EntException {
 		if (!this.validateContent(content)) {
 			this.getTracer().traceError(content.getId(), ApsCommandErrorCode.NOT_APPLICABLE);
 			return false;
@@ -46,7 +46,7 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 		}
 	}
 
-	protected boolean validateContent(Content content) throws ApsSystemException {
+	protected boolean validateContent(Content content) throws EntException {
 		boolean valid = this.validateDescription(content) && this.checkContentUtilizers(content);
 		if (valid) {
 			List<FieldError> errors = content.validate(this.getGroupManager());

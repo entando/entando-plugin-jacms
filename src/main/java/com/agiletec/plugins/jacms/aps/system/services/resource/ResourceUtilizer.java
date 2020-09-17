@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.resource;
 
 import java.util.List;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Interfaccia base per i servizi, i cui elementi gestiti, 
@@ -35,8 +35,8 @@ public interface ResourceUtilizer {
 	 * identificata dal codice immesso.
 	 * @param resourceId L'identificativo della risorsa.
 	 * @return La lista degli oggetti referenzianti la risorsa.
-	 * @throws ApsSystemException in caso di errore.
+	 * @throws EntException in caso di errore.
 	 */
-	public List getResourceUtilizers(String resourceId) throws ApsSystemException;
+	public List getResourceUtilizers(String resourceId) throws EntException;
 	
 }

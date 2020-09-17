@@ -20,7 +20,7 @@ import com.agiletec.aps.system.common.entity.event.EntityTypesChangingEvent;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
 import com.agiletec.aps.system.common.tree.ITreeNode;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.apsadmin.system.ITreeAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
@@ -89,7 +89,7 @@ public class SearchEngineManagerTest {
     @Test
     public void addContentNotify_withError() throws Exception {
         when(this.factory.checkCurrentSubfolder()).thenReturn(true);
-        Mockito.doThrow(ApsSystemException.class).when(this.indexerDao).add(Mockito.any(Content.class));
+        Mockito.doThrow(EntException.class).when(this.indexerDao).add(Mockito.any(Content.class));
         Content content = Mockito.mock(Content.class);
         PublicContentChangedEvent event = new PublicContentChangedEvent();
         event.setContent(content);
@@ -117,7 +117,7 @@ public class SearchEngineManagerTest {
     @Test
     public void updateContentNotify_withError() throws Exception {
         when(this.factory.checkCurrentSubfolder()).thenReturn(true);
-        Mockito.doThrow(ApsSystemException.class).when(this.indexerDao).delete(Mockito.anyString(), Mockito.anyString());
+        Mockito.doThrow(EntException.class).when(this.indexerDao).delete(Mockito.anyString(), Mockito.anyString());
         Content content = Mockito.mock(Content.class);
         when(content.getId()).thenReturn("ART124");
         PublicContentChangedEvent event = new PublicContentChangedEvent();
@@ -193,9 +193,9 @@ public class SearchEngineManagerTest {
         Assert.assertEquals(2, resources.size());
     }
 
-    @Test(expected = ApsSystemException.class)
+    @Test(expected = EntException.class)
     public void testSearchIds_withErrors() throws Exception {
-        Mockito.doThrow(ApsSystemException.class).when(this.searcherDao).searchContentsId(Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.doThrow(EntException.class).when(this.searcherDao).searchContentsId(Mockito.any(), Mockito.any(), Mockito.any());
         when(this.factory.checkCurrentSubfolder()).thenReturn(Boolean.TRUE);
         this.searchEngineManager.searchEntityId("it", "test", Arrays.asList("group1", "group2"));
     }

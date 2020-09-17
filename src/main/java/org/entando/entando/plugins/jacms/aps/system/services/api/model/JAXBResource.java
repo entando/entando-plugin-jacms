@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api.model;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
@@ -43,7 +43,7 @@ public class JAXBResource {
 	
 	public JAXBResource() {}
 
-	public JAXBResource(ResourceInterface resource) throws ApsSystemException {
+	public JAXBResource(ResourceInterface resource) throws EntException {
 		try {
 			this.setDescription(resource.getDescription());
 			this.setFileName(resource.getMasterFileName());
@@ -76,7 +76,7 @@ public class JAXBResource {
 			}
 		} catch (IOException t) {
 			_logger.error("Error creating jaxb resource", t);
-			throw new ApsSystemException("Error creating jaxb resource", t);
+			throw new EntException("Error creating jaxb resource", t);
 		}
 	}
 	

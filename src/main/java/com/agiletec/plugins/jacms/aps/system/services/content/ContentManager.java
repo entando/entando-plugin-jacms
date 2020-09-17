@@ -17,7 +17,7 @@ import com.agiletec.aps.system.*;
 import com.agiletec.aps.system.common.entity.*;
 import com.agiletec.aps.system.common.entity.model.*;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.keygenerator.IKeyGeneratorManager;
@@ -152,20 +152,20 @@ public class ContentManager extends ApsEntityManager
      * @param onLine Specifies the type of the content to return: 'true'
      * references the published content, 'false' the freely modifiable one.
      * @return The requested content.
-     * @throws ApsSystemException In case of error.
+     * @throws EntException In case of error.
      */
     @Override
-    public Content loadContent(String id, boolean onLine) throws ApsSystemException {
+    public Content loadContent(String id, boolean onLine) throws EntException {
         try {
             ContentRecordVO contentVo = this.loadContentVO(id);
             return this.createContent(contentVo, onLine);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error while loading content : id {}", id, e);
-            throw new ApsSystemException("Error while loading content : id " + id, e);
+            throw new EntException("Error while loading content : id " + id, e);
         }
     }
 
-    protected Content createContent(ContentRecordVO contentVo, boolean onLine) throws ApsSystemException {
+    protected Content createContent(ContentRecordVO contentVo, boolean onLine) throws EntException {
         Content content = null;
         try {
             if (contentVo != null) {
@@ -207,9 +207,9 @@ public class ContentManager extends ApsEntityManager
                     }
                 }
             }
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error while creating content by vo", e);
-            throw new ApsSystemException("Error while creating content by vo", e);
+            throw new EntException("Error while creating content by vo", e);
         }
         return content;
     }
@@ -220,15 +220,15 @@ public class ContentManager extends ApsEntityManager
      *
      * @param id The id of the requested content.
      * @return The VO object corresponding to the wanted content.
-     * @throws ApsSystemException in case of error.
+     * @throws EntException in case of error.
      */
     @Override
-    public ContentRecordVO loadContentVO(String id) throws ApsSystemException {
+    public ContentRecordVO loadContentVO(String id) throws EntException {
         try {
             return (ContentRecordVO) this.getContentDAO().loadEntityRecord(id);
         } catch (Throwable t) {
             logger.error("Error while loading content vo : id {}", id, t);
-            throw new ApsSystemException("Error while loading content vo : id " + id, t);
+            throw new EntException("Error while loading content vo : id " + id, t);
         }
     }
 
@@ -236,15 +236,15 @@ public class ContentManager extends ApsEntityManager
      * Save a content in the DB.
      *
      * @param content The content to add.
-     * @throws ApsSystemException in case of error.
+     * @throws EntException in case of error.
      */
     @Override
-    public void saveContent(Content content) throws ApsSystemException {
+    public void saveContent(Content content) throws EntException {
         this.addContent(content);
     }
 
     @Override
-    public void saveContentAndContinue(Content content) throws ApsSystemException {
+    public void saveContentAndContinue(Content content) throws EntException {
         this.addUpdateContent(content, false);
     }
 
@@ -253,11 +253,11 @@ public class ContentManager extends ApsEntityManager
      * attached
      */
     @Override
-    public void addContent(Content content) throws ApsSystemException {
+    public void addContent(Content content) throws EntException {
         this.addUpdateContent(content, true);
     }
 
-    private void addUpdateContent(Content content, boolean updateDate) throws ApsSystemException {
+    private void addUpdateContent(Content content, boolean updateDate) throws EntException {
         try {
             content.setLastModified(new Date());
             if (updateDate) {
@@ -282,7 +282,7 @@ public class ContentManager extends ApsEntityManager
             }
         } catch (Throwable t) {
             logger.error("Error while saving content", t);
-            throw new ApsSystemException("Error while saving content", t);
+            throw new EntException("Error while saving content", t);
         }
     }
 
@@ -291,14 +291,14 @@ public class ContentManager extends ApsEntityManager
      *
      * @param content The ID associated to the content to be displayed in the
      * portal.
-     * @throws ApsSystemException in case of error.
+     * @throws EntException in case of error.
      */
     @Override
     @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id, #content.typeCode)")
-    public void insertOnLineContent(Content content) throws ApsSystemException {
+    public void insertOnLineContent(Content content) throws EntException {
         try {
             content.setLastModified(new Date());
             if (null == content.getId()) {
@@ -317,7 +317,7 @@ public class ContentManager extends ApsEntityManager
             this.notifyPublicContentChanging(content, operationEventCode);
         } catch (Throwable t) {
             logger.error("Error while inserting content on line", t);
-            throw new ApsSystemException("Error while inserting content on line", t);
+            throw new EntException("Error while inserting content on line", t);
         }
     }
 
@@ -325,13 +325,13 @@ public class ContentManager extends ApsEntityManager
      * Return the list of all the content IDs.
      *
      * @return The list of all the content IDs.
-     * @throws ApsSystemException In case of error
+     * @throws EntException In case of error
      * @deprecated Since Entando 2.0 version 2.0.9, use
      * searchId(EntitySearchFilter[]) method
      */
     @Override
     @Deprecated
-    public List<String> getAllContentsId() throws ApsSystemException {
+    public List<String> getAllContentsId() throws EntException {
         return super.getAllEntityId();
     }
 
@@ -358,14 +358,14 @@ public class ContentManager extends ApsEntityManager
      * Obviously the content itself is not deleted.
      *
      * @param content the content to unpublish.
-     * @throws ApsSystemException in case of error
+     * @throws EntException in case of error
      */
     @Override
     @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id, #content.typeCode)")
-    public void removeOnLineContent(Content content) throws ApsSystemException {
+    public void removeOnLineContent(Content content) throws EntException {
         try {
             content.setLastModified(new Date());
             content.incrementVersion(false);
@@ -376,7 +376,7 @@ public class ContentManager extends ApsEntityManager
             this.notifyPublicContentChanging(content, PublicContentChangedEvent.REMOVE_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error while removing onLine content", t);
-            throw new ApsSystemException("Error while removing onLine content", t);
+            throw new EntException("Error while removing onLine content", t);
         }
     }
 
@@ -410,14 +410,14 @@ public class ContentManager extends ApsEntityManager
      * Deletes a content from the DB.
      *
      * @param content The content to delete.
-     * @throws ApsSystemException in case of error.
+     * @throws EntException in case of error.
      */
     @Override
     @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id)")
-    public void deleteContent(Content content) throws ApsSystemException {
+    public void deleteContent(Content content) throws EntException {
         this.deleteContent(content.getId());
     }
 
@@ -426,93 +426,93 @@ public class ContentManager extends ApsEntityManager
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#contentId)", condition = "#contentId != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#contentId)")
-    public void deleteContent(String contentId) throws ApsSystemException {
+    public void deleteContent(String contentId) throws EntException {
         try {
             this.getContentDAO().deleteEntity(contentId);
         } catch (Throwable t) {
             logger.error("Error while deleting content {}", contentId, t);
-            throw new ApsSystemException("Error while deleting content " + contentId, t);
+            throw new EntException("Error while deleting content " + contentId, t);
         }
     }
 
     @Override
     public List<String> loadPublicContentsId(String contentType, String[] categories, EntitySearchFilter[] filters,
-            Collection<String> userGroupCodes) throws ApsSystemException {
+            Collection<String> userGroupCodes) throws EntException {
         return this.loadPublicContentsId(contentType, categories, false, filters, userGroupCodes);
     }
 
     @Override
     public List<String> loadPublicContentsId(String contentType, String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         try {
             return this.getPublicContentSearcherDAO().loadContentsId(contentType, categories, orClauseCategoryFilter, filters, userGroupCodes);
         } catch (Throwable t) {
             logger.error(ERROR_WHILE_LOADING_CONTENTS, t);
-            throw new ApsSystemException(ERROR_WHILE_LOADING_CONTENTS, t);
+            throw new EntException(ERROR_WHILE_LOADING_CONTENTS, t);
         }
     }
 
     @Override
     public List<String> loadPublicContentsId(String[] categories,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         return this.loadPublicContentsId(categories, false, filters, userGroupCodes);
     }
 
     @Override
     public List<String> loadPublicContentsId(String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         try {
             return this.getPublicContentSearcherDAO().loadContentsId(categories, orClauseCategoryFilter, filters, userGroupCodes);
         } catch (Throwable t) {
             logger.error(ERROR_WHILE_LOADING_CONTENTS, t);
-            throw new ApsSystemException(ERROR_WHILE_LOADING_CONTENTS, t);
+            throw new EntException(ERROR_WHILE_LOADING_CONTENTS, t);
         }
     }
 
     @Override
-    public List<String> loadWorkContentsId(EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+    public List<String> loadWorkContentsId(EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         return this.loadWorkContentsId(null, false, filters, userGroupCodes);
     }
 
     @Override
-    public List<String> loadWorkContentsId(String[] categories, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+    public List<String> loadWorkContentsId(String[] categories, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         return this.loadWorkContentsId(categories, false, filters, userGroupCodes);
     }
 
     @Override
     public List<String> loadWorkContentsId(String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         try {
             return this.getWorkContentSearcherDAO().loadContentsId(categories, orClauseCategoryFilter, filters, userGroupCodes);
         } catch (Throwable t) {
             logger.error("Error while loading work contents", t);
-            throw new ApsSystemException("Error while loading work contents", t);
+            throw new EntException("Error while loading work contents", t);
         }
     }
 
     @Override
     public Integer countWorkContents(String[] categories, boolean orClauseCategoryFilter,
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         try {
             return this.getWorkContentSearcherDAO().countContents(categories, orClauseCategoryFilter, filters, userGroupCodes);
         } catch (Throwable t) {
             logger.error("Error while counting work contents", t);
-            throw new ApsSystemException("Error while counting work contents", t);
+            throw new EntException("Error while counting work contents", t);
         }
     }
 
     @Override
-    public SearcherDaoPaginatedResult<String> getPaginatedWorkContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+    public SearcherDaoPaginatedResult<String> getPaginatedWorkContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         return this.getPaginatedContentsId(categories, orClauseCategoryFilter, filters, userGroupCodes, this.getWorkContentSearcherDAO());
     }
 
     @Override
-    public SearcherDaoPaginatedResult<String> getPaginatedPublicContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws ApsSystemException {
+    public SearcherDaoPaginatedResult<String> getPaginatedPublicContentsId(String[] categories, boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) throws EntException {
         return this.getPaginatedContentsId(categories, orClauseCategoryFilter, filters, userGroupCodes, this.getPublicContentSearcherDAO());
     }
     
     private SearcherDaoPaginatedResult<String> getPaginatedContentsId(String[] categories, boolean orClauseCategoryFilter, 
-            EntitySearchFilter[] filters, Collection<String> userGroupCodes, IContentSearcherDAO searcherDao) throws ApsSystemException {
+            EntitySearchFilter[] filters, Collection<String> userGroupCodes, IContentSearcherDAO searcherDao) throws EntException {
         SearcherDaoPaginatedResult<String> pagedResult = null;
         try {
             int count = searcherDao.countContents(categories, orClauseCategoryFilter, filters, userGroupCodes);
@@ -520,53 +520,53 @@ public class ContentManager extends ApsEntityManager
             pagedResult = new SearcherDaoPaginatedResult<>(count, contentsId);
         } catch (Throwable t) {
             logger.error("Error searching paginated contents id", t);
-            throw new ApsSystemException("Error searching paginated contents id", t);
+            throw new EntException("Error searching paginated contents id", t);
         }
         return pagedResult;
     }
     
     @Override
-    public List getPageUtilizers(String pageCode) throws ApsSystemException {
+    public List getPageUtilizers(String pageCode) throws EntException {
         try {
             return this.getContentDAO().getPageUtilizers(pageCode);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error while loading referenced contents : page " + pageCode, t);
+            throw new EntException("Error while loading referenced contents : page " + pageCode, t);
         }
     }
 
     @Override
-    public List getContentUtilizers(String contentId) throws ApsSystemException {
+    public List getContentUtilizers(String contentId) throws EntException {
         try {
             return this.getContentDAO().getContentUtilizers(contentId);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error while loading referenced contents : content " + contentId, t);
+            throw new EntException("Error while loading referenced contents : content " + contentId, t);
         }
     }
 
     @Override
-    public List<String> getGroupUtilizers(String groupName) throws ApsSystemException {
+    public List<String> getGroupUtilizers(String groupName) throws EntException {
         try {
             return this.getContentDAO().getGroupUtilizers(groupName);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error while loading referenced contents : group " + groupName, t);
+            throw new EntException("Error while loading referenced contents : group " + groupName, t);
         }
     }
 
     @Override
-    public List getResourceUtilizers(String resourceId) throws ApsSystemException {
+    public List getResourceUtilizers(String resourceId) throws EntException {
         try {
             return this.getContentDAO().getResourceUtilizers(resourceId);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error while loading referenced contents : resource " + resourceId, t);
+            throw new EntException("Error while loading referenced contents : resource " + resourceId, t);
         }
     }
 
     @Override
-    public List getCategoryUtilizers(String resourceId) throws ApsSystemException {
+    public List getCategoryUtilizers(String resourceId) throws EntException {
         try {
             return this.getContentDAO().getCategoryUtilizers(resourceId);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error while loading referenced contents : category " + resourceId, t);
+            throw new EntException("Error while loading referenced contents : category " + resourceId, t);
         }
     }
 
@@ -663,7 +663,7 @@ public class ContentManager extends ApsEntityManager
     }
 
     @Override
-    public IApsEntity getEntity(String entityId) throws ApsSystemException {
+    public IApsEntity getEntity(String entityId) throws EntException {
         return this.loadContent(entityId, false);
     }
 

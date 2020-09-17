@@ -17,7 +17,7 @@ import javax.swing.ImageIcon;
 
 import org.entando.entando.aps.system.services.storage.IStorageManager;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInstance;
 
@@ -35,13 +35,13 @@ public interface IImageResizer {
 	 * @param filePath Il path assoluto su disco su cui deve essere salvata la risorsa.
 	 * Il path è comprensivo del nome del file.
 	 * @param dimension Le dimensioni del rettangolo in cui deve essere inscritta l'immagine.
-	 * @throws ApsSystemException In caso di errore.
+	 * @throws EntException In caso di errore.
 	 * @deprecated 
 	 */
-	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws ApsSystemException;
+	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws EntException;
 	
 	public ResourceInstance saveResizedImage(String subPath, boolean isProtectedResource, 
-			ImageIcon imageIcon, ImageResourceDimension dimension) throws ApsSystemException;
+			ImageIcon imageIcon, ImageResourceDimension dimension) throws EntException;
 	
 	public void setStorageManager(IStorageManager storageManager);
 	

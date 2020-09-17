@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
@@ -139,7 +139,7 @@ public class ApiResourceInterface {
             throw ae;
         } catch (Throwable t) {
         	_logger.error("error in getResource", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return jaxbResource;
     }
@@ -181,7 +181,7 @@ public class ApiResourceInterface {
             throw ae;
         } catch (Throwable t) {
         	_logger.error("error in addResource", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         } finally {
 			if (null != bean && null != bean.getFile()) {
 				bean.getFile().delete();
@@ -223,7 +223,7 @@ public class ApiResourceInterface {
 			response.setResult(IResponseBuilder.SUCCESS);
         } catch (Throwable t) {
         	_logger.error("error in updateResource", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         } finally {
 			if (null != bean && null != bean.getFile()) {
 				bean.getFile().delete();
@@ -344,7 +344,7 @@ public class ApiResourceInterface {
         } catch (Throwable t) {
         	_logger.error("Error deleting resource", t);
             //ApsSystemUtils.logThrowable(t, this, "deleteResource");
-            throw new ApsSystemException("Error deleting resource", t);
+            throw new EntException("Error deleting resource", t);
         }
 		return response;
 	}
@@ -363,7 +363,7 @@ public class ApiResourceInterface {
         } catch (Throwable t) {
         	_logger.error("Error deleting resource", t);
             //ApsSystemUtils.logThrowable(t, this, "deleteResource");
-            throw new ApsSystemException("Error deleting resource", t);
+            throw new EntException("Error deleting resource", t);
         }
         return response;
 	}
@@ -409,7 +409,7 @@ public class ApiResourceInterface {
         } catch (Throwable t) {
         	_logger.error("Error deleting resource", t);
             //ApsSystemUtils.logThrowable(t, this, "deleteResource");
-            throw new ApsSystemException("Error deleting resource", t);
+            throw new EntException("Error deleting resource", t);
         }
         return response;
 	}

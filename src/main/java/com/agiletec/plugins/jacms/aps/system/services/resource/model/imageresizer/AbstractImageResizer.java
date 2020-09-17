@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInstance;
 import org.entando.entando.aps.system.services.storage.IStorageManager;
@@ -37,7 +37,7 @@ public abstract class AbstractImageResizer implements IImageResizer {
 	
 	@Override
 	public ResourceInstance saveResizedImage(String subPath, boolean isProtectedResource, 
-			ImageIcon imageIcon, ImageResourceDimension dimension) throws ApsSystemException {
+			ImageIcon imageIcon, ImageResourceDimension dimension) throws EntException {
 		ResourceInstance resizedInstance = new ResourceInstance();
 		resizedInstance.setSize(dimension.getIdDim());
 		BufferedImage outImage = this.getResizedImage(imageIcon, dimension.getDimx(), dimension.getDimy());
@@ -60,14 +60,14 @@ public abstract class AbstractImageResizer implements IImageResizer {
 			_logger.error("Error creating resized Image", t);
 			String msg = "Error creating resigned Image";
 			//ApsSystemUtils.logThrowable(t, this, "saveImageResized", msg);
-			throw new ApsSystemException(msg, t);
+			throw new EntException(msg, t);
 		}
 		String mimeType = URLConnection.guessContentTypeFromName(filename);
 		resizedInstance.setMimeType(mimeType);
 		return resizedInstance;
 	}
 	
-	protected abstract BufferedImage getResizedImage(ImageIcon imageIcon, int dimensionX, int dimensionY) throws ApsSystemException;
+	protected abstract BufferedImage getResizedImage(ImageIcon imageIcon, int dimensionX, int dimensionY) throws EntException;
 	
 	/**
 	 * Calcola il rapporto di scala sulla base della dimensione maggiore (tenuto conto

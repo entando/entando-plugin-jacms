@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
 import com.agiletec.aps.system.common.AbstractService;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
@@ -90,17 +90,17 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * Aggiunge un modello di contenuto nel sistema.
      *
      * @param model Il modello da aggiungere.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
     @Override
-    public void addContentModel(ContentModel model) throws ApsSystemException {
+    public void addContentModel(ContentModel model) throws EntException {
         try {
             this.getContentModelDAO().addContentModel(model);
             this.getCacheWrapper().addContentModel(model);
             this.notifyContentModelChanging(model, ContentModelChangedEvent.INSERT_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error saving a contentModel", t);
-            throw new ApsSystemException("Error saving a contentModel", t);
+            throw new EntException("Error saving a contentModel", t);
         }
     }
 
@@ -108,17 +108,17 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * Rimuove un modello di contenuto dal sistema.
      *
      * @param model Il modello di contenuto da rimuovere.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
     @Override
-    public void removeContentModel(ContentModel model) throws ApsSystemException {
+    public void removeContentModel(ContentModel model) throws EntException {
         try {
             this.getContentModelDAO().deleteContentModel(model);
             this.getCacheWrapper().removeContentModel(model);
             this.notifyContentModelChanging(model, ContentModelChangedEvent.REMOVE_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error deleting a content model", t);
-            throw new ApsSystemException("Error deleting a content model", t);
+            throw new EntException("Error deleting a content model", t);
         }
     }
 
@@ -126,21 +126,21 @@ public class ContentModelManager extends AbstractService implements IContentMode
      * Aggiorna un modello di contenuto.
      *
      * @param model Il modello di contenuto da aggiornare.
-     * @throws ApsSystemException In caso di errori in accesso al db.
+     * @throws EntException In caso di errori in accesso al db.
      */
     @Override
-    public void updateContentModel(ContentModel model) throws ApsSystemException {
+    public void updateContentModel(ContentModel model) throws EntException {
         try {
             this.getContentModelDAO().updateContentModel(model);
             this.getCacheWrapper().updateContentModel(model);
             this.notifyContentModelChanging(model, ContentModelChangedEvent.UPDATE_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error updating a content model", t);
-            throw new ApsSystemException("Error updating a content model", t);
+            throw new EntException("Error updating a content model", t);
         }
     }
 
-    private void notifyContentModelChanging(ContentModel contentModel, int operationCode) throws ApsSystemException {
+    private void notifyContentModelChanging(ContentModel contentModel, int operationCode) throws EntException {
         ContentModelChangedEvent event = new ContentModelChangedEvent();
         event.setContentModel(contentModel);
         event.setOperationCode(operationCode);
@@ -304,7 +304,7 @@ public class ContentModelManager extends AbstractService implements IContentMode
             try {
                 List<String> ids = contentManager.searchId(contentType, null);
                 reference.setContentsId(ids);
-            } catch (ApsSystemException e) {
+            } catch (EntException e) {
                 throw new RuntimeException(e);
             }
             return reference;

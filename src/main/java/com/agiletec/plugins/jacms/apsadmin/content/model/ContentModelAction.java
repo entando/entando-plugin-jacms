@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.apsadmin.content.model;
 
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
@@ -283,7 +283,7 @@ public class ContentModelAction extends BaseAction implements IContentModelActio
         try {
             AttributeInterface attribute = (AttributeInterface) prototype.getAttribute(attributeName);
             if (null == attribute) {
-                throw new ApsSystemException("Null Attribute '" + attributeName + "' for Content Type '"
+                throw new EntException("Null Attribute '" + attributeName + "' for Content Type '"
                         + prototype.getTypeCode() + "' - '" + prototype.getTypeDescr());
             }
             String methodsString = this.getAllowedPublicAttributeMethods().getProperty(attribute.getType());

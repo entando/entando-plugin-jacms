@@ -17,7 +17,7 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.AbstractService;
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -161,10 +161,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
      *
      * @param bean L'oggetto detentore dei dati della risorsa da inserire.
      * @return la risorsa aggiunta.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
     @Override
-    public ResourceInterface addResource(ResourceDataBean bean) throws ApsSystemException {
+    public ResourceInterface addResource(ResourceDataBean bean) throws EntException {
         ResourceInterface newResource = this.createResource(bean);
         try {
             this.generateAndSetResourceId(newResource, bean.getResourceId());
@@ -173,7 +173,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         } catch (Throwable t) {
             newResource.deleteResourceInstances();
             logger.error("Error adding resource", t);
-            throw new ApsSystemException("Error adding resource", t);
+            throw new EntException("Error adding resource", t);
         }
         return newResource;
     }
@@ -191,15 +191,15 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * indipendentemente dal tipo.
      *
      * @param beans L'oggetto detentore dei dati della risorsa da inserire.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
     @Override
-    public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws ApsSystemException {
+    public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws EntException {
         List<ResourceInterface> newResource = new ArrayList<>();
         beans.forEach(b -> {
             try {
                 newResource.add(this.addResource(b));
-            } catch (ApsSystemException ex) {
+            } catch (EntException ex) {
                 logger.error("Error adding resources", ex);
             }
         });
@@ -211,14 +211,14 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * filesystem.
      *
      * @param resources La lista di risorse da cancellare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
     @Override
-    public void deleteResources(List<ResourceInterface> resources) throws ApsSystemException {
+    public void deleteResources(List<ResourceInterface> resources) throws EntException {
         resources.forEach(resourceDelete -> {
             try {
                 deleteResource(resourceDelete);
-            } catch (ApsSystemException ex) {
+            } catch (EntException ex) {
                 logger.error("Error deleting resources", ex);
             }
         });
@@ -228,20 +228,20 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * Salva una lista di risorse nel db, indipendentemente dal tipo.y
      *
      * @param resource La risorsa da salvare.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
     @Override
-    public void addResource(ResourceInterface resource) throws ApsSystemException {
+    public void addResource(ResourceInterface resource) throws EntException {
         try {
             this.generateAndSetResourceId(resource, resource.getId());
             this.getResourceDAO().addResource(resource);
         } catch (Throwable t) {
             logger.error("Error adding resource", t);
-            throw new ApsSystemException("Error adding resource", t);
+            throw new EntException("Error adding resource", t);
         }
     }
 
-    protected void generateAndSetResourceId(ResourceInterface resource, String id) throws ApsSystemException {
+    protected void generateAndSetResourceId(ResourceInterface resource, String id) throws EntException {
         if (null == id || id.trim().length() == 0) {
             IKeyGeneratorManager keyGenerator
                     = (IKeyGeneratorManager) this.getBeanFactory().getBean(SystemConstants.KEY_GENERATOR_MANAGER);
@@ -251,7 +251,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     @Override
-    public void updateResource(ResourceDataBean bean) throws ApsSystemException {
+    public void updateResource(ResourceDataBean bean) throws EntException {
         ResourceInterface oldResource = this.loadResource(bean.getResourceId());
         try {
             if (null == bean.getInputStream()) {
@@ -273,7 +273,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
             }
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
-            throw new ApsSystemException("Error updating resource", t);
+            throw new EntException("Error updating resource", t);
         }
     }
 
@@ -281,20 +281,20 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * Aggiorna una risorsa nel db.
      *
      * @param resource Il contenuto da aggiungere o modificare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
     @Override
-    public void updateResource(ResourceInterface resource) throws ApsSystemException {
+    public void updateResource(ResourceInterface resource) throws EntException {
         try {
             this.getResourceDAO().updateResource(resource);
             this.notifyResourceChanging(resource);
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
-            throw new ApsSystemException("Error updating resource", t);
+            throw new EntException("Error updating resource", t);
         }
     }
 
-    protected ResourceInterface createResource(ResourceDataBean bean) throws ApsSystemException {
+    protected ResourceInterface createResource(ResourceDataBean bean) throws EntException {
         ResourceInterface resource = this.createResourceType(bean.getResourceType());
         resource.setDescription(bean.getDescr());
         resource.setMainGroup(bean.getMainGroup());
@@ -307,7 +307,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         return resource;
     }
 
-    protected void notifyResourceChanging(ResourceInterface resource) throws ApsSystemException {
+    protected void notifyResourceChanging(ResourceInterface resource) throws EntException {
         ResourceChangedEvent event = new ResourceChangedEvent();
         event.setResource(resource);
         this.notifyEvent(event);
@@ -326,17 +326,17 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * @param groupCodes I codici dei gruppi consentiti tramite il quale
      * filtrare le risorse.
      * @return La lista di identificativi di risorse.
-     * @throws ApsSystemException In caso di errore.
+     * @throws EntException In caso di errore.
      */
     @Override
     public List<String> searchResourcesId(String type, String text,
-            String categoryCode, Collection<String> groupCodes) throws ApsSystemException {
+            String categoryCode, Collection<String> groupCodes) throws EntException {
         return this.searchResourcesId(type, text, null, categoryCode, groupCodes);
     }
 
     @Override
     public List<String> searchResourcesId(String type, String text,
-            String filename, String categoryCode, Collection<String> groupCodes) throws ApsSystemException {
+            String filename, String categoryCode, Collection<String> groupCodes) throws EntException {
         if (null == groupCodes || groupCodes.isEmpty()) {
             return new ArrayList<>();
         }
@@ -345,45 +345,45 @@ public class ResourceManager extends AbstractService implements IResourceManager
             resourcesId = this.getResourceDAO().searchResourcesId(type, text, filename, categoryCode, groupCodes);
         } catch (Throwable t) {
             logger.error("Error searching resources id", t);
-            throw new ApsSystemException("Error searching resources id", t);
+            throw new EntException("Error searching resources id", t);
         }
         return resourcesId;
     }
 
     @Override
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories) throws ApsSystemException {
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories) throws EntException {
         this.checkFilterKeys(filters);
         List<String> resourcesId = null;
         try {
             resourcesId = this.getResourceDAO().searchResourcesId(filters, categories);
         } catch (Throwable t) {
             logger.error("Error searching resources id", t);
-            throw new ApsSystemException("Error searching resources id", t);
+            throw new EntException("Error searching resources id", t);
         }
         return resourcesId;
     }
 
     @Override
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, String categoryCode, Collection<String> groupCodes) throws ApsSystemException {
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, String categoryCode, Collection<String> groupCodes) throws EntException {
         List<String> categories = (StringUtils.isBlank(categoryCode)) ? null : Arrays.asList(categoryCode);
         return this.searchResourcesId(filters, categories, groupCodes);
     }
     
     @Override
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> groupCodes) throws ApsSystemException {
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> groupCodes) throws EntException {
         this.checkFilterKeys(filters);
         List<String> resourcesId = null;
         try {
             resourcesId = this.getResourceDAO().searchResourcesId(filters, categories, groupCodes);
         } catch (Throwable t) {
             logger.error("Error searching resources id", t);
-            throw new ApsSystemException("Error searching resources id", t);
+            throw new EntException("Error searching resources id", t);
         }
         return resourcesId;
     }
     
     @Override
-    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> userGroupCodes) throws ApsSystemException {
+    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> userGroupCodes) throws EntException {
         SearcherDaoPaginatedResult<String> pagedResult = null;
         try {
             int count = this.getResourceDAO().countResources(filters, categories, userGroupCodes);
@@ -391,7 +391,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
             pagedResult = new SearcherDaoPaginatedResult<>(count, resourcesId);
         } catch (Throwable t) {
             logger.error("Error searching paginated resources id", t);
-            throw new ApsSystemException("Error searching paginated resources id", t);
+            throw new EntException("Error searching paginated resources id", t);
         }
         return pagedResult;
     }
@@ -417,10 +417,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * @param id L'identificativo della risorsa da caricare.
      * @return La risorsa cercata. null se non vi è nessuna risorsa con
      * l'identificativo immesso.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
     @Override
-    public ResourceInterface loadResource(String id) throws ApsSystemException {
+    public ResourceInterface loadResource(String id) throws EntException {
         ResourceInterface resource = null;
         try {
             ResourceRecordVO resourceVo = this.getResourceDAO().loadResourceVo(id);
@@ -430,7 +430,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
             }
         } catch (Throwable t) {
             logger.error("Error loading resource : id {}", id, t);
-            throw new ApsSystemException("Error loading resource : id " + id, t);
+            throw new EntException("Error loading resource : id " + id, t);
         }
         return resource;
     }
@@ -441,9 +441,9 @@ public class ResourceManager extends AbstractService implements IResourceManager
      *
      * @param resourceVo Il vo relativo al record.
      * @return La risorsa valorizzata.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    protected ResourceInterface createResource(ResourceRecordVO resourceVo) throws ApsSystemException {
+    protected ResourceInterface createResource(ResourceRecordVO resourceVo) throws EntException {
         String resourceType = resourceVo.getResourceType();
         String resourceXML = resourceVo.getXml();
         ResourceInterface resource = this.createResourceType(resourceType);
@@ -463,9 +463,9 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * @param resource Il prototipo di risorsa da specializzare con gli
      * attributi dell'xml.
      * @param xml L'xml della risorsa specifica.
-     * @throws ApsSystemException
+     * @throws EntException
      */
-    protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws ApsSystemException {
+    protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws EntException {
         try {
             SAXParserFactory parseFactory = SAXParserFactory.newInstance();
             SAXParser parser = parseFactory.newSAXParser();
@@ -474,7 +474,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
             parser.parse(is, handler);
         } catch (Throwable t) {
             logger.error("Error loading resource", t);
-            throw new ApsSystemException("Error loading resource", t);
+            throw new EntException("Error loading resource", t);
         }
     }
 
@@ -482,30 +482,30 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * Cancella una risorsa dal db ed i file di ogni istanza dal filesystem.
      *
      * @param resource La risorsa da cancellare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
     @Override
-    public void deleteResource(ResourceInterface resource) throws ApsSystemException {
+    public void deleteResource(ResourceInterface resource) throws EntException {
         try {
             this.getResourceDAO().deleteResource(resource.getId());
             resource.deleteResourceInstances();
         } catch (Throwable t) {
             logger.error("Error deleting resource", t);
-            throw new ApsSystemException("Error deleting resource", t);
+            throw new EntException("Error deleting resource", t);
         }
     }
 
     @Override
-    public void refreshMasterFileNames() throws ApsSystemException {
+    public void refreshMasterFileNames() throws EntException {
         this.startResourceReloaderThread(null, ResourceReloaderThread.RELOAD_MASTER_FILE_NAME);
     }
 
     @Override
-    public void refreshResourcesInstances(String resourceTypeCode) throws ApsSystemException {
+    public void refreshResourcesInstances(String resourceTypeCode) throws EntException {
         this.startResourceReloaderThread(resourceTypeCode, ResourceReloaderThread.REFRESH_INSTANCE);
     }
 
-    protected void startResourceReloaderThread(String resourceTypeCode, int operationCode) throws ApsSystemException {
+    protected void startResourceReloaderThread(String resourceTypeCode, int operationCode) throws EntException {
         if (this.getStatus() != STATUS_READY) {
             logger.info("Service not ready : status {}", this.getStatus());
             return;
@@ -554,7 +554,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     @Override
-    public List<String> getGroupUtilizers(String groupName) throws ApsSystemException {
+    public List<String> getGroupUtilizers(String groupName) throws EntException {
         List<String> resourcesId = null;
         try {
             List<String> allowedGroups = new ArrayList<>(1);
@@ -562,25 +562,25 @@ public class ResourceManager extends AbstractService implements IResourceManager
             resourcesId = this.getResourceDAO().searchResourcesId(null, null, null, null, allowedGroups);
         } catch (Throwable t) {
             logger.error("Error searching group utilizers : group '{}'", groupName, t);
-            throw new ApsSystemException("Error searching group utilizers : group '" + groupName + "'", t);
+            throw new EntException("Error searching group utilizers : group '" + groupName + "'", t);
         }
         return resourcesId;
     }
 
     @Override
-    public List getCategoryUtilizers(String categoryCode) throws ApsSystemException {
+    public List getCategoryUtilizers(String categoryCode) throws EntException {
         List<String> resourcesId = null;
         try {
             resourcesId = this.getResourceDAO().searchResourcesId(null, null, null, categoryCode, null);
         } catch (Throwable t) {
             logger.error("Error searching category utilizers : category code '{}'", categoryCode, t);
-            throw new ApsSystemException("Error searching category utilizers : category code '" + categoryCode + "'", t);
+            throw new EntException("Error searching category utilizers : category code '" + categoryCode + "'", t);
         }
         return resourcesId;
     }
 
     @Override
-    public void reloadCategoryReferences(String categoryCode) throws ApsSystemException {
+    public void reloadCategoryReferences(String categoryCode) throws EntException {
         try {
             List<String> resources = this.getCategoryUtilizersForReloadReferences(categoryCode);
             logger.info("start reload category references for {} resources", resources.size());
@@ -603,17 +603,17 @@ public class ResourceManager extends AbstractService implements IResourceManager
             }
         } catch (Throwable t) {
             logger.error("Error searching category utilizers : category code '{}'", categoryCode, t);
-            throw new ApsSystemException("Error searching category utilizers : category code '" + categoryCode + "'", t);
+            throw new EntException("Error searching category utilizers : category code '" + categoryCode + "'", t);
         }
     }
 
     @Override
-    public List getCategoryUtilizersForReloadReferences(String categoryCode) throws ApsSystemException {
+    public List getCategoryUtilizersForReloadReferences(String categoryCode) throws EntException {
         List<String> resourcesId = null;
         try {
             resourcesId = this.getCategoryUtilizers(categoryCode);
         } catch (Throwable t) {
-            throw new ApsSystemException("Error searching category utilizers : category code '" + categoryCode + "'", t);
+            throw new EntException("Error searching category utilizers : category code '" + categoryCode + "'", t);
         }
         return resourcesId;
     }
@@ -646,7 +646,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     @Override
-    public void updateMetadataMapping(Map<String, List<String>> mapping) throws ApsSystemException {
+    public void updateMetadataMapping(Map<String, List<String>> mapping) throws EntException {
         try {
             JAXBContext context = JAXBContext.newInstance(JaxbMetadataMapping.class);
             Marshaller marshaller = context.createMarshaller();
@@ -658,7 +658,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
             this.getCacheWrapper().updateMetadataMapping(mapping);
         } catch (Exception e) {
             logger.error("Error Updating resource metadata mapping", e);
-            throw new ApsSystemException("Error Updating resource metadata mapping", e);
+            throw new EntException("Error Updating resource metadata mapping", e);
         }
     }
 

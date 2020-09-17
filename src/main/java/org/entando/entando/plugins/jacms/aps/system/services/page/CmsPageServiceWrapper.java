@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.page;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.ContentUtilizer;
@@ -51,7 +51,7 @@ public class CmsPageServiceWrapper implements ContentServiceUtilizer<PageDto> {
         try {
             List<IPage> pages = this.getPageManagerWrapper().getContentUtilizers(contentId);
             return this.getDtoBuilder().convert(pages);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading page references for content {}", contentId, ex);
             throw new RestServerError("Error loading page references for content", ex);
         }

@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content.command;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCode;
 import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.BaseContentBulkCommand;
@@ -34,7 +34,7 @@ public class RemoveOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 	}
 
 	@Override
-	protected boolean apply(Content content) throws ApsSystemException {
+	protected boolean apply(Content content) throws EntException {
 		if (!this.validateContent(content)) {
 			this.getTracer().traceError(content.getId(), ApsCommandErrorCode.NOT_APPLICABLE);
 			return false;
@@ -45,7 +45,7 @@ public class RemoveOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 		}
 	}
 
-	protected boolean validateContent(Content content) throws ApsSystemException {
+	protected boolean validateContent(Content content) throws EntException {
 		Map<String, List<?>> references = this.getContentHelper().getReferencingObjects(content, this.getContentUtilizers());
 		return references == null || references.isEmpty();
 	}

@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
 import com.agiletec.aps.system.common.tree.ITreeNode;
 import com.agiletec.aps.system.common.tree.ITreeNodeManager;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.ILangManager;
 
 import java.io.File;
@@ -35,19 +35,19 @@ public interface ISearcherDAO {
 	/**
 	 * Inizializzazione del searcher.
 	 * @param dir La cartella locale contenitore dei dati persistenti.
-	 * @throws ApsSystemException In caso di errore
+	 * @throws EntException In caso di errore
 	 */
-	public void init(File dir) throws ApsSystemException;
+	public void init(File dir) throws EntException;
     
     public void setLangManager(ILangManager langManager);
 
     public void setTreeNodeManager(ITreeNodeManager treeNodeManager);
 	
     public List<String> searchContentsId(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws ApsSystemException;
+            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException;
 
     public FacetedContentsResult searchFacetedContents(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws ApsSystemException;
+            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException;
 	
     public void close();
 	

@@ -16,7 +16,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.parse.IEntityTypeFactory;
 import com.agiletec.aps.system.common.notify.INotifyManager;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -73,7 +73,7 @@ public class ContentManagerTest {
     }
 
     @Test
-    public void testCreateContent() throws ApsSystemException {
+    public void testCreateContent() throws EntException {
         String typeCode = "ART";
         // @formatter:off
         when(entityTypeFactory.extractEntityType(

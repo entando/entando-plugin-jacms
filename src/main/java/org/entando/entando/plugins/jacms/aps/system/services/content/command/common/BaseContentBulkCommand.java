@@ -24,7 +24,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.user.UserDetails;
@@ -36,7 +36,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext> extends BaseBulkCommand<String, IContentManager, C> implements ApplicationContextAware {
 
 	@Override
-	protected boolean apply(String item) throws ApsSystemException {
+	protected boolean apply(String item) throws EntException {
 		boolean performed = false;
 		Content content = this.getContent(item);
 		if (content == null) {
@@ -49,12 +49,12 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
 		return performed;
 	}
 
-	protected boolean isAuthOnContent(Content content) throws ApsSystemException {
+	protected boolean isAuthOnContent(Content content) throws EntException {
 		UserDetails user = this.getCurrentUser();
 		return user == null || this.getContentAuthHelper().isAuthToEdit(user, content);
 	}
 
-	protected boolean checkContentUtilizers(Content content) throws ApsSystemException {
+	protected boolean checkContentUtilizers(Content content) throws EntException {
 		if (!Group.FREE_GROUP_NAME.equals(content.getMainGroup()) && 
 				!content.getGroups().contains(Group.FREE_GROUP_NAME)) {
 			IContentManager contentManager = this.getApplier();
@@ -81,9 +81,9 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
 		return true;
 	}
 
-	protected abstract boolean apply(Content content) throws ApsSystemException;
+	protected abstract boolean apply(Content content) throws EntException;
 
-	protected Content getContent(String id) throws ApsSystemException {
+	protected Content getContent(String id) throws EntException {
 		return this.getApplier().loadContent(id, false);
 	}
 

@@ -17,7 +17,7 @@ import java.io.File;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.tree.ITreeNodeManager;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 
@@ -30,24 +30,24 @@ public interface IIndexerDAO {
 	/**
 	 * Inizializzazione dell'indicizzatore.
 	 * @param dir La cartella locale contenitore dei dati persistenti.
-	 * @throws ApsSystemException In caso di errori.
+	 * @throws EntException In caso di errori.
 	 */
-	public void init(File dir) throws ApsSystemException;
+	public void init(File dir) throws EntException;
 	
 	/**
 	 * Aggiunge un contenuto nel db del motore di ricerca.
      * @param entity Il contenuto da aggiungere.
-	 * @throws ApsSystemException In caso di errori.
+	 * @throws EntException In caso di errori.
 	 */
-	public void add(IApsEntity entity) throws ApsSystemException;
+	public void add(IApsEntity entity) throws EntException;
 	
 	/**
      * Cancella un documento indicizzato.
      * @param name Il nome del campo Field da utilizzare per recupero del documento.
      * @param value La chiave mediante il quale è stato indicizzato il documento.
-     * @throws ApsSystemException In caso di errori.
+     * @throws EntException In caso di errori.
      */
-    public void delete(String name, String value) throws ApsSystemException;
+    public void delete(String name, String value) throws EntException;
     
     public void close();
 	

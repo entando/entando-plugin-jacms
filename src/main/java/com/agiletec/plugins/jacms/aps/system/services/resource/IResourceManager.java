@@ -18,7 +18,7 @@ import java.util.List;
 
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
@@ -83,17 +83,17 @@ public interface IResourceManager {
      *
      * @param bean L'oggetto detentore dei dati della risorsa da inserire.
      * @return la risorsa aggiunta.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    public ResourceInterface addResource(ResourceDataBean bean) throws ApsSystemException;
+    public ResourceInterface addResource(ResourceDataBean bean) throws EntException;
 
     /**
      * Salva una risorsa nel db, indipendentemente dal tipo.
      *
      * @param resource La risorsa da salvare.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    public void addResource(ResourceInterface resource) throws ApsSystemException;
+    public void addResource(ResourceInterface resource) throws EntException;
 
     /**
      * Salva una lista di risorse nel db con incluse nel filesystem,
@@ -101,34 +101,34 @@ public interface IResourceManager {
      *
      * @param beans L'oggetto detentore dei dati della risorsa da inserire.
      * @return La lista delle risorse aggiunte
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws ApsSystemException;
+    public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws EntException;
 
     /**
      * Cancella una lista di risorse dal db ed i file di ogni istanza dal
      * filesystem.
      *
      * @param resources La lista di risorse da cancellare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void deleteResources(List<ResourceInterface> resources) throws ApsSystemException;
+    public void deleteResources(List<ResourceInterface> resources) throws EntException;
 
     /**
      * Aggiorna una risorsa nel db.
      *
      * @param resource La risorsa da modificare.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    public void updateResource(ResourceInterface resource) throws ApsSystemException;
+    public void updateResource(ResourceInterface resource) throws EntException;
 
     /**
      * Aggiorna una risorsa nel db.
      *
      * @param bean L'oggetto detentore dei dati della risorsa da modificare.
-     * @throws ApsSystemException in caso di errore.
+     * @throws EntException in caso di errore.
      */
-    public void updateResource(ResourceDataBean bean) throws ApsSystemException;
+    public void updateResource(ResourceDataBean bean) throws EntException;
 
     /**
      * Carica una lista di identificativi di risorse in base al tipo, ad una
@@ -143,10 +143,10 @@ public interface IResourceManager {
      * @param groupCodes I codici dei gruppi utenti consentiti tramite il quale
      * filtrare le risorse.
      * @return La lista di identificativi di risorse.
-     * @throws ApsSystemException In caso di errore.
+     * @throws EntException In caso di errore.
      */
     public List<String> searchResourcesId(String type, String text,
-            String categoryCode, Collection<String> groupCodes) throws ApsSystemException;
+            String categoryCode, Collection<String> groupCodes) throws EntException;
 
     /**
      * Carica una lista di identificativi di risorse in base al tipo, ad una
@@ -164,20 +164,20 @@ public interface IResourceManager {
      * @param groupCodes I codici dei gruppi utenti consentiti tramite il quale
      * filtrare le risorse.
      * @return La lista di identificativi di risorse.
-     * @throws ApsSystemException In caso di errore.
+     * @throws EntException In caso di errore.
      */
     public List<String> searchResourcesId(String type, String text,
-            String filename, String categoryCode, Collection<String> groupCodes) throws ApsSystemException;
+            String filename, String categoryCode, Collection<String> groupCodes) throws EntException;
     
     public List<String> searchResourcesId(FieldSearchFilter[] filters,
-            String categoryCode, Collection<String> groupCodes) throws ApsSystemException;
+            String categoryCode, Collection<String> groupCodes) throws EntException;
 
     public List<String> searchResourcesId(FieldSearchFilter[] filters,
-            List<String> categories, Collection<String> groupCodes) throws ApsSystemException;
+            List<String> categories, Collection<String> groupCodes) throws EntException;
 
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories) throws ApsSystemException;
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories) throws EntException;
 
-    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> userGroupCodes) throws ApsSystemException;
+    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> userGroupCodes) throws EntException;
 
     /**
      * Restituisce la risorsa con l'id specificato.
@@ -185,38 +185,38 @@ public interface IResourceManager {
      * @param id L'identificativo della risorsa da caricare.
      * @return La risorsa cercata. null se non vi è nessuna risorsa con
      * l'identificativo immesso.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public ResourceInterface loadResource(String id) throws ApsSystemException;
+    public ResourceInterface loadResource(String id) throws EntException;
 
     /**
      * Cancella una risorsa dal db ed i file di ogni istanza dal filesystem.
      *
      * @param resource La risorsa da cancellare.
-     * @throws ApsSystemException in caso di errore nell'accesso al db.
+     * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void deleteResource(ResourceInterface resource) throws ApsSystemException;
+    public void deleteResource(ResourceInterface resource) throws EntException;
 
     /**
      * Reload the master file name to all Resources. This method is used to
      * improve the porting from jAPS 2.0.x to version 2.2.x
      *
-     * @throws ApsSystemException In case of error
+     * @throws EntException In case of error
      */
-    public void refreshMasterFileNames() throws ApsSystemException;
+    public void refreshMasterFileNames() throws EntException;
 
     /**
      * Refresh all the instance (not the "main" instance) of resources of the
      * given type
      *
      * @param resourceTypeCode The type of the resources to refresh
-     * @throws ApsSystemException In case of error.
+     * @throws EntException In case of error.
      */
-    public void refreshResourcesInstances(String resourceTypeCode) throws ApsSystemException;
+    public void refreshResourcesInstances(String resourceTypeCode) throws EntException;
 
     public Map<String, List<String>> getMetadataMapping();
 
-    public void updateMetadataMapping(Map<String, List<String>> mapping) throws ApsSystemException;
+    public void updateMetadataMapping(Map<String, List<String>> mapping) throws EntException;
 
     /**
      * Return the service status id.

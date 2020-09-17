@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceDOM;
@@ -417,7 +417,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         return (!Group.FREE_GROUP_NAME.equals(this.getMainGroup()));
     }
 
-    protected File saveTempFile(String filename, InputStream is) throws ApsSystemException, IOException {
+    protected File saveTempFile(String filename, InputStream is) throws EntException, IOException {
         String tempDir = System.getProperty("java.io.tmpdir");
         String filePath = tempDir + File.separator + filename;
         FileOutputStream outStream = null;
@@ -431,7 +431,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
             }
         } catch (Throwable t) {
             logger.error("Error on saving temporary file '{}'", filename, t);
-            throw new ApsSystemException("Error on saving temporary file", t);
+            throw new EntException("Error on saving temporary file", t);
         } finally {
             if (null != outStream) {
                 outStream.close();

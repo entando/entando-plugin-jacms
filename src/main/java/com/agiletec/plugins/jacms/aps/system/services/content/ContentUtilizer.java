@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content;
 
 import java.util.List;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Basic interface for the services whose handled elements may have references to contents. 
@@ -33,8 +33,8 @@ public interface ContentUtilizer {
 	 * Return the list of the objects which reference the given content.
 	 * @param contentId The code of the content to inspect.
 	 * @return the list of the objects which reference the content. 
-	 * @throws ApsSystemException in case of error.
+	 * @throws EntException in case of error.
 	 */
-	public List getContentUtilizers(String contentId) throws ApsSystemException;
+	public List getContentUtilizers(String contentId) throws EntException;
 	
 }

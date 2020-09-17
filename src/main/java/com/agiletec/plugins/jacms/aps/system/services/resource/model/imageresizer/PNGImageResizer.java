@@ -33,7 +33,7 @@ import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 
 /**
@@ -46,7 +46,7 @@ public class PNGImageResizer extends AbstractImageResizer {
 	
 	@Override
 	@Deprecated
-	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws ApsSystemException {
+	public void saveResizedImage(ImageIcon imageIcon, String filePath, ImageResourceDimension dimension) throws EntException {
 		BufferedImage imageResized = this.getResizedImage(imageIcon, dimension.getDimx(), dimension.getDimy());
 		try {
 			File file = new File(filePath);
@@ -54,7 +54,7 @@ public class PNGImageResizer extends AbstractImageResizer {
 		} catch (Throwable t) {
 			String msg = this.getClass().getName() + ": saveResizedImage: " + t.toString();
 			_logger.error(" Error in saveResizedImage",t);
-			throw new ApsSystemException(msg, t);
+			throw new EntException(msg, t);
 		}
 	}
 	
@@ -65,10 +65,10 @@ public class PNGImageResizer extends AbstractImageResizer {
 	 * @param dimensioneX la dimensione orizzontale massima.
 	 * @param dimensioneY La dimensione verticale massima.
 	 * @return L'immagine risultante.
-	 * @throws ApsSystemException In caso di errore.
+	 * @throws EntException In caso di errore.
 	 */
 	@Override
-	protected BufferedImage getResizedImage(ImageIcon imageIcon, int dimensioneX, int dimensioneY) throws ApsSystemException {
+	protected BufferedImage getResizedImage(ImageIcon imageIcon, int dimensioneX, int dimensioneY) throws EntException {
     	Image image = imageIcon.getImage();
     	BufferedImage bi = this.toBufferedImage(image);
     	double scale = this.computeScale(image.getWidth(null), image.getHeight(null), dimensioneX, dimensioneY);
@@ -84,7 +84,7 @@ public class PNGImageResizer extends AbstractImageResizer {
         return biRes;
 	}
 	
-	protected BufferedImage toBufferedImage(Image image) throws ApsSystemException {
+	protected BufferedImage toBufferedImage(Image image) throws EntException {
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
 		}
@@ -107,7 +107,7 @@ public class PNGImageResizer extends AbstractImageResizer {
 			GraphicsConfiguration gc = gs.getDefaultConfiguration();
 			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
 		} catch (HeadlessException e) {
-			throw new ApsSystemException("The system does not have a screen", e);
+			throw new EntException("The system does not have a screen", e);
 		}
 		if (bimage == null) {
 			// Create a buffered image using the default color model
@@ -126,7 +126,7 @@ public class PNGImageResizer extends AbstractImageResizer {
 		return bimage;
 	}
 	
-	protected boolean hasAlpha(Image image) throws ApsSystemException {
+	protected boolean hasAlpha(Image image) throws EntException {
         // If buffered image, the color model is readily available
         if (image instanceof BufferedImage) {
             BufferedImage bimage = (BufferedImage)image;
@@ -138,7 +138,7 @@ public class PNGImageResizer extends AbstractImageResizer {
         try {
             pg.grabPixels();
         } catch (InterruptedException e) {
-        	throw new ApsSystemException("Error grabbing a single pixel", e);
+        	throw new EntException("Error grabbing a single pixel", e);
         }
         // Get the image's color model
         ColorModel cm = pg.getColorModel();

@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper.cache;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
@@ -62,7 +62,7 @@ public class ContentMapperCacheWrapperTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
-	@Test(expected = ApsSystemException.class)
+	@Test(expected = EntException.class)
 	public void testInitCacheWithError() throws Throwable {
 		cacheWrapper.initCache(this.pageManager);
 	}

@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Classe factory degli elementi ad uso del SearchEngine.
@@ -29,23 +29,23 @@ public interface ISearchEngineDAOFactory {
      */
     public void init() throws Exception;
 
-    public boolean checkCurrentSubfolder() throws ApsSystemException;
+    public boolean checkCurrentSubfolder() throws EntException;
 
     /**
      * Restituisce la classe dao delegata alle operazioni di indicizzazione.
      *
      * @return La classe dao delegata alle operazioni di indicizzazione.
-     * @throws ApsSystemException In caso nella errore.
+     * @throws EntException In caso nella errore.
      */
-    public IIndexerDAO getIndexer() throws ApsSystemException;
+    public IIndexerDAO getIndexer() throws EntException;
 
     /**
      * Restituisce la classe dao delegata alle operazioni di ricerca.
      *
      * @return La classe dao delegata alle operazioni di ricerca.
-     * @throws ApsSystemException In caso nella errore.
+     * @throws EntException In caso nella errore.
      */
-    public ISearcherDAO getSearcher() throws ApsSystemException;
+    public ISearcherDAO getSearcher() throws EntException;
 
     /**
      * Restituisce la classe dao delegata alle operazioni di indicizzazione.
@@ -53,9 +53,9 @@ public interface ISearchEngineDAOFactory {
      * @param subDir La sottocartella (figlia della root a servizio del sistema)
      * utilizzata per le operazioni di indicizzazione dei documenti.
      * @return La classe dao delegata alle operazioni di indicizzazione.
-     * @throws ApsSystemException In caso nella errore.
+     * @throws EntException In caso nella errore.
      */
-    public IIndexerDAO getIndexer(String subDir) throws ApsSystemException;
+    public IIndexerDAO getIndexer(String subDir) throws EntException;
 
     /**
      * Restituisce la classe dao delegata alle operazioni di ricerca.
@@ -63,18 +63,18 @@ public interface ISearchEngineDAOFactory {
      * @param subDir La sottocartella (figlia della root a servizio del sistema)
      * utilizzata per le operazioni di ricerca dei documenti.
      * @return La classe dao delegata alle operazioni di ricerca.
-     * @throws ApsSystemException In caso nella errore.
+     * @throws EntException In caso nella errore.
      */
-    public ISearcherDAO getSearcher(String subDir) throws ApsSystemException;
+    public ISearcherDAO getSearcher(String subDir) throws EntException;
 
     /**
      * Aggiorna la sottocartella (figlia della root a servizio del sistema)
      * utilizzata per le operazioni di indicizzazione e ricerca dei documenti.
      *
      * @param newSubDirectory La nuova subdirectory.
-     * @throws ApsSystemException In caso nella errore.
+     * @throws EntException In caso nella errore.
      */
-    public void updateSubDir(String newSubDirectory) throws ApsSystemException;
+    public void updateSubDir(String newSubDirectory) throws EntException;
 
     /**
      * Cancella la sottocartella (figlia della root a servizio del sistema)

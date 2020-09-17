@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.web.resource.validator;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceManager;
@@ -32,7 +32,7 @@ public class ResourcesValidator extends AbstractPaginationValidator {
     @Autowired
     private ResourceManager resourceManager;
     
-    public boolean isResourceDeletableByUser(String resourceId, UserDetails user) throws ApsSystemException {
+    public boolean isResourceDeletableByUser(String resourceId, UserDetails user) throws EntException {
         final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
         final ResourceInterface resource = resourceManager.loadResource(resourceId);
         if (resource != null)  {
@@ -44,7 +44,7 @@ public class ResourcesValidator extends AbstractPaginationValidator {
         return false;
     }
 
-    public boolean resourceExists(String resourceId) throws ApsSystemException {
+    public boolean resourceExists(String resourceId) throws EntException {
         final ResourceInterface resource = resourceManager.loadResource(resourceId);
         if (resource!=null){
             return true;

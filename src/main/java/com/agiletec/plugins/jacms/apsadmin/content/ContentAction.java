@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
@@ -78,7 +78,7 @@ public class ContentAction extends AbstractContentAction {
         try {
             Content content = this.getContentManager().loadContent(this.getContentId(), false);
             if (null == content) {
-                throw new ApsSystemException("Contenuto in edit '" + this.getContentId() + "' nullo!");
+                throw new EntException("Contenuto in edit '" + this.getContentId() + "' nullo!");
             }
             if (!this.isUserAllowed(content)) {
                 _logger.info("Utente non abilitato all'editazione del contenuto {}", content.getId());
@@ -103,7 +103,7 @@ public class ContentAction extends AbstractContentAction {
         try {
             Content content = this.getContentManager().loadContent(this.getContentId(), this.isCopyPublicVersion());
             if (null == content) {
-                throw new ApsSystemException("Contenuto in copyPaste '" + this.getContentId() + "' nullo ; copia di contenuto pubblico "
+                throw new EntException("Contenuto in copyPaste '" + this.getContentId() + "' nullo ; copia di contenuto pubblico "
                         + this.isCopyPublicVersion());
             }
             if (!this.isUserAllowed(content)) {

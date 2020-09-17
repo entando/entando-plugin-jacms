@@ -17,7 +17,7 @@ import org.jdom.Element;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.parse.EntityTypeDOM;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
 /**
@@ -32,7 +32,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 public class ContentTypeDOM extends EntityTypeDOM {
 	
 	@Override
-	protected IApsEntity createEntityType(Element contentElem, Class entityClass) throws ApsSystemException {
+	protected IApsEntity createEntityType(Element contentElem, Class entityClass) throws EntException {
 		Content content = (Content) super.createEntityType(contentElem, entityClass);
 		content.setId(null);
 		String viewPage = this.extractXmlAttribute(contentElem, "viewpage", true);

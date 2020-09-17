@@ -18,7 +18,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 
 /**
@@ -32,17 +32,17 @@ public interface IResourceActionHelper {
 	 * @param resourceId The id of the resource.
 	 * @param request The request
 	 * @return The References of the given resource.
-	 * @throws ApsSystemException In case of exception
+	 * @throws EntException In case of exception
 	 */
-	public Map<String, List> getReferencingObjects(String resourceId, HttpServletRequest request) throws ApsSystemException;
+	public Map<String, List> getReferencingObjects(String resourceId, HttpServletRequest request) throws EntException;
 	
 	/**
 	 * Return the map (indexed by the Key of the manager) of the list of the object that reference the given resource.
 	 * @param resource The resource.
 	 * @param request The request
 	 * @return The References of the given resource.
-	 * @throws ApsSystemException In case of exception
+	 * @throws EntException In case of exception
 	 */
-	public Map<String, List> getReferencingObjects(ResourceInterface resource, HttpServletRequest request) throws ApsSystemException;
+	public Map<String, List> getReferencingObjects(ResourceInterface resource, HttpServletRequest request) throws EntException;
 	
 }
