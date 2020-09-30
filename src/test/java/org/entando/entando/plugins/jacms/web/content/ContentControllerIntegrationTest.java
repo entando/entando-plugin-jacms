@@ -4107,6 +4107,27 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
     }
 
+    @Test
+    public void testContentWithRegex() throws Exception {
+        try {
+            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            String accessToken = this.createAccessToken();
+
+            ResultActions result = this.executeContentTypePost("1_POST_type_with_links.json", accessToken, status().isCreated());
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.attributes.size()", Matchers.is(5)))
+                    .andExpect(jsonPath("$.payload.attributes[0].code", Matchers.is("link1")))
+                    .andExpect(jsonPath("$.payload.attributes[0].validationRules.minLength", Matchers.is(10)))
+                    .andExpect(jsonPath("$.payload.attributes[0].validationRules.maxLength", Matchers.is(20)))
+                    .andExpect(jsonPath("$.payload.attributes[0].validationRules.regex", Matchers.is("link1 regex")));
+
+        } finally {
+            if (null != this.contentManager.getEntityPrototype("LNK")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("LNK");
+            }
+        }
+    }
+
     protected Page createPage(String pageCode, boolean addWidget) {
         return createPage(pageCode, addWidget, "free");
     }
