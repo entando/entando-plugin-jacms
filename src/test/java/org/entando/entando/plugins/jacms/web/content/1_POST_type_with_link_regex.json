@@ -6,7 +6,12 @@
             "code": "link1",
             "type": "Link",
             "name": "Link Description 1",
-            "mandatory": false
+            "mandatory": false,
+            "validationRules": {
+                "minLength":"10",
+                "maxLength":"20",
+                "regex":"link1 regex"
+            }
         },
         {
             "code": "link2",

@@ -4113,7 +4113,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
-            ResultActions result = this.executeContentTypePost("1_POST_type_with_links.json", accessToken, status().isCreated());
+            ResultActions result = this.executeContentTypePost("1_POST_type_with_link_regex.json", accessToken, status().isCreated());
             result.andDo(print())
                     .andExpect(jsonPath("$.payload.attributes.size()", Matchers.is(5)))
                     .andExpect(jsonPath("$.payload.attributes[0].code", Matchers.is("link1")))
