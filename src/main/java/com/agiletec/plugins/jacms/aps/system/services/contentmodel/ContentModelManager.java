@@ -13,6 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
+import com.agiletec.aps.system.common.AbstractCacheWrapper;
 import com.agiletec.aps.system.common.AbstractService;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
@@ -84,6 +85,12 @@ public class ContentModelManager extends AbstractService implements IContentMode
     public void init() throws Exception {
         this.cacheWrapper.initCache(this.getContentModelDAO());
         logger.debug("{} ready. Initialized {} content models", this.getClass().getName(), this.getCacheWrapper().getContentModels().size());
+    }
+    
+    @Override
+    protected void release() {
+        ((AbstractCacheWrapper) this.getCacheWrapper()).release();
+        super.release();
     }
 
     /**

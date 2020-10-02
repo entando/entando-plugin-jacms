@@ -23,6 +23,11 @@ import org.slf4j.LoggerFactory;
 public class ResourceManagerCacheWrapper extends AbstractCacheWrapper implements IResourceManagerCacheWrapper {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    @Override
+    public void release() {
+        this.getCache().evict(CACHE_NAME_METADATA_MAPPING);
+    }
 
     @Override
     public void initCache() {
