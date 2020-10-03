@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.util.ApsProperties;
@@ -37,7 +37,7 @@ public class ContentPreviewViewerHelper extends ContentViewerHelper {
 	private static final Logger _logger = LoggerFactory.getLogger(ContentPreviewViewerHelper.class);
 	
 	@Override
-	public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws ApsSystemException {
+	public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws EntException {
 		String renderedContent = "";
 		HttpServletRequest request = reqCtx.getRequest();
 		try {
@@ -68,7 +68,7 @@ public class ContentPreviewViewerHelper extends ContentViewerHelper {
 			}
 		} catch (Throwable t) {
 			_logger.error("error loading rendered content for preview", t);
-			throw new ApsSystemException("error loading rendered content for preview", t);
+			throw new EntException("error loading rendered content for preview", t);
 		}
 		return renderedContent;
 	}

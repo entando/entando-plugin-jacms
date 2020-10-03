@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
@@ -111,7 +111,7 @@ public class ContentServiceTest {
 
     @Test(expected = RestServerError.class)
     public void getGroupUtilizerWithError() throws Exception {
-        when(((GroupUtilizer) this.contentManager).getGroupUtilizers(Mockito.anyString())).thenThrow(ApsSystemException.class);
+        when(((GroupUtilizer) this.contentManager).getGroupUtilizers(Mockito.anyString())).thenThrow(EntException.class);
         try {
             List<ContentDto> dtos = this.contentService.getGroupUtilizer("groupName");
             Assert.fail();
@@ -134,7 +134,7 @@ public class ContentServiceTest {
 
     @Test(expected = RestServerError.class)
     public void getCategoryUtilizerWithError() throws Exception {
-        when(((CategoryUtilizer) this.contentManager).getCategoryUtilizers(Mockito.anyString())).thenThrow(ApsSystemException.class);
+        when(((CategoryUtilizer) this.contentManager).getCategoryUtilizers(Mockito.anyString())).thenThrow(EntException.class);
         try {
             List<ContentDto> dtos = this.contentService.getCategoryUtilizer("categoryCode");
             Assert.fail();
@@ -157,7 +157,7 @@ public class ContentServiceTest {
 
     @Test(expected = RestServerError.class)
     public void getPageUtilizerWithError() throws Exception {
-        when(((PageUtilizer) this.contentManager).getPageUtilizers(Mockito.anyString())).thenThrow(ApsSystemException.class);
+        when(((PageUtilizer) this.contentManager).getPageUtilizers(Mockito.anyString())).thenThrow(EntException.class);
         try {
             List<ContentDto> dtos = this.contentService.getPageUtilizer("pageCode");
             Assert.fail();
@@ -180,7 +180,7 @@ public class ContentServiceTest {
 
     @Test(expected = RestServerError.class)
     public void getContentUtilizerWithError() throws Exception {
-        when(((ContentUtilizer) this.contentManager).getContentUtilizers(Mockito.anyString())).thenThrow(ApsSystemException.class);
+        when(((ContentUtilizer) this.contentManager).getContentUtilizers(Mockito.anyString())).thenThrow(EntException.class);
         try {
             List<ContentDto> dtos = this.contentService.getContentUtilizer("NEW456");
             Assert.fail();
@@ -412,7 +412,7 @@ public class ContentServiceTest {
     }
 
 
-    private RestContentListRequest prepareGetContentTest(UserDetails user) throws ApsSystemException {
+    private RestContentListRequest prepareGetContentTest(UserDetails user) throws EntException {
         RestContentListRequest requestList = this.createContentsRequest();
         requestList.setStatus(IContentService.STATUS_ONLINE);
         requestList.setModel(null);

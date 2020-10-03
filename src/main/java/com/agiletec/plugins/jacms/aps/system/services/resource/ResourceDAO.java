@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.common.AbstractSearcherDAO;
 import com.agiletec.aps.system.common.FieldSearchFilter;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
@@ -103,12 +103,12 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         }
     }
 
-    protected void executeAddResource(ResourceInterface resource, Connection conn) throws ApsSystemException {
+    protected void executeAddResource(ResourceInterface resource, Connection conn) throws EntException {
         this.addResourceRecord(resource, conn);
         this.addCategoryRelationsRecord(resource, conn);
     }
 
-    protected void addResourceRecord(ResourceInterface resource, Connection conn) throws ApsSystemException {
+    protected void addResourceRecord(ResourceInterface resource, Connection conn) throws EntException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(ADD_RESOURCE);
@@ -156,13 +156,13 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         }
     }
 
-    protected void executeUpdateResource(ResourceInterface resource, Connection conn) throws ApsSystemException {
+    protected void executeUpdateResource(ResourceInterface resource, Connection conn) throws EntException {
         this.deleteRecordsById(resource.getId(), DELETE_RESOURCE_REL_RECORD, conn);
         this.updateResourceRecord(resource, conn);
         this.addCategoryRelationsRecord(resource, conn);
     }
 
-    protected void updateResourceRecord(ResourceInterface resource, Connection conn) throws ApsSystemException {
+    protected void updateResourceRecord(ResourceInterface resource, Connection conn) throws EntException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(UPDATE_RESOURCE);
@@ -210,7 +210,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         }
     }
 
-    protected void executeDeleteResource(String resourceId, Connection conn) throws ApsSystemException {
+    protected void executeDeleteResource(String resourceId, Connection conn) throws EntException {
         PreparedStatement stat = null;
         try {
             this.deleteRecordsById(resourceId, DELETE_RESOURCE_REL_RECORD, conn);
@@ -435,9 +435,9 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
      *
      * @param resource La risorsa del quale referenziare le categorie.
      * @param conn La connessione con il db.
-     * @throws ApsSystemException
+     * @throws EntException
      */
-    protected void addCategoryRelationsRecord(ResourceInterface resource, Connection conn) throws ApsSystemException {
+    protected void addCategoryRelationsRecord(ResourceInterface resource, Connection conn) throws EntException {
         if (resource.getCategories().size() > 0) {
             PreparedStatement stat = null;
             try {

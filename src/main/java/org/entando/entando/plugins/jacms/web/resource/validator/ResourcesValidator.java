@@ -13,13 +13,44 @@
  */
 package org.entando.entando.plugins.jacms.web.resource.validator;
 
+import org.entando.entando.ent.exception.EntException;
+import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
+import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceManager;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
+import java.util.Collection;
+import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
 import org.entando.entando.web.common.validator.AbstractPaginationValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 @Component
 public class ResourcesValidator extends AbstractPaginationValidator {
+
+    @Autowired
+    private ResourceManager resourceManager;
+    
+    public boolean isResourceDeletableByUser(String resourceId, UserDetails user) throws EntException {
+        final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
+        final ResourceInterface resource = resourceManager.loadResource(resourceId);
+        if (resource != null)  {
+            return allowedGroupCodes.stream().anyMatch(group ->
+                GenericResourceUtils
+                        .isResourceAccessibleByGroup(group, resource.getMainGroup(), null)
+        );
+        }
+        return false;
+    }
+
+    public boolean resourceExists(String resourceId) throws EntException {
+        final ResourceInterface resource = resourceManager.loadResource(resourceId);
+        if (resource!=null){
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean supports(Class<?> paramClass) {

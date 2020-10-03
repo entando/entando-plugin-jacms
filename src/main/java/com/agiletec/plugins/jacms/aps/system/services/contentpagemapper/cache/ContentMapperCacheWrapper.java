@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper.cache;
 
 import com.agiletec.aps.system.common.AbstractCacheWrapper;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
@@ -32,7 +32,7 @@ public class ContentMapperCacheWrapper extends AbstractCacheWrapper implements I
 	private static final Logger _logger = LoggerFactory.getLogger(ContentMapperCacheWrapper.class);
 
 	@Override
-	public void initCache(IPageManager pageManager) throws ApsSystemException {
+	public void initCache(IPageManager pageManager) throws EntException {
 		try {
 			ContentPageMapper contentPageMapper = new ContentPageMapper();
 			IPage root = pageManager.getOnlineRoot();
@@ -40,7 +40,7 @@ public class ContentMapperCacheWrapper extends AbstractCacheWrapper implements I
 			this.getCache().put(CONTENT_MAPPER_CACHE_KEY, contentPageMapper);
 		} catch (Throwable t) {
 			_logger.error("Error loading data object mapper", t);
-			throw new ApsSystemException("Error loading data object mapper", t);
+			throw new EntException("Error loading data object mapper", t);
 		}
 	}
 

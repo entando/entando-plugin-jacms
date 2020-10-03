@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.common.AbstractService;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.events.PageChangedEvent;
 import com.agiletec.aps.system.services.page.events.PageChangedObserver;
@@ -46,10 +46,10 @@ public class ContentPageMapperManager extends AbstractService implements IConten
 	/**
 	 * Effettua il caricamento della mappa contenuti pubblicati / pagine
 	 *
-	 * @throws ApsSystemException
+	 * @throws EntException
 	 */
 	@Override
-	public void reloadContentPageMapper() throws ApsSystemException {
+	public void reloadContentPageMapper() throws EntException {
 		this.getCacheWrapper().initCache(this.getPageManager());
 	}
 

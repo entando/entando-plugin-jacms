@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.ApsSystemUtils;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer.PNGImageResizer;
 
@@ -43,10 +43,10 @@ public class ImageDimensionDOM {
 	/**
 	 * Costruttore della classe.
 	 * @param xmlText La stringa xml da interpretare.
-	 * @throws ApsSystemException In caso di errore
+	 * @throws EntException In caso di errore
 	 * nell'interpretazione dell'xml di configurazione.
 	 */
-	public ImageDimensionDOM(String xmlText) throws ApsSystemException {
+	public ImageDimensionDOM(String xmlText) throws EntException {
 		this.decodeDOM(xmlText);
 	}
 
@@ -84,7 +84,7 @@ public class ImageDimensionDOM {
 		return dimensions;
 	}
 
-	private void decodeDOM(String xmlText) throws ApsSystemException {
+	private void decodeDOM(String xmlText) throws EntException {
 		SAXBuilder builder = new SAXBuilder();
 		builder.setValidation(false);
 		StringReader reader = new StringReader(xmlText);
@@ -92,7 +92,7 @@ public class ImageDimensionDOM {
 			_doc = builder.build(reader);
 		} catch (Throwable t) {
 			_logger.error("Error parsing xml. {}", xmlText, t);
-			throw new ApsSystemException("Errore nel parsing della configurazione Dimensioni di resize", t);
+			throw new EntException("Errore nel parsing della configurazione Dimensioni di resize", t);
 		}
 	}
 

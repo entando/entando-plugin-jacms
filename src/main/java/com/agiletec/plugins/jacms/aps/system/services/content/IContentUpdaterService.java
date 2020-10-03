@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content;
 
 import java.util.Set;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * @author eu
@@ -25,6 +25,6 @@ public interface IContentUpdaterService {
 	
 	public void reloadCategoryReferences(String categoryCode);
 	
-	public Set<String> getContentsId(String categoryCode) throws ApsSystemException;
+	public Set<String> getContentsId(String categoryCode) throws EntException;
 	
 }

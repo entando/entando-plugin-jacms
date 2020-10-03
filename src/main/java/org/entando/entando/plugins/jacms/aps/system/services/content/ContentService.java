@@ -26,7 +26,7 @@ import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.Group;
@@ -264,7 +264,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         try {
             List<String> contentIds = ((GroupUtilizer<String>) this.getContentManager()).getGroupUtilizers(groupCode);
             return this.buildDtoList(contentIds);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading content references for group {}", groupCode, ex);
             throw new RestServerError("Error loading content references for group", ex);
         }
@@ -275,7 +275,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         try {
             List<String> contentIds = ((CategoryUtilizer) this.getContentManager()).getCategoryUtilizers(categoryCode);
             return this.buildDtoList(contentIds);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading content references for category {}", categoryCode, ex);
             throw new RestServerError("Error loading content references for category", ex);
         }
@@ -286,7 +286,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         try {
             List<String> contentIds = ((PageUtilizer) this.getContentManager()).getPageUtilizers(pageCode);
             return this.buildDtoList(contentIds);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading content references for page {}", pageCode, ex);
             throw new RestServerError("Error loading content references for page", ex);
         }
@@ -297,7 +297,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         try {
             List<String> contentIds = ((ContentUtilizer) this.getContentManager()).getContentUtilizers(contentId);
             return this.buildDtoList(contentIds);
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error loading content references for content {}", contentId, ex);
             throw new RestServerError("Error loading content references for content", ex);
         }
@@ -309,7 +309,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             contentIds.stream().forEach(i -> {
                 try {
                     dtoList.add(this.getDtoBuilder().convert(this.getContentManager().loadContent(i, true)));
-                } catch (ApsSystemException e) {
+                } catch (EntException e) {
                     logger.error("error loading content {}", i, e);
                 }
             });
@@ -544,7 +544,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             this.getContentManager().deleteContent(content);
         } catch (ValidationGenericException e) {
             throw e;
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error deleting content {}", code, e);
             throw new RestServerError("error deleting content", e);
         }
@@ -591,7 +591,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             return this.getDtoBuilder().convert(newContent);
         } catch (ValidationGenericException | ResourceNotFoundException e) {
             throw e;
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             logger.error("Error updating content {} status", code, e);
             throw new RestServerError("error in update page content", e);
         }
@@ -637,7 +637,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             PagedMetadata<Object> pagedMetadata = new PagedMetadata<>(requestList, pagedResult);
             pagedMetadata.setBody((List<Object>) subList);
             return pagedMetadata;
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             logger.error("Error extracting content references - content {} - manager {}", code, managerName, ex);
             throw new RestServerError("Error extracting content references", ex);
         }
@@ -740,7 +740,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
                 logger.error("Content not found: " + code);
                 throw new ResourceNotFoundException(ERRCODE_CONTENT_NOT_FOUND, "content", code);
             }
-        } catch (ApsSystemException ex) {
+        } catch (EntException ex) {
             throw new RestServerError("plugins.jacms.content.contentManager.error.read", null);
         }
     }

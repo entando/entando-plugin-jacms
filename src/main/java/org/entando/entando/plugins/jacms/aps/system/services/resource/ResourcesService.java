@@ -10,13 +10,14 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.exception.ApsException;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
@@ -27,6 +28,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -84,7 +86,7 @@ public class ResourcesService {
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
 
-    public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList) {
+    public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList, UserDetails user) {
         List<AssetDto> assets = new ArrayList<>();
         try {
             List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(requestList),
@@ -92,13 +94,17 @@ public class ResourcesService {
 
             for(String id : resourceIds) {
                 AssetDto resource = convertResourceToDto(resourceManager.loadResource(id));
-
-                if (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList)) {
+                final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
+                boolean resourceAccessibleByGroup = allowedGroupCodes.stream().anyMatch(group ->
+                    GenericResourceUtils
+                        .isResourceAccessibleByGroup(group,resource.getGroup(), null)
+                );
+                if ((resourceAccessibleByGroup) && (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList))){
                     assets.add(resource);
                 }
             }
 
-        } catch (ApsException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
 
@@ -134,7 +140,7 @@ public class ResourcesService {
             response.setFolderPath(folderPath);
             response.setSubfolders(getSubfolders(folderPath, allFolders));
 
-        } catch (ApsException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
 
@@ -229,7 +235,7 @@ public class ResourcesService {
 
             ResourceInterface resource = resourceManager.addResource(resourceFile);
             return convertResourceToDto(resourceManager.loadResource(resource.getId()));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         } catch (IOException e) {
             log.error("Error reading file input stream", e);
@@ -245,7 +251,7 @@ public class ResourcesService {
             resourceManager.addResource(clonedResource);
 
             return convertResourceToDto(resourceManager.loadResource(clonedResource.getId()));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
     }
@@ -258,7 +264,7 @@ public class ResourcesService {
             }
 
             return convertResourceToDto(resource);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.get", e);
         }
     }
@@ -270,7 +276,7 @@ public class ResourcesService {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
             }
             resourceManager.deleteResource(resource);
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.delete", e);
         }
     }
@@ -284,7 +290,7 @@ public class ResourcesService {
             }
 
             return resource;
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.persistence", e);
         }
     }
@@ -329,7 +335,7 @@ public class ResourcesService {
 
             resourceManager.updateResource(resourceFile);
             return convertResourceToDto(resourceManager.loadResource(resourceId));
-        } catch (ApsSystemException e) {
+        } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.persistence", e);
         } catch (IOException e) {
             log.error("Error reading file input stream", e);

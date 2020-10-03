@@ -38,7 +38,7 @@ import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.FieldError;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.ITextAttribute;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.IGroupManager;
 import com.agiletec.aps.system.services.lang.ILangManager;
@@ -82,7 +82,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("error in extractContents", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return contentsId;
     }
@@ -113,7 +113,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("error in buildSearchBean", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return bean;
     }
@@ -148,7 +148,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("error in getContentsToHtml", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return render.toString();
     }
@@ -171,7 +171,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("error in getContent", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return jaxbContent;
     }
@@ -199,7 +199,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("error in getContentToHtml", t);
-            throw new ApsSystemException("Error into API method", t);
+            throw new EntException("Error into API method", t);
         }
         return render;
     }
@@ -232,7 +232,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("Error extracting content by id '{}'", id, t);
-            throw new ApsSystemException("Error extracting content by id '" + id + "'", t);
+            throw new EntException("Error extracting content by id '" + id + "'", t);
         }
         return content;
     }
@@ -278,7 +278,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("Error checking model id '{}'", modelId, t);
-            throw new ApsSystemException("Error checking model id '" + modelId + "'", t);
+            throw new EntException("Error checking model id '" + modelId + "'", t);
         }
         return modelIdInteger;
     }
@@ -303,7 +303,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             response.setResult(IResponseBuilder.FAILURE, null);
         } catch (Throwable t) {
             _logger.error("Error adding content", t);
-            throw new ApsSystemException("Error adding content", t);
+            throw new EntException("Error adding content", t);
         }
         return response;
     }
@@ -335,7 +335,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             response.setResult(IResponseBuilder.FAILURE, null);
         } catch (Throwable t) {
             _logger.error("Error updating content", t);
-            throw new ApsSystemException("Error updating content", t);
+            throw new EntException("Error updating content", t);
         }
         return response;
     }
@@ -376,12 +376,12 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             response.setResult(IResponseBuilder.FAILURE, null);
         } catch (Throwable t) {
             _logger.error("error in validateAndSaveContent", t);
-            throw new ApsSystemException("Error adding content", t);
+            throw new EntException("Error adding content", t);
         }
         return response;
     }
 
-    private List<ApiError> validate(Content content) throws ApsSystemException {
+    private List<ApiError> validate(Content content) throws EntException {
         List<ApiError> errors = new ArrayList<>();
         try {
             if (null == content.getMainGroup()) {
@@ -401,7 +401,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             }
         } catch (Throwable t) {
             _logger.error("Error validating content", t);
-            throw new ApsSystemException("Error validating content", t);
+            throw new EntException("Error validating content", t);
         }
         return errors;
     }
@@ -455,7 +455,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             response.setResult(IResponseBuilder.FAILURE, null);
         } catch (Throwable t) {
             _logger.error("Error deleting content", t);
-            throw new ApsSystemException("Error deleting content", t);
+            throw new EntException("Error deleting content", t);
         }
         return response;
     }
@@ -489,7 +489,7 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             throw ae;
         } catch (Throwable t) {
             _logger.error("Error updating content attribute", t);
-            throw new ApsSystemException("Error updating content attribute", t);
+            throw new EntException("Error updating content attribute", t);
         }
     }
 

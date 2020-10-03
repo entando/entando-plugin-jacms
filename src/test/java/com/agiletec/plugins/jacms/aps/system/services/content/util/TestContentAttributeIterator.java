@@ -17,7 +17,7 @@ import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoTextAttribute;
 import com.agiletec.aps.system.common.util.EntityAttributeIterator;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
 /**
@@ -26,7 +26,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
  */
 public class TestContentAttributeIterator extends BaseTestCase {
 	
-    public void testIterator() throws ApsSystemException {  
+    public void testIterator() throws EntException {  
 		Content content = new Content();
     	AttributeInterface attribute = new MonoTextAttribute();
     	attribute.setName("temp");

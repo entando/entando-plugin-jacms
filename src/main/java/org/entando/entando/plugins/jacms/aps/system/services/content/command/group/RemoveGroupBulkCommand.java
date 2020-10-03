@@ -13,7 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content.command.group;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCode;
 
@@ -30,7 +30,7 @@ public class RemoveGroupBulkCommand extends BaseContentGroupBulkCommand {
 	}
 
 	@Override
-	protected boolean apply(Content content) throws ApsSystemException {
+	protected boolean apply(Content content) throws EntException {
 		boolean performed = true;
 		Collection<String> groups = this.getItemProperties();
 		if (null == groups || groups.isEmpty()) {

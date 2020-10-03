@@ -23,7 +23,7 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.attribute.TextAttribute;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
 import com.agiletec.aps.system.common.tree.ITreeNode;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
@@ -391,7 +391,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
-    private void createContentsForTest() throws ApsSystemException {
+    private void createContentsForTest() throws EntException {
         Content content_1 = this.createContent_1();
         this.searchEngineManager.deleteIndexedEntity(content_1.getId());
         this.searchEngineManager.addEntityToIndex(content_1);

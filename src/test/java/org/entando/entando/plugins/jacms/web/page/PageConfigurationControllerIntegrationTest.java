@@ -1,6 +1,6 @@
 package org.entando.entando.plugins.jacms.web.page;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.util.FileTextReader;
@@ -674,7 +674,7 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
 
 
     @Test
-    public void testRestoreWithPageChangedShouldUpdatePageStatus() throws ApsSystemException {
+    public void testRestoreWithPageChangedShouldUpdatePageStatus() throws EntException {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,
@@ -737,7 +737,7 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
 
 
     @Test
-    public void testRestoreWithPageNotChangedShouldNOTUpdatePageStatus() throws ApsSystemException {
+    public void testRestoreWithPageNotChangedShouldNOTUpdatePageStatus() throws EntException {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,

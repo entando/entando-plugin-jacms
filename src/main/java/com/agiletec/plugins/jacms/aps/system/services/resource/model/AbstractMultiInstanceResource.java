@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceDOM;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.*;
@@ -38,7 +38,7 @@ public abstract class AbstractMultiInstanceResource extends AbstractResource {
     }
 
     @Override
-    public void deleteResourceInstances() throws ApsSystemException {
+    public void deleteResourceInstances() throws EntException {
         try {
             Collection<ResourceInstance> resources = this.getInstances().values();
             for (ResourceInstance currentInstance : resources) {
@@ -48,7 +48,7 @@ public abstract class AbstractMultiInstanceResource extends AbstractResource {
             }
         } catch (Throwable t) {
             logger.error("Error on deleting resource instances", t);
-            throw new ApsSystemException("Error on deleting resource instances", t);
+            throw new EntException("Error on deleting resource instances", t);
         }
     }
 

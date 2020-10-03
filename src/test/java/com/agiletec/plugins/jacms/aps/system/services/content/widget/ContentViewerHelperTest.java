@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.widget;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.Widget;
@@ -118,7 +118,7 @@ public class ContentViewerHelperTest {
         Mockito.verify(contentManager, Mockito.times(1)).getListModel("ART123");
     }
 
-    @Test(expected = ApsSystemException.class)
+    @Test(expected = EntException.class)
     public void testGetRenderedContentWithError() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
         when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
@@ -187,7 +187,7 @@ public class ContentViewerHelperTest {
         Mockito.verify(contentAuthorizationHelper, Mockito.times(0)).getAuthorizationInfo(Mockito.anyString(), Mockito.anyBoolean());
     }
 
-    @Test(expected = ApsSystemException.class)
+    @Test(expected = EntException.class)
     public void getAuthorizationInfoWithError() throws Exception {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         when(mockRequest.getParameter(SystemConstants.K_CONTENT_ID_PARAM)).thenReturn("ART123");

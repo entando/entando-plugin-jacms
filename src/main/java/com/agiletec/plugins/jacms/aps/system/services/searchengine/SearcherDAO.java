@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
 import com.agiletec.aps.system.common.tree.ITreeNode;
 import com.agiletec.aps.system.common.tree.ITreeNodeManager;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import org.apache.lucene.document.*;
@@ -47,10 +47,10 @@ public class SearcherDAO implements ISearcherDAO {
 	/**
 	 * Inizializzazione del searcher.
 	 * @param dir La cartella locale contenitore dei dati persistenti.
-	 * @throws ApsSystemException In caso di errore
+	 * @throws EntException In caso di errore
 	 */
 	@Override
-	public void init(File dir) throws ApsSystemException {
+	public void init(File dir) throws EntException {
 		this.indexDir = dir;
 	}
 	
@@ -61,30 +61,30 @@ public class SearcherDAO implements ISearcherDAO {
 		return searcher;
 	}
 	
-	private void releaseResources(IndexSearcher searcher) throws ApsSystemException {
+	private void releaseResources(IndexSearcher searcher) throws EntException {
 		try {
 			if (searcher != null) {
 				searcher.getIndexReader().close();
 			}
 		} catch (IOException e) {
-			throw new ApsSystemException("Error closing searcher", e);
+			throw new EntException("Error closing searcher", e);
 		}
 	}
 	
     @Override
     public List<String> searchContentsId(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws ApsSystemException {
+            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException {
         return this.searchContents(filters, categories, allowedGroups, false).getContentsId();
     }
 
     @Override
     public FacetedContentsResult searchFacetedContents(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws ApsSystemException {
+            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException {
         return this.searchContents(filters, categories, allowedGroups, true);
     }
 	
 	protected FacetedContentsResult searchContents(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups, boolean faceted) throws ApsSystemException {
+            SearchEngineFilter[] categories, Collection<String> allowedGroups, boolean faceted) throws EntException {
         FacetedContentsResult result = new FacetedContentsResult();
         List<String> contentsId = new ArrayList<>();
         IndexSearcher searcher = null;
@@ -147,7 +147,7 @@ public class SearcherDAO implements ISearcherDAO {
             logger.error("no index was found in the Directory", inf);
         } catch (Throwable t) {
             logger.error("Error extracting documents", t);
-            throw new ApsSystemException("Error extracting documents", t);
+            throw new EntException("Error extracting documents", t);
         } finally {
             this.releaseResources(searcher);
         }

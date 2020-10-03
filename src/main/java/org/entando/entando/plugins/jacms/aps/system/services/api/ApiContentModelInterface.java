@@ -26,11 +26,11 @@ import org.entando.entando.aps.system.services.api.model.StringListApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 
 import com.agiletec.aps.system.ApsSystemUtils;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 
 /**
@@ -67,7 +67,7 @@ public class ApiContentModelInterface extends AbstractCmsApiInterface {
 		} catch (Throwable t) {
 			_logger.error("Error loading models", t);
             //ApsSystemUtils.logThrowable(t, this, "getModels");
-            throw new ApsSystemException("Error loading models", t);
+            throw new EntException("Error loading models", t);
         }
 		return response;
 	}
@@ -99,7 +99,7 @@ public class ApiContentModelInterface extends AbstractCmsApiInterface {
         } catch (Throwable t) {
         	_logger.error("Error adding model", t);
         	//ApsSystemUtils.logThrowable(t, this, "addModel");
-            throw new ApsSystemException("Error adding model", t);
+            throw new EntException("Error adding model", t);
         }
 	}
 	
@@ -117,7 +117,7 @@ public class ApiContentModelInterface extends AbstractCmsApiInterface {
         } catch (Throwable t) {
         	_logger.error("Error updating model", t);
             //ApsSystemUtils.logThrowable(t, this, "updateModel");
-            throw new ApsSystemException("Error updating model", t);
+            throw new EntException("Error updating model", t);
         }
 	}
 	
@@ -138,7 +138,7 @@ public class ApiContentModelInterface extends AbstractCmsApiInterface {
         } catch (Throwable t) {
         	_logger.error("Error deleting model", t);
             //ApsSystemUtils.logThrowable(t, this, "deleteModel");
-            throw new ApsSystemException("Error deleting model", t);
+            throw new EntException("Error deleting model", t);
         }
 	}
 	

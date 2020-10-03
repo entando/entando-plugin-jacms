@@ -34,7 +34,7 @@ import com.agiletec.aps.system.common.entity.model.ApsEntityRecord;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.util.EntityAttributeIterator;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.util.DateConverter;
@@ -330,11 +330,11 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 	}
 
 	@Deprecated
-	protected void deletePublicContentSearchRecord(String id, Connection conn) throws ApsSystemException {
+	protected void deletePublicContentSearchRecord(String id, Connection conn) throws EntException {
 		super.deleteRecordsByEntityId(id, DELETE_CONTENT_SEARCH_RECORD, conn);
 	}
 
-	protected void addPublicContentSearchRecord(String id, IApsEntity entity, Connection conn) throws ApsSystemException {
+	protected void addPublicContentSearchRecord(String id, IApsEntity entity, Connection conn) throws EntException {
 		PreparedStatement stat = null;
 		try {
 			stat = conn.prepareStatement(ADD_CONTENT_SEARCH_RECORD);
@@ -347,11 +347,11 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		}
 	}
 
-	protected void updateContentRecordForInsertOnLine(Content content, Connection conn) throws ApsSystemException {
+	protected void updateContentRecordForInsertOnLine(Content content, Connection conn) throws EntException {
 		this.updateContentRecordForInsertOnLine(content, true, conn);
 	}
 
-	protected void updateContentRecordForInsertOnLine(Content content, boolean updateDate, Connection conn) throws ApsSystemException {
+	protected void updateContentRecordForInsertOnLine(Content content, boolean updateDate, Connection conn) throws EntException {
 		PreparedStatement stat = null;
 		try {
 			int index = 1;
@@ -540,7 +540,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		super.executeDeleteEntity(entityId, conn);
 	}
 
-	private void addCategoryRelationsRecord(Content content, boolean isPublicRelations, PreparedStatement stat) throws ApsSystemException {
+	private void addCategoryRelationsRecord(Content content, boolean isPublicRelations, PreparedStatement stat) throws EntException {
 		if (content.getCategories().size() > 0) {
 			try {
 				Set<String> codes = new HashSet<String>();
@@ -581,7 +581,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
         }
     }
 
-	private void addGroupRelationsRecord(Content content, PreparedStatement stat) throws ApsSystemException {
+	private void addGroupRelationsRecord(Content content, PreparedStatement stat) throws EntException {
 		try {
 			content.addGroup(content.getMainGroup());
 			Iterator<String> groupIter = content.getGroups().iterator();
@@ -610,10 +610,10 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 	 * The current content.
 	 * @param conn
 	 * The connection to the database.
-	 * @throws ApsSystemException
+	 * @throws EntException
 	 * when connection error are detected.
 	 */
-	protected void addContentRelationsRecord(Content content, Connection conn) throws ApsSystemException {
+	protected void addContentRelationsRecord(Content content, Connection conn) throws EntException {
 		PreparedStatement stat = null;
 		try {
 			stat = conn.prepareStatement(ADD_CONTENT_REL_RECORD);
@@ -650,7 +650,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		}
 	}
 
-	protected void addWorkContentRelationsRecord(Content content, Connection conn) throws ApsSystemException {
+	protected void addWorkContentRelationsRecord(Content content, Connection conn) throws EntException {
 		PreparedStatement stat = null;
 		try {
 			stat = conn.prepareStatement(ADD_WORK_CONTENT_REL_RECORD);
@@ -667,7 +667,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		}
 	}
 
-	protected void addContentAttributeRoleRecord(String id, IApsEntity entity, String query, Connection conn) throws ApsSystemException {
+	protected void addContentAttributeRoleRecord(String id, IApsEntity entity, String query, Connection conn) throws EntException {
 		PreparedStatement stat = null;
 		try {
 			stat = conn.prepareStatement(query);

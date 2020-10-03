@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import java.util.Map;
 
@@ -213,9 +213,9 @@ public interface ResourceInterface {
      *      * with the data of the instances obtained.
      *
      * @param bean The object holding the data of the resource to insert.
-     * @throws ApsSystemException In caso di eccezioni.
+     * @throws EntException In caso di eccezioni.
      */
-    public void saveResourceInstances(ResourceDataBean bean) throws ApsSystemException;
+    public void saveResourceInstances(ResourceDataBean bean) throws EntException;
 
     /**
      * Obtain and save all instances associated with a resource, valuing the latter
@@ -223,20 +223,20 @@ public interface ResourceInterface {
      *
      * @param bean The object holding the data of the resource to insert.
      * @param ignoreMetadataKeys The list of metadata keys to ignore when processing the resource
-     * @throws ApsSystemException In caso di eccezioni.
+     * @throws EntException In caso di eccezioni.
      */
-    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws ApsSystemException;
+    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException;
 
     /**
      * Cancella tutte le istanze associate alla risorsa.
      *
-     * @throws ApsSystemException In caso di eccezioni.
+     * @throws EntException In caso di eccezioni.
      */
-    public void deleteResourceInstances() throws ApsSystemException;
+    public void deleteResourceInstances() throws EntException;
 
-    public void reloadResourceInstances() throws ApsSystemException;
+    public void reloadResourceInstances() throws EntException;
 
-    //public boolean exists(String masterFormFileName) throws ApsSystemException;
+    //public boolean exists(String masterFormFileName) throws EntException;
     public ResourceInstance getDefaultInstance();
 
     /**

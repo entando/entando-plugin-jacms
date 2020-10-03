@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.util;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -55,7 +55,7 @@ public abstract class AbstractBaseTestContentAction extends ApsAdminBaseTestCase
         return result;
     }
 
-    protected String extractSessionMarker(String param, int operation) throws ApsSystemException {
+    protected String extractSessionMarker(String param, int operation) throws EntException {
         Content content = null;
         if (operation == ApsAdminSystemConstants.ADD) {
             content = this._contentManager.createContentType(param);

@@ -25,7 +25,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.ContentUtilizer;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
@@ -34,14 +34,14 @@ public class ContentHelper implements IContentHelper, ApplicationContextAware {
 	private static final Logger _logger = LoggerFactory.getLogger(ContentHelper.class);
 
 	@Override
-	public Map<String, List<?>> getReferencingObjects(Content content) throws ApsSystemException {
+	public Map<String, List<?>> getReferencingObjects(Content content) throws EntException {
 		Collection<ContentUtilizer> contentUtilizers = this.getContentUtilizers();
     	Map<String, List<?>> references = this.getReferencingObjects(content, contentUtilizers);
     	return references;
     }
 
 	@Override
-	public Map<String, List<?>> getReferencingObjects(Content content, Collection<ContentUtilizer> contentUtilizers) throws ApsSystemException {
+	public Map<String, List<?>> getReferencingObjects(Content content, Collection<ContentUtilizer> contentUtilizers) throws EntException {
     	Map<String, List<?>> references = new HashMap<String, List<?>>();
     	try {
     		for (ContentUtilizer contentUtilizer : contentUtilizers) {
@@ -54,7 +54,7 @@ public class ContentHelper implements IContentHelper, ApplicationContextAware {
     		}
     	} catch (Throwable t) {
 			_logger.error("Error extracting referencing object", t);
-    		throw new ApsSystemException("Error searching content referencing objects", t);
+    		throw new EntException("Error searching content referencing objects", t);
     	}
     	return references;
 	}

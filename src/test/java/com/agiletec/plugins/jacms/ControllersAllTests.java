@@ -19,13 +19,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.entando.entando.plugins.jacms.web.content.ContentControllerIntegrationTest;
 import org.entando.entando.plugins.jacms.web.content.ContentControllerTest;
-import org.entando.entando.plugins.jacms.web.contenttype.ContentTypeResourceControllerTest;
-import org.entando.entando.plugins.jacms.web.contenttype.ContentTypeResourceIntegrationTest;
 import org.entando.entando.plugins.jacms.web.contentmodel.ContentModelControllerIntegrationTest;
 import org.entando.entando.plugins.jacms.web.contentmodel.ContentModelControllerUnitTest;
+import org.entando.entando.plugins.jacms.web.contenttype.ContentTypeResourceControllerTest;
+import org.entando.entando.plugins.jacms.web.contenttype.ContentTypeResourceIntegrationTest;
 import org.entando.entando.plugins.jacms.web.page.PageConfigurationControllerIntegrationTest;
 import org.entando.entando.plugins.jacms.web.page.PageConfigurationControllerWidgetsIntegrationTest;
 import org.entando.entando.plugins.jacms.web.page.PageControllerIntegrationTest;
+import org.entando.entando.plugins.jacms.web.resource.ResourcesControllerIntegrationTest;
 
 public class ControllersAllTests extends TestCase {
 
@@ -44,6 +45,9 @@ public class ControllersAllTests extends TestCase {
         suite.addTest(new JUnit4TestAdapter(PageConfigurationControllerIntegrationTest.class));
         suite.addTest(new JUnit4TestAdapter(PageConfigurationControllerWidgetsIntegrationTest.class));
         suite.addTest(new JUnit4TestAdapter(PageControllerIntegrationTest.class));
+
+        suite.addTest(new JUnit4TestAdapter(ResourcesControllerIntegrationTest.class));
+
         return suite;
     }
 

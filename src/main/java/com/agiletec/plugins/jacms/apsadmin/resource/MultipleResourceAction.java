@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
 import com.agiletec.aps.system.common.entity.model.FieldError;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
@@ -266,7 +266,7 @@ public class MultipleResourceAction extends ResourceAction {
                             resourceFile.setResourceId(super.getResourceId());
                             this.getResourceManager().updateResource(resourceFile);
                         }
-                    } catch (ApsSystemException ex) {
+                    } catch (EntException ex) {
                         hasError = true;
                         logger.error("error loading file {} ", fileUploadName, ex);
                         this.addFieldError(String.valueOf(index), this.getText("error.resource.filename.uploadError",

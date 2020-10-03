@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.agiletec.aps.system.common.RefreshableBean;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
@@ -44,14 +44,14 @@ public class ImageDimensionReader implements IImageDimensionReader, RefreshableB
 		try {
     		String xml = this.getConfigManager().getConfigItem(JacmsSystemConstants.CONFIG_ITEM_IMAGE_DIMENSIONS);
     		if (xml == null) {
-    			throw new ApsSystemException("Missing config Item: " + JacmsSystemConstants.CONFIG_ITEM_IMAGE_DIMENSIONS);
+    			throw new EntException("Missing config Item: " + JacmsSystemConstants.CONFIG_ITEM_IMAGE_DIMENSIONS);
     		}
     		ImageDimensionDOM dimensionDom = new ImageDimensionDOM(xml);
     		this._imageDimensions = dimensionDom.getDimensions();
     	} catch (Throwable t) {
     		_logger.error("Error loading dimensions", t);
     		//ApsSystemUtils.logThrowable(t, this, "init");
-    		throw new ApsSystemException("Error loading dimensions", t);
+    		throw new EntException("Error loading dimensions", t);
     	}
 	}
 	

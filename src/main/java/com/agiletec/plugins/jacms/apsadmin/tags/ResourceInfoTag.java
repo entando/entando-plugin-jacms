@@ -16,7 +16,7 @@ package com.agiletec.plugins.jacms.apsadmin.tags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
 import com.agiletec.apsadmin.tags.AbstractObjectInfoTag;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -42,7 +42,7 @@ public class ResourceInfoTag extends AbstractObjectInfoTag {
 			_logger.error("Error extracting resource : id '{}'", keyValue, t);
 			String message = "Error extracting resource : id '" + keyValue + "'";
 			//ApsSystemUtils.logThrowable(t, this, "getMasterObject", message);
-			throw new ApsSystemException(message, t);
+			throw new EntException(message, t);
 		}
 	}
 	

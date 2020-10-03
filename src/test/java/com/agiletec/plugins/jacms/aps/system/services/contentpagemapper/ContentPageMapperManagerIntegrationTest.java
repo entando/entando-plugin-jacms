@@ -14,7 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper;
 
 import com.agiletec.aps.BaseTestCase;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 
 /**
@@ -28,12 +28,12 @@ public class ContentPageMapperManagerIntegrationTest extends BaseTestCase {
         this.init();
     }
     
-    public void testGetContentPageMapper() throws ApsSystemException {
+    public void testGetContentPageMapper() throws EntException {
 		String codePage = _contentPageMapperManager.getPageCode("ART1");
 		assertEquals(codePage, "homepage");
 	}
 	
-    public void testReloadContentPageMapper() throws ApsSystemException{   
+    public void testReloadContentPageMapper() throws EntException{   
         _contentPageMapperManager.reloadContentPageMapper();
         String codePage = _contentPageMapperManager.getPageCode("ART1");
         assertEquals(codePage, "homepage");

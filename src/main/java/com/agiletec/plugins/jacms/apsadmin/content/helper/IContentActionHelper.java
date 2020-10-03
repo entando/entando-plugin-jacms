@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.apsadmin.content.helper;
 
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.apsadmin.system.entity.IEntityActionHelper;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -44,9 +44,9 @@ public interface IContentActionHelper extends IEntityActionHelper {
 	 * deve essere necessariamente associato (ed il perchè) per salvaguardare le precedenti relazioni.
 	 * @param content Il contenuto da analizzare.
 	 * @param action L'action da valorizzare con i messaggi di errore.
-	 * @throws ApsSystemException In caso di errore.
+	 * @throws EntException In caso di errore.
 	 */
-	public void scanReferences(Content content, ActionSupport action) throws ApsSystemException;
+	public void scanReferences(Content content, ActionSupport action) throws EntException;
 
 	/**
      * Verifica che l'utente corrente possegga
@@ -58,7 +58,7 @@ public interface IContentActionHelper extends IEntityActionHelper {
      */
 	public boolean isUserAllowed(Content content, UserDetails currentUser);
 
-	public Map getReferencingObjects(Content content, HttpServletRequest request) throws ApsSystemException;
+	public Map getReferencingObjects(Content content, HttpServletRequest request) throws EntException;
 
 	public EntitySearchFilter getOrderFilter(String groupBy, String lastOrder);
 

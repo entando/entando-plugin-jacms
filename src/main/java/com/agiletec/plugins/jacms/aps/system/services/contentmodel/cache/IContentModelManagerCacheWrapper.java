@@ -15,7 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.contentmodel.cache;
 
 import java.util.List;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelDAO;
 
@@ -26,7 +26,7 @@ public interface IContentModelManagerCacheWrapper {
     public static final String CACHE_NAME_PREFIX = "ContentModelManager_model_";
     public static final String CODES_CACHE_NAME = "ContentModelManager_codes";
 
-    public void initCache(IContentModelDAO contentModelDao) throws ApsSystemException;
+    public void initCache(IContentModelDAO contentModelDao) throws EntException;
 
     public List<ContentModel> getContentModels();
 

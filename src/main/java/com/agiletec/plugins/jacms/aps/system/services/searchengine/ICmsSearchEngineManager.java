@@ -16,7 +16,7 @@ package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 import com.agiletec.aps.system.common.tree.ITreeNode;
 import org.entando.entando.aps.system.services.searchengine.IEntitySearchEngineManager;
 
-import com.agiletec.aps.system.exception.ApsSystemException;
+import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import java.util.Collection;
 import java.util.List;
@@ -42,12 +42,12 @@ public interface ICmsSearchEngineManager extends IEntitySearchEngineManager {
      * diverse ricerche sui contenuti.
      *
      * @return Il thread lanciato in esecuzione.
-     * @throws ApsSystemException in caso di errore in inizializzazione
+     * @throws EntException in caso di errore in inizializzazione
      * processo.
      */
-    public Thread startReloadContentsReferences() throws ApsSystemException;
+    public Thread startReloadContentsReferences() throws EntException;
 
-    public Thread startReloadContentsReferences(String subDirectory) throws ApsSystemException;
+    public Thread startReloadContentsReferences(String subDirectory) throws EntException;
 
     /**
      * Return the service status id.
@@ -65,12 +65,12 @@ public interface ICmsSearchEngineManager extends IEntitySearchEngineManager {
     public LastReloadInfo getLastReloadInfo();
     
     public FacetedContentsResult searchFacetedEntities(SearchEngineFilter[] filters,
-            Collection<ITreeNode> categories, Collection<String> allowedGroups) throws ApsSystemException;
+            Collection<ITreeNode> categories, Collection<String> allowedGroups) throws EntException;
 
     public FacetedContentsResult searchFacetedEntities(SearchEngineFilter[] filters,
-            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws ApsSystemException;
+            SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException;
 
     public List<String> loadContentsId(SearchEngineFilter[] filters,
-            SearchEngineFilter[] facetNodeCodes, List<String> groupCodes) throws ApsSystemException;
+            SearchEngineFilter[] facetNodeCodes, List<String> groupCodes) throws EntException;
 
 }
