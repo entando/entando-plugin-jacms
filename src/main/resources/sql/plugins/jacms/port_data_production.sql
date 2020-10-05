@@ -31,12 +31,12 @@ INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('jacms_CONTENT
 INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH','en','Search');
 INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH','it','Cerca');
 
-INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup, overridable) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
+INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup, readonlydefaultconfig) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Search form</property>
 <property key="it">Barra ricerca</property>
-</properties>',NULL,'jacms',NULL,NULL,0,'free',1);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, overridable) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
+</properties>',NULL,'jacms',NULL,NULL,0,'free',0);
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content</property>
 <property key="it">Singolo Contenuto</property>
@@ -44,13 +44,13 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="contentId">Content ID</parameter>
 	<parameter name="modelId">Content Model ID</parameter>
 	<action name="viewerConfig"/>
-</config>', 'jacms', NULL, NULL, 1, NULL, 1);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, overridable) VALUES ('search_result', '<?xml version="1.0" encoding="UTF-8"?>
+</config>', 'jacms', NULL, NULL, 1, NULL, 0);
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('search_result', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Search Result</property>
 <property key="it">Risultati della Ricerca</property>
-</properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 1);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, overridable) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
+</properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 0);
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content Search Query</property>
 <property key="it">Elenco dinamico di contenuti</property>
@@ -68,8 +68,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="pageLink">The code of the Page to link</parameter>
 	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
 	<action name="listViewerConfig"/>
-</config>', 'jacms', NULL, NULL, 1, NULL, 1);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, overridable) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
+</config>', 'jacms', NULL, NULL, 1, NULL, 0);
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content List</property>
 <property key="it">Elenco di Contenuti</property>
@@ -80,7 +80,7 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="pageLink">The code of the Page to link</parameter>
 	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
 	<action name="rowListViewerConfig" />
-</config>', 'jacms', NULL, NULL, 1, 'free', 1);
+</config>', 'jacms', NULL, NULL, 1, 'free', 0);
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('search_form','search_form','jacms',NULL,'<#assign wp=JspTaglibs["/aps-core"]>
 <@wp.pageWithWidget var="searchResultPageVar" widgetTypeCode="search_result" />
 <form class="navbar-search " action="<#if (searchResultPageVar??) ><@wp.url page="${searchResultPageVar.code}" /></#if>" method="get">
