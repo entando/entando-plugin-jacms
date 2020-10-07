@@ -242,7 +242,7 @@
                                     <s:elseif test="#attribute.type == 'Composite'">
                                         <label class="col-sm-2 control-label"><s:property value="#attributeLabelVar" />&#32;<s:include value="/WEB-INF/apsadmin/jsp/entity/modules/include/attributeInfo.jsp" /></label>
                                     </s:elseif>
-                                    <s:elseif test="#attribute.type == 'Monotext' || #attribute.type == 'Text' || #attribute.type == 'Longtext' || #attribute.type == 'Hypertext' || #attribute.type == 'Number' || #attribute.type == 'Date' || #attribute.type == 'Timestamp' || #attribute.type == 'Link' || #attribute.type == 'Enumerator' || #attribute.type == 'EnumeratorMap'">
+                                    <s:elseif test="#attribute.type == 'Monotext' || #attribute.type == 'Email' || #attribute.type == 'Text' || #attribute.type == 'Longtext' || #attribute.type == 'Hypertext' || #attribute.type == 'Number' || #attribute.type == 'Date' || #attribute.type == 'Timestamp' || #attribute.type == 'Link' || #attribute.type == 'Enumerator' || #attribute.type == 'EnumeratorMap'">
                                         <label class="col-sm-2 control-label" for="<s:property value="%{#attributeTracer.getFormFieldName(#attribute)}" />">
                                             <s:property value="#attributeLabelVar" />&#32;
                                             <s:include value="/WEB-INF/apsadmin/jsp/entity/modules/include/attributeInfo.jsp" />
@@ -284,7 +284,7 @@
                                         <s:elseif test="#attribute.type == 'Longtext'">
                                             <s:include value="/WEB-INF/apsadmin/jsp/entity/modules/longtextAttribute.jsp" />
                                         </s:elseif>
-                                        <s:elseif test="#attribute.type == 'Monotext'">
+                                        <s:elseif test="%{#attribute.type == 'Monotext' || #attribute.type == 'Email'}">
                                             <s:include value="/WEB-INF/apsadmin/jsp/entity/modules/monotextAttribute.jsp" />
                                         </s:elseif>
                                         <s:elseif test="#attribute.type == 'Number'">
