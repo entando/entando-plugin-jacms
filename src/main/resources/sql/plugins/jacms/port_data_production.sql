@@ -33,7 +33,7 @@ INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH',
 
 INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup, readonlydefaultconfig) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Search form</property>
+<property key="en">Search Form</property>
 <property key="it">Barra ricerca</property>
 </properties>',NULL,'jacms',NULL,NULL,0,'free',0);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
@@ -83,10 +83,11 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </config>', 'jacms', NULL, NULL, 1, 'free', 0);
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('search_form','search_form','jacms',NULL,'<#assign wp=JspTaglibs["/aps-core"]>
 <@wp.pageWithWidget var="searchResultPageVar" widgetTypeCode="search_result" />
-<form class="navbar-search " action="<#if (searchResultPageVar??) ><@wp.url page="${searchResultPageVar.code}" /></#if>" method="get">
-<i class="fas fa-search"></i>
-<input type="text" name="search" class="search-query" placeholder="<@wp.i18n key="ESSF_SEARCH" />" />
-</form>', 1);
+<@wp.fragment code="entando_ootb_carbon_include" escapeXml=false />
+<search-bar-widget
+   action-url="<#if (searchResultPageVar??) ><@wp.url page="${searchResultPageVar.code}" /></#if>"
+   placeholder="<@wp.i18n key="ESSF_SEARCH" />"
+></search-bar-widget>', 1);
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('jacms_content_viewer_list_userfilter_ent_Enumer', NULL, 'jacms', NULL, '<#assign wp=JspTaglibs["/aps-core"]>
 <#assign formFieldNameVar = userFilterOptionVar.formFieldNames[0] >
 <#assign formFieldValue = userFilterOptionVar.getFormFieldValue(formFieldNameVar) >
