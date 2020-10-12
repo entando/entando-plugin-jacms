@@ -328,7 +328,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                         containsInAnyOrder(
                                 "Attach", "Boolean", "CheckBox", "Composite", "Date", "Enumerator",
                                 "EnumeratorMap", "Hypertext", "Image", "Link", "List", "Longtext",
-                                "Monolist", "Monotext", "Number", "Text", "ThreeState", "Timestamp")))
+                                "Monolist", "Monotext", "Number", "Text", "ThreeState", "Timestamp", "Email")))
                 .andReturn();
     }
 
