@@ -36,8 +36,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Cache Wrapper Manager for plugin jacms
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public class CmsCacheWrapperManager extends AbstractService 
 		implements ICmsCacheWrapperManager, ContentModelChangedObserver, EntityTypesChangingObserver, ResourceChangedObserver {
 
-	private static final Logger _logger = LoggerFactory.getLogger(CmsCacheWrapperManager.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(CmsCacheWrapperManager.class);
 	
 	@Override
 	public void init() throws Exception {

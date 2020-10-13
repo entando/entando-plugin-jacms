@@ -32,8 +32,8 @@ import com.agiletec.plugins.jacms.apsadmin.content.ContentActionConstants;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe helper base per le action delegata alla gestione delle operazione
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceAttributeActionHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResourceAttributeActionHelper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ResourceAttributeActionHelper.class);
 
     public static final String ATTRIBUTE_NAME_SESSION_PARAM = "contentAttributeName";
     public static final String RESOURCE_TYPE_CODE_SESSION_PARAM = "resourceTypeCode";

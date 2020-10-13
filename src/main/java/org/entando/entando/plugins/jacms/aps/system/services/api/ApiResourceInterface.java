@@ -27,8 +27,8 @@ import org.entando.entando.aps.system.services.api.model.ApiException;
 import org.entando.entando.aps.system.services.api.model.StringApiResponse;
 import org.entando.entando.aps.system.services.api.server.IResponseBuilder;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.SystemConstants;
 import org.entando.entando.ent.exception.EntException;
@@ -51,7 +51,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
  */
 public class ApiResourceInterface {
 	
-	private static final Logger _logger =  LoggerFactory.getLogger(ApiResourceInterface.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ApiResourceInterface.class);
 	
 	public List<String> getImages(Properties properties) throws Throwable {
 		properties.setProperty(RESOURCE_TYPE_CODE_PARAM, JacmsSystemConstants.RESOURE_IMAGE_CODE);

@@ -15,11 +15,12 @@ package com.agiletec.plugins.jacms.apsadmin.system;
 
 import com.agiletec.apsadmin.system.entity.type.EntityTypesAction;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
-import org.slf4j.*;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 public class ContentTypesAction extends EntityTypesAction implements IContentReferencesReloadingAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ContentTypesAction.class);
+	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentTypesAction.class);
 
 	private transient ICmsSearchEngineManager searchEngineManager;
 

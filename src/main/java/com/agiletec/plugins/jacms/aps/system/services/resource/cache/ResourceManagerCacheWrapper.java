@@ -17,12 +17,12 @@ import com.agiletec.aps.system.common.AbstractCacheWrapper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ResourceManagerCacheWrapper extends AbstractCacheWrapper implements IResourceManagerCacheWrapper {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
     
     @Override
     public void release() {

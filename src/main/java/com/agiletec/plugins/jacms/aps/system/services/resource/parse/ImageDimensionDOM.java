@@ -22,8 +22,8 @@ import java.util.Map;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.ApsSystemUtils;
 import org.entando.entando.ent.exception.EntException;
@@ -38,7 +38,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresize
  */
 public class ImageDimensionDOM {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ImageDimensionDOM.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ImageDimensionDOM.class);
 	
 	/**
 	 * Costruttore della classe.

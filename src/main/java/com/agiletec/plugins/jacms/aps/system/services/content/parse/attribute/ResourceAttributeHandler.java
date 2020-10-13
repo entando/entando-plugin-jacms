@@ -21,8 +21,8 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Re
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe handler per l'interpretazione della porzione di xml relativo
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceAttributeHandler extends TextAttributeHandler {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ResourceAttributeHandler.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ResourceAttributeHandler.class);
 
     private transient IResourceManager resourceManager;
     private boolean intoMetadatas;

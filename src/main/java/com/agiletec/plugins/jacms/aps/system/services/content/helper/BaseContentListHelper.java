@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.entando.entando.aps.system.services.cache.CacheableInfo;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.helper.BaseFilterUtils;
 import com.agiletec.aps.system.common.entity.helper.IEntityFilterBean;
@@ -43,7 +43,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 public class BaseContentListHelper implements IContentListHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseContentListHelper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(BaseContentListHelper.class);
 
     private IContentManager contentManager;
     private ICacheInfoManager cacheInfoManager;

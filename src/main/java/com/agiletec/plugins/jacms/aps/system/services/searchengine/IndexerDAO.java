@@ -29,19 +29,20 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.store.*;
-import org.slf4j.*;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 import org.apache.lucene.util.BytesRef;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Data Access Object dedita alla indicizzazione di documenti.
  */
 public class IndexerDAO implements IIndexerDAO {
 
-    private static final Logger _logger = LoggerFactory.getLogger(IndexerDAO.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(IndexerDAO.class);
 
     private Directory dir;
 

@@ -17,8 +17,8 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
@@ -39,7 +39,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ut
  */
 public class CmsHypertextAttribute extends HypertextAttribute implements IReferenceableAttribute {
 
-    private static final Logger logger = LoggerFactory.getLogger(CmsHypertextAttribute.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsHypertextAttribute.class);
 
     @Override
     public Object getAttributePrototype() {

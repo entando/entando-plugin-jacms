@@ -19,8 +19,8 @@ import com.agiletec.apsadmin.portal.PageTreeAction;
 import com.agiletec.apsadmin.portal.helper.IPageActionHelper;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.ContentActionConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class PageLinkAttributeAction extends PageTreeAction {
 
-    private static final Logger _logger = LoggerFactory.getLogger(PageLinkAttributeAction.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(PageLinkAttributeAction.class);
 
     @Override
     protected Collection<String> getNodeGroupCodes() {

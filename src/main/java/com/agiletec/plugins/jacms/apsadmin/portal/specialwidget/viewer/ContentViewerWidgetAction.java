@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.PageMetadata;
@@ -37,7 +37,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
  */
 public class ContentViewerWidgetAction extends SimpleWidgetConfigAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentViewerWidgetAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentViewerWidgetAction.class);
 
 	@Override
 	public void validate() {

@@ -23,8 +23,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -42,7 +42,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class ContentLinkAction extends ContentFinderAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ContentLinkAction.class);
+	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentLinkAction.class);
 	
 	private String contentOnSessionMarker;
 	

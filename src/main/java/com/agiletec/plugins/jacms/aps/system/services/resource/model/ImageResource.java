@@ -34,8 +34,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IMOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ImageResource extends AbstractMultiInstanceResource {
 
@@ -46,7 +46,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
     private boolean  imageMagickWindows;
     private String  imageMagickPath;
 
-    private static final Logger logger = LoggerFactory.getLogger(ImageResource.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ImageResource.class);
 
     /**
      * Restituisce il path dell'immagine (relativa al size immesso). La stringa

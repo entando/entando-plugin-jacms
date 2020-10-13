@@ -19,8 +19,8 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
@@ -37,7 +37,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
  */
 public class RowContentListViewerWidgetAction extends SimpleWidgetConfigAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(RowContentListViewerWidgetAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(RowContentListViewerWidgetAction.class);
 
 	@Override
 	public void validate() {

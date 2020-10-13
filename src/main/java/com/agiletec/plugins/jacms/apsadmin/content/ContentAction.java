@@ -29,8 +29,8 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.apsadmin.util.ResourceIconUtil;
 import org.apache.commons.lang.StringUtils;
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public class ContentAction extends AbstractContentAction {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ContentAction.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentAction.class);
 
     private IPageManager pageManager;
     private ConfigInterface configManager;

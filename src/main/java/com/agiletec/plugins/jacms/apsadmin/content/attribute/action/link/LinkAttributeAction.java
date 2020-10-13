@@ -15,8 +15,8 @@ package com.agiletec.plugins.jacms.apsadmin.content.attribute.action.link;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
@@ -36,7 +36,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.helper.IContentActionHelper;
  */
 public class LinkAttributeAction extends BaseAction implements ILinkAttributeAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(LinkAttributeAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(LinkAttributeAction.class);
 
 	@Override
 	public String chooseLink() {

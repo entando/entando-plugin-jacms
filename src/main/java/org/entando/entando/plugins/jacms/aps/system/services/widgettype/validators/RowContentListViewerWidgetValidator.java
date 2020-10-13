@@ -27,13 +27,13 @@ import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.system.services.widgettype.validators.WidgetConfigurationValidator;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
 import org.entando.entando.web.page.model.WidgetConfigurationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.validation.BeanPropertyBindingResult;
 
 public class RowContentListViewerWidgetValidator extends AbstractListViewerWidgetValidator {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     public static final String WIDGET_CODE = "row_content_viewer_list";
 

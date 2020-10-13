@@ -46,8 +46,8 @@ import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.common.model.SimpleRestResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -70,7 +70,7 @@ public class ResourcesController {
     public static final String ERRCODE_INVALID_RESOURCE_TYPE = "5";
     public static final String ERRCODE_RESOURCE_FORBIDDEN = "6";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     @NonNull private final ResourcesService service;
     @NonNull private final ResourcesValidator resourceValidator;

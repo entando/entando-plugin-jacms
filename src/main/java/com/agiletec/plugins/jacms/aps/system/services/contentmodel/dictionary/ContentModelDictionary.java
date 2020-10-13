@@ -5,14 +5,14 @@ import java.util.Properties;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import org.entando.entando.aps.system.services.dataobjectmodel.dictionary.DataModelDictionary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 
 public class ContentModelDictionary extends DataModelDictionary {
 
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private static final String KEY_ROOT = "$content";
 

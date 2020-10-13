@@ -16,16 +16,17 @@ package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceDOM;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.*;
 
 import java.util.*;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Base abstract class for the implementation of multi instance resource objects.
  */
 public abstract class AbstractMultiInstanceResource extends AbstractResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractMultiInstanceResource.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(AbstractMultiInstanceResource.class);
 
     private Map<String, ResourceInstance> instances;
 

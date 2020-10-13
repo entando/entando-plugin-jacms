@@ -25,8 +25,8 @@ import org.apache.struts2.ServletActionContext;
 import org.entando.entando.aps.system.services.actionlog.model.ActivityStreamInfo;
 import org.entando.entando.plugins.jacms.aps.system.services.content.helper.IContentHelper;
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
@@ -55,7 +55,7 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 public class ContentActionHelper extends EntityActionHelper implements IContentActionHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentActionHelper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentActionHelper.class);
     
     private static final String MAIN_GROUP = "mainGroup";
     private static final String DESCR = "descr";

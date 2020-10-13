@@ -32,8 +32,8 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,7 +44,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class ContentPageValidator implements IExternalPageValidator, ApplicationContextAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentPageValidator.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentPageValidator.class);
 
     private IContentManager contentManager;
     private ApplicationContext applicationContext;

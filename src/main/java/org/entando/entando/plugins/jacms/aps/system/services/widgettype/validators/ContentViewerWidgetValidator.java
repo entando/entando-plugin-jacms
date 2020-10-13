@@ -20,13 +20,13 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.system.services.widgettype.validators.WidgetConfigurationValidator;
 import org.entando.entando.web.page.model.WidgetConfigurationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.validation.BeanPropertyBindingResult;
 
 public class ContentViewerWidgetValidator implements WidgetConfigurationValidator {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private IContentManager contentManager;
     private IContentModelManager contentModelManager;

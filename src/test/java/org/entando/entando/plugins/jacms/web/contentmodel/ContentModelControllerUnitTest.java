@@ -41,15 +41,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class ContentModelControllerUnitTest extends AbstractControllerTest {
-    private static final Logger logger = LoggerFactory.getLogger(CmsAdminPagerTag.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsAdminPagerTag.class);
 
     private static final String BASE_URI = "/plugins/cms/contentmodels";
     private final ObjectMapper mapper = new ObjectMapper();

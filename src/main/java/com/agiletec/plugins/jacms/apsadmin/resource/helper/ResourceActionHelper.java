@@ -19,8 +19,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
  */
 public class ResourceActionHelper extends BaseActionHelper implements IResourceActionHelper {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ResourceActionHelper.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ResourceActionHelper.class);
 	
 	@Override
 	public Map<String, List> getReferencingObjects(ResourceInterface resource, HttpServletRequest request) throws EntException {

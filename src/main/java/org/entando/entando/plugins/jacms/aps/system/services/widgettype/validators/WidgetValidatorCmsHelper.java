@@ -31,13 +31,13 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
 import org.entando.entando.web.page.model.WidgetConfigurationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.validation.BeanPropertyBindingResult;
 
 public class WidgetValidatorCmsHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(WidgetValidatorCmsHelper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(WidgetValidatorCmsHelper.class);
 
     public static final String ERRCODE_INVALID_CONFIGURATION = "1";
     public static final String ERRCODE_CONTENT_ID_NULL = "11";

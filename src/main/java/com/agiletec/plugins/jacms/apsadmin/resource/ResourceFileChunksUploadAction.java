@@ -19,11 +19,11 @@ import static com.opensymphony.xwork2.Action.SUCCESS;
 import java.io.*;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ResourceFileChunksUploadAction extends AbstractResourceAction {
-    private static final Logger logger = LoggerFactory.getLogger(ResourceFileChunksUploadAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ResourceFileChunksUploadAction.class);
 
     private String RESULT_SUCCESS = "SUCCESS";
     private String RESULT_FAILED = "FAILED";

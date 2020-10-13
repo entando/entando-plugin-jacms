@@ -14,8 +14,8 @@
 package com.agiletec.plugins.jacms.apsadmin.content;
 
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
@@ -28,7 +28,7 @@ import java.util.Date;
  */
 public class IntroNewContentAction extends AbstractContentAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(IntroNewContentAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(IntroNewContentAction.class);
 	
 	/**
 	 * Punto di ingresso della redazione nuovo contenuto.

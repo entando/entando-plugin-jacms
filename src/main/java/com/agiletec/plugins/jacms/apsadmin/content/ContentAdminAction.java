@@ -16,8 +16,8 @@ package com.agiletec.plugins.jacms.apsadmin.content;
 import com.agiletec.aps.system.services.baseconfig.SystemParamsUtils;
 import com.agiletec.apsadmin.admin.BaseAdminAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
@@ -42,7 +42,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ContentAdminAction extends BaseAdminAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentAdminAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentAdminAction.class);
 
     private static final String ASPECT_RATIO_PATTERN = "[0-9]{1,}:[0-9]{1,}";
 

@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Action delegated to execute administrative tasks on resources
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceAdminAction extends AbstractResourceAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ResourceAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ResourceAction.class);
 	
 	/**
 	 * Refresh all the resources instance (not the "main" instance)

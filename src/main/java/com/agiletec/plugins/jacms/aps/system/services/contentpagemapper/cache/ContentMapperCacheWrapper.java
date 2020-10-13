@@ -21,15 +21,15 @@ import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
 import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.plugins.jacms.aps.system.services.contentpagemapper.ContentPageMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * @author E.Santoboni
  */
 public class ContentMapperCacheWrapper extends AbstractCacheWrapper implements IContentMapperCacheWrapper {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentMapperCacheWrapper.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentMapperCacheWrapper.class);
     
     @Override
     public void release() {

@@ -24,15 +24,15 @@ import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.services.group.Group;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * @author E.Santoboni
  */
 public class PublicContentSearcherDAO extends AbstractContentSearcherDAO implements IContentSearcherDAO {
 	
-	private static final Logger _logger =  LoggerFactory.getLogger(PublicContentSearcherDAO.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(PublicContentSearcherDAO.class);
 	
 	@Override
     public List<String> loadContentsId(String[] categories, 

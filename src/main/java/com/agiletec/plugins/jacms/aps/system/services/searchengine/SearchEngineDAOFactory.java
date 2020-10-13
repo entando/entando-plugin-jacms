@@ -18,8 +18,8 @@ import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ import java.io.File;
  */
 public class SearchEngineDAOFactory implements ISearchEngineDAOFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchEngineDAOFactory.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(SearchEngineDAOFactory.class);
 
     private String indexerClassName;
     private String searcherClassName;

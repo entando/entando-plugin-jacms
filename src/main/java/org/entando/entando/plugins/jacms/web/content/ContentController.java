@@ -32,8 +32,8 @@ import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.*;
 import org.entando.entando.web.entity.validator.EntityValidator;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,7 +57,7 @@ import org.springframework.validation.Errors;
 @RequestMapping(value = "/plugins/cms/contents")
 public class ContentController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(this.getClass());
 
     public static final String ERRCODE_CONTENT_NOT_FOUND = "1";
     public static final String ERRCODE_REFERENCED_ONLINE_CONTENT = "2";

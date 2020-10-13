@@ -17,8 +17,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.helper.IEntityFilterBean;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.widget.UserFilterO
  */
 public class ContentListUserFilterOptionTag extends TagSupport implements IEntityFilterBean {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentListUserFilterOptionTag.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentListUserFilterOptionTag.class);
 	
 	public ContentListUserFilterOptionTag() {
 		super();

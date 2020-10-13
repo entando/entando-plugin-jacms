@@ -27,8 +27,8 @@ import org.entando.entando.plugins.jacms.aps.system.services.content.command.com
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.ContentBulkActionSummary;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.SmallBulkCommandReport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.agiletec.aps.util.ApsWebApplicationUtils;
@@ -37,7 +37,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 
 public class ContentBulkAction extends BaseAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentBulkAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentBulkAction.class);
 
 	public String entry() {
 		return this.checkAllowedContents() ? SUCCESS : "list";

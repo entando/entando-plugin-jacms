@@ -40,8 +40,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Servizio detentore delle operazioni di indicizzazione di oggetti ricercabili
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 public class SearchEngineManager extends AbstractService
         implements ICmsSearchEngineManager, PublicContentChangedObserver, EntityTypesChangingObserver {
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchEngineManager.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(SearchEngineManager.class);
 
     private ISearchEngineDAOFactory factory;
 

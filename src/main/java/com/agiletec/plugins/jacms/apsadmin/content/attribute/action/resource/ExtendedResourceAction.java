@@ -19,8 +19,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class ExtendedResourceAction extends MultipleResourceAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExtendedResourceAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ExtendedResourceAction.class);
 
     private String contentOnSessionMarker;
     private String entryContentAnchorDest;

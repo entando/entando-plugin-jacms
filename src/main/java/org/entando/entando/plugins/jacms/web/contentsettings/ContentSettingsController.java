@@ -30,8 +30,8 @@ import org.entando.entando.plugins.jacms.web.contentsettings.model.CreateContent
 import org.entando.entando.plugins.jacms.web.contentsettings.model.EditContentSettingsMetadataRequest;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.model.SimpleRestResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +52,7 @@ public class ContentSettingsController {
     public static final String ERRCODE_NOT_FOUND_CROP_RATIO = "6";
     public static final String ERRCODE_NOT_FOUND_METADATA = "7";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private final ContentSettingsService service;
 

@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import com.agiletec.apsadmin.TestLabelsProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class TestJacmsLabelsProperties extends TestLabelsProperties {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestLabelsProperties.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(TestLabelsProperties.class);
     private static String PLUGIN_PATH = "com/agiletec/plugins/jacms/apsadmin/";
 
     public void testGlobalProperties() throws Throwable {

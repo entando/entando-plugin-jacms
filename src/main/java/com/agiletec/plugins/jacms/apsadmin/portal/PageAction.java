@@ -20,8 +20,8 @@ import java.util.List;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.page.IPage;
@@ -38,7 +38,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecor
  */
 public class PageAction extends com.agiletec.apsadmin.portal.PageAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(PageAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(PageAction.class);
 
     private boolean viewerPage;
     private String viewerWidgetCode;

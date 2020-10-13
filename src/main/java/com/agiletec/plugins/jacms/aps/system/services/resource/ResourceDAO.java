@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.AbstractSearcherDAO;
 import com.agiletec.aps.system.common.FieldSearchFilter;
@@ -47,7 +47,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResourceDAO.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ResourceDAO.class);
     
     private ICategoryManager categoryManager;
 

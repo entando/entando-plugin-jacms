@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.services.group.Group;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
  */
 public class ContentTypeConfigAction extends EntityTypeConfigAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentTypeConfigAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentTypeConfigAction.class);
 
 	@Override
 	protected IApsEntity updateEntityOnSession() {

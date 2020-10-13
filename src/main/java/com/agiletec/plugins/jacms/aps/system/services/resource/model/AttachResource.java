@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import org.entando.entando.ent.exception.EntException;
 
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class AttachResource extends AbstractMonoInstanceResource  {
 
-	private static final Logger _logger = LoggerFactory.getLogger(AttachResource.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(AttachResource.class);
 	
     /**
      * Restituisce il path della risorsa attach.

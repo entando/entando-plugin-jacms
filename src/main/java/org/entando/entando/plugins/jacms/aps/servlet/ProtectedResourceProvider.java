@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.servlet.IProtectedResourceProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.SystemConstants;
 import org.entando.entando.ent.exception.EntException;
@@ -56,7 +56,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
  */
 public class ProtectedResourceProvider implements IProtectedResourceProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProtectedResourceProvider.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ProtectedResourceProvider.class);
 
     private IUserManager userManager;
     private IAuthorizationManager authorizationManager;

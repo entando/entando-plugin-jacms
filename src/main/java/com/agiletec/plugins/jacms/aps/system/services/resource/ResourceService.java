@@ -30,13 +30,13 @@ import org.entando.entando.aps.system.services.DtoBuilder;
 import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.category.CategoryServiceUtilizer;
 import org.entando.entando.aps.system.services.group.GroupServiceUtilizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ResourceService implements IResourceService,
         GroupServiceUtilizer<ResourceDto>, CategoryServiceUtilizer<ResourceDto> {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(this.getClass());
 
     private IResourceManager resourceManager;
     private IDtoBuilder<ResourceInterface, ResourceDto> dtoBuilder;

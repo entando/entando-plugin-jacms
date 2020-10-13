@@ -16,8 +16,8 @@ package org.entando.entando.plugins.jacms.apsadmin.tags;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.tags.util.IPagerVO;
 import com.agiletec.apsadmin.tags.util.AdminPagerTagHelper;
@@ -29,7 +29,7 @@ import java.util.Arrays;
  */
 public class CmsAdminPagerTag extends com.agiletec.apsadmin.tags.AdminPagerTag {
 
-    private static final Logger logger = LoggerFactory.getLogger(CmsAdminPagerTag.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsAdminPagerTag.class);
 
     private String total;
     private String maxSize;

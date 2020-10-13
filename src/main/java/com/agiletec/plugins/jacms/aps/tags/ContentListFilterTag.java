@@ -17,8 +17,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.helper.IEntityFilterBean;
@@ -37,7 +37,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.widget.IContentLis
 public class ContentListFilterTag extends TagSupport implements IEntityFilterBean {
 
 	private static final long serialVersionUID = -8283914775997210195L;
-	private static final Logger _logger = LoggerFactory.getLogger(ContentListFilterTag.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentListFilterTag.class);
 	
 	public ContentListFilterTag() {
 		super();
