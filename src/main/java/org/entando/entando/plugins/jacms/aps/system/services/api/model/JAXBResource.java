@@ -30,7 +30,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * @author E.Santoboni
@@ -63,7 +63,7 @@ public class JAXBResource {
 			}
 			InputStream stream = resource.getResourceStream();
 			if (null != stream) {
-				File tempFile = this.createTempFile(new Random().nextInt(100) + resource.getMasterFileName(), stream);
+				File tempFile = this.createTempFile(new SecureRandom().nextInt(100) + resource.getMasterFileName(), stream);
 				byte[] bytes = this.fileToByteArray(tempFile);
 				this.setBase64(bytes);
 				boolean deleted = tempFile.delete();

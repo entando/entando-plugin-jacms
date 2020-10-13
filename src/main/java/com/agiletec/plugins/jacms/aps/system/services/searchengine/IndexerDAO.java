@@ -75,7 +75,6 @@ public class IndexerDAO implements IIndexerDAO {
             Document document = this.createDocument(entity);
             writer.addDocument(document);
         } catch (Throwable t) {
-            t.printStackTrace();
             _logger.error("Errore saving entity {}", entity.getId(), t);
             throw new EntException("Error saving entity", t);
         } finally {

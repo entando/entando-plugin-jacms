@@ -477,13 +477,13 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         if (StringUtils.isBlank(modelId)) {
             return null;
         }
-        if (modelId.equals("default")) {
+        if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
             if (null == dto.getDefaultModel()) {
                 bindingResult.reject(ContentController.ERRCODE_INVALID_MODEL, "plugins.jacms.content.model.nullDefaultModel");
                 throw new ValidationGenericException(bindingResult);
             }
             modelIdInteger = Integer.parseInt(dto.getDefaultModel());
-        } else if (modelId.equals("list")) {
+        } else if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
             if (null == dto.getListModel()) {
                 bindingResult.reject(ContentController.ERRCODE_INVALID_MODEL, "plugins.jacms.content.model.nullListModel");
                 throw new ValidationGenericException(bindingResult);

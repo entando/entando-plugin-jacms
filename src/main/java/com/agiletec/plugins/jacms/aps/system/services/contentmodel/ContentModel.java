@@ -140,4 +140,30 @@ public class ContentModel implements Comparable, Serializable {
 	private String _contentShape;
 	private String _stylesheet;
 	
+
+	/**
+	 * tells if a model_id is valid
+	 */
+	public static boolean isValidModelId(String modelId) {
+		try {
+			return modelId != null && Long.parseLong(modelId) > 0;
+		} catch (NumberFormatException ignored) {
+			// IGNORE
+		}
+		logger.warn("Detected invalid model_id: \"{}\"", modelId);
+		return false;
+	}
+
+	/**
+	 * tells if a model_id parameter is valid
+	 * <p>
+	 * for parameter is meant a value coming from the user/representation level
+	 * that so may be an actual model_id or a special value
+	 */
+	public static boolean isValidModelIdParam(String modelId) {
+		return modelId == null ||
+				modelId.equals(MODEL_ID_DEFAULT) ||
+				modelId.equals(MODEL_ID_LIST) ||
+				isValidModelId(modelId);
+	}
 }

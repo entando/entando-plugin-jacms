@@ -243,14 +243,14 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             if (null == modelId || modelId.trim().length() == 0) {
                 return null;
             }
-            if (modelId.equals("default")) {
+            if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
                 if (null == content.getDefaultModel()) {
                     throw new ApiException(IApiErrorCodes.API_PARAMETER_VALIDATION_ERROR,
                             "Invalid 'default' system model for content type '" + content.getTypeCode() + "' - Contact the administrators",
                             Response.Status.ACCEPTED);
                 }
                 modelIdInteger = Integer.parseInt(content.getDefaultModel());
-            } else if (modelId.equals("list")) {
+            } else if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
                 if (null == content.getListModel()) {
                     throw new ApiException(IApiErrorCodes.API_PARAMETER_VALIDATION_ERROR,
                             "Invalid 'list' system model for content type '" + content.getTypeCode() + "' - Contact the administrators",

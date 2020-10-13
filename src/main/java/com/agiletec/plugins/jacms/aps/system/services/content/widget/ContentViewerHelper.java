@@ -217,10 +217,10 @@ public class ContentViewerHelper implements IContentViewerHelper {
 
     private String extractConfiguredModelId(String contentId, String modelId, ApsProperties widgetConfig) {
         if (null != modelId && null != contentId) {
-            if (modelId.equals("list")) {
+            if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
                 modelId = this.getContentManager().getListModel(contentId);
             }
-            if (modelId.equals("default")) {
+            if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
                 modelId = this.getContentManager().getDefaultModel(contentId);
             }
         }

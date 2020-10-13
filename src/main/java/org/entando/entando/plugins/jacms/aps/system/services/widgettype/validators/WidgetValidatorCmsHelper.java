@@ -13,6 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.widgettype.validators;
 
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,8 @@ public class WidgetValidatorCmsHelper {
             return;
         }
         List<String> contentModels = contentModelManager.getModelsForContentType(typeCode).stream().map(i -> String.valueOf(i.getId())).collect(Collectors.toList());
-        contentModels.add("list");
-        contentModels.add("default");
+        contentModels.add(ContentModel.MODEL_ID_LIST);
+        contentModels.add(ContentModel.MODEL_ID_DEFAULT);
         if (!contentModels.contains(modelId)) {
             errors.reject(WidgetValidatorCmsHelper.ERRCODE_INVALID_CONFIGURATION, new String[]{modelId, typeCode}, widgetCode + ".contentmodel.invalid");
         }
