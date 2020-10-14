@@ -16,6 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services.content.command;
 import com.agiletec.aps.system.common.entity.model.FieldError;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.group.IGroupManager;
+import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCode;
@@ -49,7 +50,7 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 	protected boolean validateContent(Content content) throws EntException {
 		boolean valid = this.validateDescription(content) && this.checkContentUtilizers(content);
 		if (valid) {
-			List<FieldError> errors = content.validate(this.getGroupManager());
+			List<FieldError> errors = content.validate(this.getGroupManager(), this.getLangManager());
 			valid = errors == null || errors.isEmpty();
 		}
 		return valid;
@@ -73,6 +74,14 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
 		this._groupManager = groupManager;
 	}
 
+    protected ILangManager getLangManager() {
+        return langManager;
+    }
+    public void setLangManager(ILangManager langManager) {
+        this.langManager = langManager;
+    }
+    
 	private IGroupManager _groupManager;
+	private ILangManager langManager;
 
 }

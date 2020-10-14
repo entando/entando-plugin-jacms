@@ -14,7 +14,6 @@
 package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 
 import com.agiletec.aps.system.common.entity.model.FieldError;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.util.ICmsAttributeErrorCodes;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractJAXBAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.TextAttribute;
+import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.entando.entando.ent.exception.EntRuntimeException;
 
 /**
  * Rappresenta una informazione di tipo "link". La destinazione del link è la
@@ -219,8 +220,8 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
     }
 
     @Override
-    public List<AttributeFieldError> validate(AttributeTracer tracer) {
-        List<AttributeFieldError> errors = super.validate(tracer);
+    public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager) {
+        List<AttributeFieldError> errors = super.validate(tracer, langManager);
         try {
             SymbolicLink symbolicLink = this.getSymbolicLink();
             if (null == symbolicLink) {
@@ -237,9 +238,9 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
                 error.setMessage(attributeError.getMessage());
                 errors.add(error);
             }
-        } catch (Throwable t) {
+        } catch (Exception t) {
             logger.error("Error validating link attribute", t);
-            throw new RuntimeException("Error validating link attribute", t);
+            throw new EntRuntimeException("Error validating link attribute", t);
         }
         for (AttributeFieldError error : errors) {
             if (FieldError.INVALID.equals(error.getErrorCode()) && Status.INCOMPLETE.equals(this.getStatus())) {
