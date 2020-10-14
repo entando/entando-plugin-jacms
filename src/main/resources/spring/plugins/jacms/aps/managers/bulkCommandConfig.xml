@@ -48,6 +48,7 @@
 	<bean id="jacmsInsertOnlineContentBulkCommand" parent="jacmsBaseContentBulkCommand" scope="prototype" 
 			class="org.entando.entando.plugins.jacms.aps.system.services.content.command.InsertOnlineContentBulkCommand" >
 		<property name="groupManager" ref="GroupManager" />
+		<property name="langManager" ref="LangManager" />
 	</bean>
 	
 </beans>
