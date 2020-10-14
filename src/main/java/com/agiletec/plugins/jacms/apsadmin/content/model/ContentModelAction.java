@@ -38,8 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe action delegata alle operazioni sugli oggetti modelli di contenuti.
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ContentModelAction extends BaseAction implements IContentModelAction {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ContentModelAction.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentModelAction.class);
 
     @Override
     public void validate() {

@@ -15,8 +15,8 @@ package com.agiletec.plugins.jacms.apsadmin.tags;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.user.UserDetails;
@@ -36,7 +36,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
  */
 public class ContentTypeInfoTag extends EntityTypeInfoTag {
 	
-	private static final Logger _logger = LoggerFactory.getLogger(ContentTypeInfoTag.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentTypeInfoTag.class);
 	
 	@Override
 	protected String getEntityManagerName() {

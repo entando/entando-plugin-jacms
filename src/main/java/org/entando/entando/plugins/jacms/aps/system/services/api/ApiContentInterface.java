@@ -29,8 +29,8 @@ import org.entando.entando.aps.system.services.api.server.IResponseBuilder;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.ApiContentListBean;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBContent;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBContentAttribute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
@@ -66,7 +66,7 @@ import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBCmsRe
  */
 public class ApiContentInterface extends AbstractCmsApiInterface {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ApiContentInterface.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ApiContentInterface.class);
 
     public List<String> getContents(Properties properties) throws Throwable {
         return this.extractContents(properties);
@@ -243,14 +243,14 @@ public class ApiContentInterface extends AbstractCmsApiInterface {
             if (null == modelId || modelId.trim().length() == 0) {
                 return null;
             }
-            if (modelId.equals("default")) {
+            if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
                 if (null == content.getDefaultModel()) {
                     throw new ApiException(IApiErrorCodes.API_PARAMETER_VALIDATION_ERROR,
                             "Invalid 'default' system model for content type '" + content.getTypeCode() + "' - Contact the administrators",
                             Response.Status.ACCEPTED);
                 }
                 modelIdInteger = Integer.parseInt(content.getDefaultModel());
-            } else if (modelId.equals("list")) {
+            } else if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
                 if (null == content.getListModel()) {
                     throw new ApiException(IApiErrorCodes.API_PARAMETER_VALIDATION_ERROR,
                             "Invalid 'list' system model for content type '" + content.getTypeCode() + "' - Contact the administrators",

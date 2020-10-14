@@ -34,8 +34,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe Action delegata alla gestione delle operazioni di ricerca risorse.
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceFinderAction extends AbstractResourceAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResourceFinderAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ResourceFinderAction.class);
 
     private String text;
     private String fileName;

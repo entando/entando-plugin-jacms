@@ -18,8 +18,8 @@ import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -30,7 +30,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * @author E.Santoboni
@@ -39,7 +39,7 @@ import java.util.Random;
 @XmlType(propOrder = {"id", "typeCode", "description", "mainGroup", "fileName", "categories", "base64"})
 public class JAXBResource {
 
-	private static final Logger _logger =  LoggerFactory.getLogger(JAXBResource.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(JAXBResource.class);
 	
 	public JAXBResource() {}
 
@@ -63,7 +63,7 @@ public class JAXBResource {
 			}
 			InputStream stream = resource.getResourceStream();
 			if (null != stream) {
-				File tempFile = this.createTempFile(new Random().nextInt(100) + resource.getMasterFileName(), stream);
+				File tempFile = this.createTempFile(new SecureRandom().nextInt(100) + resource.getMasterFileName(), stream);
 				byte[] bytes = this.fileToByteArray(tempFile);
 				this.setBase64(bytes);
 				boolean deleted = tempFile.delete();

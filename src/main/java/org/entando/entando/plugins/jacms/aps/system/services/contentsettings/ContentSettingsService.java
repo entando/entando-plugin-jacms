@@ -29,8 +29,8 @@ import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettin
 import org.entando.entando.plugins.jacms.web.contentsettings.model.LastReloadInfoDto;
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -43,7 +43,7 @@ import static org.entando.entando.plugins.jacms.web.contentsettings.ContentSetti
 
 @Service
 public class ContentSettingsService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     @Autowired
     private IContentManager contentManager;

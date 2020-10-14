@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.entando.entando.aps.system.services.controller.executor.WidgetExecutorService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.ContentActionConstants;
 @Aspect
 public class PreviewWidgetExecutorAspect extends WidgetExecutorService {
 
-	private static final Logger _logger = LoggerFactory.getLogger(PreviewWidgetExecutorAspect.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(PreviewWidgetExecutorAspect.class);
 
 	@After("execution(* org.entando.entando.aps.system.services.controller.executor.WidgetExecutorService.service(..)) && args(reqCtx)")
 	public void checkContentPreview(RequestContext reqCtx) {

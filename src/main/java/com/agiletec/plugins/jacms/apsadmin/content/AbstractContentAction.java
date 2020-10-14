@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.entando.entando.aps.system.services.actionlog.model.ActivityStreamInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.group.IGroupManager;
@@ -41,7 +41,7 @@ import org.apache.commons.beanutils.BeanComparator;
  */
 public abstract class AbstractContentAction extends BaseAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(AbstractContentAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(AbstractContentAction.class);
 	
 	protected void addActivityStreamInfo(Content content, int strutsAction, boolean addLink) {
 		ActivityStreamInfo asi = this.getContentActionHelper().createActivityStreamInfo(content, strutsAction, addLink);

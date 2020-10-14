@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.widget;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
@@ -40,7 +40,7 @@ import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispense
  */
 public class ContentViewerHelper implements IContentViewerHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentViewerHelper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentViewerHelper.class);
 
     private IContentModelManager contentModelManager;
     private IContentManager contentManager;
@@ -217,10 +217,10 @@ public class ContentViewerHelper implements IContentViewerHelper {
 
     private String extractConfiguredModelId(String contentId, String modelId, ApsProperties widgetConfig) {
         if (null != modelId && null != contentId) {
-            if (modelId.equals("list")) {
+            if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
                 modelId = this.getContentManager().getListModel(contentId);
             }
-            if (modelId.equals("default")) {
+            if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
                 modelId = this.getContentManager().getDefaultModel(contentId);
             }
         }

@@ -17,8 +17,8 @@ import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResourceDimension;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInstance;
 import org.entando.entando.aps.system.services.storage.IStorageManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -33,7 +33,7 @@ import java.net.URLConnection;
  */
 public abstract class AbstractImageResizer implements IImageResizer {
 
-	private static final Logger _logger = LoggerFactory.getLogger(AbstractImageResizer.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(AbstractImageResizer.class);
 	
 	@Override
 	public ResourceInstance saveResizedImage(String subPath, boolean isProtectedResource, 

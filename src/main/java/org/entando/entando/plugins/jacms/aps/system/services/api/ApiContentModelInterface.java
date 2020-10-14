@@ -23,8 +23,8 @@ import org.entando.entando.aps.system.services.api.IApiErrorCodes;
 import org.entando.entando.aps.system.services.api.model.ApiError;
 import org.entando.entando.aps.system.services.api.model.ApiException;
 import org.entando.entando.aps.system.services.api.model.StringListApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
@@ -38,7 +38,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
  */
 public class ApiContentModelInterface extends AbstractCmsApiInterface {
 
-	private static final Logger _logger =  LoggerFactory.getLogger(ApiContentModelInterface.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ApiContentModelInterface.class);
 	
 	public StringListApiResponse getModels(Properties properties) throws ApiException, Throwable {
 		StringListApiResponse response = new StringListApiResponse();

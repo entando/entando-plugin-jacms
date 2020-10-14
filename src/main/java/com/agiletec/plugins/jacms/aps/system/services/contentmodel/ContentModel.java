@@ -14,13 +14,13 @@
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.entando.entando.aps.system.services.api.model.CDataXmlTypeAdapter;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Rappresenta un modello di contenuto. 
@@ -30,7 +30,12 @@ import org.entando.entando.aps.system.services.api.model.CDataXmlTypeAdapter;
 @XmlRootElement(name = "contentModel")
 @XmlType(propOrder = {"id", "contentType", "description", "contentShape", "stylesheet"})
 public class ContentModel implements Comparable, Serializable {
-	
+
+	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentModel.class);
+
+	public static final String MODEL_ID_DEFAULT = "default";
+	public static final String MODEL_ID_LIST = "list";
+
 	/**
 	 * Restituisce l'identificativo del modello.
 	 * @return L'identificativo del modello.
@@ -135,4 +140,30 @@ public class ContentModel implements Comparable, Serializable {
 	private String _contentShape;
 	private String _stylesheet;
 	
+
+	/**
+	 * tells if a model_id is valid
+	 */
+	public static boolean isValidModelId(String modelId) {
+		try {
+			return modelId != null && Long.parseLong(modelId) > 0;
+		} catch (NumberFormatException ignored) {
+			// IGNORE
+		}
+		logger.warn("Detected invalid model_id: \"{}\"", modelId);
+		return false;
+	}
+
+	/**
+	 * tells if a model_id parameter is valid
+	 * <p>
+	 * for parameter is meant a value coming from the user/representation level
+	 * that so may be an actual model_id or a special value
+	 */
+	public static boolean isValidModelIdParam(String modelId) {
+		return modelId == null ||
+				modelId.equals(MODEL_ID_DEFAULT) ||
+				modelId.equals(MODEL_ID_LIST) ||
+				isValidModelId(modelId);
+	}
 }

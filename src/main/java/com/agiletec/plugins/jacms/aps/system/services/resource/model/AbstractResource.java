@@ -19,7 +19,8 @@ import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceDOM;
 import org.apache.commons.io.FilenameUtils;
 import org.entando.entando.aps.system.services.storage.IStorageManager;
-import org.slf4j.*;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.springframework.util.Assert;
 
 import java.io.*;
@@ -27,7 +28,7 @@ import java.util.*;
 
 public abstract class AbstractResource implements ResourceInterface, Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractResource.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(AbstractResource.class);
 
     private String id;
     private String typeCode;

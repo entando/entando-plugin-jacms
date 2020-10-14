@@ -18,8 +18,8 @@ import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -33,7 +33,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class ContentLinkAttributeAction extends ContentFinderAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ContentLinkAttributeAction.class);
+	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentLinkAttributeAction.class);
 	
 	private String contentOnSessionMarker;
     

@@ -15,8 +15,8 @@ package org.entando.entando.plugins.jacms.apsadmin.content.preview;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.ContentActionConstants;
  */
 public class ContentPreviewViewerHelper extends ContentViewerHelper {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentPreviewViewerHelper.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentPreviewViewerHelper.class);
 	
 	@Override
 	public String getRenderedContent(String contentId, String modelId, RequestContext reqCtx) throws EntException {

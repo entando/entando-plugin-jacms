@@ -24,11 +24,12 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.*;
 import org.apache.lucene.util.BytesRef;
 import org.entando.entando.aps.system.services.searchengine.*;
-import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Data Access Object dedita alle operazioni di ricerca 
@@ -37,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SearcherDAO implements ISearcherDAO {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SearcherDAO.class);
+	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(SearcherDAO.class);
 
 	private ITreeNodeManager treeNodeManager;
     private ILangManager langManager;

@@ -28,8 +28,8 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Loads a list of contents IDs by applying the filters (if any).
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RowContentListTag extends ContentListTag {
 
-	private static final Logger _logger = LoggerFactory.getLogger(RowContentListTag.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(RowContentListTag.class);
 	
 	public RowContentListTag() {
 		super();

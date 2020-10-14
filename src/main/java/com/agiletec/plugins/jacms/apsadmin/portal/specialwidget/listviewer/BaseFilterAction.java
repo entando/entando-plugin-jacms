@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
@@ -40,7 +40,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
  */
 public class BaseFilterAction extends SimpleWidgetConfigAction implements IContentListFilterAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(BaseFilterAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(BaseFilterAction.class);
 	
 	@Override
 	public String newFilter() {

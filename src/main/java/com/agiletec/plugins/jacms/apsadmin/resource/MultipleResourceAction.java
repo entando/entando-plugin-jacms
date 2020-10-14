@@ -20,8 +20,8 @@ import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +29,7 @@ import java.util.*;
 
 public class MultipleResourceAction extends ResourceAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(MultipleResourceAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(MultipleResourceAction.class);
 
     private int fieldCount = 0;
     private List<String> fileDescriptions;

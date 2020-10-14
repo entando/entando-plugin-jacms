@@ -30,8 +30,8 @@ import java.util.*;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe action delegata alla gestione dei link a pagina nelle 
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PageLinkAction extends PageTreeAction {
 	
-	private static final Logger _logger = LoggerFactory.getLogger(PageLinkAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(PageLinkAction.class);
 
 
 	@Override

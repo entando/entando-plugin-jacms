@@ -25,8 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.actionlog.model.ActivityStreamInfo;
 import org.entando.entando.plugins.jacms.apsadmin.content.rs.model.ContentJO;
 import org.entando.entando.plugins.jacms.apsadmin.content.rs.model.ContentsStatusResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.model.ApsEntity;
@@ -58,7 +58,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class ContentFinderAction extends AbstractApsEntityFinderAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentFinderAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentFinderAction.class);
 
     private static final int DEFAULT_LASTUPDATE_RESPONSE_SIZE = 5;
 

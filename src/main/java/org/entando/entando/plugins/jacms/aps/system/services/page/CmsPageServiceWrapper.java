@@ -22,8 +22,8 @@ import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.page.model.PageDto;
 import org.entando.entando.plugins.jacms.aps.system.services.content.ContentServiceUtilizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 public class CmsPageServiceWrapper implements ContentServiceUtilizer<PageDto> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CmsPageServiceWrapper.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsPageServiceWrapper.class);
 
     @Autowired
     private IDtoBuilder<IPage, PageDto> dtoBuilder;

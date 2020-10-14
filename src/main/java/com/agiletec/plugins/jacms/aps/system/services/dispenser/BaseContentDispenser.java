@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.entando.entando.aps.system.services.cache.CacheableInfo;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
@@ -50,7 +50,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 public class BaseContentDispenser extends AbstractService implements IContentDispenser {
 
-    private static final Logger _logger = LoggerFactory.getLogger(BaseContentDispenser.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(BaseContentDispenser.class);
 
     @Override
     public void init() throws Exception {

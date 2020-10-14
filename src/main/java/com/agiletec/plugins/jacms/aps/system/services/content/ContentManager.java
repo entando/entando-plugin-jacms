@@ -13,24 +13,39 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
-import com.agiletec.aps.system.*;
-import com.agiletec.aps.system.common.entity.*;
-import com.agiletec.aps.system.common.entity.model.*;
+import com.agiletec.aps.system.ApsSystemUtils;
+import com.agiletec.aps.system.SystemConstants;
+import com.agiletec.aps.system.common.entity.ApsEntityManager;
+import com.agiletec.aps.system.common.entity.IEntityDAO;
+import com.agiletec.aps.system.common.entity.IEntitySearcherDAO;
+import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
+import com.agiletec.aps.system.common.entity.model.IApsEntity;
+import com.agiletec.aps.system.common.entity.model.SmallEntityType;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.keygenerator.IKeyGeneratorManager;
 import com.agiletec.aps.system.services.page.PageUtilizer;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.event.PublicContentChangedEvent;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.*;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceUtilizer;
-import org.entando.entando.aps.system.services.cache.*;
-import org.slf4j.*;
-import org.springframework.cache.annotation.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.entando.entando.aps.system.services.cache.CacheInfoEvict;
+import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.springframework.cache.annotation.CacheEvict;
 
 /**
  * Contents manager. This implements all the methods needed to create and manage
@@ -39,7 +54,7 @@ import java.util.*;
 public class ContentManager extends ApsEntityManager
                             implements IContentManager, GroupUtilizer<String>, PageUtilizer, ContentUtilizer, ResourceUtilizer, CategoryUtilizer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentManager.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentManager.class);
     private static final String ERROR_WHILE_LOADING_CONTENTS = "Error while loading contents";
 
     private IContentDAO contentDAO;

@@ -31,8 +31,9 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.event.ResourceCha
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.*;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ResourceHandler;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntSafeXmlUtils;
 import org.xml.sax.InputSource;
 
 import javax.xml.bind.JAXBContext;
@@ -54,7 +55,7 @@ import java.util.*;
  */
 public class ResourceManager extends AbstractService implements IResourceManager, GroupUtilizer, CategoryUtilizer {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private IResourceDAO resourceDao;
 
@@ -467,8 +468,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws EntException {
         try {
-            SAXParserFactory parseFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parseFactory.newSAXParser();
+            SAXParser parser = EntSafeXmlUtils.newSafeSAXParser();
             InputSource is = new InputSource(new StringReader(xml));
             ResourceHandler handler = new ResourceHandler(resource, this.getCategoryManager());
             parser.parse(is, handler);

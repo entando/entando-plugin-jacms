@@ -15,8 +15,8 @@ package com.agiletec.plugins.jacms.aps.system.services.resource;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Thread Class delegate to execute resource refresh operations.
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceReloaderThread extends Thread {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ResourceReloaderThread.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ResourceReloaderThread.class);
 	
 	public ResourceReloaderThread(ResourceManager resourceManager, int operationCode, List<String> resources) {
 		this._resourceManager = resourceManager;

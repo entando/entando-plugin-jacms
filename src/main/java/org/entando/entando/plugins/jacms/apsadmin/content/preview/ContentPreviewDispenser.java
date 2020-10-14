@@ -30,15 +30,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * @author E.Santoboni
  */
 public class ContentPreviewDispenser extends BaseContentDispenser {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ContentPreviewDispenser.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentPreviewDispenser.class);
 
     private ILangManager langManager;
 

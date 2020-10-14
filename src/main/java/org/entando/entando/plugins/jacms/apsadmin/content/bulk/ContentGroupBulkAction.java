@@ -26,8 +26,8 @@ import org.entando.entando.plugins.jacms.aps.system.services.content.command.gro
 import org.entando.entando.plugins.jacms.aps.system.services.content.command.group.RemoveGroupBulkCommand;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.ContentBulkActionSummary;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.agiletec.aps.system.services.group.Group;
@@ -39,7 +39,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 
 public class ContentGroupBulkAction extends BaseAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentGroupBulkAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentGroupBulkAction.class);
 
 	public String entry() {
 		return this.checkAllowedContents() ? SUCCESS : "list";

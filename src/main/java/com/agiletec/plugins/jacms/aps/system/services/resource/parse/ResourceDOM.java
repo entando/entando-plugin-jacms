@@ -17,8 +17,8 @@ import java.util.Map;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Classe JDOM per la scrittura di un oggetto tipo Resource in xml.
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceDOM {
     
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
     
     private Document _doc;
     protected Element _root;

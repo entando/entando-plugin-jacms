@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -31,7 +31,7 @@ import com.opensymphony.xwork2.interceptor.ValidationAware;
 
 public class ContentBulkActionHelper implements IContentBulkActionHelper {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentBulkActionHelper.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentBulkActionHelper.class);
 
 	/**
 	 * Checks if the contents are allowed.<br/>

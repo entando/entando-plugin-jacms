@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 /**
  * Manager dei modelli di contenuto.
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ContentModelManager extends AbstractService implements IContentModelManager {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private IContentModelManagerCacheWrapper cacheWrapper;
     private IContentModelDAO contentModelDao;

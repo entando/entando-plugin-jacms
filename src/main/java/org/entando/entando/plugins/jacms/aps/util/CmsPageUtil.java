@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Properties;
 import org.entando.entando.aps.util.PageUtils;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -39,7 +39,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class CmsPageUtil extends PageUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(CmsPageUtil.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsPageUtil.class);
 
     /**
      * Check if is possible to publish the content in the given page, checking

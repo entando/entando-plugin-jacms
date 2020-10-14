@@ -22,13 +22,13 @@ import com.agiletec.aps.system.common.AbstractGenericCacheWrapper;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelDAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.cache.Cache;
 
 public class ContentModelManagerCacheWrapper extends AbstractGenericCacheWrapper<ContentModel> implements IContentModelManagerCacheWrapper {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
 	@Override
 	public void initCache(IContentModelDAO contentModelDao) throws EntException {

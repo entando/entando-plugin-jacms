@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -28,7 +28,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.helper.IContentActionHelper;
  */
 public class ContentCategoryAction extends AbstractTreeAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentCategoryAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentCategoryAction.class);
 	
 	/**
 	 * Performs the action of adding of a category to the content.

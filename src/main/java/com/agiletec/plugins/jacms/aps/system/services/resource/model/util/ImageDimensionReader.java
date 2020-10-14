@@ -16,8 +16,8 @@ package com.agiletec.plugins.jacms.aps.system.services.resource.model.util;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.RefreshableBean;
 import org.entando.entando.ent.exception.EntException;
@@ -33,7 +33,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.parse.ImageDimens
  */
 public class ImageDimensionReader implements IImageDimensionReader, RefreshableBean, Serializable {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ImageDimensionReader.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ImageDimensionReader.class);
 	
 	/**
 	 * Inizializzazione della classe.

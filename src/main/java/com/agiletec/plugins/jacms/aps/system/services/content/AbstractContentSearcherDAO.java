@@ -14,6 +14,12 @@
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
 import com.agiletec.aps.system.SystemConstants;
+import com.agiletec.aps.system.common.entity.AbstractEntitySearcherDAO;
+import com.agiletec.aps.system.common.entity.model.ApsEntityRecord;
+import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
+import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.util.DateConverter;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,19 +27,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.agiletec.aps.system.common.entity.AbstractEntitySearcherDAO;
-import com.agiletec.aps.system.common.entity.model.ApsEntityRecord;
-import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import com.agiletec.aps.system.services.group.Group;
-import com.agiletec.aps.util.DateConverter;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Abstract Data access object used to search contents.
@@ -41,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractContentSearcherDAO extends AbstractEntitySearcherDAO implements IContentSearcherDAO {
 
-	private static final Logger _logger =  LoggerFactory.getLogger(AbstractContentSearcherDAO.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(AbstractContentSearcherDAO.class);
     
     @Override
     public int countContents(String[] categories, boolean orClauseCategoryFilter, 

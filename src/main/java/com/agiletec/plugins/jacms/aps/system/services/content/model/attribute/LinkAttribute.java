@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
@@ -48,7 +48,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class LinkAttribute extends TextAttribute implements IReferenceableAttribute {
 
-    private static final Logger logger = LoggerFactory.getLogger(LinkAttribute.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(LinkAttribute.class);
 
     @Override
     public Object getAttributePrototype() {

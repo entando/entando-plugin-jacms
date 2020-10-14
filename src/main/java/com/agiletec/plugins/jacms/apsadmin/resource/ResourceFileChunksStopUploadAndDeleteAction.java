@@ -19,13 +19,13 @@ import com.opensymphony.xwork2.ActionSupport;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ResourceFileChunksStopUploadAndDeleteAction extends ActionSupport {
     Charset charset = StandardCharsets.UTF_8;
 
-    private static final Logger logger = LoggerFactory.getLogger(ResourceFileChunksStopUploadAndDeleteAction.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ResourceFileChunksStopUploadAndDeleteAction.class);
     private String resultMessage = "";
 
     private String RESULT_SUCCESS = "SUCCESS";

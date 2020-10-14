@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.interceptor.ServletResponseAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
@@ -37,7 +37,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
  */
 public class ContentPreviewAction extends AbstractContentAction implements ServletResponseAware {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ContentPreviewAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentPreviewAction.class);
 	
 	public String preview() {
 		Content content = this.getContent();

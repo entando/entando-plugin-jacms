@@ -20,8 +20,8 @@ import java.io.InputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Rappresenta un attributo di entità di tipo attachment. L'attachment e il
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
  */
 public class AttachAttribute extends AbstractResourceAttribute {
 
-	private static final Logger _logger = LoggerFactory.getLogger(AttachAttribute.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(AttachAttribute.class);
 
 	/**
 	 * Restituisce il path URL dell'attachment.

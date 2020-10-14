@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
@@ -37,7 +37,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class ContentFinderViewerAction extends ContentFinderAction {
     
-    private static final Logger _logger = LoggerFactory.getLogger(ContentFinderViewerAction.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentFinderViewerAction.class);
     
     private String pageCode;
     private int frame = -1;

@@ -21,8 +21,8 @@ import java.util.Map;
 
 import java.util.Map.Entry;
 import org.jdom.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
@@ -47,7 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class AbstractResourceAttribute extends TextAttribute
         implements IReferenceableAttribute, ResourceAttributeInterface {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractResourceAttribute.class);
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(AbstractResourceAttribute.class);
 
     private Map<String, ResourceInterface> resources = new HashMap<>();
 

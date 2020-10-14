@@ -13,8 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.tags;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
@@ -31,7 +31,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
  */
 public class ResourceInfoTag extends AbstractObjectInfoTag {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ResourceInfoTag.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ResourceInfoTag.class);
 	
 	@Override
 	protected Object getMasterObject(String keyValue) throws Throwable {

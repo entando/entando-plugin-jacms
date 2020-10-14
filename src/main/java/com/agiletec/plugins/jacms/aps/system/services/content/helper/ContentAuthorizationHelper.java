@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.entando.entando.aps.system.services.cache.CacheableInfo;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
@@ -38,7 +38,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
 
-    private static final Logger _logger = LoggerFactory.getLogger(ContentAuthorizationHelper.class);
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentAuthorizationHelper.class);
 
     @Override
     public boolean isAuth(UserDetails user, Content content) throws EntException {

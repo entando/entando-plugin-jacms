@@ -15,8 +15,8 @@ package com.agiletec.plugins.jacms.apsadmin.content.attribute.action.list;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
@@ -34,7 +34,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.helper.IContentActionHelper;
  */
 public class ListAttributeAction extends com.agiletec.apsadmin.system.entity.attribute.action.list.ListAttributeAction {
 
-	private static final Logger _logger = LoggerFactory.getLogger(ListAttributeAction.class);
+	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ListAttributeAction.class);
 	
 	@Override
 	public String addListElement() {
