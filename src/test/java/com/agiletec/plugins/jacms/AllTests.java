@@ -106,131 +106,131 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for jACMS");
 
-//        System.out.println("Test for jACMS plugin");
-//
-//        //
-//        suite.addTestSuite(ContentAdminActionIntegrationTest.class);
-//        suite.addTestSuite(ContentCategoryActionIntegrationTest.class);
-//        suite.addTestSuite(TestContentAuthorization.class);
-//        suite.addTestSuite(TestContentBulkCommand.class);
-//        suite.addTestSuite(TestContentEntityManager.class);
-//        suite.addTestSuite(TestContentDOM.class);
-//        suite.addTestSuite(ContentListHelperIntegrationTest.class);
-//        suite.addTestSuite(ContentViewerHelperIntegrationTest.class);
-//        suite.addTest(new JUnit4TestAdapter(ContentViewerHelperTest.class));
-//        suite.addTestSuite(TestContentAttributeIterator.class);
-//        suite.addTestSuite(TestContentDAO.class);
-//        suite.addTestSuite(TestContentManager.class);
-//        suite.addTest(new JUnit4TestAdapter(ContentManagerTest.class));
-//        suite.addTest(new JUnit4TestAdapter(AbstractResourceAttributeTest.class));
-//        suite.addTest(new JUnit4TestAdapter(ResourceAttributeHandlerTest.class));
-//
-//        suite.addTestSuite(TestPublicContentSearcherDAO.class);
-//        suite.addTestSuite(TestValidateContent.class);
-//        //
-//        suite.addTestSuite(TestContentModelDAO.class);
-//        suite.addTestSuite(ContentModelManagerIntegrationTest.class);
-//        suite.addTest(new JUnit4TestAdapter(ContentModelManagerTest.class));
-//        //
-//        suite.addTestSuite(ContentPageMapperManagerIntegrationTest.class);
-//        suite.addTest(new JUnit4TestAdapter(ContentMapperCacheWrapperTest.class));
-//        suite.addTest(new JUnit4TestAdapter(ContentPageMapperManagerTest.class));
-//        //
-//        suite.addTestSuite(TestContentDispenser.class);
-//        //
-//        suite.addTestSuite(TestLinkResolverManager.class);
-//        //
-//        suite.addTestSuite(TestCmsPageManagerWrapper.class);
-//        //
-//        suite.addTestSuite(TestResourceDOM.class);
-//        suite.addTestSuite(TestResourceDAO.class);
-//        suite.addTestSuite(ResourceManagerIntegrationTest.class);
-//        suite.addTest(new JUnit4TestAdapter(ResourceManagerTest.class));
-//
-//        suite.addTestSuite(FacetSearchEngineManagerIntegrationTest.class);
-//        suite.addTestSuite(SearchEngineManagerIntegrationTest.class);
-//        suite.addTest(new JUnit4TestAdapter(SearchEngineManagerTest.class));
-//
-//        suite.addTestSuite(TestApplicationContext.class);
-//
-//        // Test cross utilizers
-//        suite.addTestSuite(TestCategoryUtilizer.class);
-//        suite.addTestSuite(TestGroupUtilizer.class);
-//
-//        suite.addTestSuite(TestCacheInfoManager.class);
-//        //
-//        suite.addTestSuite(TestApiContentInterface.class);
-//
-//        suite.addTest(ControllersAllTests.suite());
-//        suite.addTest(ServicesAllTests.suite());
-//
-//        // -------------------------------------
-//        suite.addTestSuite(TestTrashReferencedCategory.class);
-//
-//        // Content
-//        suite.addTest(new JUnit4TestAdapter(ContentAdminActionTest.class));
-//        suite.addTestSuite(TestHypertextAttributeAction.class);
-//        suite.addTestSuite(TestListAttributeAction.class);
-//        suite.addTestSuite(TestResourceAttributeAction.class);
-//        suite.addTestSuite(TestExtendedResourceAction.class);
-//        suite.addTestSuite(TestExtendedResourceFinderAction.class);
-//        suite.addTestSuite(TestLinkAttributeAction.class);
-//        suite.addTestSuite(TestPageLinkAction.class);
-//        suite.addTestSuite(TestContentLinkAction.class);
-//        suite.addTestSuite(TestUrlLinkAction.class);
-//        suite.addTestSuite(TestContentModelAction.class);
-//        suite.addTestSuite(TestContentModelFinderAction.class);
-//        suite.addTestSuite(TestContentAction.class);
-//        suite.addTestSuite(TestSaveBooleanAttributes.class);
-//        suite.addTestSuite(TestValidateBooleanAttributes.class);
-//        suite.addTestSuite(TestValidateDateAttribute.class);
-//        suite.addTestSuite(TestValidateMonotextAttribute.class);
-//        suite.addTestSuite(TestValidateNumberAttribute.class);
-//        suite.addTestSuite(TestValidateResourceAttribute.class);
-//        suite.addTestSuite(TestValidateTextAttribute.class);
-//        suite.addTestSuite(TestContentFinderAction.class);
-//        suite.addTestSuite(TestContentGroupAction.class);
-//        suite.addTestSuite(TestContentInspectionAction.class);
-//        suite.addTestSuite(TestIntroNewContentAction.class);
-//        suite.addTestSuite(TestContentGroupBulkAction.class);
-//        suite.addTestSuite(TestContentCategoryBulkAction.class);
-//        suite.addTest(new JUnit4TestAdapter(ContentModelServiceImplTest.class));
-//
-//        // Page
-//        suite.addTestSuite(TestContentListViewerWidgetAction.class);
-//        suite.addTestSuite(TestBaseFilterAction.class);
-//        suite.addTestSuite(TestDateAttributeFilterAction.class);
-//        suite.addTestSuite(TestNumberAttributeFilterAction.class);
-//        suite.addTestSuite(TestTextAttributeFilterAction.class);
-//        suite.addTestSuite(TestContentFinderViewerAction.class);
-//        suite.addTestSuite(TestContentViewerWidgetAction.class);
-//        suite.addTestSuite(TestPageAction.class);
-//
-//        //Resource
-//        suite.addTestSuite(TestMultipleResourceAction.class);
-//        suite.addTestSuite(TestResourceFinderAction.class);
-//
-//        //File Chunks Upload
-//        suite.addTestSuite(TestResourceFileChunkUploadAction.class);
-//
-//        suite.addTestSuite(TestPageActionReferences.class);
-//
-//        //Entity
-//        suite.addTestSuite(TestJacmsEntityAttributeConfigAction.class);
-//        suite.addTestSuite(TestJacmsEntityTypeConfigAction.class);
-//        suite.addTestSuite(TestJacmsEntityManagersAction.class);
-//
-//        //Group
-//        suite.addTestSuite(TestTrashReferencedGroup.class);
-//
-//        //Activity Stream
-//        suite.addTestSuite(TestActivityStream.class);
-//
-//        // ----------------------------------------
-//        suite.addTestSuite(TestContentPreviewAction.class);
-//
-//        // ----------------------------------------
-//        suite.addTestSuite(TestJacmsLabelsProperties.class);
+        System.out.println("Test for jACMS plugin");
+
+        //
+        suite.addTestSuite(ContentAdminActionIntegrationTest.class);
+        suite.addTestSuite(ContentCategoryActionIntegrationTest.class);
+        suite.addTestSuite(TestContentAuthorization.class);
+        suite.addTestSuite(TestContentBulkCommand.class);
+        suite.addTestSuite(TestContentEntityManager.class);
+        suite.addTestSuite(TestContentDOM.class);
+        suite.addTestSuite(ContentListHelperIntegrationTest.class);
+        suite.addTestSuite(ContentViewerHelperIntegrationTest.class);
+        suite.addTest(new JUnit4TestAdapter(ContentViewerHelperTest.class));
+        suite.addTestSuite(TestContentAttributeIterator.class);
+        suite.addTestSuite(TestContentDAO.class);
+        suite.addTestSuite(TestContentManager.class);
+        suite.addTest(new JUnit4TestAdapter(ContentManagerTest.class));
+        suite.addTest(new JUnit4TestAdapter(AbstractResourceAttributeTest.class));
+        suite.addTest(new JUnit4TestAdapter(ResourceAttributeHandlerTest.class));
+
+        suite.addTestSuite(TestPublicContentSearcherDAO.class);
+        suite.addTestSuite(TestValidateContent.class);
+        //
+        suite.addTestSuite(TestContentModelDAO.class);
+        suite.addTestSuite(ContentModelManagerIntegrationTest.class);
+        suite.addTest(new JUnit4TestAdapter(ContentModelManagerTest.class));
+        //
+        suite.addTestSuite(ContentPageMapperManagerIntegrationTest.class);
+        suite.addTest(new JUnit4TestAdapter(ContentMapperCacheWrapperTest.class));
+        suite.addTest(new JUnit4TestAdapter(ContentPageMapperManagerTest.class));
+        //
+        suite.addTestSuite(TestContentDispenser.class);
+        //
+        suite.addTestSuite(TestLinkResolverManager.class);
+        //
+        suite.addTestSuite(TestCmsPageManagerWrapper.class);
+        //
+        suite.addTestSuite(TestResourceDOM.class);
+        suite.addTestSuite(TestResourceDAO.class);
+        suite.addTestSuite(ResourceManagerIntegrationTest.class);
+        suite.addTest(new JUnit4TestAdapter(ResourceManagerTest.class));
+
+        suite.addTestSuite(FacetSearchEngineManagerIntegrationTest.class);
+        suite.addTestSuite(SearchEngineManagerIntegrationTest.class);
+        suite.addTest(new JUnit4TestAdapter(SearchEngineManagerTest.class));
+
+        suite.addTestSuite(TestApplicationContext.class);
+
+        // Test cross utilizers
+        suite.addTestSuite(TestCategoryUtilizer.class);
+        suite.addTestSuite(TestGroupUtilizer.class);
+
+        suite.addTestSuite(TestCacheInfoManager.class);
+        //
+        suite.addTestSuite(TestApiContentInterface.class);
+
+        suite.addTest(ControllersAllTests.suite());
+        suite.addTest(ServicesAllTests.suite());
+
+        // -------------------------------------
+        suite.addTestSuite(TestTrashReferencedCategory.class);
+
+        // Content
+        suite.addTest(new JUnit4TestAdapter(ContentAdminActionTest.class));
+        suite.addTestSuite(TestHypertextAttributeAction.class);
+        suite.addTestSuite(TestListAttributeAction.class);
+        suite.addTestSuite(TestResourceAttributeAction.class);
+        suite.addTestSuite(TestExtendedResourceAction.class);
+        suite.addTestSuite(TestExtendedResourceFinderAction.class);
+        suite.addTestSuite(TestLinkAttributeAction.class);
+        suite.addTestSuite(TestPageLinkAction.class);
+        suite.addTestSuite(TestContentLinkAction.class);
+        suite.addTestSuite(TestUrlLinkAction.class);
+        suite.addTestSuite(TestContentModelAction.class);
+        suite.addTestSuite(TestContentModelFinderAction.class);
+        suite.addTestSuite(TestContentAction.class);
+        suite.addTestSuite(TestSaveBooleanAttributes.class);
+        suite.addTestSuite(TestValidateBooleanAttributes.class);
+        suite.addTestSuite(TestValidateDateAttribute.class);
+        suite.addTestSuite(TestValidateMonotextAttribute.class);
+        suite.addTestSuite(TestValidateNumberAttribute.class);
+        suite.addTestSuite(TestValidateResourceAttribute.class);
+        suite.addTestSuite(TestValidateTextAttribute.class);
+        suite.addTestSuite(TestContentFinderAction.class);
+        suite.addTestSuite(TestContentGroupAction.class);
+        suite.addTestSuite(TestContentInspectionAction.class);
+        suite.addTestSuite(TestIntroNewContentAction.class);
+        suite.addTestSuite(TestContentGroupBulkAction.class);
+        suite.addTestSuite(TestContentCategoryBulkAction.class);
+        suite.addTest(new JUnit4TestAdapter(ContentModelServiceImplTest.class));
+
+        // Page
+        suite.addTestSuite(TestContentListViewerWidgetAction.class);
+        suite.addTestSuite(TestBaseFilterAction.class);
+        suite.addTestSuite(TestDateAttributeFilterAction.class);
+        suite.addTestSuite(TestNumberAttributeFilterAction.class);
+        suite.addTestSuite(TestTextAttributeFilterAction.class);
+        suite.addTestSuite(TestContentFinderViewerAction.class);
+        suite.addTestSuite(TestContentViewerWidgetAction.class);
+        suite.addTestSuite(TestPageAction.class);
+
+        //Resource
+        suite.addTestSuite(TestMultipleResourceAction.class);
+        suite.addTestSuite(TestResourceFinderAction.class);
+
+        //File Chunks Upload
+        suite.addTestSuite(TestResourceFileChunkUploadAction.class);
+
+        suite.addTestSuite(TestPageActionReferences.class);
+
+        //Entity
+        suite.addTestSuite(TestJacmsEntityAttributeConfigAction.class);
+        suite.addTestSuite(TestJacmsEntityTypeConfigAction.class);
+        suite.addTestSuite(TestJacmsEntityManagersAction.class);
+
+        //Group
+        suite.addTestSuite(TestTrashReferencedGroup.class);
+
+        //Activity Stream
+        suite.addTestSuite(TestActivityStream.class);
+
+        // ----------------------------------------
+        suite.addTestSuite(TestContentPreviewAction.class);
+
+        // ----------------------------------------
+        suite.addTestSuite(TestJacmsLabelsProperties.class);
         
         return suite;
     }
