@@ -140,7 +140,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping(value = "/plugins/cms/assets")
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<AssetDto>> createAsset(
             @RequestParam(value = "metadata") String request,
             @RequestParam(value = "file") MultipartFile file) throws JsonProcessingException {
@@ -165,7 +165,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping("/plugins/cms/assets/{resourceId}/clone")
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<AssetDto>> cloneAsset(@PathVariable("resourceId") String resourceId) {
         logger.debug("REST request - clone resource");
         AssetDto result = service.cloneAsset(resourceId);
@@ -177,7 +177,7 @@ public class ResourcesController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @PostMapping(value = "/plugins/cms/assets/{resourceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<AssetDto>> editAsset(@PathVariable("resourceId") String resourceId,
             @RequestParam(value = "metadata") String request,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
@@ -202,7 +202,7 @@ public class ResourcesController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")})
     @DeleteMapping("/plugins/cms/assets/{resourceId}")
-    @RestAccessControl(permission = Permission.MANAGE_RESOURCES)
+    @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws EntException {
         logger.debug("REST request - delete resource with id {}", resourceId);
         if (!resourceValidator.resourceExists(resourceId)) {
