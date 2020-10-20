@@ -45,7 +45,6 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.util.GenericResourceUtils;
-import org.entando.entando.ent.util.EntLogging;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.FileAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
