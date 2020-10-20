@@ -52,7 +52,7 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 0);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Search</property>
+<property key="en">Content Search Query</property>
 <property key="it">Elenco dinamico di contenuti</property>
 </properties>', '<config>
 	<parameter name="contentType">Content Type (mandatory)</parameter>
@@ -71,8 +71,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </config>', 'jacms', NULL, NULL, 1, NULL, 0);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">List</property>
-<property key="it">Elenco</property>
+<property key="en">Content List</property>
+<property key="it">Elenco di Contenuti</property>
 </properties>', '<config>
 	<parameter name="contents">Contents to Publish (mandatory)</parameter>
 	<parameter name="maxElemForItem">Contents for each page</parameter>
