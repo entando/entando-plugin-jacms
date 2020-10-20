@@ -178,9 +178,9 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
                     }
                 }
             }
-        } catch (Exception t) {
+        } catch (Throwable t) {
             logger.error("Error validating Attribute '{}'", this.getName(), t);
-            throw new EntRuntimeException("Error validating Attribute '" + this.getName() + "'", t);
+            throw new RuntimeException("Error validating Attribute '" + this.getName() + "'", t);
         }
         return errors;
     }
