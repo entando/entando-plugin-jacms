@@ -47,7 +47,7 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 </config>', 'jacms', NULL, NULL, 1, NULL, 0);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('search_result', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<property key="en">Search Result</property>
+<property key="en">Search Results</property>
 <property key="it">Risultati della Ricerca</property>
 </properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 0);
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlydefaultconfig) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
