@@ -50,6 +50,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.ContentAdminActionIntegration
 import com.agiletec.plugins.jacms.apsadmin.content.ContentAdminActionTest;
 import com.agiletec.plugins.jacms.apsadmin.content.ContentCategoryActionIntegrationTest;
 import com.agiletec.plugins.jacms.apsadmin.content.TestContentAction;
+import com.agiletec.plugins.jacms.apsadmin.content.TestContentBulkAction;
 import com.agiletec.plugins.jacms.apsadmin.content.TestContentFinderAction;
 import com.agiletec.plugins.jacms.apsadmin.content.TestContentGroupAction;
 import com.agiletec.plugins.jacms.apsadmin.content.TestContentInspectionAction;
@@ -107,7 +108,7 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for jACMS");
 
         System.out.println("Test for jACMS plugin");
-
+        
         //
         suite.addTestSuite(ContentAdminActionIntegrationTest.class);
         suite.addTestSuite(ContentCategoryActionIntegrationTest.class);
@@ -181,6 +182,7 @@ public class AllTests {
         suite.addTestSuite(TestContentModelAction.class);
         suite.addTestSuite(TestContentModelFinderAction.class);
         suite.addTestSuite(TestContentAction.class);
+        suite.addTestSuite(TestContentBulkAction.class);
         suite.addTestSuite(TestSaveBooleanAttributes.class);
         suite.addTestSuite(TestValidateBooleanAttributes.class);
         suite.addTestSuite(TestValidateDateAttribute.class);
