@@ -31,6 +31,7 @@ import java.util.Map;
 public class BaseResourceDataBean implements ResourceDataBean {
 
     private String resourceId;
+    private String correlationCode;
     private String resourceType;
     private String description;
     private String mainGroup;
@@ -191,5 +192,15 @@ public class BaseResourceDataBean implements ResourceDataBean {
 
     public void setFolderPath(String folderPath) {
         this.folderPath = folderPath;
+    }
+
+    @Override
+    public String getCorrelationCode() {
+        return correlationCode;
+    }
+
+    @Override
+    public void setCorrelationCode(String correlationCode) {
+        this.correlationCode = correlationCode;
     }
 }

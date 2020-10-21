@@ -52,11 +52,14 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
     private ICategoryManager categoryManager;
 
     private final String LOAD_RESOURCE_VO
-            = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath FROM resources WHERE resid = ? ";
+            = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE resid = ? ";
+
+    private final String LOAD_RESOURCE_VO_BY_CODE
+            = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE correlationcode = ? ";
 
     private final String ADD_RESOURCE
-            = "INSERT INTO resources (resid, restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath) "
-            + "VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ?, ?)";
+            = "INSERT INTO resources (resid, restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode) "
+            + "VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ?, ?, ?)";
 
     private final String UPDATE_RESOURCE
             = "UPDATE resources SET restype = ? , descr = ? , maingroup = ? , resourcexml = ? , masterfilename = ? , lastmodified = ?, folderpath = ? WHERE resid = ? ";
@@ -124,6 +127,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             stat.setTimestamp(8, new java.sql.Timestamp(creationDate.getTime()));
             stat.setString(9, resource.getOwner());
             stat.setString(10, resource.getFolderPath());
+            stat.setString(11, resource.getCorrelationCode());
             stat.executeUpdate();
         } catch (Throwable t) {
             logger.error("Error adding resource record", t);
@@ -419,6 +423,42 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
                 resourceVo.setLastModified(res.getTimestamp(7));
                 resourceVo.setOwner(res.getString(8));
                 resourceVo.setFolderPath(res.getString(9));
+                resourceVo.setCorrelationCode(res.getString(10));
+            }
+        } catch (Exception t) {
+            logger.error("Errore loading resource {}", id, t);
+            throw new RuntimeException("Errore loading resource" + id, t);
+        } finally {
+            closeDaoResources(res, stat, conn);
+        }
+        return resourceVo;
+    }
+
+    @Override
+    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
+    public ResourceRecordVO loadResourceVoByCode(String id) {
+        Connection conn = null;
+        ResourceRecordVO resourceVo = null;
+        PreparedStatement stat = null;
+        ResultSet res = null;
+        try {
+            conn = this.getConnection();
+            stat = conn.prepareStatement(LOAD_RESOURCE_VO_BY_CODE);
+            stat.setString(1, id);
+            res = stat.executeQuery();
+            if (res.next()) {
+                resourceVo = new ResourceRecordVO();
+                resourceVo.setId(id);
+                resourceVo.setResourceType(res.getString(1));
+                resourceVo.setDescr(res.getString(2));
+                resourceVo.setMainGroup(res.getString(3));
+                resourceVo.setXml(res.getString(4));
+                resourceVo.setMasterFileName(res.getString(5));
+                resourceVo.setCreationDate(res.getTimestamp(6));
+                resourceVo.setLastModified(res.getTimestamp(7));
+                resourceVo.setOwner(res.getString(8));
+                resourceVo.setFolderPath(res.getString(9));
+                resourceVo.setCorrelationCode(res.getString(10));
             }
         } catch (Exception t) {
             logger.error("Errore loading resource {}", id, t);

@@ -677,13 +677,15 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
                 AbstractResourceAttribute resAttr = (AbstractResourceAttribute) attr;
 
                 for(ResourceInterface res : resAttr.getResources().values()) {
+                    String idOrCode = res.getId() == null ? res.getCorrelationCode() : res.getId();
                     AssetDto resource;
                     try {
-                        resource = resourcesService.getAsset(res.getId());
+                        resource = resourcesService.getAsset(res.getId(), res.getCorrelationCode());
+                        res.setId(resource.getId());
                     } catch (ResourceNotFoundException e) {
-                        logger.error("Resource not found: " + res.getId());
+                        logger.error("Resource not found: " + idOrCode);
                         bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID,
-                                "Resource not found - " + res.getId());
+                                "Resource not found - " + idOrCode);
                         return;
                     }
 

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class ResourceDto {
 
     private String id;
+    private String correlationCode;
     private String typeCode;
     private String description;
     private String mainGroup;
@@ -29,6 +30,7 @@ public class ResourceDto {
 
     public ResourceDto(AbstractResource src) {
         this.setId(src.getId());
+        this.setCorrelationCode(src.getCorrelationCode());
         this.setTypeCode(src.getType());
         this.setDescription(src.getDescription());
         this.setMainGroup(src.getMainGroup());
@@ -62,6 +64,14 @@ public class ResourceDto {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCorrelationCode() {
+        return correlationCode;
+    }
+
+    public void setCorrelationCode(String correlationCode) {
+        this.correlationCode = correlationCode;
     }
 
     public String getTypeCode() {

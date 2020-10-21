@@ -69,6 +69,7 @@ public class ResourcesController {
     public static final String ERRCODE_INVALID_FILE_TYPE = "4";
     public static final String ERRCODE_INVALID_RESOURCE_TYPE = "5";
     public static final String ERRCODE_RESOURCE_FORBIDDEN = "6";
+    public static final String ERRCODE_RESOURCE_CONFLICT = "7";
 
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
@@ -155,7 +156,7 @@ public class ResourcesController {
                 .collect(Collectors.toList());
 
         AssetDto result = service
-                .createAsset(resourceRequest.getType(), file, resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(),
+                .createAsset(resourceRequest.getCorrelationCode(), resourceRequest.getType(), file, resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(),
                         extractCurrentUser(httpSession));
         return ResponseEntity.ok(new SimpleRestResponse<>(result));
     }

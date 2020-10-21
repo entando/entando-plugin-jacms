@@ -3,10 +3,19 @@ package org.entando.entando.plugins.jacms.web.resource.request;
 import java.util.List;
 
 public class CreateResourceRequest {
+    private String correlationCode;
     private String type;
     private String group;
     private String folderPath;
     private List<String> categories;
+
+    public String getCorrelationCode() {
+        return correlationCode;
+    }
+
+    public void setCorrelationCode(String correlationCode) {
+        this.correlationCode = correlationCode;
+    }
 
     public List<String> getCategories() {
         return categories;

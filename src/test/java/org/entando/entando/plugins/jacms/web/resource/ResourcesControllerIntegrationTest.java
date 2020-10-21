@@ -682,15 +682,16 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateEditDeleteFileResource() throws Exception {
+    public void testCreateDeleteFileResourceWithCode() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
         try {
-            ResultActions result = performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+            ResultActions result = performCreateResource(user, "file", "my_code", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                .andExpect(jsonPath("$.payload.correlationCode", is("my_code")))
                 .andExpect(jsonPath("$.payload.categories.size()", is(2)))
                 .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
                 .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
@@ -706,18 +707,9 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(4)));
 
-            List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
-
-            performEditResource(user, "file", createdId, "new file description", categories, true)
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.id", is(createdId)))
-                .andExpect(jsonPath("$.payload.categories.size()", is(1)))
-                .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
-                .andExpect(jsonPath("$.payload.group", is("free")))
-                .andExpect(jsonPath("$.payload.description", is("new file description")))
-                .andExpect(jsonPath("$.payload.size", is("2 Kb")));
-                //.andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
+            performCreateResource(user, "file", "my_code", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+                    .andDo(print())
+                    .andExpect(status().isConflict());
         } finally {
             if (createdId != null) {
                 performDeleteResource(user, "file", createdId)
@@ -728,6 +720,57 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
+    }
+
+    @Test
+    public void testCreateEditDeleteFileResource() throws Exception {
+        UserDetails user = createAccessToken();
+        String createdId = null;
+
+        try {
+            ResultActions result = performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("file_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.size", is("2 Kb")))
+                    .andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            performGetResources(user, "file", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(4)));
+
+            List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
+
+            performEditResource(user, "file", createdId, "new file description", categories, true)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", is(createdId)))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(1)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("new file description")))
+                    .andExpect(jsonPath("$.payload.size", is("2 Kb")));
+            //.andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
+        } finally {
+            if (createdId != null) {
+                performDeleteResource(user, "file", createdId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "file", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
         }
     }
@@ -2027,11 +2070,12 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                     .header("Authorization", "Bearer " + accessToken));
     }
 
-    private ResultActions performCreateResource(UserDetails user, String type, String group, List<String> categories, String folderPath, String mimeType) throws Exception {
+    private ResultActions performCreateResource(UserDetails user, String type, String code, String group, List<String> categories, String folderPath, String mimeType) throws Exception {
         String urlPath = String.format("/plugins/cms/assets", type);
 
         CreateResourceRequest resourceRequest = new CreateResourceRequest();
         resourceRequest.setType(type);
+        resourceRequest.setCorrelationCode(code);
         resourceRequest.setCategories(categories);
         resourceRequest.setGroup(group);
         resourceRequest.setFolderPath(folderPath);
@@ -2120,8 +2164,16 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
         return mockMvc.perform(request);
     }
 
+    private ResultActions performCreateResource(UserDetails user, String type, String group, List<String> categories, String folderPath, String mimeType) throws Exception {
+        return performCreateResource(user, type, null, group, categories, folderPath, mimeType);
+    }
+
     private ResultActions performCreateResource(UserDetails user, String type, String group, List<String> categories, String mimeType) throws Exception {
-        return performCreateResource(user, type, group, categories, null, mimeType);
+        return performCreateResource(user, type, null, group, categories, null, mimeType);
+    }
+
+    private ResultActions performCreateResource(UserDetails user, String type, String correlationCode, String group, List<String> categories, String mimeType) throws Exception {
+        return performCreateResource(user, type, correlationCode, group, categories, null, mimeType);
     }
 
     private ResultActions performCloneResource(UserDetails user, String resourceId) throws Exception {
