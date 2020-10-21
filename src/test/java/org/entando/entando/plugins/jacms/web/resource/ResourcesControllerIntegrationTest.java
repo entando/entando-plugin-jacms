@@ -147,17 +147,28 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateEditDeleteFileResourceAuthorization() throws Exception {
-        Role role = createRole("manageResources", "descr");
+    public void testCreateEditDeleteFileResourceAuthorizationManageResource() throws Exception {
+        testCreateEditDeleteFileResourceAuthorization(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
+    }
+    @Test
+    public void testCreateEditDeleteFileResourceAuthorizationContentEditor() throws Exception {
+        testCreateEditDeleteFileResourceAuthorization(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
+    }
+    @Test
+    public void testCreateEditDeleteFileResourceAuthorizationContentSupervisor() throws Exception {
+        testCreateEditDeleteFileResourceAuthorization(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
+    }
+
+    private void testCreateEditDeleteFileResourceAuthorization(String role, String permission) throws Exception {
+        Role roleObject= createRole(role, "descr");
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .withAuthorization(Group.FREE_GROUP_NAME, role, permission)
                 .build();
         String createdId = null;
-
         try {
-            roleManager.addRole(role);
+            roleManager.addRole(roleObject);
 
-            ResultActions result = performCreateResource(user, "file", "free",
+            ResultActions result = performCreateResource(user, "file", Group.FREE_GROUP_NAME,
                     Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                     .andDo(print())
                     .andExpect(status().isOk());
@@ -175,7 +186,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                     .andDo(print())
                     .andExpect(status().isOk());
         } finally {
-            roleManager.removeRole(role);
+            roleManager.removeRole(roleObject);
             if (createdId != null) {
                 performDeleteResource(user, "file", createdId)
                         .andDo(print())
@@ -190,16 +201,30 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateCloneAssetAuthorization() throws Exception {
-        Role role = createRole("manageResources", "descr");
+    public void testCreateCloneAssetAuthorizationManageResource() throws Exception {
+      testCreateCloneAssetAuthorization(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
+    }
+
+    @Test
+    public void testCreateCloneAssetAuthorizationContentSupervisor() throws Exception {
+        testCreateCloneAssetAuthorization(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
+    }
+
+    @Test
+    public void testCreateCloneAssetAuthorizationContentEditor() throws Exception {
+        testCreateCloneAssetAuthorization(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
+    }
+
+    private void testCreateCloneAssetAuthorization(String role, String permission) throws Exception {
+        Role roleObj = createRole(role, "descr");
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
+                .withAuthorization(Group.FREE_GROUP_NAME, role, permission)
                 .build();
         String createdId = null;
         String clonedId = null;
 
         try {
-            roleManager.addRole(role);
+            roleManager.addRole(roleObj);
 
             ResultActions result = performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                     .andDo(print())
@@ -215,7 +240,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
 
         } finally {
 
-            roleManager.removeRole(role);
+            roleManager.removeRole(roleObj);
 
             if (clonedId != null) {
                 performDeleteResource(user, "file", clonedId)

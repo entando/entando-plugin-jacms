@@ -10,6 +10,7 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
+import com.agiletec.aps.system.services.role.Permission;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
@@ -66,7 +67,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class ResourcesService {
-    public static final String PERMISSION_MANAGE_RESOURCES = "manageResources";
 
     @Autowired
     private IResourceManager resourceManager;
@@ -356,7 +356,12 @@ public class ResourcesService {
     }
 
     public void validateGroup(UserDetails user, String group) {
-        List<Group> groups = authorizationManager.getGroupsByPermission(user, PERMISSION_MANAGE_RESOURCES);
+        List<Group> groups = authorizationManager.getGroupsByPermission(user, Permission.MANAGE_RESOURCES);
+        groups.addAll(authorizationManager.getGroupsByPermission(user, Permission.CONTENT_EDITOR));
+        groups.addAll(authorizationManager.getGroupsByPermission(user, Permission.CONTENT_SUPERVISOR));
+        groups = groups.stream()
+                .distinct()
+                .collect(Collectors.toList());
 
         for(Group g : groups) {
             if (g.getAuthority().equals(group)) {
