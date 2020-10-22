@@ -490,7 +490,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         }
     }
 
-    protected IStorageManager getStorageManager() {
+    public IStorageManager getStorageManager() {
         return storageManager;
     }
 
