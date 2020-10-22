@@ -10,23 +10,16 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMonoInstanceResource;
-import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMultiInstanceResource;
-import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractResource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.entando.entando.ent.exception.EntException;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMonoInstanceResource;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
@@ -34,7 +27,11 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResour
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInstance;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +49,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.util.GenericResourceUtils;
-import org.entando.entando.plugins.jacms.web.resource.ResourcesController;
+import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.FileAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
@@ -75,7 +72,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class ResourcesService {
-    public static final String PERMISSION_MANAGE_RESOURCES = "manageResources";
 
     @Autowired
     private IResourceManager resourceManager;
@@ -402,7 +398,12 @@ public class ResourcesService {
     }
 
     public void validateGroup(UserDetails user, String group) {
-        List<Group> groups = authorizationManager.getGroupsByPermission(user, PERMISSION_MANAGE_RESOURCES);
+        List<Group> groups = authorizationManager.getGroupsByPermission(user, Permission.MANAGE_RESOURCES);
+        groups.addAll(authorizationManager.getGroupsByPermission(user, Permission.CONTENT_EDITOR));
+        groups.addAll(authorizationManager.getGroupsByPermission(user, Permission.CONTENT_SUPERVISOR));
+        groups = groups.stream()
+                .distinct()
+                .collect(Collectors.toList());
 
         for(Group g : groups) {
             if (g.getAuthority().equals(group)) {

@@ -13,8 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.validation.FieldError;
-
+import com.agiletec.aps.system.services.role.Permission;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -41,7 +40,7 @@ public class ResourcesServiceUnitTest {
         authorizationManager = mock(IAuthorizationManager.class);
         resourcesService = new ResourcesService();
 
-        when(authorizationManager.getGroupsByPermission(any(), matches(ResourcesService.PERMISSION_MANAGE_RESOURCES)))
+        when(authorizationManager.getGroupsByPermission(any(), matches(Permission.MANAGE_RESOURCES)))
                 .thenReturn(TestHelper.createGroups());
 
         resourcesService.setAuthorizationManager(authorizationManager);
