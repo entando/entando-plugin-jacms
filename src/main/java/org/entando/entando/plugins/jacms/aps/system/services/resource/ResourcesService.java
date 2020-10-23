@@ -1,5 +1,12 @@
 package org.entando.entando.plugins.jacms.aps.system.services.resource;
 
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_CATEGORY_NOT_FOUND;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_GROUP_NOT_FOUND;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_FILE_TYPE;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_RESOURCE_TYPE;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_CONFLICT;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
+
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
@@ -61,8 +68,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.multipart.MultipartFile;
-
-import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.*;
 
 @Getter
 @Setter
