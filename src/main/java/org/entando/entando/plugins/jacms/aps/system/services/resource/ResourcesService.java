@@ -350,7 +350,10 @@ public class ResourcesService {
 
     /****** Auxiliary Methods ******/
 
-    private BaseResourceDataBean createDataBeanFromResource(ResourceInterface resource) throws EntException {
+    private BaseResourceDataBean createDataBeanFromResource(ResourceInterface resourceInterface) throws EntException {
+
+        AbstractResource resource = (AbstractResource) resourceInterface;
+
         BaseResourceDataBean resourceFile = new BaseResourceDataBean();
         resourceFile.setResourceType(resource.getType());
         resourceFile.setResourceId(resource.getId());
@@ -362,6 +365,7 @@ public class ResourcesService {
         resourceFile.setMainGroup(resource.getMainGroup());
         resourceFile.setFileName(resource.getMasterFileName());
 
+
         ResourceInstance instance = null;
 
         if (resource.isMultiInstance()) {
@@ -371,8 +375,17 @@ public class ResourcesService {
         }
 
         try {
-            String filePath =
-                    ((AbstractResource)resource).getStorageManager().createFullPath(resource.getFolder() + instance.getFileName(), false);
+
+            boolean isProtected = resource.isProtectedResource();
+            String absolutePath = null;
+            if (isProtected) {
+                absolutePath = resource.getFolder() + resource.getMainGroup() + "/" + instance.getFileName();
+            } else {
+                absolutePath = resource.getFolder() + instance.getFileName();
+            }
+
+            String filePath = resource.getStorageManager().createFullPath(absolutePath, isProtected);
+
             File file = new File(filePath);
             Path path = file.toPath();
             Long size = Files.size(path) / 1000;

@@ -414,7 +414,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         return urlPath.toString();
     }
 
-    protected boolean isProtectedResource() {
+    public boolean isProtectedResource() {
         return (!Group.FREE_GROUP_NAME.equals(this.getMainGroup()));
     }
 
