@@ -49,9 +49,23 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testGetContentSettings() throws Exception {
+    public void testGetContentSettingsAuthorizationContentEditor() throws Exception {
+        testGetContentSettings(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
+    }
+
+    @Test
+    public void testGetContentSettingsAuthorizationContentSupervisor() throws Exception {
+        testGetContentSettings(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
+    }
+
+    @Test
+    public void testGetContentSettingsAuthorizationManageResources() throws Exception {
+        testGetContentSettings(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
+    }
+
+    private void testGetContentSettings(String role, String permission) throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
+                .withAuthorization(Group.FREE_GROUP_NAME, role, permission)
                 .build();
 
         performGetContentSettings(user)
