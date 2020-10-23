@@ -42,6 +42,7 @@ import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequ
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
+import org.entando.entando.web.common.model.AlternativeId;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
 import org.entando.entando.web.common.model.RestResponse;
@@ -206,16 +207,19 @@ public class ResourcesController {
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws EntException {
         logger.debug("REST request - delete resource with id {}", resourceId);
-        if (!resourceValidator.resourceExists(resourceId)) {
-            throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
+        String correlationCode = AlternativeId.getAlternativeId("cc", resourceId);
+        String codeOrId = correlationCode == null ? resourceId : correlationCode;
+
+        if (!resourceValidator.resourceExists(resourceId, correlationCode)) {
+            throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", codeOrId);
         }
-        if (!resourceValidator.isResourceDeletableByUser(resourceId, extractCurrentUser(httpSession))) {
+        if (!resourceValidator.isResourceDeletableByUser(resourceId, correlationCode, extractCurrentUser(httpSession))) {
             DataBinder binder = new DataBinder(resourceId);
             BindingResult bindingResult = binder.getBindingResult();
-            bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{resourceId}, "plugins.jacms.resources.resourceManager.error.delete");
+            bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{codeOrId}, "plugins.jacms.resources.resourceManager.error.delete");
             throw new ResourcePermissionsException(bindingResult);
         }
-        service.deleteAsset(resourceId);
+        service.deleteAsset(resourceId, correlationCode);
         return ResponseEntity.ok(new SimpleRestResponse<>(new HashMap()));
     }
 }

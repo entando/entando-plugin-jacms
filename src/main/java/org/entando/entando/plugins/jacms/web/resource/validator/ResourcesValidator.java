@@ -32,9 +32,9 @@ public class ResourcesValidator extends AbstractPaginationValidator {
     @Autowired
     private ResourceManager resourceManager;
     
-    public boolean isResourceDeletableByUser(String resourceId, UserDetails user) throws EntException {
+    public boolean isResourceDeletableByUser(String resourceId, String correlationCode, UserDetails user) throws EntException {
         final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
-        final ResourceInterface resource = resourceManager.loadResource(resourceId);
+        final ResourceInterface resource = resourceManager.loadResource(resourceId, correlationCode);
         if (resource != null)  {
             return allowedGroupCodes.stream().anyMatch(group ->
                 GenericResourceUtils
@@ -44,8 +44,8 @@ public class ResourcesValidator extends AbstractPaginationValidator {
         return false;
     }
 
-    public boolean resourceExists(String resourceId) throws EntException {
-        final ResourceInterface resource = resourceManager.loadResource(resourceId);
+    public boolean resourceExists(String resourceId, String correlationCode) throws EntException {
+        final ResourceInterface resource = resourceManager.loadResource(resourceId, correlationCode);
         if (resource!=null){
             return true;
         }

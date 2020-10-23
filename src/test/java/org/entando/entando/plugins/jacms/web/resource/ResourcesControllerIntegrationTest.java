@@ -684,7 +684,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     @Test
     public void testCreateDeleteFileResourceWithCode() throws Exception {
         UserDetails user = createAccessToken();
-        String createdId = null;
+        String code = "my_code";
 
         try {
             ResultActions result = performCreateResource(user, "file", "my_code", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
@@ -700,8 +700,6 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 .andExpect(jsonPath("$.payload.size", is("2 Kb")))
                 .andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
 
-            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
-
             performGetResources(user, "file", null)
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -711,16 +709,14 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                     .andDo(print())
                     .andExpect(status().isConflict());
         } finally {
-            if (createdId != null) {
-                performDeleteResource(user, "file", createdId)
-                    .andDo(print())
-                    .andExpect(status().isOk());
+            performDeleteResource(user, "file", "cc=" + code)
+                .andDo(print())
+                .andExpect(status().isOk());
 
-                performGetResources(user, "file", null)
-                    .andDo(print())
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(3)));
-            }
+            performGetResources(user, "file", null)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(3)));
         }
     }
 

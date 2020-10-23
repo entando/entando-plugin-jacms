@@ -282,9 +282,20 @@ public class ResourcesService {
         }
     }
 
+    public void deleteAssetByCode(String correlationCode) {
+        deleteAsset(null, correlationCode);
+    }
+
     public void deleteAsset(String resourceId) {
+        deleteAsset(resourceId, null);
+    }
+
+    public void deleteAsset(String resourceId, String correlationCode) {
         try {
-            ResourceInterface resource = resourceManager.loadResource(resourceId);
+            ResourceInterface resource = correlationCode == null
+                    ? resourceManager.loadResource(resourceId)
+                    : resourceManager.loadResource(resourceId, correlationCode);
+
             if (resource == null) {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
             }
