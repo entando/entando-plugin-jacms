@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
@@ -100,7 +101,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         } catch (Throwable t) {
             this.executeRollback(conn);
             logger.error("Error adding resource", t);
-            throw new RuntimeException("Error adding resource", t);
+            throw new EntRuntimeException("Error adding resource", t);
         } finally {
             closeConnection(conn);
         }
@@ -131,7 +132,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             stat.executeUpdate();
         } catch (Throwable t) {
             logger.error("Error adding resource record", t);
-            throw new RuntimeException("Error adding resource record", t);
+            throw new EntRuntimeException("Error adding resource record", t);
         } finally {
             closeDaoResources(null, stat);
         }
@@ -154,7 +155,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         } catch (Throwable t) {
             this.executeRollback(conn);
             logger.error("Error updating resource", t);
-            throw new RuntimeException("Error updating resource", t);
+            throw new EntRuntimeException("Error updating resource", t);
         } finally {
             closeConnection(conn);
         }
@@ -185,7 +186,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             stat.executeUpdate();
         } catch (Throwable t) {
             logger.error("Error updating resource record", t);
-            throw new RuntimeException("Error updating resource record", t);
+            throw new EntRuntimeException("Error updating resource record", t);
         } finally {
             closeDaoResources(null, stat);
         }
@@ -208,7 +209,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         } catch (Throwable t) {
             this.executeRollback(conn);
             logger.error("Error deleting resource {}", id, t);
-            throw new RuntimeException("Error deleting resource " + id, t);
+            throw new EntRuntimeException("Error deleting resource " + id, t);
         } finally {
             this.closeConnection(conn);
         }
@@ -224,7 +225,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             stat.executeUpdate();
         } catch (Throwable t) {
             logger.error("Error deleting resource {}", resourceId, t);
-            throw new RuntimeException("Error deleting resource " + resourceId, t);
+            throw new EntRuntimeException("Error deleting resource " + resourceId, t);
         } finally {
             closeDaoResources(null, stat);
         }
@@ -318,7 +319,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             }
         } catch (Throwable t) {
             logger.error("Error while loading the count of IDs", t);
-            throw new RuntimeException("Error while loading the count of IDs", t);
+            throw new EntRuntimeException("Error while loading the count of IDs", t);
         } finally {
             closeDaoResources(result, stat, conn);
         }
@@ -343,7 +344,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             }
         } catch (Throwable t) {
             logger.error("Error loading resources id", t);
-            throw new RuntimeException("Error loading resources id", t);
+            throw new EntRuntimeException("Error loading resources id", t);
         } finally {
             closeDaoResources(res, stat, conn);
         }
@@ -364,7 +365,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
             index = this.addMetadataFieldFilterStatementBlock(filters, index, stat);
         } catch (Throwable t) {
             logger.error("Error while creating the statement", t);
-            throw new RuntimeException("Error while creating the statement", t);
+            throw new EntRuntimeException("Error while creating the statement", t);
         }
         return stat;
     }
@@ -426,8 +427,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
                 resourceVo.setCorrelationCode(res.getString(10));
             }
         } catch (Exception t) {
-            logger.error("Errore loading resource {}", id, t);
-            throw new RuntimeException("Errore loading resource" + id, t);
+            logger.error("Error loading resource {}", id, t);
+            throw new EntRuntimeException("Error loading resource" + id, t);
         } finally {
             closeDaoResources(res, stat, conn);
         }
@@ -461,8 +462,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
                 resourceVo.setCorrelationCode(res.getString(10));
             }
         } catch (Exception t) {
-            logger.error("Errore loading resource {}", id, t);
-            throw new RuntimeException("Errore loading resource" + id, t);
+            logger.error("Error loading resource {}", id, t);
+            throw new EntRuntimeException("Error loading resource" + id, t);
         } finally {
             closeDaoResources(res, stat, conn);
         }
@@ -494,7 +495,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
                 stat.executeBatch();
             } catch (Exception t) {
                 logger.error("Error adding resourcerelations record for {}", resource.getId(), t);
-                throw new RuntimeException("Error adding resourcerelations record for " + resource.getId(), t);
+                throw new EntRuntimeException("Error adding resourcerelations record for " + resource.getId(), t);
             } finally {
                 closeDaoResources(null, stat);
             }
