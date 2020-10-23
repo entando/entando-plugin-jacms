@@ -10,16 +10,16 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import com.agiletec.aps.system.services.role.Permission;
-import org.entando.entando.ent.exception.EntException;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMonoInstanceResource;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
@@ -27,7 +27,11 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResour
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInstance;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +49,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.util.GenericResourceUtils;
+import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.FileAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
@@ -248,8 +253,8 @@ public class ResourcesService {
         try {
             ResourceInterface clonedResource = loadResource(resourceId);
             clonedResource.setId(null);
-            resourceManager.addResource(clonedResource);
-
+            BaseResourceDataBean bean = createDataBeanFromResource(clonedResource);
+            clonedResource = resourceManager.addResource(bean);
             return convertResourceToDto(resourceManager.loadResource(clonedResource.getId()));
         } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
@@ -344,6 +349,43 @@ public class ResourcesService {
     }
 
     /****** Auxiliary Methods ******/
+
+    private BaseResourceDataBean createDataBeanFromResource(ResourceInterface resource) throws EntException {
+        BaseResourceDataBean resourceFile = new BaseResourceDataBean();
+        resourceFile.setResourceType(resource.getType());
+        resourceFile.setResourceId(resource.getId());
+        resourceFile.setMetadata(resource.getMetadata());
+        resourceFile.setOwner(resource.getOwner());
+        resourceFile.setFolderPath(resource.getFolderPath());
+        resourceFile.setDescr(resource.getDescription());
+        resourceFile.setCategories(resource.getCategories());
+        resourceFile.setMainGroup(resource.getMainGroup());
+        resourceFile.setFileName(resource.getMasterFileName());
+
+        ResourceInstance instance = null;
+
+        if (resource.isMultiInstance()) {
+            instance = resource.getDefaultInstance();
+        } else {
+            instance = ((AbstractMonoInstanceResource) resource).getInstance();
+        }
+
+        try {
+            String filePath =
+                    ((AbstractResource)resource).getStorageManager().createFullPath(resource.getFolder() + instance.getFileName(), false);
+            File file = new File(filePath);
+            Path path = file.toPath();
+            Long size = Files.size(path) / 1000;
+
+            resourceFile.setInputStream(new FileInputStream(file));
+            resourceFile.setFileSize(size.intValue());
+            resourceFile.setMimeType(Files.probeContentType(path));
+        } catch (IOException | EntException e) {
+            throw new EntException("Error reading file input stream", e);
+        }
+
+        return resourceFile;
+    }
 
     private List<Category> convertCategories(List<String> categories) {
         return categories.stream().map(code -> Optional.ofNullable(categoryManager.getCategory(code))

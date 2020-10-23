@@ -994,6 +994,106 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
+    public void testCreateCloneDeleteClonedImageResource() throws Exception {
+        UserDetails user = createAccessToken();
+        String createdId = null;
+        String imagePath = null;
+        String createdId2 = null;
+        String imagePath2 = null;
+        String clonedId = null;
+
+        try {
+            ResultActions result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("image_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.owner", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload.versions.size()", is(4)))
+                    .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")))
+                    .andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")));
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            imagePath = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.versions[0].path");
+
+            result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("image_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.owner", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload.versions.size()", is(4)))
+                    .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")))
+                    .andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")))
+                    .andExpect(jsonPath("$.payload.versions[0].path", not(imagePath)));
+
+            createdId2 = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            imagePath2 = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.versions[0].path");
+
+            ResultActions result2 = performCloneResource(user, createdId)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", not(createdId)))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("image_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.owner", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload.versions.size()", is(4)))
+                    .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")))
+                    .andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")))
+                    .andExpect(jsonPath("$.payload.versions[0].path", not(imagePath)))
+                    .andExpect(jsonPath("$.payload.versions[0].path", not(imagePath2)));
+
+            clonedId = JsonPath.read(result2.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+        } finally {
+
+            if (clonedId != null) {
+                performDeleteResource(user, "image", clonedId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(5)));
+            }
+
+            if (createdId != null) {
+                performDeleteResource(user, "image", createdId)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(4)));
+            }
+
+            if (createdId2 != null) {
+                performDeleteResource(user, "image", createdId2)
+                        .andDo(print())
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
+            }
+        }
+    }
+
+    @Test
     public void testEditResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
 
