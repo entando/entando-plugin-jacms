@@ -93,7 +93,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     public void testSearchContentsId_1() throws Throwable {
         try {
             Content content_1 = this.createContent_1();
@@ -117,7 +117,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     public void testSearchContentsId_2() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -210,16 +210,16 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             allowedGroup.add(Group.FREE_GROUP_NAME);
             List<String> contentsId = sem.searchEntityId(null, categories, allowedGroup);
             assertNotNull(contentsId);
-            assertTrue(contentsId.isEmpty());
+            assertFalse(contentsId.isEmpty());
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
             contentsId = sem.searchEntityId(null, categories, allowedGroup);
-            String[] expected1 = {"ART111", "ART120"};
+            String[] expected1 = {"ART111", "ART120", "EVN25"};
             this.verify(contentsId, expected1);
             Category general_cat1 = this.categoryManager.getCategory("general_cat1");
             categories.add(general_cat1);
             contentsId = sem.searchEntityId(null, categories, allowedGroup);
             assertNotNull(contentsId);
-            String[] expected2 = {"ART111"};
+            String[] expected2 = {"ART111", "EVN25"};
             this.verify(contentsId, expected2);
         } catch (Throwable t) {
             throw t;
@@ -238,13 +238,13 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
             List<String> contentsId = sem.searchEntityId(null, categories, allowedGroup);
             assertNotNull(contentsId);
-            String[] expected1 = {"ART122", "ART102", "ART111", "ART120"};
+            String[] expected1 = {"ART122", "ART102", "ART111", "ART120", "EVN23", "EVN25"};
             this.verify(contentsId, expected1);
         } catch (Throwable t) {
             throw t;
         }
     }
-
+    
     public void testSearchContentsId_7() throws Throwable {
         try {
             Content content_1 = this.createContent_1();
@@ -517,7 +517,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     public void testSearchFacetedContents_1() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -529,9 +529,10 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             List<String> allowedGroup = new ArrayList<>();
             allowedGroup.add(Group.FREE_GROUP_NAME);
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
-            FacetedContentsResult result = sem.searchFacetedEntities(null, categories, allowedGroup);
+            SearchEngineFilter[] filters = {};
+            FacetedContentsResult result = sem.searchFacetedEntities(filters, categories, allowedGroup);
             assertNotNull(result);
-            String[] expected1 = {"ART122", "ART102", "ART111", "ART120"};
+            String[] expected1 = {"ART122", "ART102", "ART111", "ART120", "EVN23", "EVN25"};
             this.verify(result.getContentsId(), expected1);
             assertEquals(4, result.getOccurrences().size());
         } catch (Throwable t) {
