@@ -104,7 +104,7 @@ public class IndexerDAO implements IIndexerDAO {
         }
         if (entity instanceof Content) {
             if (null != entity.getDescription()) {
-                document.add(new SortedDocValuesField(CONTENT_DESCRIPTION_FIELD_NAME, new BytesRef(entity.getDescription())));
+                document.add(new SortedDocValuesField(CONTENT_DESCRIPTION_FIELD_NAME + SORTERED_FIELD_SUFFIX, new BytesRef(entity.getDescription())));
                 document.add(new TextField(CONTENT_DESCRIPTION_FIELD_NAME, entity.getDescription(), Field.Store.YES));
             }
             document.add(new TextField(CONTENT_TYPE_CODE_FIELD_NAME, entity.getTypeCode(), Field.Store.YES));
@@ -113,11 +113,13 @@ public class IndexerDAO implements IIndexerDAO {
             Date lastModify = (null != ((Content) entity).getLastModified()) ? ((Content) entity).getLastModified() : creation;
             if (null != creation) {
                 String value = DateTools.timeToString(creation.getTime(), DateTools.Resolution.MINUTE);
-                document.add(new SortedDocValuesField(CONTENT_CREATION_FIELD_NAME, new BytesRef(value)));
+                document.add(new SortedDocValuesField(CONTENT_CREATION_FIELD_NAME + SORTERED_FIELD_SUFFIX, new BytesRef(value)));
+                document.add(new TextField(CONTENT_CREATION_FIELD_NAME, value.toLowerCase(), Field.Store.YES));
             }
             if (null != lastModify) {
                 String value = DateTools.timeToString(lastModify.getTime(), DateTools.Resolution.MINUTE);
-                document.add(new SortedDocValuesField(CONTENT_LAST_MODIFY_FIELD_NAME, new BytesRef(value)));
+                document.add(new SortedDocValuesField(CONTENT_LAST_MODIFY_FIELD_NAME + SORTERED_FIELD_SUFFIX, new BytesRef(value)));
+                document.add(new TextField(CONTENT_LAST_MODIFY_FIELD_NAME, value.toLowerCase(), Field.Store.YES));
             }
         }
         Iterator<AttributeInterface> iterAttribute = entity.getAttributeList().iterator();
@@ -130,9 +132,6 @@ public class IndexerDAO implements IIndexerDAO {
             List<Lang> langs = this.getLangManager().getLangs();
             for (int i = 0; i < langs.size(); i++) {
                 Lang currentLang = (Lang) langs.get(i);
-                if (!currentAttribute.isMultilingual() && !currentLang.isDefault()) {
-                    continue;
-                }
                 this.indexAttribute(document, currentAttribute, currentLang);
             }
         }
@@ -152,18 +151,16 @@ public class IndexerDAO implements IIndexerDAO {
                 || ((attribute instanceof DateAttribute || attribute instanceof NumberAttribute) && attribute.isSearchable())) {
             String valueToIndex = null;
             Long number = null;
-            if (attribute instanceof IndexableAttributeInterface) {
-                valueToIndex = ((IndexableAttributeInterface) attribute).getIndexeableFieldValue();
+            if (attribute instanceof DateAttribute) {
+                Date date = ((DateAttribute) attribute).getDate();
+                number = (null != date) ? date.getTime() : null;
+            } else if (attribute instanceof NumberAttribute) {
+                BigDecimal value = ((NumberAttribute) attribute).getValue();
+                number = (null != value) ? value.longValue() : null;
             } else {
-                if (attribute instanceof DateAttribute) {
-                    Date date = ((DateAttribute) attribute).getDate();
-                    number = (null != date) ? date.getTime() : null;
-                } else {
-                    BigDecimal value = ((NumberAttribute) attribute).getValue();
-                    number = (null != value) ? value.longValue() : null;
-                }
-                valueToIndex = (null != number) ? DateTools.timeToString(number, DateTools.Resolution.MINUTE) : null;
+                valueToIndex = ((IndexableAttributeInterface) attribute).getIndexeableFieldValue();
             }
+            valueToIndex = (null != number) ? DateTools.timeToString(number, DateTools.Resolution.MINUTE) : valueToIndex;
             if (null == valueToIndex) {
                 return;
             }
@@ -181,7 +178,7 @@ public class IndexerDAO implements IIndexerDAO {
             }
             String fieldName = lang.getCode().toLowerCase() + "_" + attribute.getName();
             String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
-            document.add(new SortedDocValuesField(fieldName, new BytesRef(sortableValue)));
+            document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
             document.add(new TextField(fieldName, valueToIndex.toLowerCase(), Field.Store.YES));
             if (null != number) {
                 document.add(new LongPoint(fieldName, number));
@@ -191,7 +188,7 @@ public class IndexerDAO implements IIndexerDAO {
             }
             for (int i = 0; i < attribute.getRoles().length; i++) {
                 String roleFieldName = lang.getCode().toLowerCase() + "_" + attribute.getRoles()[i];
-                document.add(new SortedDocValuesField(roleFieldName, new BytesRef(sortableValue)));
+                document.add(new SortedDocValuesField(roleFieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
                 document.add(new TextField(roleFieldName, valueToIndex.toLowerCase(), Field.Store.YES));
                 if (null != number) {
                     document.add(new LongPoint(roleFieldName, number));
@@ -257,5 +254,5 @@ public class IndexerDAO implements IIndexerDAO {
     public void setTreeNodeManager(ITreeNodeManager treeNodeManager) {
         this.treeNodeManager = treeNodeManager;
     }
-    
+
 }

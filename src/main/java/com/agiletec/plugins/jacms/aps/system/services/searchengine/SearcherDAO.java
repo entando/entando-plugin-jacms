@@ -105,7 +105,7 @@ public class SearcherDAO implements ISearcherDAO {
                 for (int i = 0; i < filters.length; i++) {
                     SearchEngineFilter filter = filters[i];
                     if (null != filter.getOrder()) {
-                        String fieldKey = this.getFilterKey(filter);
+                        String fieldKey = this.getFilterKey(filter) + IIndexerDAO.SORTERED_FIELD_SUFFIX;
                         revert = filter.getOrder().toString().equalsIgnoreCase("DESC");
                         sort = new Sort(new SortField(fieldKey, SortField.Type.STRING));
                         break;
@@ -251,6 +251,23 @@ public class SearcherDAO implements ISearcherDAO {
                     fieldQuery.add(phraseQuery.build(), BooleanClause.Occur.SHOULD);
                 }
             }
+        } else if (null != filter.getStart() || null != filter.getEnd()) {
+            fieldQuery = new BooleanQuery.Builder();
+            Query query = null;
+            if (filter.getStart() instanceof Date || filter.getEnd() instanceof Date) {
+                Long lowerValue = (null != filter.getStart()) ? ((Date) filter.getStart()).getTime() : Long.MIN_VALUE;
+                Long upperValue = (null != filter.getEnd()) ? ((Date) filter.getEnd()).getTime() : Long.MAX_VALUE;
+                query = LongPoint.newRangeQuery(key, lowerValue, upperValue);
+            } else if (filter.getStart() instanceof Number || filter.getEnd() instanceof Number) {
+                Long lowerValue = (null != filter.getStart()) ? ((Number) filter.getStart()).longValue() : Long.MIN_VALUE;
+                Long upperValue = (null != filter.getEnd()) ? ((Number) filter.getEnd()).longValue() : Long.MAX_VALUE;
+                query = LongPoint.newRangeQuery(key, lowerValue, upperValue);
+            } else {
+                String start = (null != filter.getStart()) ? filter.getStart().toString().toLowerCase() : null;
+                String end = (null != filter.getEnd()) ? filter.getEnd().toString().toLowerCase() : null;
+                query = new TermRangeQuery(key, new BytesRef(start), new BytesRef(end), true, true);
+            }
+            fieldQuery.add(query, BooleanClause.Occur.MUST);
         } else if (null != value) {
             fieldQuery = new BooleanQuery.Builder();
             if (value instanceof String) {
@@ -287,23 +304,11 @@ public class SearcherDAO implements ISearcherDAO {
                 TermQuery term = new TermQuery(new Term(key, value.toString()));
                 fieldQuery.add(term, BooleanClause.Occur.MUST);
             }
-        } else if (null != filter.getStart() || null != filter.getEnd()) {
+        } else {
             fieldQuery = new BooleanQuery.Builder();
-            Query query = null;
-            if (filter.getStart() instanceof Date || filter.getEnd() instanceof Date) {
-                Long lowerValue = (null != filter.getStart()) ? ((Date) filter.getStart()).getTime() : Long.MIN_VALUE;
-                Long upperValue = (null != filter.getEnd()) ? ((Date) filter.getEnd()).getTime() : Long.MAX_VALUE;
-                query = LongPoint.newRangeQuery(key, lowerValue, upperValue);
-            } else if (filter.getStart() instanceof Number || filter.getEnd() instanceof Number) {
-                Long lowerValue = (null != filter.getStart()) ? ((Number) filter.getStart()).longValue() : Long.MIN_VALUE;
-                Long upperValue = (null != filter.getEnd()) ? ((Number) filter.getEnd()).longValue() : Long.MAX_VALUE;
-                query = LongPoint.newRangeQuery(key, lowerValue, upperValue);
-            } else {
-                String start = (null != filter.getStart()) ? filter.getStart().toString().toLowerCase() : null;
-                String end = (null != filter.getEnd()) ? filter.getEnd().toString().toLowerCase() : null;
-                query = new TermRangeQuery(key, new BytesRef(start), new BytesRef(end), true, true);
-            }
-            fieldQuery.add(query, BooleanClause.Occur.MUST);
+            Term term = new Term(key, "*");
+            Query queryTerm = new WildcardQuery(term);
+            fieldQuery.add(queryTerm, BooleanClause.Occur.MUST);
         }
         if (null != fieldQuery) {
             return fieldQuery.build();
