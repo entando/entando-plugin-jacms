@@ -306,8 +306,12 @@ public class ResourcesService {
     }
 
     private ResourceInterface loadResource(String resourceId) {
+        return loadResource(resourceId, null);
+    }
+
+    private ResourceInterface loadResource(String resourceId, String correlationCode) {
         try {
-            ResourceInterface resource = resourceManager.loadResource(resourceId);
+            ResourceInterface resource = resourceManager.loadResource(resourceId, correlationCode);
 
             if (resource == null) {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
@@ -319,9 +323,17 @@ public class ResourcesService {
         }
     }
 
-    public AssetDto editAsset(String resourceId, MultipartFile file, String description, List<String> categories, String folderPath) {
+    public AssetDto editAsset(String resourceId, MultipartFile file,
+            String description, List<String> categories, String folderPath) {
+        //-
+        return editAsset(resourceId, null, file, description, categories, folderPath);
+    }
+
+    public AssetDto editAsset(String resourceId, String correlationCode,
+            MultipartFile file, String description, List<String> categories, String folderPath) {
+        //-
         try {
-            ResourceInterface resource = loadResource(resourceId);
+            ResourceInterface resource = loadResource(resourceId, correlationCode);
 
             BaseResourceDataBean resourceFile = new BaseResourceDataBean();
             resourceFile.setResourceType(resource.getType());

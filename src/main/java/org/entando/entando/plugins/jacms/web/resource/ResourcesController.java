@@ -42,9 +42,9 @@ import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequ
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
-import org.entando.entando.web.common.model.AlternativeId;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.PagedRestResponse;
+import org.entando.entando.web.common.model.RestNamedId;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
@@ -71,6 +71,7 @@ public class ResourcesController {
     public static final String ERRCODE_INVALID_RESOURCE_TYPE = "5";
     public static final String ERRCODE_RESOURCE_FORBIDDEN = "6";
     public static final String ERRCODE_RESOURCE_CONFLICT = "7";
+    public static final String ID_NAME_OF_CORRELATION_CODE = "cc";
 
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
@@ -178,22 +179,31 @@ public class ResourcesController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 401, message = "Unauthorized")})
-    @PostMapping(value = "/plugins/cms/assets/{resourceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/plugins/cms/assets/{resourceIdOrCC}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
-    public ResponseEntity<SimpleRestResponse<AssetDto>> editAsset(@PathVariable("resourceId") String resourceId,
+
+    public ResponseEntity<SimpleRestResponse<AssetDto>> editAsset(
+            @PathVariable("resourceIdOrCC") RestNamedId resourceIdOrCC,
             @RequestParam(value = "metadata") String request,
             @RequestParam(value = "file", required = false) MultipartFile file) throws JsonProcessingException {
-        logger.debug("REST request - edit image resource with id {}", resourceId);
+        //-
+        logger.debug("REST request - edit image resource with id {}", resourceIdOrCC);
+
+        String correlationCode = resourceIdOrCC.getValidValue(ID_NAME_OF_CORRELATION_CODE).orElse(null);
+        String resourceId = correlationCode == null ? resourceIdOrCC.value : null;
 
         UpdateResourceRequest resourceRequest = new ObjectMapper().readValue(request, UpdateResourceRequest.class);
 
-        List<String> categoriesList = Optional.ofNullable(resourceRequest.getCategories()).orElse(Collections.emptyList())
+        List<String> categoriesList = Optional.ofNullable(resourceRequest.getCategories())
+                .orElse(Collections.emptyList())
                 .stream()
                 .map(String::trim)
                 .filter(c -> c.length() > 0)
                 .collect(Collectors.toList());
 
-        AssetDto result = service.editAsset(resourceId, file, resourceRequest.getDescription(), categoriesList, sanitizeFolderPath(resourceRequest.getFolderPath()));
+        AssetDto result = service.editAsset(resourceId, correlationCode, file,
+                resourceRequest.getDescription(), categoriesList, sanitizeFolderPath(resourceRequest.getFolderPath()));
+
         return ResponseEntity.ok(new SimpleRestResponse<>(result));
     }
 
@@ -203,20 +213,24 @@ public class ResourcesController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")})
-    @DeleteMapping("/plugins/cms/assets/{resourceId}")
+    @DeleteMapping("/plugins/cms/assets/{resourceIdOrCC}")
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
-    public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(@PathVariable("resourceId") String resourceId) throws EntException {
-        logger.debug("REST request - delete resource with id {}", resourceId);
-        String correlationCode = AlternativeId.getAlternativeId("cc", resourceId);
-        String codeOrId = correlationCode == null ? resourceId : correlationCode;
+
+    public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(
+            @PathVariable("resourceIdOrCC") RestNamedId resourceIdOrCC)
+            throws EntException {
+        //-
+        logger.debug("REST request - delete resource with id {}", resourceIdOrCC);
+        String correlationCode = resourceIdOrCC.getValidValue(ID_NAME_OF_CORRELATION_CODE).orElse(null);
+        String resourceId = correlationCode == null ? resourceIdOrCC.value : null;
 
         if (!resourceValidator.resourceExists(resourceId, correlationCode)) {
-            throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", codeOrId);
+            throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceIdOrCC.toString());
         }
         if (!resourceValidator.isResourceDeletableByUser(resourceId, correlationCode, extractCurrentUser(httpSession))) {
             DataBinder binder = new DataBinder(resourceId);
             BindingResult bindingResult = binder.getBindingResult();
-            bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{codeOrId}, "plugins.jacms.resources.resourceManager.error.delete");
+            bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{resourceIdOrCC.value}, "plugins.jacms.resources.resourceManager.error.delete");
             throw new ResourcePermissionsException(bindingResult);
         }
         service.deleteAsset(resourceId, correlationCode);
