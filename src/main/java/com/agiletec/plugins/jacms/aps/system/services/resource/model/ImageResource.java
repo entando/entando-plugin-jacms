@@ -294,7 +294,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
                 resizedInstance.setSize(dimension.getIdDim());
                 resizedInstance.setFileLength(String.valueOf(realLength) + " Kb");
                 resizedInstance.setMimeType(bean.getMimeType());
-                resizedInstance.setFileName(bean.getFileName());
+                resizedInstance.setFileName(subPath.substring(subPath.lastIndexOf("/") + 1));
                 this.getStorageManager().saveFile(subPath, this.isProtectedResource(), new FileInputStream(bean.getFile()));
                 this.addInstance(resizedInstance);
             }else {
