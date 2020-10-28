@@ -335,6 +335,10 @@ public class ResourcesService {
         try {
             ResourceInterface resource = loadResource(resourceId, correlationCode);
 
+            if (resourceId == null) {
+                resourceId = resource.getId();
+            }
+
             BaseResourceDataBean resourceFile = new BaseResourceDataBean();
             resourceFile.setResourceType(resource.getType());
             resourceFile.setResourceId(resourceId);

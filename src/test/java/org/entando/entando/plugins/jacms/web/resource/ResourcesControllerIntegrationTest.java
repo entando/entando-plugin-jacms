@@ -682,7 +682,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateDeleteFileResourceWithCode() throws Exception {
+    public void testCreateEditDeleteFileResourceWithCode() throws Exception {
         UserDetails user = createAccessToken();
         String code = "my_code";
 
@@ -705,9 +705,15 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(4)));
 
-            performCreateResource(user, "file", "my_code", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+            performCreateResource(user, "file", code, "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                     .andDo(print())
                     .andExpect(status().isConflict());
+
+            List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
+
+            performEditResource(user, "file", "cc=" + code, "new file description", categories, true)
+                    .andDo(print())
+                    .andExpect(status().isOk());
         } finally {
             performDeleteResource(user, "file", "cc=" + code)
                 .andDo(print())

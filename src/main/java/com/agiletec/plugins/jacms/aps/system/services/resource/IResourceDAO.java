@@ -105,7 +105,7 @@ public interface IResourceDAO {
      */
     public ResourceRecordVO loadResourceVo(String id);
 
-    public ResourceRecordVO loadResourceVoByCode(String id);
+    public ResourceRecordVO loadResourceVoByCorrelationCode(String code);
 
     /* ESTENSIONE SPOSTAMENTO NODI */
     public void updateResourceRelations(ResourceInterface resource);

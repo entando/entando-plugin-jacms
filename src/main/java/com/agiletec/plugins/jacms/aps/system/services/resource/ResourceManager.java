@@ -40,7 +40,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -434,7 +433,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         try {
             ResourceRecordVO resourceVo = correlationCode == null
                     ? this.getResourceDAO().loadResourceVo(id)
-                    : this.getResourceDAO().loadResourceVoByCode(correlationCode);
+                    : this.getResourceDAO().loadResourceVoByCorrelationCode(correlationCode);
             if (null != resourceVo) {
                 resource = this.createResource(resourceVo);
                 resource.setMasterFileName(resourceVo.getMasterFileName());

@@ -55,8 +55,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
     private final String LOAD_RESOURCE_VO
             = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE resid = ? ";
 
-    private final static String LOAD_RESOURCE_VO_BY_CODE
-            = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE correlationcode = ? ";
+    private static final String LOAD_RESOURCE_VO_BY_CODE
+            = "SELECT resid, restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE correlationcode = ? ";
 
     private final String ADD_RESOURCE
             = "INSERT INTO resources (resid, restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode) "
@@ -437,7 +437,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
 
     @Override
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
-    public ResourceRecordVO loadResourceVoByCode(String id) {
+    public ResourceRecordVO loadResourceVoByCorrelationCode(String code) {
         Connection conn = null;
         ResourceRecordVO resourceVo = null;
         PreparedStatement stat = null;
@@ -445,25 +445,25 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
         try {
             conn = this.getConnection();
             stat = conn.prepareStatement(LOAD_RESOURCE_VO_BY_CODE);
-            stat.setString(1, id);
+            stat.setString(1, code);
             res = stat.executeQuery();
             if (res.next()) {
                 resourceVo = new ResourceRecordVO();
-                resourceVo.setId(id);
-                resourceVo.setResourceType(res.getString(1));
-                resourceVo.setDescr(res.getString(2));
-                resourceVo.setMainGroup(res.getString(3));
-                resourceVo.setXml(res.getString(4));
-                resourceVo.setMasterFileName(res.getString(5));
-                resourceVo.setCreationDate(res.getTimestamp(6));
-                resourceVo.setLastModified(res.getTimestamp(7));
-                resourceVo.setOwner(res.getString(8));
-                resourceVo.setFolderPath(res.getString(9));
-                resourceVo.setCorrelationCode(res.getString(10));
+                resourceVo.setId(res.getString(1));
+                resourceVo.setResourceType(res.getString(2));
+                resourceVo.setDescr(res.getString(3));
+                resourceVo.setMainGroup(res.getString(4));
+                resourceVo.setXml(res.getString(5));
+                resourceVo.setMasterFileName(res.getString(6));
+                resourceVo.setCreationDate(res.getTimestamp(7));
+                resourceVo.setLastModified(res.getTimestamp(8));
+                resourceVo.setOwner(res.getString(9));
+                resourceVo.setFolderPath(res.getString(10));
+                resourceVo.setCorrelationCode(res.getString(11));
             }
         } catch (Exception t) {
-            logger.error("Error loading resource {}", id, t);
-            throw new EntRuntimeException("Error loading resource" + id, t);
+            logger.error("Error loading resource {}", code, t);
+            throw new EntRuntimeException("Error loading resource" + code, t);
         } finally {
             closeDaoResources(res, stat, conn);
         }
