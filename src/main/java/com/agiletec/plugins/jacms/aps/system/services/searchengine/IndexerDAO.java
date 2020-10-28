@@ -177,23 +177,23 @@ public class IndexerDAO implements IIndexerDAO {
                 }
             }
             String fieldName = lang.getCode().toLowerCase() + "_" + attribute.getName();
-            String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
-            document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
-            document.add(new TextField(fieldName, valueToIndex.toLowerCase(), Field.Store.YES));
-            if (null != number) {
-                document.add(new LongPoint(fieldName, number));
-            }
+            this.indexValue(document, fieldName, valueToIndex, number);
             if (null == attribute.getRoles()) {
                 return;
             }
             for (int i = 0; i < attribute.getRoles().length; i++) {
                 String roleFieldName = lang.getCode().toLowerCase() + "_" + attribute.getRoles()[i];
-                document.add(new SortedDocValuesField(roleFieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
-                document.add(new TextField(roleFieldName, valueToIndex.toLowerCase(), Field.Store.YES));
-                if (null != number) {
-                    document.add(new LongPoint(roleFieldName, number));
-                }
+                this.indexValue(document, roleFieldName, valueToIndex, number);
             }
+        }
+    }
+    
+    private void indexValue(Document document, String fieldName, String valueToIndex, Long number) {
+        String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
+        document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
+        document.add(new TextField(fieldName, valueToIndex.toLowerCase(), Field.Store.YES));
+        if (null != number) {
+            document.add(new LongPoint(fieldName, number));
         }
     }
 

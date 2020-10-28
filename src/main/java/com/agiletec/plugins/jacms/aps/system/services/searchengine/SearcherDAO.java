@@ -27,51 +27,54 @@ import org.entando.entando.aps.system.services.searchengine.*;
 
 import java.io.*;
 import java.util.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.SortField.Type;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
- * Data Access Object dedita alle operazioni di ricerca 
- * ad uso del motore di ricerca interno.
+ * Data Access Object dedita alle operazioni di ricerca ad uso del motore di ricerca interno.
+ *
  * @author E.Santoboni
  */
 public class SearcherDAO implements ISearcherDAO {
-	
-	private static final EntLogger logger = EntLogFactory.getSanitizedLogger(SearcherDAO.class);
 
-	private ITreeNodeManager treeNodeManager;
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(SearcherDAO.class);
+
+    private ITreeNodeManager treeNodeManager;
     private ILangManager langManager;
 
     private File indexDir;
 
-	/**
-	 * Inizializzazione del searcher.
-	 * @param dir La cartella locale contenitore dei dati persistenti.
-	 * @throws EntException In caso di errore
-	 */
-	@Override
-	public void init(File dir) throws EntException {
-		this.indexDir = dir;
-	}
-	
-	private IndexSearcher getSearcher() throws IOException {
-		FSDirectory directory = new SimpleFSDirectory(indexDir.toPath());
-		IndexReader reader = DirectoryReader.open(directory);
-		IndexSearcher searcher = new IndexSearcher(reader);
-		return searcher;
-	}
-	
-	private void releaseResources(IndexSearcher searcher) throws EntException {
-		try {
-			if (searcher != null) {
-				searcher.getIndexReader().close();
-			}
-		} catch (IOException e) {
-			throw new EntException("Error closing searcher", e);
-		}
-	}
-	
+    /**
+     * Inizializzazione del searcher.
+     *
+     * @param dir La cartella locale contenitore dei dati persistenti.
+     * @throws EntException In caso di errore
+     */
+    @Override
+    public void init(File dir) throws EntException {
+        this.indexDir = dir;
+    }
+
+    private IndexSearcher getSearcher() throws IOException {
+        FSDirectory directory = new SimpleFSDirectory(indexDir.toPath());
+        IndexReader reader = DirectoryReader.open(directory);
+        IndexSearcher searcher = new IndexSearcher(reader);
+        return searcher;
+    }
+
+    private void releaseResources(IndexSearcher searcher) throws EntException {
+        try {
+            if (searcher != null) {
+                searcher.getIndexReader().close();
+            }
+        } catch (IOException e) {
+            throw new EntException("Error closing searcher", e);
+        }
+    }
+
     @Override
     public List<String> searchContentsId(SearchEngineFilter[] filters,
             SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException {
@@ -83,8 +86,8 @@ public class SearcherDAO implements ISearcherDAO {
             SearchEngineFilter[] categories, Collection<String> allowedGroups) throws EntException {
         return this.searchContents(filters, categories, allowedGroups, true);
     }
-	
-	protected FacetedContentsResult searchContents(SearchEngineFilter[] filters,
+
+    protected FacetedContentsResult searchContents(SearchEngineFilter[] filters,
             SearchEngineFilter[] categories, Collection<String> allowedGroups, boolean faceted) throws EntException {
         FacetedContentsResult result = new FacetedContentsResult();
         List<String> contentsId = new ArrayList<>();
@@ -99,20 +102,21 @@ public class SearcherDAO implements ISearcherDAO {
             } else {
                 query = this.createQuery(filters, categories, allowedGroups);
             }
-            Sort sort = null;
-            boolean revert = false;
+            SortField[] sortFields = new SortField[0];
             if (null != filters) {
                 for (int i = 0; i < filters.length; i++) {
                     SearchEngineFilter filter = filters[i];
                     if (null != filter.getOrder()) {
                         String fieldKey = this.getFilterKey(filter) + IIndexerDAO.SORTERED_FIELD_SUFFIX;
-                        revert = filter.getOrder().toString().equalsIgnoreCase("DESC");
-                        sort = new Sort(new SortField(fieldKey, SortField.Type.STRING));
-                        break;
+                        boolean revert = filter.getOrder().toString().equalsIgnoreCase("DESC");
+                        SortField sortField = new SortField(fieldKey, SortField.Type.STRING, revert);
+                        sortFields = ArrayUtils.add(sortFields, sortField);
                     }
                 }
             }
-            TopDocs topDocs = (null != sort) ? searcher.search(query, 1000, sort) : searcher.search(query, 1000);
+            TopDocs topDocs = (sortFields.length > 0) ? 
+                    searcher.search(query, 1000, new Sort(sortFields)) : 
+                    searcher.search(query, 1000);
             ScoreDoc[] scoreDocs = topDocs.scoreDocs;
             Map<String, Integer> occurrences = new HashMap<>();
             if (scoreDocs.length > 0) {
@@ -138,9 +142,6 @@ public class SearcherDAO implements ISearcherDAO {
                         }
                     }
                 }
-            }
-            if (revert) {
-                Collections.reverse(contentsId);
             }
             result.setOccurrences(occurrences);
             result.setContentsId(contentsId);
@@ -213,7 +214,7 @@ public class SearcherDAO implements ISearcherDAO {
         }
         return mainQuery.build();
     }
-    
+
     private Query createQuery(SearchEngineFilter filter) {
         BooleanQuery.Builder fieldQuery = null;
         String key = this.getFilterKey(filter);
@@ -310,12 +311,9 @@ public class SearcherDAO implements ISearcherDAO {
             Query queryTerm = new WildcardQuery(term);
             fieldQuery.add(queryTerm, BooleanClause.Occur.MUST);
         }
-        if (null != fieldQuery) {
-            return fieldQuery.build();
-        }
-        return null;
+        return fieldQuery.build();
     }
-    
+
     protected Query getTermQueryForTextSearch(String key, String value, boolean isLikeSearch) {
         //NOTE: search for lower case....
         String stringValue = value.toLowerCase();
@@ -323,13 +321,13 @@ public class SearcherDAO implements ISearcherDAO {
         if (value.startsWith("*") || value.endsWith("*")) {
             useWildCard = true;
         } else if (isLikeSearch) {
-            stringValue = "*"+stringValue+"*";
+            stringValue = "*" + stringValue + "*";
             useWildCard = true;
         }
         Term term = new Term(key, stringValue);
         return (useWildCard) ? new WildcardQuery(term) : new TermQuery(term);
-    } 
-    
+    }
+
     protected String getFilterKey(SearchEngineFilter filter) {
         String key = filter.getKey();
         if (filter.isFullTextSearch()) {
@@ -345,10 +343,10 @@ public class SearcherDAO implements ISearcherDAO {
         }
         return key;
     }
-	
-	@Override
+
+    @Override
     public void close() {
-    	// nothing to do
+        // nothing to do
     }
 
     public ITreeNodeManager getTreeNodeManager() {
@@ -368,5 +366,5 @@ public class SearcherDAO implements ISearcherDAO {
     public void setLangManager(ILangManager langManager) {
         this.langManager = langManager;
     }
-    
+
 }

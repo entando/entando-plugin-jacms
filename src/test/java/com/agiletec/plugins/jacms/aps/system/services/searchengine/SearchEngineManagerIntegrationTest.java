@@ -25,6 +25,7 @@ import com.agiletec.aps.system.common.FieldSearchFilter.Order;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeRole;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
+import com.agiletec.aps.system.common.entity.model.attribute.NumberAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.TextAttribute;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
 import com.agiletec.aps.system.common.tree.ITreeNode;
@@ -32,12 +33,14 @@ import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AttachAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
@@ -372,9 +375,9 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
             thread.join();
-            SearchEngineFilter filteryByType
+            SearchEngineFilter filterByType
                     = SearchEngineFilter.createAllowedValuesFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, Arrays.asList("ART", "EVN"), TextSearchOption.EXACT);
-            SearchEngineFilter[] filters1 = {filteryByType};
+            SearchEngineFilter[] filters1 = {filterByType};
             List<String> contentsId_1 = sem.searchEntityId(filters1, null, allowedGroup);
             List<String> expectedContentsId_1 = Arrays.asList("ART1", "ART180", "ART187", "ART121", 
                 "ART122", "ART104", "ART102", "ART111", "ART120", "ART112", 
@@ -385,9 +388,9 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
                 Assert.assertTrue(expectedContentsId_1.contains(contentsId_1.get(i)));
             }
             
-            SearchEngineFilter filteryByRole = new SearchEngineFilter("jacms:title", true);
-            filteryByRole.setLangCode("it");
-            SearchEngineFilter[] filters2 = {filteryByType, filteryByRole};
+            SearchEngineFilter filterByRole = new SearchEngineFilter("jacms:title", true);
+            filterByRole.setLangCode("it");
+            SearchEngineFilter[] filters2 = {filterByType, filterByRole};
             List<String> contentsId_2 = sem.searchEntityId(filters2, null, allowedGroup);
             List<String> expectedContentsId_2 = Arrays.asList("ART1", "ART121", 
                     "ART122", "ART104", "ART102", "ART111", "ART120", "ART112", 
@@ -398,7 +401,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
                 Assert.assertTrue(expectedContentsId_2.contains(contentsId_2.get(i)));
             }
             
-            filteryByRole.setOrder(Order.DESC);
+            filterByRole.setOrder(Order.DESC);
             List<String> contentsId_3 = sem.searchEntityId(filters2, null, allowedGroup);
             String[] expectedContentsId_3 = {"EVN194", "ART122", "ART121", "ART120", 
                 "ART112", "ART111", "ART102", "ART104", "EVN103", "EVN193", "EVN192", "EVN191", "EVN25", 
@@ -408,13 +411,13 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
                 Assert.assertEquals(expectedContentsId_3[i], contentsId_3.get(i));
             }
             
-            filteryByRole.setOrder(Order.ASC);
+            filterByRole.setOrder(Order.ASC);
             List<String> contentsId_4 = sem.searchEntityId(filters2, null, allowedGroup);
             for (int i = 0; i < expectedContentsId_3.length; i++) {
                 Assert.assertEquals(expectedContentsId_3[i], contentsId_4.get(contentsId_3.size() - i - 1));
             }
             
-            filteryByRole.setLangCode("en");
+            filterByRole.setLangCode("en");
             String[] expectedContentsId_5_en = {"EVN41", "EVN24", "EVN103", "EVN23", "EVN21", 
                 "ART1", "EVN194", "EVN192", "EVN191", "EVN193", "ART120", "ART121", 
                 "ART104", "ART102", "ART111", "ART112", "ART122", "EVN25", "EVN20"};
@@ -435,11 +438,11 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
             thread.join();
-            SearchEngineFilter filteryByType
+            SearchEngineFilter filterByType
                     = SearchEngineFilter.createAllowedValuesFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, Arrays.asList("ART", "EVN"), TextSearchOption.EXACT);
-            SearchEngineFilter filteryByRole = new SearchEngineFilter(ROLE_FOR_TEST, true);
-            filteryByRole.setOrder(Order.DESC);
-            SearchEngineFilter[] filters1 = {filteryByType, filteryByRole};
+            SearchEngineFilter filterByRole = new SearchEngineFilter(ROLE_FOR_TEST, true);
+            filterByRole.setOrder(Order.DESC);
+            SearchEngineFilter[] filters1 = {filterByType, filterByRole};
             List<String> contentsId_1 = sem.searchEntityId(filters1, null, allowedGroup);
             String[] expectedContentsId_1 = {"EVN194", "EVN193", "ART121", "ART120", "EVN24", "EVN23",
                 "EVN41", "EVN25", "ART104", "ART111", "EVN20", "ART112", "EVN21", "ART1", "EVN103", "EVN192", "EVN191"};
@@ -451,14 +454,14 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             String[] langs = {"it", "en"};
             for (int j = 0; j < langs.length; j++) {
                 String lang = langs[j];
-                filteryByRole.setLangCode(lang);
+                filterByRole.setLangCode(lang);
                 List<String> contentsId_lang = sem.searchEntityId(filters1, null, allowedGroup);
                 for (int i = 0; i < expectedContentsId_1.length; i++) {
                     Assert.assertEquals(expectedContentsId_1[i], contentsId_lang.get(i));
                 }
             }
             
-            filteryByRole.setOrder(Order.ASC);
+            filterByRole.setOrder(Order.ASC);
             List<String> contentsId_2 = sem.searchEntityId(filters1, null, allowedGroup);
             for (int i = 0; i < expectedContentsId_1.length; i++) {
                 Assert.assertEquals(expectedContentsId_1[i], contentsId_2.get(contentsId_2.size() - i - 1));
@@ -477,7 +480,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             }
             super.waitNotifyingThread();
             newId = newContent.getId();
-            filteryByRole.setOrder(Order.DESC);
+            filterByRole.setOrder(Order.DESC);
             List<String> contentsId_3 = sem.searchEntityId(filters1, null, allowedGroup);
             Assert.assertEquals(expectedContentsId_1.length + 1, contentsId_3.size());
             for (int i = 0; i < contentsId_3.size(); i++) {
@@ -486,6 +489,20 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
                 } else {
                     assertEquals(expectedContentsId_1[i - 1], contentsId_3.get(i));
                 }
+            }
+            
+            Calendar start = Calendar.getInstance();
+            start.setTime(DateConverter.parseDate("10/06/2000", "dd/MM/yyyy"));
+            Calendar end = Calendar.getInstance();
+            end.setTime(DateConverter.parseDate("01/02/2008", "dd/MM/yyyy"));
+            SearchEngineFilter filterByRange = SearchEngineFilter.createRangeFilter(ROLE_FOR_TEST, true, start.getTime(), end.getTime());
+            filterByRange.setOrder(Order.DESC);
+            SearchEngineFilter[] filters2 = {filterByRange};
+            List<String> contentsId_4 = sem.searchEntityId(filters2, null, allowedGroup);
+            String[] expectedContentsId_2 = {"EVN41", "EVN25", "ART104", "ART111", "EVN20", "ART112", "EVN21", "ART1"};
+            Assert.assertEquals(expectedContentsId_2.length, contentsId_4.size());
+            for (int i = 0; i < contentsId_4.size(); i++) {
+                Assert.assertEquals(expectedContentsId_2[i], contentsId_4.get(i));
             }
         } catch (Throwable t) {
             throw t;
@@ -497,6 +514,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             }
         }
     }
+    
     
     public void testFacetedAllContents() throws Throwable {
         try {
