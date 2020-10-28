@@ -253,6 +253,7 @@ public class ContentDto extends EntityDto implements Serializable {
             for (Entry<String, Object> resourceEntry : attributeDto.getValues().entrySet()) {
 
                 String langCode = resourceEntry.getKey();
+                String correlationCode = (String) ((Map<String, Object>) resourceEntry.getValue()).get("correlationCode");
                 String resourceId = (String) ((Map<String, Object>) resourceEntry.getValue()).get("id");
                 String name = (String) ((Map<String, Object>) resourceEntry.getValue()).get("name");
 
@@ -262,6 +263,8 @@ public class ContentDto extends EntityDto implements Serializable {
 
                 ResourceInterface resource = new AttachResource();
                 resource.setId(resourceId);
+                resource.setCorrelationCode(correlationCode);
+
                 resourceAttribute.setResource(resource, langCode);
 
                 Map<String, Object> values = (Map<String, Object>) ((Map<String, Object>) resourceEntry.getValue())

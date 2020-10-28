@@ -4,6 +4,7 @@ import static org.entando.entando.plugins.jacms.web.resource.ResourcesController
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_GROUP_NOT_FOUND;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_FILE_TYPE;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_RESOURCE_TYPE;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_CONFLICT;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
 
 import com.agiletec.aps.system.common.FieldSearchFilter;
@@ -56,6 +57,7 @@ import org.entando.entando.plugins.jacms.web.resource.model.ImageAssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ImageMetadataDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ListAssetsFolderResponse;
 import org.entando.entando.plugins.jacms.web.resource.request.ListResourceRequest;
+import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.FilterOperator;
@@ -220,13 +222,14 @@ public class ResourcesService {
         return sb.toString();
     }
 
-    public AssetDto createAsset(String type, MultipartFile file, String group, List<String> categories, String folderPath, UserDetails user) {
+    public AssetDto createAsset(String correlationCode, String type, MultipartFile file, String group, List<String> categories, String folderPath, UserDetails user) {
         BaseResourceDataBean resourceFile = new BaseResourceDataBean();
 
-        validateMimeType(type, file.getContentType());
-        validateGroup(user, group);
-
         try {
+            validateConflict(correlationCode);
+            validateMimeType(type, file.getContentType());
+            validateGroup(user, group);
+
             resourceFile.setInputStream(file.getInputStream());
             resourceFile.setFileSize(file.getBytes().length / 1000);
             resourceFile.setFileName(file.getOriginalFilename());
@@ -237,6 +240,7 @@ public class ResourcesService {
             resourceFile.setCategories(convertCategories(categories));
             resourceFile.setOwner(user.getUsername());
             resourceFile.setFolderPath(folderPath);
+            resourceFile.setCorrelationCode(correlationCode);
 
             ResourceInterface resource = resourceManager.addResource(resourceFile);
             return convertResourceToDto(resourceManager.loadResource(resource.getId()));
@@ -262,8 +266,12 @@ public class ResourcesService {
     }
 
     public AssetDto getAsset(String resourceId) {
+        return getAsset(resourceId, null);
+    }
+
+    public AssetDto getAsset(String resourceId, String correlationCode) {
         try {
-            ResourceInterface resource = resourceManager.loadResource(resourceId);
+            ResourceInterface resource = resourceManager.loadResource(resourceId, correlationCode);
             if (resource == null) {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
             }
@@ -274,9 +282,20 @@ public class ResourcesService {
         }
     }
 
+    public void deleteAssetByCode(String correlationCode) {
+        deleteAsset(null, correlationCode);
+    }
+
     public void deleteAsset(String resourceId) {
+        deleteAsset(resourceId, null);
+    }
+
+    public void deleteAsset(String resourceId, String correlationCode) {
         try {
-            ResourceInterface resource = resourceManager.loadResource(resourceId);
+            ResourceInterface resource = correlationCode == null
+                    ? resourceManager.loadResource(resourceId)
+                    : resourceManager.loadResource(resourceId, correlationCode);
+
             if (resource == null) {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
             }
@@ -287,8 +306,12 @@ public class ResourcesService {
     }
 
     private ResourceInterface loadResource(String resourceId) {
+        return loadResource(resourceId, null);
+    }
+
+    private ResourceInterface loadResource(String resourceId, String correlationCode) {
         try {
-            ResourceInterface resource = resourceManager.loadResource(resourceId);
+            ResourceInterface resource = resourceManager.loadResource(resourceId, correlationCode);
 
             if (resource == null) {
                 throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceId);
@@ -300,9 +323,21 @@ public class ResourcesService {
         }
     }
 
-    public AssetDto editAsset(String resourceId, MultipartFile file, String description, List<String> categories, String folderPath) {
+    public AssetDto editAsset(String resourceId, MultipartFile file,
+            String description, List<String> categories, String folderPath) {
+        //-
+        return editAsset(resourceId, null, file, description, categories, folderPath);
+    }
+
+    public AssetDto editAsset(String resourceId, String correlationCode,
+            MultipartFile file, String description, List<String> categories, String folderPath) {
+        //-
         try {
-            ResourceInterface resource = loadResource(resourceId);
+            ResourceInterface resource = loadResource(resourceId, correlationCode);
+
+            if (resourceId == null) {
+                resourceId = resource.getId();
+            }
 
             BaseResourceDataBean resourceFile = new BaseResourceDataBean();
             resourceFile.setResourceType(resource.getType());
@@ -427,6 +462,15 @@ public class ResourcesService {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(group, "resources.group");
         errors.reject(ERRCODE_GROUP_NOT_FOUND, "plugins.jacms.group.error.notFound");
         throw new ValidationGenericException(errors);
+    }
+
+    public void validateConflict(String correlationCode) throws EntException {
+        ResourceInterface existing = resourceManager.loadResource(null, correlationCode);
+        if (existing != null) {
+            BeanPropertyBindingResult errors = new BeanPropertyBindingResult(correlationCode, "resources.correlationCode");
+            errors.reject(ERRCODE_RESOURCE_CONFLICT, "plugins.jacms.resources.error.conflict");
+            throw new ValidationConflictException(errors);
+        }
     }
 
     public void validateMimeType(String resourceType, final String mimeType) {
@@ -610,6 +654,7 @@ public class ResourcesService {
     private ImageAssetDto convertImageResourceToDto(ImageResource resource) {
         ImageAssetDto.ImageAssetDtoBuilder builder = ImageAssetDto.builder()
                 .id(resource.getId())
+                .correlationCode(resource.getCorrelationCode())
                 .name(resource.getMasterFileName())
                 .description(resource.getDescription())
                 .createdAt(resource.getCreationDate())
@@ -646,6 +691,7 @@ public class ResourcesService {
     private FileAssetDto convertFileResourceToDto(AttachResource resource){
         return FileAssetDto.builder()
                 .id(resource.getId())
+                .correlationCode(resource.getCorrelationCode())
                 .name(resource.getMasterFileName())
                 .description(resource.getDescription())
                 .createdAt(resource.getCreationDate())

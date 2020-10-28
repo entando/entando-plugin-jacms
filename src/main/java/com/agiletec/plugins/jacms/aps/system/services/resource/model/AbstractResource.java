@@ -31,6 +31,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(AbstractResource.class);
 
     private String id;
+    private String correlationCode;
     private String typeCode;
     private String description;
     private String mainGroup;
@@ -67,6 +68,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         this.setLastModified(null);
         this.setOwner(null);
         this.setFolderPath(null);
+        this.setCorrelationCode(null);
     }
 
     /**
@@ -290,6 +292,16 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
     }
 
     @Override
+    public String getCorrelationCode() {
+        return correlationCode;
+    }
+
+    @Override
+    public void setCorrelationCode(String correlationCode) {
+        this.correlationCode = correlationCode;
+    }
+
+    @Override
     public Map<String, String> getMetadata() {
         return metadata;
     }
@@ -323,6 +335,7 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         prototype.setLastModified(null);
         prototype.setMetadata(new HashMap<>());
         prototype.setMetadataIgnoreKeys(metadataIgnoreKeys);
+        prototype.setCorrelationCode(correlationCode);
         return prototype;
     }
 
