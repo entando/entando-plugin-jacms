@@ -92,7 +92,7 @@ public class ContentTag extends TagSupport {
 	 * @return The model ID
 	 */
 	public String getModelId() {
-		return StringUtils.isEmpty(_modelId) ? "default" : _modelId;
+		return this._modelId;
 	}
 	
 	/**

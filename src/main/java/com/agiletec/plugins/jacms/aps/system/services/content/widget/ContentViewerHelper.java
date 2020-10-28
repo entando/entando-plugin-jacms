@@ -216,18 +216,23 @@ public class ContentViewerHelper implements IContentViewerHelper {
     }
 
     private String extractConfiguredModelId(String contentId, String modelId, ApsProperties widgetConfig) {
-        if (null != modelId && null != contentId) {
-            if (modelId.equals(ContentModel.MODEL_ID_LIST)) {
-                modelId = this.getContentManager().getListModel(contentId);
-            }
-            if (modelId.equals(ContentModel.MODEL_ID_DEFAULT)) {
-                modelId = this.getContentManager().getDefaultModel(contentId);
-            }
-        }
+        modelId = this.checkModelId(contentId, modelId);
         if (null == modelId && null != widgetConfig) {
-            modelId = (String) widgetConfig.get("modelId");
+            String modelIdParamValue = (String) widgetConfig.get("modelId");
+            modelId = this.checkModelId(contentId, modelIdParamValue);
         }
         return modelId;
+    }
+    
+    private String checkModelId(String contentId, String modelIdToCheck) {
+        if (null != modelIdToCheck && null != contentId) {
+            if (modelIdToCheck.equalsIgnoreCase(ContentModel.MODEL_ID_LIST)) {
+                return this.getContentManager().getListModel(contentId);
+            } else if (modelIdToCheck.equalsIgnoreCase(ContentModel.MODEL_ID_DEFAULT)) {
+                return this.getContentManager().getDefaultModel(contentId);
+            }
+        }
+        return modelIdToCheck;
     }
 
     protected void setStylesheet(long modelId, RequestContext reqCtx) {
