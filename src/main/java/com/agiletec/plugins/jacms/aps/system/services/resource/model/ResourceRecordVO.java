@@ -161,8 +161,8 @@ public class ResourceRecordVO implements Serializable {
 	public String getCorrelationCode() {
 		return _correlationCode;
 	}
-	public void setCorrelationCode(String _correlationCode) {
-		this._correlationCode = _correlationCode;
+	public void setCorrelationCode(String correlationCode) {
+		this._correlationCode = correlationCode;
 	}
 
 	private String _id;

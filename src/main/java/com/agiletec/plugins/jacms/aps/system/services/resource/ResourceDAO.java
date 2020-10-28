@@ -55,7 +55,7 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
     private final String LOAD_RESOURCE_VO
             = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE resid = ? ";
 
-    private final String LOAD_RESOURCE_VO_BY_CODE
+    private final static String LOAD_RESOURCE_VO_BY_CODE
             = "SELECT restype, descr, maingroup, resourcexml, masterfilename, creationdate, lastmodified, owner, folderpath, correlationcode FROM resources WHERE correlationcode = ? ";
 
     private final String ADD_RESOURCE
