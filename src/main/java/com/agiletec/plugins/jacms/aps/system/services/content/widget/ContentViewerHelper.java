@@ -32,6 +32,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispenser;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Classe helper per i Widget di erogazione contenuti singoli.
@@ -225,10 +226,14 @@ public class ContentViewerHelper implements IContentViewerHelper {
     }
     
     private String checkModelId(String contentId, String modelIdToCheck) {
-        if (null != modelIdToCheck && null != contentId) {
-            if (modelIdToCheck.equalsIgnoreCase(ContentModel.MODEL_ID_LIST)) {
+        if (null != modelIdToCheck && !ContentModel.isValidModelIdParam(modelIdToCheck.trim())) {
+            logger.warn("Invalid content template '{}'", modelIdToCheck);
+            return null;
+        }
+        if (!StringUtils.isEmpty(modelIdToCheck) && !StringUtils.isEmpty(contentId)) {
+            if (modelIdToCheck.trim().equals(ContentModel.MODEL_ID_LIST)) { //NOSONAR
                 return this.getContentManager().getListModel(contentId);
-            } else if (modelIdToCheck.equalsIgnoreCase(ContentModel.MODEL_ID_DEFAULT)) {
+            } else if (modelIdToCheck.trim().equals(ContentModel.MODEL_ID_DEFAULT)) {
                 return this.getContentManager().getDefaultModel(contentId);
             }
         }
