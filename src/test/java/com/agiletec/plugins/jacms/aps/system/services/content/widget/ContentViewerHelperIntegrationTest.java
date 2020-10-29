@@ -20,10 +20,13 @@ import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.lang.Lang;
+import com.agiletec.aps.system.services.page.IPage;
+import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.util.ApsProperties;
 
 import com.agiletec.plugins.jacms.aps.system.services.Jdk11CompatibleDateFormatter;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author W.Ambu
@@ -63,7 +66,7 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         super.setUp();
         this.init();
     }
-
+    
     public void testGetRenderedContent_1() throws Throwable {
         try {
             String contentId = "ART1";
@@ -85,6 +88,29 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         this.testGetRenderedByModel("ART1", "3", ART1_MODEL_3_IT_RENDER);
     }
     
+    public void testGetRenderedContent_4() throws Throwable {
+        this.executeGetRenderedContent_4(true, 3, "ART1", ART1_MODEL_1_IT_RENDER, true);
+        this.executeGetRenderedContent_4(false, 3, "ART1", ART1_MODEL_1_IT_RENDER, false);
+        this.executeGetRenderedContent_4(true, 4, "ART1", ART1_MODEL_1_IT_RENDER, false);
+        this.executeGetRenderedContent_4(true, 3, null, "", false);
+    }
+    
+    private void executeGetRenderedContent_4(boolean useExtraTitle, int frame, 
+            String contentId, String expected, boolean nullExtraParam) throws Throwable {
+        this._requestContext.removeExtraParam(SystemConstants.EXTRAPAR_EXTRA_PAGE_TITLES); //clean
+        ((MockHttpServletRequest) this._requestContext.getRequest()).removeParameter(SystemConstants.K_CONTENT_ID_PARAM); //clean
+        IPage page = this.pageManager.getOnlineRoot();
+        page.getMetadata().setUseExtraTitles(useExtraTitle);
+        this._requestContext.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE, page);
+        this._requestContext.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_FRAME, frame);
+        if (null != contentId) {
+            ((MockHttpServletRequest) this._requestContext.getRequest()).setParameter(SystemConstants.K_CONTENT_ID_PARAM, contentId);
+        }
+        String renderedContent = this._helper.getRenderedContent(null, null, true, _requestContext);
+        assertEquals(replaceNewLine(expected.trim()), replaceNewLine(renderedContent.trim()));
+        assertEquals(nullExtraParam, null != this._requestContext.getExtraParam(SystemConstants.EXTRAPAR_EXTRA_PAGE_TITLES));
+    }
+    
     public void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
         this.configureCurrentWidget(contentId, modelId);
         String renderedContent = this._helper.getRenderedContent(null, null, _requestContext);
@@ -101,13 +127,13 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     private String replaceNewLine(String input) {
         input = input.replaceAll("\\n", "");
         input = input.replaceAll("\\r", "");
         return input;
     }
-
+    
     public void testGetRenderedContentNotApproved() throws Throwable {
         try {
             String contentId = "ART2";
@@ -131,7 +157,7 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     private void init() throws Exception {
         try {
             this._requestContext = this.getRequestContext();
@@ -148,10 +174,10 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
     
     private void configureCurrentWidget(String contentId, String modelId) {
         Widget widget = new Widget();
-        IWidgetTypeManager showletTypeMan
+        IWidgetTypeManager widgetTypeManager
                 = (IWidgetTypeManager) this.getService(SystemConstants.WIDGET_TYPE_MANAGER);
-        WidgetType showletType = showletTypeMan.getWidgetType("content_viewer");
-        widget.setType(showletType);
+        WidgetType widgetType = widgetTypeManager.getWidgetType("content_viewer");
+        widget.setType(widgetType);
         ApsProperties properties = new ApsProperties();
         if (null != contentId) {
             properties.setProperty("contentId", contentId);
@@ -159,11 +185,15 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         if (null != modelId) {
             properties.setProperty("modelId", modelId);
         }
-        widget.setConfig(properties);
+        if (!properties.isEmpty()) {
+            widget.setConfig(properties);
+        }
         this._requestContext.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET, widget);
+        this.pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);
     }
 
     private RequestContext _requestContext;
+    private IPageManager pageManager;
     private IContentViewerHelper _helper;
 
 }
