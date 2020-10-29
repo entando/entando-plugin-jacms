@@ -186,5 +186,4 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
         return pagedMetadataMapper.getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
     }
 
-
 }

@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,8 @@ import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.FilterOperator;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
+import org.entando.entando.web.component.ComponentAnalysisState;
+import org.entando.entando.web.component.ComponentAnalysis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -728,5 +731,22 @@ public class ResourcesService {
 
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
+    }
+
+
+    /**
+     * for each code, checks if the relative component does exists or not
+     *
+     * @param codeList the list of the component codes to check
+     * @return a ComponentAnalysis containing the requested conflict/no conflict info
+     */
+    // if we will implement the other methods of the interface IComponentUsageService, remove this method in favor of the one in the interface
+    public ComponentAnalysis getComponentAnalysis(List<String> codeList) {
+        // FIXME stub data
+        Map<String, ComponentAnalysisState> components = new HashMap<>();
+        components.put("code1", ComponentAnalysisState.CONFLICT);
+        components.put("code2", ComponentAnalysisState.NO_CONFLICT);
+        components.put("STUB_DATA", ComponentAnalysisState.NO_CONFLICT);
+        return new ComponentAnalysis(components);
     }
 }

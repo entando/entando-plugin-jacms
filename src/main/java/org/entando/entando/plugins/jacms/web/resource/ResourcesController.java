@@ -49,6 +49,7 @@ import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.web.component.ComponentAnalysis;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -215,7 +216,6 @@ public class ResourcesController {
             @ApiResponse(code = 404, message = "Not Found")})
     @DeleteMapping("/plugins/cms/assets/{resourceIdOrCC}")
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
-
     public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(
             @PathVariable("resourceIdOrCC") RestNamedId resourceIdOrCC)
             throws EntException {
@@ -235,5 +235,21 @@ public class ResourcesController {
         }
         service.deleteAsset(resourceId, correlationCode);
         return ResponseEntity.ok(new SimpleRestResponse<>(new HashMap()));
+    }
+
+    @ApiOperation(
+            value = "componentAnalysis",
+            nickname = "getComponentAnalysis",
+            response = ComponentAnalysis.class,
+            tags = {"resources-controller",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ComponentAnalysis.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden")})
+    @RestAccessControl(permission = Permission.SUPERUSER)
+    @GetMapping("/plugins/cms/analysis/assets")
+    public ResponseEntity<SimpleRestResponse<ComponentAnalysis>> componentAnalysis(List<String> codes) {
+        logger.debug("REST request - get assets analysis for codes {}", codes);
+        return ResponseEntity.ok(new SimpleRestResponse<>(this.service.getComponentAnalysis(codes)));
     }
 }

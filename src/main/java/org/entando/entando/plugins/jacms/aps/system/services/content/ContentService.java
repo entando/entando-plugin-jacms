@@ -53,7 +53,6 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,6 +81,8 @@ import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
+import org.entando.entando.web.component.ComponentAnalysisState;
+import org.entando.entando.web.component.ComponentAnalysis;
 import org.entando.entando.web.entity.validator.EntityValidator;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
@@ -391,6 +392,16 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             logger.error("error in contents count by type", t);
             throw new RestServerError("error in contents count by type", t);
         }
+    }
+
+    @Override
+    public ComponentAnalysis getComponentAnalysis(List<String> codeList) {
+        // FIXME stub data
+        Map<String, ComponentAnalysisState> components = new HashMap<>();
+        components.put("code1", ComponentAnalysisState.CONFLICT);
+        components.put("code2", ComponentAnalysisState.NO_CONFLICT);
+        components.put("STUB_DATA", ComponentAnalysisState.NO_CONFLICT);
+        return new ComponentAnalysis(components);
     }
 
     protected List<String> getAllowedGroups(UserDetails currentUser, boolean requiredOnlineContents) {

@@ -14,7 +14,6 @@
 package org.entando.entando.plugins.jacms.web.content;
 
 import com.agiletec.aps.system.services.role.Permission;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDtoRequest;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeRefreshRequest;
@@ -30,14 +29,11 @@ import org.entando.entando.aps.system.services.entity.model.AttributeTypeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeAttributeFullDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeShortDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypesStatusDto;
-import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.model.*;
 import org.entando.entando.web.component.ComponentUsage;
+import org.entando.entando.web.component.ComponentAnalysis;
 import org.entando.entando.web.component.ComponentUsageEntity;
-import org.entando.entando.web.page.model.PageSearchRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -99,6 +95,21 @@ public interface ContentTypeResource {
     ResponseEntity<SimpleRestResponse<ContentTypeDto>> get(
             @ApiParam(value = "code", required = true) @PathVariable("code") String id);
 
+
+    @ApiOperation(
+            value = "componentAnalysis",
+            nickname = "getComponentAnalysis",
+            response = ComponentAnalysis.class,
+            tags = {"content-type-resource-controller",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ComponentAnalysis.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden")})
+    @GetMapping("/plugins/cms/analysis/contentTypes/")
+    ResponseEntity<SimpleRestResponse<ComponentAnalysis>> componentAnalysis(
+            @ApiParam(value = "codes", required = true) @RequestParam("codes") List<String> codes);
+
+
     @ApiOperation(
             value = "getContentTypeUsage",
             nickname = "getContentTypeUsage",
@@ -112,8 +123,6 @@ public interface ContentTypeResource {
     @GetMapping("/plugins/cms/contentTypes/{code}/usage")
     ResponseEntity<SimpleRestResponse<ComponentUsage>> usage(
             @ApiParam(value = "code", required = true) @PathVariable("code") String id);
-
-
 
 
     @ApiOperation(
