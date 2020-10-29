@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import org.entando.entando.ent.exception.EntException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,22 @@ public class PNGImageResizerTest {
     }
 
     @Test
+    public void toBufferedImage() throws IOException, EntException {
+
+        File file = new File("src/test/resources/images/entando.png");
+
+        BufferedImage image = ImageIO.read(file);
+        ImageIcon imageIcon = new ImageIcon(image);
+
+        BufferedImage response = pngImageResizer.toBufferedImage(imageIcon, image.getWidth(),
+                image.getHeight());
+
+        assertEquals(200, response.getRaster().getWidth());
+        assertEquals(200, response.getRaster().getHeight());
+
+    }
+
+    @Test
     public void toBufferedImageWhenScreenIsNotPresent() throws IOException {
 
         File file = new File("src/test/resources/images/entando.png");
@@ -35,6 +52,13 @@ public class PNGImageResizerTest {
         BufferedImage response = pngImageResizer.toBufferedImageWhenScreenIsNotPresent(imageIcon, image.getWidth(),
                 image.getHeight(), image,
                 false);
+
+        assertEquals(200, response.getRaster().getWidth());
+        assertEquals(200, response.getRaster().getHeight());
+
+        response = pngImageResizer.toBufferedImageWhenScreenIsNotPresent(imageIcon, image.getWidth(),
+                image.getHeight(), image,
+                true);
 
         assertEquals(200, response.getRaster().getWidth());
         assertEquals(200, response.getRaster().getHeight());
