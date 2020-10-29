@@ -145,7 +145,7 @@ public class PNGImageResizer extends AbstractImageResizer {
         return bufferedImage;
     }
 
-    private GraphicsConfiguration getGraphicsConfiguration() throws HeadlessException {
+    private GraphicsConfiguration getGraphicsConfiguration() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gs = ge.getDefaultScreenDevice();
         return gs.getDefaultConfiguration();
