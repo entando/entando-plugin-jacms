@@ -207,7 +207,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             Category general_cat2 = this.categoryManager.getCategory("general_cat2");
             List<ITreeNode> categories = new ArrayList<>();
             categories.add(general_cat2);
-            List<String> allowedGroup = new ArrayList<String>();
+            List<String> allowedGroup = new ArrayList<>();
             allowedGroup.add(Group.FREE_GROUP_NAME);
             List<String> contentsId = sem.searchEntityId(null, categories, allowedGroup);
             assertNotNull(contentsId);
@@ -222,6 +222,33 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             assertNotNull(contentsId);
             String[] expected2 = {"ART111", "EVN25"};
             this.verify(contentsId, expected2);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+    
+    public void testSearchContentsId_5_allowdValues() throws Throwable {
+        try {
+            Thread thread = this.searchEngineManager.startReloadContentsReferences();
+            thread.join();
+            SearchEngineManager sem = (SearchEngineManager) this.searchEngineManager;
+            List<String> allowedGroup = new ArrayList<>();
+            allowedGroup.add(Group.FREE_GROUP_NAME);
+            SearchEngineFilter filterGenCat1 = new SearchEngineFilter("category", "general_cat1");
+            SearchEngineFilter[] catFilter1 = {filterGenCat1};
+            List<String> contentsId1 = sem.loadContentsId(null, catFilter1, allowedGroup);
+            assertNotNull(contentsId1);
+            assertFalse(contentsId1.isEmpty());
+            allowedGroup.add(Group.ADMINS_GROUP_NAME);
+            contentsId1 = sem.loadContentsId(null, catFilter1, allowedGroup);
+            String[] expected1 = {"ART111", "ART102", "EVN23", "EVN25"};
+            this.verify(contentsId1, expected1);
+            SearchEngineFilter filterCategories = SearchEngineFilter.createAllowedValuesFilter("categories", false, Arrays.asList(new String[]{"general_cat1", "general_cat2"}), TextSearchOption.EXACT);
+            SearchEngineFilter[] catFilter2 = {filterCategories};
+            List<String> contentsId2 = sem.loadContentsId(null, catFilter2, allowedGroup);
+            assertNotNull(contentsId2);
+            String[] expected2 = {"ART111", "EVN25", "ART120", "ART102", "EVN23"};
+            this.verify(contentsId2, expected2);
         } catch (Throwable t) {
             throw t;
         }
@@ -472,6 +499,12 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             this.executeTestByStringRange(allowedGroup, "D", "J", ids, 3, 7);
             this.executeTestByStringRange(allowedGroup, null, "O", ids, 0, 15);
             this.executeTestByStringRange(allowedGroup, "I", null, ids, 8, 18);
+            
+            SearchEngineFilter filterAllowedValues = SearchEngineFilter.createAllowedValuesFilter("Test", true, Arrays.asList(new String[]{"AA", "FF", "SS", "LL"}), TextSearchOption.ALL_WORDS);
+            SearchEngineFilter[] filters_2 = {filterByType, filterAllowedValues};
+            List<String> contentsId_2 = sem.searchEntityId(filters_2, null, allowedGroup);
+            String[] expected_2 = {ids.get(0), ids.get(5), ids.get(11), ids.get(18)};
+            this.verify(contentsId_2, expected_2);
         } catch (Throwable t) {
             throw t;
         } finally {
