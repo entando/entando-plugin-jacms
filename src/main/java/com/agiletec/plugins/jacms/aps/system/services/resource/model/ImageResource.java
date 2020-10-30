@@ -123,7 +123,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
             String masterImageFileName = getNewInstanceFileName(bean.getFileName(), 0, null);
             String subPath = this.getDiskSubFolder() + masterImageFileName;
             this.getStorageManager().deleteFile(subPath, this.isProtectedResource());
-            File tempMasterFile = this.saveTempFile("temp_" + masterImageFileName, bean.getInputStream());
+            File tempMasterFile = this.saveTempFile(masterImageFileName, bean.getInputStream());
 
             if(bean instanceof BaseResourceDataBean) {
                 ((BaseResourceDataBean)bean).setFile(tempMasterFile);
