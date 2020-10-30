@@ -11,10 +11,19 @@ import java.util.Locale;
  * the medium date style formatting in the Italian locale. Java 8 uses dashes to separate words, Java 11 uses spaces
  */
 public class Jdk11CompatibleDateFormatter {
+    
     public static String formatMediumDate(String input) {
+        return formatDate(input, DateFormat.MEDIUM);
+    }
+
+    public static String formatLongDate(String input) {
+        return formatDate(input, DateFormat.LONG);
+    }
+
+    public static String formatDate(String input, int format) {
         try {
             Date date = new SimpleDateFormat("dd-MMM-yyyy", Locale.forLanguageTag("it")).parse(input);
-            return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.forLanguageTag("it")).format(date);
+            return DateFormat.getDateInstance(format, Locale.forLanguageTag("it")).format(date);
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

@@ -17,7 +17,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
@@ -32,131 +31,142 @@ import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderiza
  */
 public class ContentTag extends TagSupport {
 
-	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentTag.class);
-	
-	public ContentTag() {
-		super();
-		this.release();
-	}
-	
-	@Override
-	public int doStartTag() throws JspException {
-		ServletRequest request =  this.pageContext.getRequest();
-		RequestContext reqCtx = (RequestContext) request.getAttribute(RequestContext.REQCTX);
-		try {
-			IContentViewerHelper helper = (IContentViewerHelper) ApsWebApplicationUtils.getBean(JacmsSystemConstants.CONTENT_VIEWER_HELPER, this.pageContext);
-			String contentId = (this.getContentId() != null && this.getContentId().trim().length() > 0) ? this.getContentId() : null;
-			ContentRenderizationInfo renderInfo = helper.getRenderizationInfo(contentId, this.getModelId(), this.isPublishExtraTitle(), reqCtx);
-			String renderedContent = (null != renderInfo) ? renderInfo.getRenderedContent() : "";
-			if (null != this.getVar()) {
-				this.pageContext.setAttribute(this.getVar(), renderedContent);
-			} else {
-				this.pageContext.getOut().print(renderedContent);
-			}
-			if (null != renderInfo && null != this.getAttributeValuesByRoleVar()) {
-				this.pageContext.setAttribute(this.getAttributeValuesByRoleVar(), renderInfo.getAttributeValues());
-			}
-		} catch (Throwable t) {
-			_logger.error("error in doStartTag", t);
-			throw new JspException("Error detected while initialising the tag", t);
-		}
-		return EVAL_PAGE;
-	}
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentTag.class);
 
-	@Override
-	public void release() {
-		this.setContentId(null);
-		this.setModelId(null);
-		this.setPublishExtraTitle(false);
-		this.setVar(null);
-		this.setAttributeValuesByRoleVar(null);
-	}
-	
-	/**
-	 * Return the content ID The "expression language" is accepted.
-	 * @return The content ID
-	 */
-	public String getContentId() {
-		return _contentId;
-	}
-	/**
-	 * ID of the content to display. The "expression language" is accepted.
-	 * @param id The content ID
-	 */
-	public void setContentId(String id) {
-		this._contentId = id;
-	}
-	
-	/**
-	 * Get the Id of the model to use to display the content.
-	 * @return The model ID
-	 */
-	public String getModelId() {
-		return StringUtils.isEmpty(_modelId) ? "default" : _modelId;
-	}
-	
-	/**
-	 * Set the Id of the model to use to display the content.
-	 * @param id The model ID
-	 */
-	public void setModelId(String id) {
-		this._modelId = id;
-	}
+    public ContentTag() {
+        super();
+        this.release();
+    }
 
-	/**
-	 * Return true if the extra titles will be insert into Request Context.
-	 * @return The property.
-	 */
-	public boolean isPublishExtraTitle() {
-		return _publishExtraTitle;
-	}
-	
-	/**
-	 * Specify if the extra titles will be insert into Request Context.
-	 * @param publishExtraTitle The property to set.
-	 */
-	public void setPublishExtraTitle(boolean publishExtraTitle) {
-		this._publishExtraTitle = publishExtraTitle;
-	}
-	
-	/**
-	 * Inserts the rendered content in a variable of the page context with the name provided
-	 * @return The name of the variable
-	 */
-	public String getVar() {
-		return _var;
-	}
-	
-	/**
-	 * Inserts the rendered content in a variable of the page context with the name provided
-	 * @param var The name of the variable
-	 */
-	public void setVar(String var) {
-		this._var = var;
-	}
-	
-	/**
-	 * Inserts the map of the attribute values indexed by the attribute role, 
-	 * in a variable of the page context with the name provided.
-	 * @return The name of the variable.
-	 */
-	public String getAttributeValuesByRoleVar() {
-		return _attributeValuesByRoleVar;
-	}
-	
-	/**
-	 * Inserts the map of the attribute values indexed by the attribute role, 
-	 * in a variable of the page context with the name provided.
-	 * @param attributeValuesByRoleVar The name of the variable.
-	 */
-	public void setAttributeValuesByRoleVar(String attributeValuesByRoleVar) {
-		this._attributeValuesByRoleVar = attributeValuesByRoleVar;
-	}
-	
-	private String _contentId;
-	private String _modelId;
-	private boolean _publishExtraTitle;
-	private String _var;
-	private String _attributeValuesByRoleVar;
-	
+    @Override
+    public int doStartTag() throws JspException {
+        ServletRequest request = this.pageContext.getRequest();
+        RequestContext reqCtx = (RequestContext) request.getAttribute(RequestContext.REQCTX);
+        try {
+            IContentViewerHelper helper = (IContentViewerHelper) ApsWebApplicationUtils.getBean(JacmsSystemConstants.CONTENT_VIEWER_HELPER, this.pageContext);
+            String contentId = (this.getContentId() != null && this.getContentId().trim().length() > 0) ? this.getContentId() : null;
+            ContentRenderizationInfo renderInfo = helper.getRenderizationInfo(contentId, this.getModelId(), this.isPublishExtraTitle(), reqCtx);
+            String renderedContent = (null != renderInfo) ? renderInfo.getRenderedContent() : "";
+            if (null != this.getVar()) {
+                this.pageContext.setAttribute(this.getVar(), renderedContent);
+            } else {
+                this.pageContext.getOut().print(renderedContent);
+            }
+            if (null != renderInfo && null != this.getAttributeValuesByRoleVar()) {
+                this.pageContext.setAttribute(this.getAttributeValuesByRoleVar(), renderInfo.getAttributeValues());
+            }
+        } catch (Throwable t) {
+            _logger.error("error in doStartTag", t);
+            throw new JspException("Error detected while initialising the tag", t);
+        }
+        return EVAL_PAGE;
+    }
+
+    @Override
+    public void release() {
+        this.setContentId(null);
+        this.setModelId(null);
+        this.setPublishExtraTitle(false);
+        this.setVar(null);
+        this.setAttributeValuesByRoleVar(null);
+    }
+
+    /**
+     * Return the content ID The "expression language" is accepted.
+     *
+     * @return The content ID
+     */
+    public String getContentId() {
+        return _contentId;
+    }
+
+    /**
+     * ID of the content to display. The "expression language" is accepted.
+     *
+     * @param id The content ID
+     */
+    public void setContentId(String id) {
+        this._contentId = id;
+    }
+
+    /**
+     * Get the Id of the model to use to display the content.
+     *
+     * @return The model ID
+     */
+    public String getModelId() {
+        return this._modelId;
+    }
+
+    /**
+     * Set the Id of the model to use to display the content.
+     *
+     * @param id The model ID
+     */
+    public void setModelId(String id) {
+        this._modelId = id;
+    }
+
+    /**
+     * Return true if the extra titles will be insert into Request Context.
+     *
+     * @return The property.
+     */
+    public boolean isPublishExtraTitle() {
+        return _publishExtraTitle;
+    }
+
+    /**
+     * Specify if the extra titles will be insert into Request Context.
+     *
+     * @param publishExtraTitle The property to set.
+     */
+    public void setPublishExtraTitle(boolean publishExtraTitle) {
+        this._publishExtraTitle = publishExtraTitle;
+    }
+
+    /**
+     * Inserts the rendered content in a variable of the page context with the name provided
+     *
+     * @return The name of the variable
+     */
+    public String getVar() {
+        return _var;
+    }
+
+    /**
+     * Inserts the rendered content in a variable of the page context with the name provided
+     *
+     * @param var The name of the variable
+     */
+    public void setVar(String var) {
+        this._var = var;
+    }
+
+    /**
+     * Inserts the map of the attribute values indexed by the attribute role, in a variable of the page context with the
+     * name provided.
+     *
+     * @return The name of the variable.
+     */
+    public String getAttributeValuesByRoleVar() {
+        return _attributeValuesByRoleVar;
+    }
+
+    /**
+     * Inserts the map of the attribute values indexed by the attribute role, in a variable of the page context with the
+     * name provided.
+     *
+     * @param attributeValuesByRoleVar The name of the variable.
+     */
+    public void setAttributeValuesByRoleVar(String attributeValuesByRoleVar) {
+        this._attributeValuesByRoleVar = attributeValuesByRoleVar;
+    }
+
+    private String _contentId;
+    private String _modelId;
+    private boolean _publishExtraTitle;
+    private String _var;
+    private String _attributeValuesByRoleVar;
+
 }
