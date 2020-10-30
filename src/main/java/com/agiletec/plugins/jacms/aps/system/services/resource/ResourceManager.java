@@ -40,7 +40,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -169,6 +168,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
         ResourceInterface newResource = this.createResource(bean);
         try {
             this.generateAndSetResourceId(newResource, bean.getResourceId());
+            newResource.setCorrelationCode(newResource.getCorrelationCode() == null ?
+                    newResource.getId() : newResource.getCorrelationCode());
             newResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()));
             this.getResourceDAO().addResource(newResource);
         } catch (Throwable t) {
@@ -305,6 +306,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resource.setMetadata(bean.getMetadata());
         resource.setOwner(bean.getOwner());
         resource.setFolderPath(bean.getFolderPath());
+        resource.setCorrelationCode(bean.getCorrelationCode());
         return resource;
     }
 
@@ -422,9 +424,16 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     @Override
     public ResourceInterface loadResource(String id) throws EntException {
+        return loadResource(id, null);
+    }
+
+    @Override
+    public ResourceInterface loadResource(String id, String correlationCode) throws EntException {
         ResourceInterface resource = null;
         try {
-            ResourceRecordVO resourceVo = this.getResourceDAO().loadResourceVo(id);
+            ResourceRecordVO resourceVo = correlationCode == null
+                    ? this.getResourceDAO().loadResourceVo(id)
+                    : this.getResourceDAO().loadResourceVoByCorrelationCode(correlationCode);
             if (null != resourceVo) {
                 resource = this.createResource(resourceVo);
                 resource.setMasterFileName(resourceVo.getMasterFileName());
@@ -454,6 +463,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resource.setLastModified(resourceVo.getLastModified());
         resource.setOwner(resourceVo.getOwner());
         resource.setFolderPath(resourceVo.getFolderPath());
+        resource.setCorrelationCode(resourceVo.getCorrelationCode());
         return resource;
     }
 

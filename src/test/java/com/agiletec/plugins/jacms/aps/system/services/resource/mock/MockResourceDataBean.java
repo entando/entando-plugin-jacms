@@ -40,6 +40,7 @@ public class MockResourceDataBean implements ResourceDataBean {
     private Map<String,String> metadata = new HashMap<>();
     private String owner;
     private String folderPath;
+    private String correlationCode;
     
     @Override
     public String getResourceId() {
@@ -160,5 +161,15 @@ public class MockResourceDataBean implements ResourceDataBean {
     @Override
     public void setFolderPath(String folderPath) {
         this.folderPath = folderPath;
+    }
+
+    @Override
+    public String getCorrelationCode() {
+        return correlationCode;
+    }
+
+    @Override
+    public void setCorrelationCode(String correlationCode) {
+        this.correlationCode = correlationCode;
     }
 }

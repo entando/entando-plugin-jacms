@@ -136,4 +136,8 @@ public interface ResourceDataBean {
      * @param folderPath The resources's logical path
      */
     public void setFolderPath(String folderPath);
+
+    public String getCorrelationCode();
+
+    public void setCorrelationCode(String correlationCode);
 }

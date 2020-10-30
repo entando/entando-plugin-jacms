@@ -90,7 +90,7 @@
     </build>
     <dependencyManagement>
         <dependencies>
-            <!--engine-->
+            <!--CORE-BOM-->
             <dependency>
                 <groupId>org.entando</groupId>
                 <artifactId>entando-core-bom</artifactId>

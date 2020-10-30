@@ -115,10 +115,10 @@
             "code": "img1",
             "values": {
                 "en": {
-                    "id": "22"
+                    "correlationCode": "another_code"
                 },
                 "it": {
-                    "id": "44"
+                    "correlationCode": "a_code"
                 }
             }
         }

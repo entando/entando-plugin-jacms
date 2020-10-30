@@ -189,6 +189,8 @@ public interface IResourceManager {
      */
     public ResourceInterface loadResource(String id) throws EntException;
 
+    public ResourceInterface loadResource(String id, String correlationalCode) throws EntException;
+
     /**
      * Cancella una risorsa dal db ed i file di ogni istanza dal filesystem.
      *

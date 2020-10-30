@@ -157,7 +157,14 @@ public class ResourceRecordVO implements Serializable {
 	public void setLastModified(Date lastModified) {
 		this._lastModified = lastModified;
 	}
-	
+
+	public String getCorrelationCode() {
+		return _correlationCode;
+	}
+	public void setCorrelationCode(String correlationCode) {
+		this._correlationCode = correlationCode;
+	}
+
 	private String _id;
 	private String _resourceType;
 	private String _descr;
@@ -166,6 +173,7 @@ public class ResourceRecordVO implements Serializable {
 	private String _xml;
 	private String _owner;
 	private String _folderPath;
+	private String _correlationCode;
 	
 	private Date _creationDate;
 	private Date _lastModified;

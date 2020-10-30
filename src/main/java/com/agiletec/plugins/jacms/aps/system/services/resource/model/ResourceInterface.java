@@ -295,4 +295,8 @@ public interface ResourceInterface {
      */
     public void setFolderPath(String folderPath);
 
+    public String getCorrelationCode();
+
+    public void setCorrelationCode(String correlationCode);
+
 }

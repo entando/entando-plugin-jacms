@@ -82,6 +82,12 @@ public class Resource {
 			width = 256,
 			canBeNull = true)
 	private String _folderPath;
+
+	@DatabaseField(columnName = "correlationcode",
+			dataType = DataType.STRING,
+			width = 256,
+			canBeNull = true)
+	private String _correlationCode;
 	
 	public static final String TABLE_NAME = "resources";
 	
@@ -90,6 +96,7 @@ public class Resource {
 CREATE TABLE resources
 (
   resid character varying(16) NOT NULL,
+  correlationCode character varying(256) NOT NULL,
   restype character varying(30) NOT NULL,
   descr character varying(260) NOT NULL,
   maingroup character varying(20) NOT NULL,

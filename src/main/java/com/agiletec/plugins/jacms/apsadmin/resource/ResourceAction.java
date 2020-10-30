@@ -584,5 +584,16 @@ public class ResourceAction extends AbstractResourceAction implements ResourceDa
         //Do nothing as these Actions are destined to die
     }
 
+    @Override
+    public String getCorrelationCode() {
+        //Do nothing as these Actions are destined to die
+        return null;
+    }
+
+    @Override
+    public void setCorrelationCode(String correlationCode) {
+        //Do nothing as these Actions are destined to die
+    }
+
 
 }

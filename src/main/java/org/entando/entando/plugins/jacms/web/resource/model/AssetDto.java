@@ -14,6 +14,8 @@ import java.util.List;
 public abstract class AssetDto {
     private String id;
 
+    private String correlationCode;
+
     private String type;
 
     private String name;

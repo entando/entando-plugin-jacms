@@ -20,6 +20,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -70,7 +71,7 @@ public class PNGImageResizer extends AbstractImageResizer {
 	@Override
 	protected BufferedImage getResizedImage(ImageIcon imageIcon, int dimensioneX, int dimensioneY) throws EntException {
     	Image image = imageIcon.getImage();
-    	BufferedImage bi = this.toBufferedImage(image);
+    	BufferedImage bi = this.toBufferedImage(imageIcon, dimensioneX, dimensioneY);
     	double scale = this.computeScale(image.getWidth(null), image.getHeight(null), dimensioneX, dimensioneY);
 		int scaledW = (int) (scale * image.getWidth(null));
 		int scaledH = (int) (scale * image.getHeight(null));
@@ -84,7 +85,8 @@ public class PNGImageResizer extends AbstractImageResizer {
         return biRes;
 	}
 	
-	protected BufferedImage toBufferedImage(Image image) throws EntException {
+	protected BufferedImage toBufferedImage(ImageIcon imageIcon, int dimensioneX, int dimensioneY) throws EntException {
+		Image image = imageIcon.getImage();
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
 		}
@@ -94,8 +96,6 @@ public class PNGImageResizer extends AbstractImageResizer {
 		boolean hasAlpha = this.hasAlpha(image);
 		// Create a buffered image with a format that's compatible with the
 		// screen
-		BufferedImage bimage = null;
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		try {
 			// Determine the type of transparency of the new buffered image
 			int transparency = Transparency.OPAQUE;
@@ -103,30 +103,55 @@ public class PNGImageResizer extends AbstractImageResizer {
 				transparency = Transparency.BITMASK;
 			}
 			// Create the buffered image
-			GraphicsDevice gs = ge.getDefaultScreenDevice();
-			GraphicsConfiguration gc = gs.getDefaultConfiguration();
-			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+            BufferedImage bimage = getGraphicsConfiguration().createCompatibleImage(image.getWidth(null),
+                    image.getHeight(null), transparency);
+			Graphics graphics = bimage.createGraphics();
+			graphics.drawImage(image, 0, 0, null);
+			graphics.dispose();
+
+			return bimage;
 		} catch (HeadlessException e) {
-			throw new EntException("The system does not have a screen", e);
-		}
-		if (bimage == null) {
-			// Create a buffered image using the default color model
-			int type = BufferedImage.TYPE_INT_RGB;
-			if (hasAlpha) {
-				type = BufferedImage.TYPE_INT_ARGB;
-			}
-			bimage = new BufferedImage(image.getWidth(null), 
-					image.getHeight(null), type);
-		}
-		// Copy image to buffered image
-		Graphics graphics = bimage.createGraphics();
-		// Paint the image onto the buffered image
-		graphics.drawImage(image, 0, 0, null);
-		graphics.dispose();
-		return bimage;
+			_logger.warn("The system does not have a screen. Trying best effort approach.");
+            return toBufferedImageWhenScreenIsNotPresent(imageIcon, dimensioneX, dimensioneY, image, hasAlpha);
+        }
 	}
-	
-	protected boolean hasAlpha(Image image) throws EntException {
+
+    protected BufferedImage toBufferedImageWhenScreenIsNotPresent(ImageIcon imageIcon, float dimensioneX,
+            float dimensioneY, Image image, boolean hasAlpha) {
+
+        int type = BufferedImage.TYPE_INT_RGB;
+        if (hasAlpha) {
+            type = BufferedImage.TYPE_INT_ARGB;
+        }
+
+        BufferedImage source = new BufferedImage(
+                imageIcon.getIconWidth(),
+                imageIcon.getIconHeight(),
+                type);
+
+        Graphics graphics = source.createGraphics();
+        imageIcon.paintIcon(null, graphics, 0, 0);
+        graphics.dispose();
+
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), source.getType());
+        Graphics2D graphics2D = bufferedImage.createGraphics();
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        float sx = dimensioneX / source.getWidth();
+        float sy = dimensioneY / source.getHeight();
+        graphics2D.scale(sx, sy);
+        graphics2D.drawImage(source, 0, 0, null);
+        graphics2D.dispose();
+
+        return bufferedImage;
+    }
+
+    private GraphicsConfiguration getGraphicsConfiguration() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gs = ge.getDefaultScreenDevice();
+        return gs.getDefaultConfiguration();
+    }
+
+    protected boolean hasAlpha(Image image) throws EntException {
         // If buffered image, the color model is readily available
         if (image instanceof BufferedImage) {
             BufferedImage bimage = (BufferedImage)image;
