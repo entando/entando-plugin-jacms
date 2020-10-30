@@ -22,14 +22,12 @@ import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.*;
-import org.apache.lucene.util.BytesRef;
 import org.entando.entando.aps.system.services.searchengine.*;
 
 import java.io.*;
 import java.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.search.SortField.Type;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 
@@ -264,9 +262,9 @@ public class SearcherDAO implements ISearcherDAO {
                 Long upperValue = (null != filter.getEnd()) ? ((Number) filter.getEnd()).longValue() : Long.MAX_VALUE;
                 query = LongPoint.newRangeQuery(key, lowerValue, upperValue);
             } else {
-                String start = (null != filter.getStart()) ? filter.getStart().toString().toLowerCase() : null;
-                String end = (null != filter.getEnd()) ? filter.getEnd().toString().toLowerCase() : null;
-                query = new TermRangeQuery(key, new BytesRef(start), new BytesRef(end), true, true);
+                String start = (null != filter.getStart()) ? filter.getStart().toString().toLowerCase() : "A";
+                String end = (null != filter.getEnd()) ? filter.getEnd().toString().toLowerCase() + "z" : null;
+                query = TermRangeQuery.newStringRange(key, start, end, true, true);
             }
             fieldQuery.add(query, BooleanClause.Occur.MUST);
         } else if (null != value) {

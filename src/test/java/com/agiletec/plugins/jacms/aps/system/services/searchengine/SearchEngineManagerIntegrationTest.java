@@ -443,14 +443,14 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             artType.addAttribute(newTextAttribute);
             ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(artType);
             
-            char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-            for (int i = 0; i < alphabet.length; i++) {
-                char c = alphabet[i];
+            char[] characters = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+            for (int i = 0; i < characters.length; i++) {
+                String c = String.valueOf(characters[i]);
                 Content content = this.contentManager.loadContent("ART104", true);
                 content.setId(null);
                 TextAttribute textAttribute = (TextAttribute) content.getAttribute("Test");
-                textAttribute.setText(String.valueOf(c).toUpperCase() + " titolo", "it");
-                textAttribute.setText(String.valueOf(c).toUpperCase() + " title", "en");
+                textAttribute.setText((c + c).toUpperCase(), "it"); // note: search by single term
+                textAttribute.setText((c + c).toUpperCase(), "en"); // note: search by single term
                 this.contentManager.insertOnLineContent(content);
                 ids.add(content.getId());
             }
@@ -458,36 +458,56 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
                 this.wait(3000);
             }
             super.waitNotifyingThread();
+            
             SearchEngineFilter filterByType = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ART");
-            SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("Test", true, "B", "H");
+            SearchEngineFilter filter = new SearchEngineFilter("Test", true);
             filter.setLangCode("it");
             filter.setOrder(Order.ASC);
             SearchEngineFilter[] filters = {filterByType, filter};
-            List<String> contentsId_1 = sem.searchEntityId(filters, null, allowedGroup);
-            assertEquals(contentsId_1.size(), 7);
-            for (int i = 0; i < contentsId_1.size(); i++) {
-                assertEquals(ids.get(i+1), contentsId_1.get(i));
+            List<String> contentsId = sem.searchEntityId(filters, null, allowedGroup);
+            assertEquals(contentsId.size(), ids.size());
+            for (int i = 0; i < contentsId.size(); i++) {
+                assertEquals(ids.get(i), contentsId.get(i));
             }
-            
-            filter.setLangCode("en");
-            filter.setOrder(Order.DESC);
-            List<String> contentsId_2_en = sem.searchEntityId(filters, null, allowedGroup);
-            assertEquals(contentsId_1.size(), contentsId_2_en.size());
-            for (int i = 0; i < contentsId_2_en.size(); i++) {
-                assertEquals(contentsId_1.get(i), contentsId_2_en.get(contentsId_2_en.size() - i - 1));
-            }
-            
+            this.executeTestByStringRange(allowedGroup, "D", "J", ids, 3, 7);
+            this.executeTestByStringRange(allowedGroup, null, "O", ids, 0, 15);
+            this.executeTestByStringRange(allowedGroup, "I", null, ids, 8, 18);
         } catch (Throwable t) {
             throw t;
         } finally {
             artType.getAttributeMap().remove("Test");
+            artType.getAttributeList().removeIf(a -> a.getName().equals("Test"));
             ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(artType);
+            Content newArtType = this.contentManager.createContentType("ART");
+            assertNull(newArtType.getAttribute("Test"));
             for (int i = 0; i < ids.size(); i++) {
                 String newId = ids.get(i);
                 Content newContent = this.contentManager.loadContent(newId, false);
                 this.contentManager.removeOnLineContent(newContent);
                 this.contentManager.deleteContent(newContent);
             }
+        }
+    }
+    
+    private void executeTestByStringRange(List<String> allowedGroup,
+            String start, String end, List<String> total, int startIndex, int expectedSize) throws Exception {
+        SearchEngineManager sem = (SearchEngineManager) this.searchEngineManager;
+        SearchEngineFilter filterByType = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ART");
+        SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("Test", true, start, end);
+        filter.setLangCode("it");
+        filter.setOrder(Order.ASC);
+        SearchEngineFilter[] filters = {filterByType, filter};
+        List<String> contentsId_1 = sem.searchEntityId(filters, null, allowedGroup);
+        assertEquals(expectedSize, contentsId_1.size());
+        for (int i = 0; i < contentsId_1.size(); i++) {
+            assertEquals(total.get(i + startIndex), contentsId_1.get(i));
+        }
+        filter.setLangCode("en");
+        filter.setOrder(Order.DESC);
+        List<String> contentsId_2_en = sem.searchEntityId(filters, null, allowedGroup);
+        assertEquals(contentsId_1.size(), contentsId_2_en.size());
+        for (int i = 0; i < contentsId_2_en.size(); i++) {
+            assertEquals(contentsId_1.get(i), contentsId_2_en.get(contentsId_2_en.size() - i - 1));
         }
     }
     
