@@ -41,6 +41,7 @@ import com.agiletec.plugins.jacms.aps.system.services.linkresolver.TestLinkResol
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceManagerIntegrationTest;
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceManagerTest;
 import com.agiletec.plugins.jacms.aps.system.services.resource.TestResourceDAO;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer.PNGImageResizerTest;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.TestResourceDOM;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.FacetSearchEngineManagerIntegrationTest;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineManagerIntegrationTest;
@@ -211,6 +212,7 @@ public class AllTests {
         //Resource
         suite.addTestSuite(TestMultipleResourceAction.class);
         suite.addTestSuite(TestResourceFinderAction.class);
+        suite.addTest(new JUnit4TestAdapter(PNGImageResizerTest.class));
 
         //File Chunks Upload
         suite.addTestSuite(TestResourceFileChunkUploadAction.class);
@@ -233,7 +235,7 @@ public class AllTests {
 
         // ----------------------------------------
         suite.addTestSuite(TestJacmsLabelsProperties.class);
-        
+
         return suite;
     }
 
