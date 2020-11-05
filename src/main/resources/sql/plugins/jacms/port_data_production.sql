@@ -31,12 +31,12 @@ INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('jacms_CONTENT
 INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH','en','Search');
 INSERT INTO localstrings (keycode, langcode, stringvalue) VALUES ('ESSF_SEARCH','it','Cerca');
 
-INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup, readonlypagewidgetconfig) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
+INSERT INTO widgetcatalog (code,titles,parameters,plugincode,parenttypecode,defaultconfig,locked,maingroup, readonlypagewidgetconfig, widgetcategory) VALUES ('search_form','<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Search Form</property>
 <property key="it">Barra ricerca</property>
-</properties>',NULL,'jacms',NULL,NULL,0,'free',0);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
+</properties>',NULL,'jacms',NULL,NULL,0,'free',0, 'cms');
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig, widgetcategory) VALUES ('content_viewer', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content</property>
 <property key="it">Singolo Contenuto</property>
@@ -44,13 +44,13 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="contentId">Content ID</parameter>
 	<parameter name="modelId">Content Model ID</parameter>
 	<action name="viewerConfig"/>
-</config>', 'jacms', NULL, NULL, 1, NULL, 0);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig) VALUES ('search_result', '<?xml version="1.0" encoding="UTF-8"?>
+</config>', 'jacms', NULL, NULL, 1, NULL, 0, 'cms');
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig, widgetcategory) VALUES ('search_result', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Search Results</property>
 <property key="it">Risultati della Ricerca</property>
-</properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 0);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
+</properties>', NULL, 'jacms', NULL, NULL, 1, NULL, 0, 'cms');
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig, widgetcategory) VALUES ('content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content Search Query</property>
 <property key="it">Elenco dinamico di contenuti</property>
@@ -68,8 +68,8 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="pageLink">The code of the Page to link</parameter>
 	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
 	<action name="listViewerConfig"/>
-</config>', 'jacms', NULL, NULL, 1, NULL, 0);
-INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
+</config>', 'jacms', NULL, NULL, 1, NULL, 0, 'cms');
+INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig, widgetcategory) VALUES ('row_content_viewer_list', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
 <property key="en">Content List</property>
 <property key="it">Elenco di Contenuti</property>
@@ -80,7 +80,7 @@ INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode,
 	<parameter name="pageLink">The code of the Page to link</parameter>
 	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
 	<action name="rowListViewerConfig" />
-</config>', 'jacms', NULL, NULL, 1, 'free', 0);
+</config>', 'jacms', NULL, NULL, 1, 'free', 0, 'cms');
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('search_form','search_form','jacms',NULL,'<#assign wp=JspTaglibs["/aps-core"]>
 <@wp.pageWithWidget var="searchResultPageVar" widgetTypeCode="search_result" />
 <@wp.fragment code="entando_ootb_carbon_include" escapeXml=false />
@@ -254,12 +254,34 @@ INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, lock
 <@jacms.contentInfo param="authToEdit" var="canEditThis" />
 <@jacms.contentInfo param="contentId" var="myContentId" />
 <#if (canEditThis?? && canEditThis)>
-	<div class="bar-content-edit">
-		<a href="<@wp.info key="systemParam" paramName="applicationBaseURL" />do/jacms/Content/edit.action?contentId=<@jacms.contentInfo param="contentId" />" class="btn btn-info">
-		<@wp.i18n key="EDIT_THIS_CONTENT" /> <i class="icon-edit icon-white"></i></a>
+	<style>
+		.bar-content-edit {
+				position: absolute;
+				transform: translate(4px, 20px);
+		}
+		.bar-content-edit .btn {
+				color: white;
+				padding: 12px 32px;
+				background: #33B5E5;
+				text-transform: uppercase;
+				text-decoration: none;
+				border-radius: 2px;
+				box-shadow: 4px 4px 8px 1px rgba(0,0,0,0.5);
+		}
+		.bar-content-edit-container:not(:hover) .bar-content-edit {
+				display: none;
+		}
+	</style>
+	<div class="bar-content-edit-container">
+		<div class="bar-content-edit">
+			<a href="<@wp.info key="systemParam" paramName="applicationBaseURL" />do/jacms/Content/edit.action?contentId=<@jacms.contentInfo param="contentId" />" class="btn btn-info">
+			<@wp.i18n key="EDIT_THIS_CONTENT" /> <i class="icon-edit icon-white"></i></a>
+		</div>
+		<@jacms.content publishExtraTitle=true />
 	</div>
-</#if>
-<@jacms.content publishExtraTitle=true />', 1);
+<#else>
+  <@jacms.content publishExtraTitle=true />
+</#if>', 1);
 INSERT INTO guifragment (code, widgettypecode, plugincode, gui, defaultgui, locked) VALUES ('jacms_content_viewer_list', 'content_viewer_list', 'jacms', NULL, '<#assign jacms=JspTaglibs["/jacms-aps-core"]>
 <#assign wp=JspTaglibs["/aps-core"]>
 <@wp.headInfo type="JS_EXT" info="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" />
