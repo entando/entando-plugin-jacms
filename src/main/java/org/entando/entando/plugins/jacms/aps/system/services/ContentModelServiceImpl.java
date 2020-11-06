@@ -118,6 +118,10 @@ public class ContentModelServiceImpl implements ContentModelService {
         return Optional.ofNullable(dto);
     }
 
+    public boolean exists(Long modelId) {
+        return this.contentModelManager.getContentModel(modelId) != null;
+    }
+
     @Override
     public ContentModelDto create(ContentModelDto entity) {
         try {
@@ -182,7 +186,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     @Override
     public ComponentUsage getComponentUsage(Long modelId) {
         final List<ContentModelReference> contentModelReferences = contentModelManager
-                .getContentModelReferences(modelId, false );
+                .getContentModelReferences(modelId, false);
         final long onlineCount = contentModelReferences.stream()
                 .filter(ContentModelReference::isOnline).count();
         final long offlineCount = contentModelReferences.stream()
@@ -296,7 +300,6 @@ public class ContentModelServiceImpl implements ContentModelService {
         pagedMetadata.setBody(contentModelReferenceDTOS);
         return pagedMetadata;
     }
-
 
 
     private List<ContentModelReferenceDTO> mapContentModelReferencesToDTOs(

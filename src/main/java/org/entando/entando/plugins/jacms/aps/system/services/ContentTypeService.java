@@ -13,6 +13,8 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services;
 
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
+
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
@@ -20,8 +22,14 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Co
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDtoBuilder;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDtoRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
+import org.entando.entando.aps.system.services.IComponentExistsService;
 import org.entando.entando.aps.system.services.IComponentUsageService;
 import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.entity.AbstractEntityTypeService;
@@ -41,18 +49,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements
-        IComponentUsageService {
+        IComponentExistsService, IComponentUsageService {
 
     private static final String CONTENT_MODEL_MANAGER = "jacmsContentManager";
 
@@ -169,13 +169,15 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     }
 
     @Override
-    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode, RestListRequest restListRequest) {
+    public PagedMetadata<ComponentUsageEntity> getComponentUsageDetails(String componentCode,
+            RestListRequest restListRequest) {
 
         RestContentListRequest contentListRequest = new RestContentListRequest();
         contentListRequest.setFilters(restListRequest.getFilters());
         contentListRequest.setSort("typeCode");
 
-        PagedMetadata<ContentDto> pagedData = contentService.getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
+        PagedMetadata<ContentDto> pagedData = contentService
+                .getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
         List<ComponentUsageEntity> componentUsageEntityList = pagedData.getBody().stream()
                 .map(contentDto -> new ComponentUsageEntity(
                         ComponentUsageEntity.TYPE_CONTENT,
@@ -183,8 +185,12 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
                         ContentStatusState.calculateState(contentDto).toString()))
                 .collect(Collectors.toList());
 
-        return pagedMetadataMapper.getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
+        return pagedMetadataMapper
+                .getPagedResult(restListRequest, componentUsageEntityList, "code", pagedData.getTotalItems());
     }
 
-
+    public boolean exists(String code) {
+        IEntityManager entityManager = this.extractEntityManager(CONTENT_MODEL_MANAGER);
+        return entityManager.getEntityPrototype(code) != null;
+    }
 }

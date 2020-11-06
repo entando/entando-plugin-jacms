@@ -88,7 +88,8 @@ public class ResourceService implements IResourceService,
     @Override
     public List<ResourceDto> getCategoryUtilizer(String categoryCode) {
         try {
-            List<String> resourcesId = ((CategoryUtilizer) this.getResourceManager()).getCategoryUtilizers(categoryCode);
+            List<String> resourcesId = ((CategoryUtilizer) this.getResourceManager())
+                    .getCategoryUtilizers(categoryCode);
             return this.buildDtoList(resourcesId);
         } catch (EntException ex) {
             logger.error("Error loading resource references for category {}", categoryCode, ex);
