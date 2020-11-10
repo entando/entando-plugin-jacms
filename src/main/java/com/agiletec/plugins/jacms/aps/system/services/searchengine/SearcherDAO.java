@@ -107,7 +107,12 @@ public class SearcherDAO implements ISearcherDAO {
                     if (null != filter.getOrder()) {
                         String fieldKey = this.getFilterKey(filter) + IIndexerDAO.SORTERED_FIELD_SUFFIX;
                         boolean revert = filter.getOrder().toString().equalsIgnoreCase("DESC");
-                        SortField sortField = new SortField(fieldKey, SortField.Type.STRING, revert);
+                        SortField sortField = null;
+                        if (filter instanceof NumericSearchEngineFilter) {
+                            sortField = new SortedNumericSortField(fieldKey, SortField.Type.LONG, revert);
+                        } else {
+                            sortField = new SortField(fieldKey, SortField.Type.STRING, revert);
+                        }
                         sortFields = ArrayUtils.add(sortFields, sortField);
                     }
                 }
@@ -217,7 +222,7 @@ public class SearcherDAO implements ISearcherDAO {
         BooleanQuery.Builder fieldQuery = null;
         String key = this.getFilterKey(filter);
         Object value = filter.getValue();
-        List allowedValues = filter.getAllowedValues();
+        List<?> allowedValues = filter.getAllowedValues();
         if (null != allowedValues && !allowedValues.isEmpty()) {
             fieldQuery = new BooleanQuery.Builder();
             SearchEngineFilter.TextSearchOption option = filter.getTextSearchOption();
@@ -226,28 +231,33 @@ public class SearcherDAO implements ISearcherDAO {
             }
             //To be improved to manage different type
             for (int j = 0; j < allowedValues.size(); j++) {
-                //NOTE: search for lower case....
                 String singleValue = allowedValues.get(j).toString();
-                String[] values = singleValue.split("\\s+");
-                if (!option.equals(SearchEngineFilter.TextSearchOption.EXACT)) {
-                    BooleanQuery.Builder singleOptionFieldQuery = new BooleanQuery.Builder();
-                    BooleanClause.Occur bc = BooleanClause.Occur.SHOULD;
-                    if (option.equals(SearchEngineFilter.TextSearchOption.ALL_WORDS)) {
-                        bc = BooleanClause.Occur.MUST;
-                    } else if (option.equals(SearchEngineFilter.TextSearchOption.ANY_WORD)) {
-                        bc = BooleanClause.Occur.MUST_NOT;
-                    }
-                    for (int i = 0; i < values.length; i++) {
-                        Query queryTerm = this.getTermQueryForTextSearch(key, values[i], filter.isLikeOption());
-                        singleOptionFieldQuery.add(queryTerm, bc);
-                    }
-                    fieldQuery.add(singleOptionFieldQuery.build(), BooleanClause.Occur.SHOULD);
+                if (filter instanceof NumericSearchEngineFilter) {
+                    TermQuery term = new TermQuery(new Term(key, singleValue));
+                    fieldQuery.add(term, BooleanClause.Occur.SHOULD);
                 } else {
-                    PhraseQuery.Builder phraseQuery = new PhraseQuery.Builder();
-                    for (int i = 0; i < values.length; i++) {
-                        phraseQuery.add(new Term(key, values[i].toLowerCase()), i);
+                    //NOTE: search for lower case....
+                    String[] values = singleValue.split("\\s+");
+                    if (!option.equals(SearchEngineFilter.TextSearchOption.EXACT)) {
+                        BooleanQuery.Builder singleOptionFieldQuery = new BooleanQuery.Builder();
+                        BooleanClause.Occur bc = BooleanClause.Occur.SHOULD;
+                        if (option.equals(SearchEngineFilter.TextSearchOption.ALL_WORDS)) {
+                            bc = BooleanClause.Occur.MUST;
+                        } else if (option.equals(SearchEngineFilter.TextSearchOption.ANY_WORD)) {
+                            bc = BooleanClause.Occur.MUST_NOT;
+                        }
+                        for (int i = 0; i < values.length; i++) {
+                            Query queryTerm = this.getTermQueryForTextSearch(key, values[i], filter.isLikeOption());
+                            singleOptionFieldQuery.add(queryTerm, bc);
+                        }
+                        fieldQuery.add(singleOptionFieldQuery.build(), BooleanClause.Occur.SHOULD);
+                    } else {
+                        PhraseQuery.Builder phraseQuery = new PhraseQuery.Builder();
+                        for (int i = 0; i < values.length; i++) {
+                            phraseQuery.add(new Term(key, values[i].toLowerCase()), i);
+                        }
+                        fieldQuery.add(phraseQuery.build(), BooleanClause.Occur.SHOULD);
                     }
-                    fieldQuery.add(phraseQuery.build(), BooleanClause.Occur.SHOULD);
                 }
             }
         } else if (null != filter.getStart() || null != filter.getEnd()) {

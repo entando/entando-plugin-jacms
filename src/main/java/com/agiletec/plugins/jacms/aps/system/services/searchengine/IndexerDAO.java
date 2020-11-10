@@ -154,13 +154,14 @@ public class IndexerDAO implements IIndexerDAO {
             if (attribute instanceof DateAttribute) {
                 Date date = ((DateAttribute) attribute).getDate();
                 number = (null != date) ? date.getTime() : null;
+                valueToIndex = (null != number) ? DateTools.timeToString(number, DateTools.Resolution.MINUTE) : valueToIndex;
             } else if (attribute instanceof NumberAttribute) {
                 BigDecimal value = ((NumberAttribute) attribute).getValue();
                 number = (null != value) ? value.longValue() : null;
+                valueToIndex = (null != number) ? String.valueOf(number) : valueToIndex;
             } else {
                 valueToIndex = ((IndexableAttributeInterface) attribute).getIndexeableFieldValue();
             }
-            valueToIndex = (null != number) ? DateTools.timeToString(number, DateTools.Resolution.MINUTE) : valueToIndex;
             if (null == valueToIndex) {
                 return;
             }
@@ -189,11 +190,13 @@ public class IndexerDAO implements IIndexerDAO {
     }
     
     private void indexValue(Document document, String fieldName, String valueToIndex, Long number) {
-        String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
-        document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
         document.add(new TextField(fieldName, valueToIndex.toLowerCase(), Field.Store.YES));
         if (null != number) {
             document.add(new LongPoint(fieldName, number));
+            document.add(new SortedNumericDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, number));
+        } else {
+            String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
+            document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
         }
     }
 

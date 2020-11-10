@@ -25,6 +25,7 @@ import com.agiletec.aps.system.common.FieldSearchFilter.Order;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeRole;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
+import com.agiletec.aps.system.common.entity.model.attribute.NumberAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.TextAttribute;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
 import com.agiletec.aps.system.common.tree.ITreeNode;
@@ -39,6 +40,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AttachAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
@@ -545,6 +547,98 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     public void testSearchContentsId_10() throws Throwable {
+        SearchEngineManager sem = (SearchEngineManager) this.searchEngineManager;
+        List<String> allowedGroup = new ArrayList<>();
+        allowedGroup.add(Group.ADMINS_GROUP_NAME);
+        List<String> ids = new ArrayList<>();
+        Content artType = this.contentManager.createContentType("ART");
+        try {
+            NumberAttribute newNumberAttribute = (NumberAttribute) this.contentManager.getEntityAttributePrototypes().get("Number");
+            newNumberAttribute.setName("TestNum");
+            newNumberAttribute.getValidationRules().setRequired(true);
+            newNumberAttribute.setSearchable(true);
+            newNumberAttribute.setIndexingType(IndexableAttributeInterface.INDEXING_TYPE_TEXT);
+            artType.addAttribute(newNumberAttribute);
+            ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(artType);
+            
+            for (int i = 0; i < 30; i++) {
+                Content content = this.contentManager.loadContent("ART104", true);
+                content.setId(null);
+                NumberAttribute textAttribute = (NumberAttribute) content.getAttribute("TestNum");
+                textAttribute.setValue(new BigDecimal(i+1));
+                this.contentManager.insertOnLineContent(content);
+                ids.add(content.getId());
+            }
+            synchronized (this) {
+                this.wait(3000);
+            }
+            super.waitNotifyingThread();
+            
+            SearchEngineFilter filterByType = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ART");
+            NumericSearchEngineFilter filter = new NumericSearchEngineFilter("TestNum", true);
+            filter.setOrder(Order.ASC);
+            SearchEngineFilter[] filters = {filterByType, filter};
+            List<String> contentsId = sem.searchEntityId(filters, null, allowedGroup);
+            assertEquals(contentsId.size(), ids.size());
+            for (int i = 0; i < contentsId.size(); i++) {
+                assertEquals(ids.get(i), contentsId.get(i));
+            }
+            
+            this.executeTestByNumberRange(allowedGroup, 7, 13, ids, 6, 7);
+            this.executeTestByNumberRange(allowedGroup, null, 12, ids, 0, 12);
+            this.executeTestByNumberRange(allowedGroup, 11, null, ids, 10, 20);
+            
+            NumericSearchEngineFilter filterForValue = new NumericSearchEngineFilter("TestNum", true, 5);
+            SearchEngineFilter[] filters_2 = {filterByType, filterForValue};
+            List<String> contentsId_2 = sem.searchEntityId(filters_2, null, allowedGroup);
+            assertEquals(1, contentsId_2.size());
+            assertEquals(ids.get(4), contentsId_2.get(0));
+            
+            NumericSearchEngineFilter filterAllowedValues = NumericSearchEngineFilter.createAllowedValuesFilter("TestNum", true, Arrays.asList(new Number[]{27, 12, 1, 89}));
+            SearchEngineFilter[] filters_3 = {filterByType, filterAllowedValues};
+            List<String> contentsId_3 = sem.searchEntityId(filters_3, null, allowedGroup);
+            String[] expected_3 = {ids.get(26), ids.get(11), ids.get(0)};
+            this.verify(contentsId_3, expected_3);
+        } catch (Throwable t) {
+            throw t;
+        } finally {
+            artType.getAttributeMap().remove("TestNum");
+            artType.getAttributeList().removeIf(a -> a.getName().equals("TestNum"));
+            ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(artType);
+            Content newArtType = this.contentManager.createContentType("ART");
+            assertNull(newArtType.getAttribute("TestNum"));
+            for (int i = 0; i < ids.size(); i++) {
+                String newId = ids.get(i);
+                Content newContent = this.contentManager.loadContent(newId, false);
+                this.contentManager.removeOnLineContent(newContent);
+                this.contentManager.deleteContent(newContent);
+            }
+        }
+    }
+    
+    private void executeTestByNumberRange(List<String> allowedGroup,
+            Number start, Number end, List<String> total, int startIndex, int expectedSize) throws Exception {
+        SearchEngineManager sem = (SearchEngineManager) this.searchEngineManager;
+        SearchEngineFilter filterByType = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ART");
+        NumericSearchEngineFilter filter = NumericSearchEngineFilter.createRangeFilter("TestNum", true, start, end);
+        filter.setLangCode("it");
+        filter.setOrder(Order.ASC);
+        SearchEngineFilter[] filters = {filterByType, filter};
+        List<String> contentsId_1 = sem.searchEntityId(filters, null, allowedGroup);
+        assertEquals(expectedSize, contentsId_1.size());
+        for (int i = 0; i < contentsId_1.size(); i++) {
+            assertEquals(total.get(i + startIndex), contentsId_1.get(i));
+        }
+        filter.setLangCode("en");
+        filter.setOrder(Order.DESC);
+        List<String> contentsId_2_en = sem.searchEntityId(filters, null, allowedGroup);
+        assertEquals(contentsId_1.size(), contentsId_2_en.size());
+        for (int i = 0; i < contentsId_2_en.size(); i++) {
+            assertEquals(contentsId_1.get(i), contentsId_2_en.get(contentsId_2_en.size() - i - 1));
+        }
+    }
+    
+    public void testSearchContentsId_11() throws Throwable {
         SearchEngineManager sem = (SearchEngineManager) this.searchEngineManager;
         List<String> allowedGroup = new ArrayList<>();
         allowedGroup.add(Group.ADMINS_GROUP_NAME);
