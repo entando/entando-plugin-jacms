@@ -151,10 +151,12 @@ public class IndexerDAO implements IIndexerDAO {
                 || ((attribute instanceof DateAttribute || attribute instanceof NumberAttribute) && attribute.isSearchable())) {
             String valueToIndex = null;
             Long number = null;
+            boolean isDate = false;
             if (attribute instanceof DateAttribute) {
                 Date date = ((DateAttribute) attribute).getDate();
                 number = (null != date) ? date.getTime() : null;
                 valueToIndex = (null != number) ? DateTools.timeToString(number, DateTools.Resolution.MINUTE) : valueToIndex;
+                isDate = true;
             } else if (attribute instanceof NumberAttribute) {
                 BigDecimal value = ((NumberAttribute) attribute).getValue();
                 number = (null != value) ? value.longValue() : null;
@@ -178,23 +180,28 @@ public class IndexerDAO implements IIndexerDAO {
                 }
             }
             String fieldName = lang.getCode().toLowerCase() + "_" + attribute.getName();
-            this.indexValue(document, fieldName, valueToIndex, number);
+            this.indexValue(document, fieldName, valueToIndex, number, isDate);
             if (null == attribute.getRoles()) {
                 return;
             }
             for (int i = 0; i < attribute.getRoles().length; i++) {
                 String roleFieldName = lang.getCode().toLowerCase() + "_" + attribute.getRoles()[i];
-                this.indexValue(document, roleFieldName, valueToIndex, number);
+                this.indexValue(document, roleFieldName, valueToIndex, number, isDate);
             }
         }
     }
     
-    private void indexValue(Document document, String fieldName, String valueToIndex, Long number) {
+    private void indexValue(Document document, String fieldName, String valueToIndex, Long number, boolean isDate) {
         document.add(new TextField(fieldName, valueToIndex.toLowerCase(), Field.Store.YES));
+        boolean sortString = true;
         if (null != number) {
             document.add(new LongPoint(fieldName, number));
-            document.add(new SortedNumericDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, number));
-        } else {
+            if (!isDate) {
+                document.add(new SortedNumericDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, number));
+                sortString = false;
+            }
+        }
+        if (sortString) {
             String sortableValue = (valueToIndex.length() > 100) ? valueToIndex.substring(0, 99) : valueToIndex;
             document.add(new SortedDocValuesField(fieldName + SORTERED_FIELD_SUFFIX, new BytesRef(sortableValue)));
         }
