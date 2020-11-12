@@ -526,7 +526,6 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
                     "plugins.jacms.content.group.unauthorized");
             throw new ResourcePermissionsException(bindingResult);
         }
-        request.setId(null);
         request.setFirstEditor(user.getUsername());
         request.setLastEditor(user.getUsername());
         request.setRestriction(ContentRestriction.getRestrictionValue(request.getMainGroup()));

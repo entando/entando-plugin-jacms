@@ -287,13 +287,18 @@ public class ContentManager extends ApsEntityManager
             }
 
             if (null == content.getId()) {
-                IKeyGeneratorManager keyGenerator = (IKeyGeneratorManager) this.getService(SystemConstants.KEY_GENERATOR_MANAGER);
+                IKeyGeneratorManager keyGenerator = (IKeyGeneratorManager) this
+                        .getService(SystemConstants.KEY_GENERATOR_MANAGER);
                 int key = keyGenerator.getUniqueKeyCurrentValue();
                 String id = content.getTypeCode() + key;
                 content.setId(id);
-                this.getContentDAO().addEntity(content);
-            } else {
+            }
+
+            boolean exists = loadContentVO(content.getId()) != null;
+            if (exists) {
                 this.getContentDAO().updateContent(content, updateDate);
+            } else {
+                this.getContentDAO().addEntity(content);
             }
         } catch (Throwable t) {
             logger.error("Error while saving content", t);
