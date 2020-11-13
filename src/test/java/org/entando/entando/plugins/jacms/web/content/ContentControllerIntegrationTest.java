@@ -66,9 +66,9 @@ import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
-import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
+import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -4126,6 +4126,25 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("LNK");
             }
         }
+    }
+
+    @Test
+    public void testComponentExistenceAnalysis() throws Exception {
+        // should return DIFF for existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,
+                "ART180",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_DIFF,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
+
+        // should return NEW for NON existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,
+                "AN_NONEXISTENT_CODE",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_NEW,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
     }
 
     protected Page createPage(String pageCode, boolean addWidget) {
