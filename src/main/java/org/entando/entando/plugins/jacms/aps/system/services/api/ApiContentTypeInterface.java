@@ -13,10 +13,15 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api;
 
-import java.util.Properties;
-
-import javax.ws.rs.core.Response;
-
+import com.agiletec.aps.system.common.entity.IEntityManager;
+import com.agiletec.aps.system.common.entity.model.IApsEntity;
+import com.agiletec.aps.system.services.page.IPage;
+import com.agiletec.aps.system.services.page.PageManager;
+import com.agiletec.aps.system.services.pagemodel.Frame;
+import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import org.entando.entando.aps.system.common.entity.api.ApiEntityTypeInterface;
 import org.entando.entando.aps.system.common.entity.api.JAXBEntityType;
 import org.entando.entando.aps.system.services.api.IApiErrorCodes;
@@ -24,19 +29,20 @@ import org.entando.entando.aps.system.services.api.model.ApiError;
 import org.entando.entando.aps.system.services.api.model.ApiException;
 import org.entando.entando.aps.system.services.api.model.StringApiResponse;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBContentType;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.agiletec.aps.system.common.entity.IEntityManager;
-import com.agiletec.aps.system.common.entity.model.IApsEntity;
-import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
-import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * @author E.Santoboni
  */
 public class ApiContentTypeInterface extends ApiEntityTypeInterface {
-    
+
+    @Autowired
+    private PageManager pageManager;
+
     public JAXBContentType getContentType(Properties properties) throws ApiException, Throwable {
         return (JAXBContentType) super.getEntityType(properties);
     }
@@ -47,9 +53,10 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		JAXBContentType jaxbContentType = new JAXBContentType(masterContentType);
 		jaxbContentType.setDefaultModelId(this.extractModelId(masterContentType.getDefaultModel()));
 		jaxbContentType.setListModelId(this.extractModelId(masterContentType.getListModel()));
-		return jaxbContentType;
+        jaxbContentType.setViewPage(masterContentType.getViewPage());
+        return jaxbContentType;
 	}
-    
+
     private Integer extractModelId(String stringModelId) {
         if (null == stringModelId) return null;
         Integer modelId = null;
@@ -77,6 +84,11 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		if (listModelCheck) {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
+        String viewPage = jaxbContentType.getViewPage();
+        boolean viewPageCheck = this.checkViewPage(viewPage,response);
+        if (viewPageCheck) {
+            contentType.setViewPage(viewPage);
+        }
 	}
 	
     public StringApiResponse updateContentType(JAXBContentType jaxbContentType) throws Throwable {
@@ -95,8 +107,36 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		if (listModelCheck) {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
+        String viewPage = jaxbContentType.getViewPage();
+        boolean viewPageCheck = this.checkViewPage(viewPage,response);
+        if (viewPageCheck) {
+            contentType.setViewPage(viewPage);
+        }
 	}
-    
+
+    private boolean checkViewPage(String viewPage, StringApiResponse response) {
+        if (null != viewPage) {
+            IPage page =  this.pageManager.getDraftPage(viewPage);
+            if (null == page) {
+                ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
+                        "View Page with id '" + viewPage + "' does not exist", Response.Status.ACCEPTED);
+                response.addError(error);
+                return false;
+            }
+
+            final Frame[] configuration = pageManager.getDraftPage(viewPage).getModel().getConfiguration();
+            final boolean mainFramePresent = Arrays.stream(configuration).filter(f -> f.isMainFrame()).findFirst().isPresent();
+
+            if (!mainFramePresent) {
+                ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
+                        "Main frame for Page with id '" + viewPage + "' not present", Response.Status.ACCEPTED);
+                response.addError(error);
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean checkContentModel(Integer modelId, Content contentType, StringApiResponse response) {
         if (null == modelId) {
 			return true;

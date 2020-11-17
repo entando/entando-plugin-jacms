@@ -13,18 +13,17 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.entando.entando.aps.system.common.entity.api.JAXBEntityType;
 
-import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author E.Santoboni
  */
 @XmlRootElement(name = "contentType")
 public class JAXBContentType extends JAXBEntityType {
-    
+
     public JAXBContentType() {}
     
     public JAXBContentType(Content contentType) {
@@ -44,8 +43,17 @@ public class JAXBContentType extends JAXBEntityType {
     public void setListModelId(Integer listModelId) {
         this._listModelId = listModelId;
     }
-    
+
+    public String getViewPage() {
+        return viewPage;
+    }
+
+    public void setViewPage(String viewPage) {
+        this.viewPage = viewPage;
+    }
+
     private Integer _defaultModelId;
     private Integer _listModelId;
+    private String viewPage;
     
 }
