@@ -35,6 +35,8 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static org.entando.entando.aps.util.PageUtils.isOnlineFreeViewerPage;
+
 /**
  * @author E.Santoboni
  */
@@ -53,7 +55,11 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		JAXBContentType jaxbContentType = new JAXBContentType(masterContentType);
 		jaxbContentType.setDefaultModelId(this.extractModelId(masterContentType.getDefaultModel()));
 		jaxbContentType.setListModelId(this.extractModelId(masterContentType.getListModel()));
-        jaxbContentType.setViewPage(masterContentType.getViewPage());
+        if (null!=masterContentType.getViewPage()) {
+            System.out.println("******************* "+masterContentType.getViewPage());
+
+            jaxbContentType.setViewPage(masterContentType.getViewPage());
+        }
         return jaxbContentType;
 	}
 
@@ -85,9 +91,15 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
         String viewPage = jaxbContentType.getViewPage();
-        boolean viewPageCheck = this.checkViewPage(viewPage,response);
-        if (viewPageCheck) {
-            contentType.setViewPage(viewPage);
+		if (null!=viewPage) {
+            System.out.println("******************* 1 "+viewPage);
+
+            boolean viewPageCheck = this.checkViewPage(viewPage, response);
+            System.out.println("******************* viewPageCheck "+viewPageCheck);
+
+            if (viewPageCheck) {
+                contentType.setViewPage(viewPage);
+            }
         }
 	}
 	
@@ -108,15 +120,18 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
         String viewPage = jaxbContentType.getViewPage();
-        boolean viewPageCheck = this.checkViewPage(viewPage,response);
-        if (viewPageCheck) {
-            contentType.setViewPage(viewPage);
+        if (null!=viewPage) {
+            System.out.println("******************* 2 "+viewPage);
+            boolean viewPageCheck = this.checkViewPage(viewPage, response);
+            if (viewPageCheck) {
+                contentType.setViewPage(viewPage);
+            }
         }
 	}
 
     private boolean checkViewPage(String viewPage, StringApiResponse response) {
         if (null != viewPage) {
-            IPage page =  this.pageManager.getDraftPage(viewPage);
+            IPage page =  this.pageManager.getOnlinePage(viewPage);
             if (null == page) {
                 ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
                         "View Page with id '" + viewPage + "' does not exist", Response.Status.ACCEPTED);
@@ -125,7 +140,7 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
             }
 
             final Frame[] configuration = pageManager.getDraftPage(viewPage).getModel().getConfiguration();
-            final boolean mainFramePresent = Arrays.stream(configuration).filter(f -> f.isMainFrame()).findFirst().isPresent();
+            final boolean mainFramePresent = Arrays.stream(configuration).anyMatch(Frame::isMainFrame);
 
             if (!mainFramePresent) {
                 ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
@@ -133,7 +148,10 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
                 response.addError(error);
                 return false;
             }
+
+            return isOnlineFreeViewerPage(page, null);
         }
+
         return true;
     }
 

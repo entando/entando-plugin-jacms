@@ -54,6 +54,7 @@ public class JAXBContentType extends JAXBEntityType {
 
     private Integer _defaultModelId;
     private Integer _listModelId;
+
     private String viewPage;
     
 }
