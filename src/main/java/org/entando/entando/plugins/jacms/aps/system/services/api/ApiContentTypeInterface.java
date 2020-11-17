@@ -48,16 +48,14 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
     public JAXBContentType getContentType(Properties properties) throws ApiException, Throwable {
         return (JAXBContentType) super.getEntityType(properties);
     }
-	
+
 	@Override
 	protected JAXBEntityType createJAXBEntityType(IApsEntity masterEntityType) {
 		Content masterContentType = (Content) masterEntityType;
 		JAXBContentType jaxbContentType = new JAXBContentType(masterContentType);
 		jaxbContentType.setDefaultModelId(this.extractModelId(masterContentType.getDefaultModel()));
 		jaxbContentType.setListModelId(this.extractModelId(masterContentType.getListModel()));
-        if (null!=masterContentType.getViewPage()) {
-            jaxbContentType.setViewPage(masterContentType.getViewPage());
-        }
+		jaxbContentType.setViewPage(masterContentType.getViewPage());
         return jaxbContentType;
 	}
 
@@ -71,11 +69,11 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
         }
         return modelId;
     }
-    
+
     public StringApiResponse addContentType(JAXBContentType jaxbContentType) throws Throwable {
         return super.addEntityType(jaxbContentType);
     }
-	
+
 	@Override
 	protected void checkNewEntityType(JAXBEntityType jaxbEntityType, IApsEntity newEntityType, StringApiResponse response) throws ApiException, Throwable {
 		JAXBContentType jaxbContentType = (JAXBContentType) jaxbEntityType;
@@ -89,18 +87,16 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
         String viewPage = jaxbContentType.getViewPage();
-		if (null!=viewPage) {
-            boolean viewPageCheck = this.checkViewPage(viewPage, response);
-            if (viewPageCheck) {
-                contentType.setViewPage(viewPage);
-            }
+        boolean viewPageCheck = this.checkViewPage(viewPage, response);
+        if (viewPageCheck) {
+            contentType.setViewPage(viewPage);
         }
 	}
-	
+
     public StringApiResponse updateContentType(JAXBContentType jaxbContentType) throws Throwable {
         return super.updateEntityType(jaxbContentType);
     }
-	
+
 	@Override
 	protected void checkEntityTypeToUpdate(JAXBEntityType jaxbEntityType, IApsEntity entityTypeToUpdate, StringApiResponse response) throws ApiException, Throwable {
 		JAXBContentType jaxbContentType = (JAXBContentType) jaxbEntityType;
@@ -114,11 +110,9 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 			contentType.setListModel(String.valueOf(jaxbContentType.getListModelId()));
 		}
         String viewPage = jaxbContentType.getViewPage();
-        if (null!=viewPage) {
-            boolean viewPageCheck = this.checkViewPage(viewPage, response);
-            if (viewPageCheck) {
-                contentType.setViewPage(viewPage);
-            }
+        boolean viewPageCheck = this.checkViewPage(viewPage, response);
+        if (viewPageCheck) {
+            contentType.setViewPage(viewPage);
         }
 	}
 
@@ -154,54 +148,55 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		}
         ContentModel contentModel = this.getContentModelManager().getContentModel(modelId);
         if (null == contentModel) {
-            ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR, 
+            ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
 					"Content model with id '" + modelId + "' does not exist", Response.Status.ACCEPTED);
             response.addError(error);
             return false;
         }
         if (!contentType.getTypeCode().equals(contentModel.getContentType())) {
-            ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR, 
+            ApiError error = new ApiError(IApiErrorCodes.API_VALIDATION_ERROR,
 					"Content model with id '" + modelId + "' is for contents of type '" + contentModel.getContentType() + "'", Response.Status.ACCEPTED);
             response.addError(error);
             return false;
         }
         return true;
     }
-    
+
     public void deleteContentType(Properties properties) throws ApiException, Throwable {
         super.deleteEntityType(properties);
     }
-	
+
 	@Override
 	protected String getTypeLabel() {
 		return "Content type";
 	}
-	
+
 	@Override
 	protected String getTypeCodeParamName() {
 		return "code";
 	}
-	
+
 	@Override
 	protected IEntityManager getEntityManager() {
 		return this.getContentManager();
 	}
-    
+
     protected IContentManager getContentManager() {
         return _contentManager;
     }
+
     public void setContentManager(IContentManager contentManager) {
         this._contentManager = contentManager;
     }
-    
+
     protected IContentModelManager getContentModelManager() {
         return _contentModelManager;
     }
     public void setContentModelManager(IContentModelManager contentModelManager) {
         this._contentModelManager = contentModelManager;
     }
-    
+
     private IContentManager _contentManager;
     private IContentModelManager _contentModelManager;
-	
+
 }
