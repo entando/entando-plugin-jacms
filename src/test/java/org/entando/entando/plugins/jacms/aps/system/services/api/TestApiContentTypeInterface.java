@@ -59,7 +59,7 @@ public class TestApiContentTypeInterface extends ApiBaseTestCase {
         Properties properties = super.createApiProperties("admin", "it", mediaType);
         jaxbContentType1 = this.testGetContentType(mediaType, "admin", "ART", CONTENT_VIEW, "it");
 
-        //Copy contentType from an existing object to a new type and update some parameters to create a new one for tests
+        //Copy the contentType from an existing object to a new one and update some parameters for testing
         JAXBContentType jaxbContentType = jaxbContentType1;
 
         jaxbContentType.setTypeCode(contentTypeId);

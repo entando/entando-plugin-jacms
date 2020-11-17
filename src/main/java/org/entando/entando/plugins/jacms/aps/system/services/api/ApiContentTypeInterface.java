@@ -56,8 +56,6 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		jaxbContentType.setDefaultModelId(this.extractModelId(masterContentType.getDefaultModel()));
 		jaxbContentType.setListModelId(this.extractModelId(masterContentType.getListModel()));
         if (null!=masterContentType.getViewPage()) {
-            System.out.println("******************* "+masterContentType.getViewPage());
-
             jaxbContentType.setViewPage(masterContentType.getViewPage());
         }
         return jaxbContentType;
@@ -92,11 +90,7 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		}
         String viewPage = jaxbContentType.getViewPage();
 		if (null!=viewPage) {
-            System.out.println("******************* 1 "+viewPage);
-
             boolean viewPageCheck = this.checkViewPage(viewPage, response);
-            System.out.println("******************* viewPageCheck "+viewPageCheck);
-
             if (viewPageCheck) {
                 contentType.setViewPage(viewPage);
             }
@@ -121,7 +115,6 @@ public class ApiContentTypeInterface extends ApiEntityTypeInterface {
 		}
         String viewPage = jaxbContentType.getViewPage();
         if (null!=viewPage) {
-            System.out.println("******************* 2 "+viewPage);
             boolean viewPageCheck = this.checkViewPage(viewPage, response);
             if (viewPageCheck) {
                 contentType.setViewPage(viewPage);
