@@ -13,13 +13,13 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
-import java.util.List;
-import java.util.Map;
-
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version 1.1
@@ -40,7 +40,7 @@ public class ContentModelManagerIntegrationTest extends BaseTestCase {
     public void testGetContentModels() {
     	List<ContentModel> models = this._contentModelManager.getContentModels();
     	assertNotNull(models);
-    	assertEquals(4, models.size());
+    	assertEquals(6, models.size());
     }
     
     public void testGetModelsForContentType() {
