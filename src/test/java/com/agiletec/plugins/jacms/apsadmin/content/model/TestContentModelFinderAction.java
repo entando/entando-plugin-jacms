@@ -13,13 +13,13 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.model;
 
-import java.util.List;
-
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import com.opensymphony.xwork2.Action;
+
+import java.util.List;
 
 /**
  * @author E.Santoboni
@@ -39,7 +39,7 @@ public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 		IContentModelFinderAction contentModelFinderAction =(IContentModelFinderAction) this.getAction();
 		List<ContentModel> contentModels = contentModelFinderAction.getContentModels();
-		assertEquals(4, contentModels.size());
+		assertEquals(6, contentModels.size());
 	}
 
 	public void testSearch_1() throws Throwable {
@@ -64,7 +64,7 @@ public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 		IContentModelFinderAction contentModelFinderAction = (IContentModelFinderAction) this.getAction();
 		List<ContentModel> contentModels = contentModelFinderAction.getContentModels();
-		assertEquals(5, contentModels.size());
+		assertEquals(7, contentModels.size());
 
 		result = this.executeSearch("EVN");
 		assertEquals(Action.SUCCESS, result);
