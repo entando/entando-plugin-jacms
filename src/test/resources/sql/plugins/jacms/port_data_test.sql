@@ -50,6 +50,34 @@ $i18n.getLabelWithParams("LABEL_WITH_PARAMS").addParam("name", "Name").addParam(
 ', NULL);
 
 
+INSERT INTO contentmodels (modelid, contenttype, descr, model, stylesheet) VALUES (12, 'TST', 'Main Model', '#if ($content.Titolo.text != "")<h1 class="titolo">$content.Titolo.text</h1>#end
+#if ($content.Data.longDate != "")<p>Data: $content.Data.longDate</p>#end
+$content.CorpoTesto.getTextBeforeImage(0)
+#if ( $content.Foto.imagePath("2") != "" )
+<img class="left" src="$content.Foto.imagePath("2")" alt="$content.Foto.text" />
+#end
+$content.CorpoTesto.getTextAfterImage(0)
+#if ($content.Numero.number)<p>Numero: $content.Numero.number</p>#end
+#if ($content.Autori && $content.Autori.size() > 0)
+<h2 class="titolo">Autori:</h2>
+<ul title="Authors">
+#foreach ($author in $content.Autori)
+	<li>$author.text;</li>
+#end
+</ul>
+#end
+#if ($content.VediAnche.text != "")
+<h2 class="titolo">Link:</h2>
+<p>
+<li><a href="$content.VediAnche.destination">$content.VediAnche.text</a></li>
+</p>
+#end', NULL);
+INSERT INTO contentmodels (modelid, contenttype, descr, model, stylesheet) VALUES (13, 'TST', 'List Model', '#if ($content.Titolo.text != "")<h1 class="titolo">$content.Titolo.text</h1>#end
+<a href="$content.contentLink">Details...</a>
+$i18n.getLabelWithParams("LABEL_WITH_PARAMS").addParam("name", "Name").addParam("surname", "Surname").addParam("username", "admin")
+', NULL);
+
+
 
 
 INSERT INTO contents (contentid, contenttype, descr, status, workxml, created, lastmodified, onlinexml, maingroup, currentversion, lasteditor, firsteditor, published, sync) VALUES ('ART187', 'ART', 'una descrizione particolare', 'DRAFT', '<?xml version="1.0" encoding="UTF-8"?>
@@ -360,7 +388,27 @@ INSERT INTO widgetconfig (pagecode, framepos, widgetcode, config) VALUES ('pagin
 <properties>
 <property key="contentId">ART187</property>
 </properties>');
+INSERT INTO pages (code, parentcode, pos) VALUES ('contentviewtest', 'service', 4);
+INSERT INTO pages_metadata_online (code, groupcode, titles, modelcode, showinmenu, extraconfig, updatedat) VALUES ('contentviewtest', 'free', '<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+<property key="en">Content Publishing</property>
+<property key="it">Publicazione Contenuto</property>
+</properties>', 'home', 1, '<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <useextratitles>false</useextratitles>
+</config>', '2017-02-17 13:06:24');
+INSERT INTO pages_metadata_draft (code, groupcode, titles, modelcode, showinmenu, extraconfig, updatedat) VALUES ('contentviewtest', 'free', '<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+<property key="en">Content Publishing</property>
+<property key="it">Publicazione Contenuto</property>
+</properties>', 'home', 1, '<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <useextratitles>false</useextratitles>
+</config>', '2017-02-17 13:06:24');
+INSERT INTO widgetconfig (pagecode, framepos, widgetcode, config) VALUES ('contentviewtest', 3, 'content_viewer', NULL);
 
+
+INSERT INTO widgetconfig_draft (pagecode, framepos, widgetcode, config) VALUES ('contentviewtest', 3, 'content_viewer', NULL);
 
 
 
@@ -397,8 +445,6 @@ INSERT INTO widgetconfig_draft (pagecode, framepos, widgetcode, config) VALUES (
 <properties>
 <property key="contentId">ART187</property>
 </properties>');
-
-
 
 
 INSERT INTO sysconfig (version, item, descr, config) VALUES ('test', 'contentTypes', 'Definition of the Content Types', '<?xml version="1.0" encoding="UTF-8"?>
@@ -987,3 +1033,5 @@ INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('E
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('EVN192', 'Titolo', 'jacms:title');
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('EVN20', 'Titolo', 'jacms:title');
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('ALL4', 'Text', 'jacms:title');
+
+
