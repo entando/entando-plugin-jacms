@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanComparator;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
+import org.entando.entando.aps.system.services.IComponentExistsService;
 import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
@@ -73,7 +74,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Slf4j
 @Service
-public class ResourcesService {
+public class ResourcesService implements IComponentExistsService {
 
     @Autowired
     private IResourceManager resourceManager;
@@ -99,14 +100,15 @@ public class ResourcesService {
             List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(requestList),
                     extractCategoriesFromFilters(requestList));
 
-            for(String id : resourceIds) {
+            for (String id : resourceIds) {
                 AssetDto resource = convertResourceToDto(resourceManager.loadResource(id));
                 final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
                 boolean resourceAccessibleByGroup = allowedGroupCodes.stream().anyMatch(group ->
-                    GenericResourceUtils
-                        .isResourceAccessibleByGroup(group,resource.getGroup(), null)
+                        GenericResourceUtils
+                                .isResourceAccessibleByGroup(group, resource.getGroup(), null)
                 );
-                if ((resourceAccessibleByGroup) && (isCompatibleWithLinkabilityFilter(resource.getGroup(), requestList))){
+                if ((resourceAccessibleByGroup) && (isCompatibleWithLinkabilityFilter(resource.getGroup(),
+                        requestList))) {
                     assets.add(resource);
                 }
             }
@@ -129,11 +131,12 @@ public class ResourcesService {
         try {
             List<AssetDto> assets = new ArrayList<>();
 
-            List<String> resourceIds = resourceManager.searchResourcesId(createFolderPathSearchFilter(folderPath), null);
+            List<String> resourceIds = resourceManager
+                    .searchResourcesId(createFolderPathSearchFilter(folderPath), null);
 
             Set<String> allFolders = new HashSet<>();
 
-            for(String id : resourceIds) {
+            for (String id : resourceIds) {
                 AssetDto asset = convertResourceToDto(resourceManager.loadResource(id));
                 if (asset.getFolderPath() != null && !asset.getFolderPath().equals(folderPath)) {
                     allFolders.add(asset.getFolderPath());
@@ -222,7 +225,8 @@ public class ResourcesService {
         return sb.toString();
     }
 
-    public AssetDto createAsset(String correlationCode, String type, MultipartFile file, String group, List<String> categories, String folderPath, UserDetails user) {
+    public AssetDto createAsset(String correlationCode, String type, MultipartFile file, String group,
+            List<String> categories, String folderPath, UserDetails user) {
         BaseResourceDataBean resourceFile = new BaseResourceDataBean();
 
         try {
@@ -280,6 +284,10 @@ public class ResourcesService {
         } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.get", e);
         }
+    }
+
+    public boolean exists(String code) throws EntException {
+        return resourceManager.exists(null, code);
     }
 
     public void deleteAssetByCode(String correlationCode) {
@@ -355,7 +363,8 @@ public class ResourcesService {
                 resourceFile.setMimeType(file.getContentType());
                 resourceFile.setDescr(file.getOriginalFilename());
 
-                if ((description == null || description.trim().length() == 0 ) && resource.getDescription().equals(resource.getMasterFileName())) {
+                if ((description == null || description.trim().length() == 0) && resource.getDescription()
+                        .equals(resource.getMasterFileName())) {
                     description = resourceFile.getFileName();
                 }
             }
@@ -399,7 +408,6 @@ public class ResourcesService {
         resourceFile.setCategories(resource.getCategories());
         resourceFile.setMainGroup(resource.getMainGroup());
         resourceFile.setFileName(resource.getMasterFileName());
-
 
         ResourceInstance instance = null;
 
@@ -453,7 +461,7 @@ public class ResourcesService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        for(Group g : groups) {
+        for (Group g : groups) {
             if (g.getAuthority().equals(group)) {
                 return;
             }
@@ -467,7 +475,8 @@ public class ResourcesService {
     public void validateConflict(String correlationCode) throws EntException {
         ResourceInterface existing = resourceManager.loadResource(null, correlationCode);
         if (existing != null) {
-            BeanPropertyBindingResult errors = new BeanPropertyBindingResult(correlationCode, "resources.correlationCode");
+            BeanPropertyBindingResult errors = new BeanPropertyBindingResult(correlationCode,
+                    "resources.correlationCode");
             errors.reject(ERRCODE_RESOURCE_CONFLICT, "plugins.jacms.resources.error.conflict");
             throw new ValidationConflictException(errors);
         }
@@ -483,9 +492,9 @@ public class ResourcesService {
                 });
 
         List<String> allowedExtensions;
-        if (ImageAssetDto.RESOURCE_TYPE.equals(resourceType)){
+        if (ImageAssetDto.RESOURCE_TYPE.equals(resourceType)) {
             allowedExtensions = imageAllowedExtensions;
-        } else if (FileAssetDto.RESOURCE_TYPE.equals(resourceType)){
+        } else if (FileAssetDto.RESOURCE_TYPE.equals(resourceType)) {
             allowedExtensions = fileAllowedExtensions;
         } else {
             BeanPropertyBindingResult errors = new BeanPropertyBindingResult(mimeType, "resources.file.type");
@@ -513,7 +522,8 @@ public class ResourcesService {
 
         if (requestList.getType() != null) {
             filters.add(
-                    new FieldSearchFilter(IResourceManager.RESOURCE_TYPE_FILTER_KEY, convertResourceType(requestList.getType()), false)
+                    new FieldSearchFilter(IResourceManager.RESOURCE_TYPE_FILTER_KEY,
+                            convertResourceType(requestList.getType()), false)
             );
         }
 
@@ -674,7 +684,8 @@ public class ResourcesService {
             ResourceInstance instance = resource.getInstance(dimensions.getIdDim(), null);
 
             if (instance == null) {
-                log.warn("ResourceInstance not found for dimensions id {} and image id {}", dimensions.getIdDim(), resource.getId());
+                log.warn("ResourceInstance not found for dimensions id {} and image id {}", dimensions.getIdDim(),
+                        resource.getId());
                 continue;
             }
 
@@ -688,7 +699,7 @@ public class ResourcesService {
         return builder.build();
     }
 
-    private FileAssetDto convertFileResourceToDto(AttachResource resource){
+    private FileAssetDto convertFileResourceToDto(AttachResource resource) {
         return FileAssetDto.builder()
                 .id(resource.getId())
                 .correlationCode(resource.getCorrelationCode())

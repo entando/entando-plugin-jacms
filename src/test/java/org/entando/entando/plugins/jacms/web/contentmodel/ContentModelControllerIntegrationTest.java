@@ -10,6 +10,7 @@ import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.MockMvcHelper;
+import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -517,4 +518,22 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
                 .andExpect(jsonPath("$.payload.usage", is(0)));
     }
 
+    @Test
+    public void testComponentExistenceAnalysis() throws Exception {
+        // should return DIFF for existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TEMPLATES,
+                "2",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_DIFF,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
+
+        // should return NEW for NON existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TEMPLATES,
+                "999",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_NEW,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
+    }
 }

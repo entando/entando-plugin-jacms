@@ -131,12 +131,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Crea una nuova istanza di un tipo di risorsa del tipo richiesto. Il nuovo
-     * tipo di risorsa è istanziato mediante clonazione del prototipo
-     * corrispondente.
+     * Crea una nuova istanza di un tipo di risorsa del tipo richiesto. Il nuovo tipo di risorsa è istanziato mediante
+     * clonazione del prototipo corrispondente.
      *
-     * @param typeCode Il codice del tipo di risorsa richiesto, come definito in
-     * configurazione.
+     * @param typeCode Il codice del tipo di risorsa richiesto, come definito in configurazione.
      * @return Il tipo di risorsa istanziato (vuoto).
      */
     @Override
@@ -156,8 +154,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Salva una risorsa nel db con incluse nel filesystem, indipendentemente
-     * dal tipo.
+     * Salva una risorsa nel db con incluse nel filesystem, indipendentemente dal tipo.
      *
      * @param bean L'oggetto detentore dei dati della risorsa da inserire.
      * @return la risorsa aggiunta.
@@ -189,8 +186,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Salva una lista dirisorse nel db con incluse nel filesystem,
-     * indipendentemente dal tipo.
+     * Salva una lista dirisorse nel db con incluse nel filesystem, indipendentemente dal tipo.
      *
      * @param beans L'oggetto detentore dei dati della risorsa da inserire.
      * @throws EntException in caso di errore.
@@ -209,8 +205,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Cancella una lista di risorse dal db ed i file di ogni istanza dal
-     * filesystem.
+     * Cancella una lista di risorse dal db ed i file di ogni istanza dal filesystem.
      *
      * @param resources La lista di risorse da cancellare.
      * @throws EntException in caso di errore nell'accesso al db.
@@ -266,7 +261,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
                 this.notifyResourceChanging(oldResource);
             } else {
                 ResourceInterface updatedResource = this.createResource(bean);
-                updatedResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()));
+                updatedResource
+                        .saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()));
                 this.getResourceDAO().updateResource(updatedResource);
                 if (!updatedResource.getMasterFileName().equals(oldResource.getMasterFileName())) {
                     oldResource.deleteResourceInstances();
@@ -317,17 +313,15 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Carica una lista di identificativi di risorse in base al tipo, ad una
-     * parola chiave e dalla categoria della risorsa.
+     * Carica una lista di identificativi di risorse in base al tipo, ad una parola chiave e dalla categoria della
+     * risorsa.
      *
-     * @param type Tipo di risorsa da cercare.
-     * @param text Testo immesso per il raffronto con la descrizione della
-     * risorsa. null o stringa vuota nel caso non si voglia ricercare le risorse
-     * per parola chiave.
-     * @param categoryCode Il codice della categoria delle risorse. null o
-     * stringa vuota nel caso non si voglia ricercare le risorse per categoria.
-     * @param groupCodes I codici dei gruppi consentiti tramite il quale
-     * filtrare le risorse.
+     * @param type         Tipo di risorsa da cercare.
+     * @param text         Testo immesso per il raffronto con la descrizione della risorsa. null o stringa vuota nel
+     *                     caso non si voglia ricercare le risorse per parola chiave.
+     * @param categoryCode Il codice della categoria delle risorse. null o stringa vuota nel caso non si voglia
+     *                     ricercare le risorse per categoria.
+     * @param groupCodes   I codici dei gruppi consentiti tramite il quale filtrare le risorse.
      * @return La lista di identificativi di risorse.
      * @throws EntException In caso di errore.
      */
@@ -367,13 +361,15 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     @Override
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, String categoryCode, Collection<String> groupCodes) throws EntException {
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, String categoryCode,
+            Collection<String> groupCodes) throws EntException {
         List<String> categories = (StringUtils.isBlank(categoryCode)) ? null : Arrays.asList(categoryCode);
         return this.searchResourcesId(filters, categories, groupCodes);
     }
-    
+
     @Override
-    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> groupCodes) throws EntException {
+    public List<String> searchResourcesId(FieldSearchFilter[] filters, List<String> categories,
+            Collection<String> groupCodes) throws EntException {
         this.checkFilterKeys(filters);
         List<String> resourcesId = null;
         try {
@@ -384,9 +380,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
         }
         return resourcesId;
     }
-    
+
     @Override
-    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters, List<String> categories, Collection<String> userGroupCodes) throws EntException {
+    public SearcherDaoPaginatedResult<String> getPaginatedResourcesId(FieldSearchFilter[] filters,
+            List<String> categories, Collection<String> userGroupCodes) throws EntException {
         SearcherDaoPaginatedResult<String> pagedResult = null;
         try {
             int count = this.getResourceDAO().countResources(filters, categories, userGroupCodes);
@@ -398,7 +395,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         }
         return pagedResult;
     }
-    
+
     protected void checkFilterKeys(FieldSearchFilter[] filters) {
         if (null != filters && filters.length > 0) {
             String[] allowedFilterKeys = {RESOURCE_ID_FILTER_KEY, RESOURCE_TYPE_FILTER_KEY, RESOURCE_DESCR_FILTER_KEY,
@@ -418,8 +415,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
      * Restituisce la risorsa con l'id specificato.
      *
      * @param id L'identificativo della risorsa da caricare.
-     * @return La risorsa cercata. null se non vi è nessuna risorsa con
-     * l'identificativo immesso.
+     * @return La risorsa cercata. null se non vi è nessuna risorsa con l'identificativo immesso.
      * @throws EntException in caso di errore.
      */
     @Override
@@ -431,9 +427,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
     public ResourceInterface loadResource(String id, String correlationCode) throws EntException {
         ResourceInterface resource = null;
         try {
-            ResourceRecordVO resourceVo = correlationCode == null
-                    ? this.getResourceDAO().loadResourceVo(id)
-                    : this.getResourceDAO().loadResourceVoByCorrelationCode(correlationCode);
+            ResourceRecordVO resourceVo = loadResourceVo(id,
+                    correlationCode);
             if (null != resourceVo) {
                 resource = this.createResource(resourceVo);
                 resource.setMasterFileName(resourceVo.getMasterFileName());
@@ -445,9 +440,18 @@ public class ResourceManager extends AbstractService implements IResourceManager
         return resource;
     }
 
+    protected ResourceRecordVO loadResourceVo(String id, String correlationCode) {
+        return correlationCode == null
+                ? this.getResourceDAO().loadResourceVo(id)
+                : this.getResourceDAO().loadResourceVoByCorrelationCode(correlationCode);
+    }
+
+    public boolean exists(String id, String correlationCode) {
+        return loadResourceVo(id, correlationCode) != null;
+    }
+
     /**
-     * Metodo di servizio. Restituisce una risorsa in base ai dati del
-     * corrispondente record.
+     * Metodo di servizio. Restituisce una risorsa in base ai dati del corrispondente record.
      *
      * @param resourceVo Il vo relativo al record.
      * @return La risorsa valorizzata.
@@ -468,12 +472,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
     }
 
     /**
-     * Valorizza una risorsa prototipo con gli elementi dell'xml che rappresenta
-     * una risorsa specifica.
+     * Valorizza una risorsa prototipo con gli elementi dell'xml che rappresenta una risorsa specifica.
      *
-     * @param resource Il prototipo di risorsa da specializzare con gli
-     * attributi dell'xml.
-     * @param xml L'xml della risorsa specifica.
+     * @param resource Il prototipo di risorsa da specializzare con gli attributi dell'xml.
+     * @param xml      L'xml della risorsa specifica.
      * @throws EntException
      */
     protected void fillEmptyResourceFromXml(ResourceInterface resource, String xml) throws EntException {
@@ -520,7 +522,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
             logger.info("Service not ready : status {}", this.getStatus());
             return;
         }
-        String threadName = this.getName() + "_resourceReloader_" + DateConverter.getFormattedDate(new Date(), "yyyyMMdd");
+        String threadName =
+                this.getName() + "_resourceReloader_" + DateConverter.getFormattedDate(new Date(), "yyyyMMdd");
         try {
             List<String> resources = this.getResourceDAO().searchResourcesId(resourceTypeCode, null, null, null);
             ResourceReloaderThread thread = new ResourceReloaderThread(this, operationCode, resources);
@@ -636,7 +639,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
         }
         Map<String, List<String>> mapping = new HashMap<>();
         try {
-            String xmlConfig = this.getConfigManager().getConfigItem(JacmsSystemConstants.CONFIG_ITEM_RESOURCE_METADATA_MAPPING);
+            String xmlConfig = this.getConfigManager()
+                    .getConfigItem(JacmsSystemConstants.CONFIG_ITEM_RESOURCE_METADATA_MAPPING);
             InputStream stream = new ByteArrayInputStream(xmlConfig.getBytes(StandardCharsets.UTF_8));
             JAXBContext context = JAXBContext.newInstance(JaxbMetadataMapping.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -644,7 +648,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
             jaxbMapping.getFields().stream().forEach(m -> {
                 String key = m.getKey();
                 String csv = m.getValue();
-                List<String> metadatas = (!StringUtils.isBlank(csv)) ? Arrays.asList(csv.split(",")) : new ArrayList<>();
+                List<String> metadatas =
+                        (!StringUtils.isBlank(csv)) ? Arrays.asList(csv.split(",")) : new ArrayList<>();
                 mapping.put(key, metadatas);
             });
             this.getCacheWrapper().updateMetadataMapping(mapping);
@@ -664,7 +669,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
             StringWriter writer = new StringWriter();
             marshaller.marshal(new JaxbMetadataMapping(mapping), writer);
             String config = writer.toString();
-            this.getConfigManager().updateConfigItem(JacmsSystemConstants.CONFIG_ITEM_RESOURCE_METADATA_MAPPING, config);
+            this.getConfigManager()
+                    .updateConfigItem(JacmsSystemConstants.CONFIG_ITEM_RESOURCE_METADATA_MAPPING, config);
             this.getCacheWrapper().updateMetadataMapping(mapping);
         } catch (Exception e) {
             logger.error("Error Updating resource metadata mapping", e);

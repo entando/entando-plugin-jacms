@@ -192,6 +192,11 @@ public interface IResourceManager {
     public ResourceInterface loadResource(String id, String correlationalCode) throws EntException;
 
     /**
+     * Check that a resource exists by or or correlotionCode
+     */
+    boolean exists(String id, String correlationCode);
+
+    /**
      * Cancella una risorsa dal db ed i file di ogni istanza dal filesystem.
      *
      * @param resource La risorsa da cancellare.

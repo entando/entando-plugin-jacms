@@ -45,6 +45,7 @@ import org.entando.entando.aps.system.services.entity.model.EntityTypeAttributeF
 import org.entando.entando.plugins.jacms.web.content.ContentTypeResourceController;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.MockMvcHelper;
+import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
 import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
@@ -1096,6 +1097,25 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             }
             Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
+    }
+
+    @Test
+    public void testComponentExistenceAnalysis() throws Exception {
+        // should return DIFF for existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TYPES,
+                "ART",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_DIFF,
+                new ContextOfControllerTests(mockMvc, jsonMapper)
+        );
+
+        // should return NEW for NON existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TYPES,
+                "AN_NONEXISTENT_CODE",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_NEW,
+                new ContextOfControllerTests(mockMvc, jsonMapper)
+        );
     }
 
     private ResultActions executeContentTypePost(String fileName, Map<String, String> placeholders, String accessToken, ResultMatcher expected) throws Exception {

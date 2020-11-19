@@ -66,9 +66,9 @@ import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
-import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
+import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -260,6 +260,40 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                     this.contentManager.deleteContent(newContent);
                 }
             }
+            if (null != this.contentManager.getEntityPrototype("TST")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
+            }
+        }
+    }
+
+    @Test
+    public void testAddContentWithSpecificId() throws Exception {
+        String contentId = "TST123";
+        try {
+            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            String accessToken = this.createAccessToken();
+
+            this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
+            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_id.json", accessToken, status().isOk());
+            result.andDo(print());
+            result.andExpect(jsonPath("$.payload.size()", is(1)));
+            result.andExpect(jsonPath("$.payload[0].id", is(contentId)));
+            result.andExpect(jsonPath("$.errors.size()", is(0)));
+            result.andExpect(jsonPath("$.metaData.size()", is(0)));
+
+            result = this.executeContentPost("1_POST_valid_with_id.json", accessToken, status().isBadRequest());
+            result.andExpect(jsonPath("$.payload.size()", is(0)));
+            result.andExpect(jsonPath("$.errors.size()", is(1)));
+            result.andExpect(jsonPath("$.metaData.size()", is(0)));
+
+        } finally {
+            Content newContent = this.contentManager.loadContent(contentId, false);
+            if (null != newContent) {
+                this.contentManager.deleteContent(newContent);
+            }
+
             if (null != this.contentManager.getEntityPrototype("TST")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
             }
@@ -3596,8 +3630,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetPageOnlineNoWidgetErrorMessage() throws Exception {
-        String pageCode = "page_error_test";
+    public void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
+        String pageCode = "page_test";
+        String newContentId = null;
         try {
             Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
@@ -3624,13 +3659,17 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
 
-            this.executeContentPost("1_POST_invalid_with_link.json", accessToken, status().isBadRequest())
-                    .andExpect(jsonPath("$.payload.size()", is(0)))
-                    .andExpect(jsonPath("$.errors.size()", is(1)))
-                    .andExpect(jsonPath("$.metaData.size()", is(0)))
-                    .andExpect(jsonPath("$.errors[0].code", is("4")))
-                    .andExpect(jsonPath("$.errors[0].message", is("Attribute 'link1' Invalid: The destination page must have a widget set")));
+            result = this.executeContentPost("1_POST_valid_with_link_to_page.json", accessToken, status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
         } finally {
+            if (null != newContentId) {
+                this.contentManager.deleteContent(newContentId);
+            }
             if (null != this.contentManager.getEntityPrototype("CML")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("CML");
             }
@@ -4126,6 +4165,25 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("LNK");
             }
         }
+    }
+
+    @Test
+    public void testComponentExistenceAnalysis() throws Exception {
+        // should return DIFF for existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,
+                "ART180",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_DIFF,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
+
+        // should return NEW for NON existing component
+        AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
+                AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,
+                "AN_NONEXISTENT_CODE",
+                AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_NEW,
+                new ContextOfControllerTests(mockMvc, mapper)
+        );
     }
 
     protected Page createPage(String pageCode, boolean addWidget) {
