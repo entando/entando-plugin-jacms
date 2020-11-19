@@ -267,6 +267,40 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
+    public void testAddContentWithSpecificId() throws Exception {
+        String contentId = "TST123";
+        try {
+            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            String accessToken = this.createAccessToken();
+
+            this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
+            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_id.json", accessToken, status().isOk());
+            result.andDo(print());
+            result.andExpect(jsonPath("$.payload.size()", is(1)));
+            result.andExpect(jsonPath("$.payload[0].id", is(contentId)));
+            result.andExpect(jsonPath("$.errors.size()", is(0)));
+            result.andExpect(jsonPath("$.metaData.size()", is(0)));
+
+            result = this.executeContentPost("1_POST_valid_with_id.json", accessToken, status().isBadRequest());
+            result.andExpect(jsonPath("$.payload.size()", is(0)));
+            result.andExpect(jsonPath("$.errors.size()", is(1)));
+            result.andExpect(jsonPath("$.metaData.size()", is(0)));
+
+        } finally {
+            Content newContent = this.contentManager.loadContent(contentId, false);
+            if (null != newContent) {
+                this.contentManager.deleteContent(newContent);
+            }
+
+            if (null != this.contentManager.getEntityPrototype("TST")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
+            }
+        }
+    }
+
+    @Test
     public void testAddContentWithLinkAttribute() throws Exception {
         String newContentId = null;
         try {
@@ -3596,8 +3630,8 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetPageOnlineNoWidgetErrorMessage() throws Exception {
-        String pageCode = "page_error_test";
+    public void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
+        String pageCode = "page_test";
         try {
             Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
@@ -3624,12 +3658,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
 
-            this.executeContentPost("1_POST_invalid_with_link.json", accessToken, status().isBadRequest())
-                    .andExpect(jsonPath("$.payload.size()", is(0)))
-                    .andExpect(jsonPath("$.errors.size()", is(1)))
-                    .andExpect(jsonPath("$.metaData.size()", is(0)))
-                    .andExpect(jsonPath("$.errors[0].code", is("4")))
-                    .andExpect(jsonPath("$.errors[0].message", is("Attribute 'link1' Invalid: The destination page must have a widget set")));
+            this.executeContentPost("1_POST_valid_with_link_to_page.json", accessToken, status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)));
         } finally {
             if (null != this.contentManager.getEntityPrototype("CML")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("CML");
