@@ -3632,6 +3632,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     @Test
     public void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
         String pageCode = "page_test";
+        String newContentId = null;
         try {
             Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
@@ -3658,11 +3659,17 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
 
-            this.executeContentPost("1_POST_valid_with_link_to_page.json", accessToken, status().isOk())
+            result = this.executeContentPost("1_POST_valid_with_link_to_page.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
                     .andExpect(jsonPath("$.errors.size()", is(0)))
                     .andExpect(jsonPath("$.metaData.size()", is(0)));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
         } finally {
+            if (null != newContentId) {
+                this.contentManager.deleteContent(newContentId);
+            }
             if (null != this.contentManager.getEntityPrototype("CML")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("CML");
             }
