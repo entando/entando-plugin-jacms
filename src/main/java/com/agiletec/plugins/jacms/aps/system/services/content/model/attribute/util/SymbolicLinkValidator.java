@@ -77,10 +77,6 @@ public class SymbolicLinkValidator {
             AttributeFieldError result = new AttributeFieldError(null, ICmsAttributeErrorCodes.INVALID_PAGE, null);
             result.setMessage("The destination page must be published");
             return result;
-        } else if (this.isVoidPage(page)) {
-            AttributeFieldError result = new AttributeFieldError(null, ICmsAttributeErrorCodes.VOID_PAGE, null);
-            result.setMessage("The destination page must have a widget set");
-            return result;
         } else {
             Set<String> pageGroups = new HashSet<>();
             pageGroups.add(page.getGroup());

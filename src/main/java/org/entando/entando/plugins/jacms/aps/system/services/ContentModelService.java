@@ -15,6 +15,7 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
 import java.util.Optional;
+import org.entando.entando.aps.system.services.IComponentExistsService;
 import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.web.common.model.PagedMetadata;
@@ -22,7 +23,7 @@ import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.component.ComponentUsage;
 import org.entando.entando.web.component.ComponentUsageEntity;
 
-public interface ContentModelService {
+public interface ContentModelService extends IComponentExistsService {
 
     String BEAN_NAME = "ContentModelService";
 
@@ -39,6 +40,12 @@ public interface ContentModelService {
     PagedMetadata<ContentModelDto> findMany(RestListRequest listRequest);
 
     Optional<ContentModelDto> findById(Long id);
+
+    boolean exists(Long modelId);
+
+    default boolean exists(String code) {
+        return exists(Long.valueOf(code));
+    }
 
     void delete(Long id);
 
