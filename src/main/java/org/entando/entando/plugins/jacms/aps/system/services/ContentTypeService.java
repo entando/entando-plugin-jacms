@@ -16,6 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
 
 import com.agiletec.aps.system.common.entity.IEntityManager;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState;
@@ -54,8 +55,6 @@ import org.springframework.validation.BindingResult;
 public class ContentTypeService extends AbstractEntityTypeService<Content, ContentTypeDto> implements
         IComponentExistsService, IComponentUsageService {
 
-    private static final String CONTENT_MODEL_MANAGER = "jacmsContentManager";
-
     private final ContentService contentService;
 
     @Autowired
@@ -70,45 +69,49 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     }
 
     public ContentTypeDto create(ContentTypeDtoRequest contentType, BindingResult bindingResult) {
-        return addEntityType(CONTENT_MODEL_MANAGER, contentType, bindingResult, true);
+        return addEntityType(JacmsSystemConstants.CONTENT_MANAGER, contentType, bindingResult, true);
     }
 
     public void delete(String code) {
-        super.deleteEntityType(CONTENT_MODEL_MANAGER, code);
+        super.deleteEntityType(JacmsSystemConstants.CONTENT_MANAGER, code);
     }
 
     public PagedMetadata<EntityTypeShortDto> findMany(RestListRequest listRequest) {
-        return getShortEntityTypes(CONTENT_MODEL_MANAGER, listRequest);
+        return getShortEntityTypes(JacmsSystemConstants.CONTENT_MANAGER, listRequest);
     }
 
     public Optional<ContentTypeDto> findOne(String code) {
-        return Optional.ofNullable(super.getFullEntityType(CONTENT_MODEL_MANAGER, code));
+        return Optional.ofNullable(super.getFullEntityType(JacmsSystemConstants.CONTENT_MANAGER, code));
     }
 
     public ContentTypeDto update(ContentTypeDtoRequest contentTypeRequest, BindingResult bindingResult) {
         String code = contentTypeRequest.getCode();
         if (findOne(code).isPresent()) {
-            return updateEntityType(CONTENT_MODEL_MANAGER, contentTypeRequest, bindingResult);
+            return updateEntityType(JacmsSystemConstants.CONTENT_MANAGER, contentTypeRequest, bindingResult);
         } else {
             throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "contentType", code);
         }
     }
-
-
+    
     public PagedMetadata<String> findManyAttributes(RestListRequest requestList) {
-        return getAttributeTypes(CONTENT_MODEL_MANAGER, requestList);
+        return getAttributeTypes(JacmsSystemConstants.CONTENT_MANAGER, requestList);
     }
 
-    public AttributeTypeDto getAttributeType(String attributeCode) {
-        return getAttributeType(CONTENT_MODEL_MANAGER, attributeCode);
+    public AttributeTypeDto getAttributeType(String attributeTypeCode) {
+        return super.getAttributeType(JacmsSystemConstants.CONTENT_MANAGER, attributeTypeCode);
+    }
+    
+    @Override
+    public AttributeTypeDto getAttributeType(String contentTypeCode, String attributeTypeCode) {
+        return super.getAttributeType(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, attributeTypeCode);
     }
 
     public List<EntityTypeAttributeFullDto> getContentTypeAttributes(String contentTypeCode) {
-        return getEntityAttributes(CONTENT_MODEL_MANAGER, contentTypeCode);
+        return getEntityAttributes(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode);
     }
 
     public EntityTypeAttributeFullDto getContentTypeAttribute(String contentTypeCode, String attributeCode) {
-        return getEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, attributeCode);
+        return getEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, attributeCode);
     }
 
     public EntityTypeAttributeFullDto addContentTypeAttribute(
@@ -116,7 +119,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
             EntityTypeAttributeFullDto bodyRequest,
             BindingResult bindingResult) {
 
-        return addEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, bodyRequest, bindingResult);
+        return addEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, bodyRequest, bindingResult);
     }
 
     public EntityTypeAttributeFullDto updateContentTypeAttribute(
@@ -124,31 +127,31 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
             EntityTypeAttributeFullDto bodyRequest,
             BindingResult bindingResult) {
 
-        return updateEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, bodyRequest, bindingResult);
+        return updateEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, bodyRequest, bindingResult);
     }
 
     public void deleteContentTypeAttribute(String contentTypeCode, String attributeCode) {
-        deleteEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, attributeCode);
+        deleteEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, attributeCode);
     }
 
     public void reloadContentTypeReferences(String contentTypeCode) {
-        reloadEntityTypeReferences(CONTENT_MODEL_MANAGER, contentTypeCode);
+        reloadEntityTypeReferences(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode);
     }
 
     public EntityTypesStatusDto getContentTypesRefreshStatus() {
-        return getEntityTypesRefreshStatus(CONTENT_MODEL_MANAGER);
+        return getEntityTypesRefreshStatus(JacmsSystemConstants.CONTENT_MANAGER);
     }
 
     public void moveContentTypeAttributeUp(String contentTypeCode, String attributeCode) {
-        moveEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, attributeCode, true);
+        moveEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, attributeCode, true);
     }
 
     public void moveContentTypeAttributeDown(String contentTypeCode, String attributeCode) {
-        moveEntityAttribute(CONTENT_MODEL_MANAGER, contentTypeCode, attributeCode, false);
+        moveEntityAttribute(JacmsSystemConstants.CONTENT_MANAGER, contentTypeCode, attributeCode, false);
     }
 
     public Map<String, Integer> reloadProfileTypesReferences(List<String> profileTypeCodes) {
-        return reloadEntityTypesReferences(CONTENT_MODEL_MANAGER, profileTypeCodes);
+        return reloadEntityTypesReferences(JacmsSystemConstants.CONTENT_MANAGER, profileTypeCodes);
     }
 
     @Override
@@ -190,7 +193,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     }
 
     public boolean exists(String code) {
-        IEntityManager entityManager = this.extractEntityManager(CONTENT_MODEL_MANAGER);
+        IEntityManager entityManager = this.extractEntityManager(JacmsSystemConstants.CONTENT_MANAGER);
         return entityManager.getEntityPrototype(code) != null;
     }
 }
