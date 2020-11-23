@@ -1,7 +1,9 @@
 package org.entando.entando.plugins.jacms.web.resource.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateResourceRequest {
     private String correlationCode;
     private String type;

@@ -15,9 +15,7 @@ package org.entando.entando.plugins.jacms.web.content;
 
 import static org.entando.entando.web.entity.validator.AbstractEntityTypeValidator.ERRCODE_URINAME_MISMATCH;
 
-import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.services.role.Permission;
-import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDtoRequest;
@@ -25,11 +23,9 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.Content
 import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.entity.model.AttributeTypeDto;
@@ -38,19 +34,16 @@ import org.entando.entando.aps.system.services.entity.model.EntityTypeShortDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypesStatusDto;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentTypeValidator;
-import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.*;
 import org.entando.entando.web.component.ComponentUsage;
 import org.entando.entando.web.component.ComponentUsageEntity;
-import org.entando.entando.web.page.model.PageSearchRequest;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -183,12 +176,21 @@ public class ContentTypeResourceController implements ContentTypeResource {
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
     public ResponseEntity<SimpleRestResponse<AttributeTypeDto>> getContentTypeAttribute(
-            @PathVariable String attributeCode) {
-        logger.debug("REST request - get content type attributes {}", attributeCode);
-        AttributeTypeDto attributeTypeDto = service.getAttributeType(attributeCode);
+            @PathVariable String attributeTypeCode) {
+        logger.debug("REST request - get content type attributes {}", attributeTypeCode);
+        AttributeTypeDto attributeTypeDto = service.getAttributeType(attributeTypeCode);
         return ResponseEntity.ok(new SimpleRestResponse<>(attributeTypeDto));
     }
-
+    
+    @Override
+    public ResponseEntity<SimpleRestResponse<AttributeTypeDto>> getContentTypeAttributeType(
+            @PathVariable String contentTypeCode, @PathVariable String attributeTypeCode) {
+        logger.debug("Content type {}, Extracting attribute type -> {}", contentTypeCode, attributeTypeCode);
+        AttributeTypeDto attribute = this.service.getAttributeType(contentTypeCode, attributeTypeCode);
+        logger.debug("Main Response -> {}", attribute);
+        return new ResponseEntity<>(new SimpleRestResponse<>(attribute), HttpStatus.OK);
+    }
+    
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
     public ResponseEntity<RestResponse<List<EntityTypeAttributeFullDto>, Map>> getContentTypeAttributes(

@@ -152,10 +152,15 @@ public interface ContentTypeResource {
     ResponseEntity<PagedRestResponse<String>> getContentTypeAttributeTypes(RestListRequest requestList);
 
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @GetMapping("/plugins/cms/contentTypeAttributes/{attributeCode}")
+    @GetMapping("/plugins/cms/contentTypeAttributes/{attributeTypeCode}")
     ResponseEntity<SimpleRestResponse<AttributeTypeDto>> getContentTypeAttribute(
-            @PathVariable String attributeCode);
-
+            @PathVariable String attributeTypeCode);
+    
+    @RestAccessControl(permission = Permission.SUPERUSER)
+    @GetMapping("/plugins/cms/contentTypeAttributes/{contentTypeCode}/attribute/{attributeTypeCode}")
+    ResponseEntity<SimpleRestResponse<AttributeTypeDto>> getContentTypeAttributeType(
+            @PathVariable String contentTypeCode, @PathVariable String attributeTypeCode);
+    
     @RestAccessControl(permission = Permission.SUPERUSER)
     @GetMapping("/plugins/cms/contentTypes/{contentTypeCode}/attributes")
     ResponseEntity<RestResponse<List<EntityTypeAttributeFullDto>, Map>> getContentTypeAttributes(

@@ -16,6 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services.content;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import java.util.List;
+import org.entando.entando.aps.system.services.IComponentExistsService;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
@@ -24,7 +25,7 @@ import org.springframework.validation.BindingResult;
 /**
  * @author E.Santoboni
  */
-public interface IContentService {
+public interface IContentService extends IComponentExistsService {
 
     public static final String STATUS_ONLINE = "published";
     public static final String STATUS_DRAFT = "draft";
