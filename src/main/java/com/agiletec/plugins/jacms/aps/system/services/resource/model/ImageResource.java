@@ -13,7 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer.IImageResizer;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.util.IImageDimensionReader;
 import com.drew.imaging.ImageMetadataReader;
@@ -25,17 +24,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IMOperation;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 public class ImageResource extends AbstractMultiInstanceResource {
 

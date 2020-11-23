@@ -211,17 +211,6 @@ public interface ResourceInterface {
 
     /**
      * Obtain and save all instances associated with a resource, valuing the latter
-     *      * with the data of the instances obtained.
-     *
-     * @param bean The object holding the data of the resource to insert.
-     * @throws EntException In caso di eccezioni.
-     */
-    default void saveResourceInstances(ResourceDataBean bean) throws EntException {
-        saveResourceInstances(bean, new ArrayList<>());
-    }
-
-    /**
-     * Obtain and save all instances associated with a resource, valuing the latter
      * with the data of the instances obtained.
      *
      * @param bean The object holding the data of the resource to insert.
