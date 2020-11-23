@@ -107,6 +107,18 @@ public abstract class AbstractMultiInstanceResource extends AbstractResource {
      * @return Correct name to save file
      */
     String getNewInstanceFileName(String masterFileName, int size, String langCode) {
+        return getNewInstanceFileName(masterFileName, size, langCode, false);
+    }
+
+    /**
+     * Returns the correct name of a resource to be saved in the system.
+     * @param masterFileName Original file name
+     * @param size Order number of the file being saved
+     * @param langCode Language code of file being saved
+     * @param langCode Flag to indicate if this instance was already saved
+     * @return Correct name to save file
+     */
+    String getNewInstanceFileName(String masterFileName, int size, String langCode, boolean instancesAlreadySaved) {
         String baseName = FilenameUtils.getBaseName(masterFileName);
         String extension = FilenameUtils.getExtension(masterFileName);
         String suffix = "";
@@ -117,7 +129,7 @@ public abstract class AbstractMultiInstanceResource extends AbstractResource {
             suffix += "_" + langCode;
         }
         return this.createFileName(
-                super.getMultiFileUniqueBaseName(baseName, suffix, extension),
+                super.getMultiFileUniqueBaseName(baseName, suffix, extension, instancesAlreadySaved),
                 extension
         );
     }

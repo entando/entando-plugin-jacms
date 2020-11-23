@@ -153,21 +153,19 @@ public class ResourceManager extends AbstractService implements IResourceManager
         return new ArrayList<>(this.resourceTypes.keySet());
     }
 
-    /**
-     * Salva una risorsa nel db con incluse nel filesystem, indipendentemente dal tipo.
-     *
-     * @param bean L'oggetto detentore dei dati della risorsa da inserire.
-     * @return la risorsa aggiunta.
-     * @throws EntException in caso di errore.
-     */
     @Override
     public ResourceInterface addResource(ResourceDataBean bean) throws EntException {
+        return addResource(bean, false);
+    }
+
+    @Override
+    public ResourceInterface addResource(ResourceDataBean bean, boolean instancesAlreadySaved) throws EntException {
         ResourceInterface newResource = this.createResource(bean);
         try {
             this.generateAndSetResourceId(newResource, bean.getResourceId());
             newResource.setCorrelationCode(newResource.getCorrelationCode() == null ?
                     newResource.getId() : newResource.getCorrelationCode());
-            newResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()));
+            newResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()), instancesAlreadySaved);
             this.getResourceDAO().addResource(newResource);
         } catch (Throwable t) {
             newResource.deleteResourceInstances();

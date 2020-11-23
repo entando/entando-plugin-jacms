@@ -102,12 +102,6 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     @Override
-    @Deprecated
-    public String getInstanceFileName(String masterFileName, int size, String langCode) {
-        return getNewInstanceFileName(masterFileName, size, langCode);
-    }
-
-    @Override
     public ResourceInstance getInstance(int size, String langCode) {
         return getInstances().get(String.valueOf(size));
     }
@@ -118,9 +112,10 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     @Override
-    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException {
+    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys,
+            boolean instancesAlreadySaved) throws EntException {
         try {
-            String masterImageFileName = getNewInstanceFileName(bean.getFileName(), 0, null);
+            String masterImageFileName = getNewInstanceFileName(bean.getFileName(), 0, null, instancesAlreadySaved);
             String subPath = this.getDiskSubFolder() + masterImageFileName;
             this.getStorageManager().deleteFile(subPath, this.isProtectedResource());
             File tempMasterFile = this.saveTempFile(masterImageFileName, bean.getInputStream());
@@ -138,7 +133,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
             instance.setMimeType(mimeType);
             instance.setFileLength(bean.getFileSize() + " Kb");
             this.addInstance(instance);
-            this.saveResizedInstances(bean, tempMasterFile.getAbsolutePath());
+            this.saveResizedInstances(bean, tempMasterFile.getAbsolutePath(), instancesAlreadySaved);
             this.getStorageManager().saveFile(subPath,
                     this.isProtectedResource(), new FileInputStream(tempMasterFile));
             boolean deleted = tempMasterFile.delete();
@@ -149,11 +144,6 @@ public class ImageResource extends AbstractMultiInstanceResource {
             logger.error("Error saving image resource instances", t);
             throw new EntException("Error saving image resource instances", t);
         }
-    }
-
-    @Override
-    public void saveResourceInstances(ResourceDataBean bean) throws EntException {
-        saveResourceInstances(bean, new ArrayList<>());
     }
 
     protected Map<String, String> getImgMetadata(File file, List<String> ignoreKeysList) {
@@ -191,7 +181,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
             String masterFileName = masterImageFileName.substring(0, index) + masterImageFileName.substring(index + 3);
             bean.setFileName(masterFileName);
             bean.setMimeType(masterInstance.getMimeType());
-            this.saveResizedInstances(bean, tempMasterFile.getAbsolutePath());
+            this.saveResizedInstances(bean, tempMasterFile.getAbsolutePath(), false);
             boolean deleted = tempMasterFile.delete();
 
             if (!deleted) {
@@ -204,14 +194,14 @@ public class ImageResource extends AbstractMultiInstanceResource {
         }
     }
 
-    private void saveResizedInstances(ResourceDataBean bean, String masterFilePath) throws EntException {
+    private void saveResizedInstances(ResourceDataBean bean, String masterFilePath, boolean instancesAlreadySaved) throws EntException {
         try {
             Map<Integer, ImageResourceDimension> dimensions = this.getImageDimensionReader().getImageDimensions();
             for (ImageResourceDimension dimension : dimensions.values()) {
                 //Is the system use ImageMagick?
                 if (!this.isImageMagickEnabled()) {
                     ImageIcon imageIcon = new ImageIcon(masterFilePath);
-                    this.saveResizedImage(bean, imageIcon, dimension);
+                    this.saveResizedImage(bean, imageIcon, dimension, instancesAlreadySaved);
                 } else {
                     this.saveResizedImage(bean, dimension);
                 }
@@ -277,14 +267,14 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     private void saveResizedImage(ResourceDataBean bean,
-            ImageIcon imageIcon, ImageResourceDimension dimension) throws EntException {
+            ImageIcon imageIcon, ImageResourceDimension dimension, boolean instancesAlreadySaved) throws EntException {
         if (dimension.getIdDim() == 0) {
             // skips element with id zero that shouldn't be resized
             return;
         }
 
 
-        String imageName = getNewInstanceFileName(bean.getFileName(), dimension.getIdDim(), null);
+        String imageName = getNewInstanceFileName(bean.getFileName(), dimension.getIdDim(), null, instancesAlreadySaved);
         String subPath = super.getDiskSubFolder() + imageName;
 
         try {

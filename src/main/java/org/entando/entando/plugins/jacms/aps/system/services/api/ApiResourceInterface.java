@@ -175,7 +175,7 @@ public class ApiResourceInterface {
 						"The resourceId can contain only alphabetic characters", Response.Status.CONFLICT);
 				}
 			}
-			this.getResourceManager().addResource(bean);
+			this.getResourceManager().addResource(bean, true);
 			response.setResult(IResponseBuilder.SUCCESS);
         } catch (ApiException ae) {
             throw ae;
