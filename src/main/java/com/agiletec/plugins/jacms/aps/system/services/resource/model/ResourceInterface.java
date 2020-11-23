@@ -13,15 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import java.io.File;
+import com.agiletec.aps.system.services.category.Category;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.entando.entando.ent.exception.EntException;
-import com.agiletec.aps.system.services.category.Category;
 import java.util.Map;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Interfaccia per gli oggetti risorsa.
