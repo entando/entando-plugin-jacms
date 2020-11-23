@@ -102,6 +102,12 @@ public class ImageResource extends AbstractMultiInstanceResource {
     }
 
     @Override
+    @Deprecated
+    public String getInstanceFileName(String masterFileName, int size, String langCode) {
+        return getNewInstanceFileName(masterFileName, size, langCode);
+    }
+
+    @Override
     public ResourceInstance getInstance(int size, String langCode) {
         return getInstances().get(String.valueOf(size));
     }
