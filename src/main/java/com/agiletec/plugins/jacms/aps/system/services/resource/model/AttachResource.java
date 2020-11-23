@@ -13,7 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
