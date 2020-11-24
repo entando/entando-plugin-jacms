@@ -471,13 +471,14 @@ public abstract class AbstractResource implements ResourceInterface, Serializabl
         return suggestedName;
     }
 
-    protected String getMultiFileUniqueBaseName(String baseName, String suffix, String extension) {
+    protected String getMultiFileUniqueBaseName(String baseName, String suffix, String extension,
+            boolean instancesAlreadySaved) {
         Assert.hasLength(baseName, "base name of file can't be null or empty");
         Assert.notNull(suffix, "file suffix can't be null");
         baseName = this.purgeBaseName(baseName);
         String suggestedName = baseName + suffix;
         int fileOrder = 1;
-        while(this.exists(this.createFileName(suggestedName, extension))) {
+        while(!instancesAlreadySaved && this.exists(this.createFileName(suggestedName, extension))) {
             suggestedName = baseName + '_' + fileOrder + suffix;
             fileOrder ++;
         }

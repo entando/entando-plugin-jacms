@@ -13,13 +13,10 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
-import org.entando.entando.ent.exception.EntException;
-
-import java.util.ArrayList;
 import java.util.List;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 
 /**
  * Classe rappresentante una risorsa Attach.
@@ -51,9 +48,10 @@ public class AttachResource extends AbstractMonoInstanceResource  {
     public String getDocumentPath() {
     	return this.getAttachPath();
     }
-    
+
     @Override
-	public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException {
+	public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys,
+			boolean instancesAlreadySaved) throws EntException {
 		try {
 			String fileName = this.getNewInstanceFileName(bean.getFileName());
 			String subPath = this.getDiskSubFolder() + fileName;
@@ -72,11 +70,6 @@ public class AttachResource extends AbstractMonoInstanceResource  {
 	}
 
 	@Override
-	public void saveResourceInstances(ResourceDataBean bean) throws EntException {
-		saveResourceInstances(bean, new ArrayList<>());
-	}
-    
-    @Override
 	public void reloadResourceInstances() throws EntException {
 		//Not supported
 	}
