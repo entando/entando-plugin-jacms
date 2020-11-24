@@ -13,16 +13,15 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.BaseResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceDataBean;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Interfaccia base per i servizi gestori tipi di risorse (immagini, audio,
@@ -86,6 +85,16 @@ public interface IResourceManager {
      * @throws EntException in caso di errore.
      */
     public ResourceInterface addResource(ResourceDataBean bean) throws EntException;
+
+    /**
+     * Save a resource in the db and filesystem, regardless of type.
+     *
+     * @param bean The object holding the data of the resource to be inserted.
+     * @param instancesAlreadySaved Flag to indicate if this resource was already saved.
+     * @return the added resource.
+     * @throws EntException in case of error.
+     */
+    ResourceInterface addResource(ResourceDataBean bean, boolean instancesAlreadySaved) throws EntException;
 
     /**
      * Salva una risorsa nel db, indipendentemente dal tipo.
@@ -168,7 +177,7 @@ public interface IResourceManager {
      */
     public List<String> searchResourcesId(String type, String text,
             String filename, String categoryCode, Collection<String> groupCodes) throws EntException;
-    
+
     public List<String> searchResourcesId(FieldSearchFilter[] filters,
             String categoryCode, Collection<String> groupCodes) throws EntException;
 
