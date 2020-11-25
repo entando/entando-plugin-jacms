@@ -38,6 +38,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.TestResourceDAO;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMultiInstanceResourceTest;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer.PNGImageResizerTest;
 import com.agiletec.plugins.jacms.aps.system.services.resource.parse.TestResourceDOM;
+import com.agiletec.plugins.jacms.aps.system.services.searchengine.AdvContentSearchTest;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.FacetSearchEngineManagerIntegrationTest;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineManagerIntegrationTest;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineManagerTest;
@@ -118,6 +119,7 @@ public class AllTests {
         suite.addTestSuite(ResourceManagerIntegrationTest.class);
         suite.addTest(new JUnit4TestAdapter(ResourceManagerTest.class));
 
+        suite.addTestSuite(AdvContentSearchTest.class);
         suite.addTestSuite(FacetSearchEngineManagerIntegrationTest.class);
         suite.addTestSuite(SearchEngineManagerIntegrationTest.class);
         suite.addTest(new JUnit4TestAdapter(SearchEngineManagerTest.class));

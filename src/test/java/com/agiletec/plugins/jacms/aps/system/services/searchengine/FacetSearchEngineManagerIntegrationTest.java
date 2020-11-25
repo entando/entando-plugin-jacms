@@ -17,15 +17,17 @@ import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.ITextAttribute;
-import com.agiletec.aps.system.common.tree.ITreeNode;
+import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
 
@@ -75,7 +77,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     public void testSearchOrderedContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -119,7 +121,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             throw t;
         }
     }
-
+    
     public void testSearchContents() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
@@ -129,17 +131,17 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
                 = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterWithOrder.setOrder(FieldSearchFilter.Order.DESC);
         SearchEngineFilter[] filters = {filterWithOrder};
-        List<ITreeNode> categories_1 = new ArrayList<>();
+        List<Category> categories_1 = new ArrayList<>();
         categories_1.add(this.categoryManager.getCategory("general_cat2"));
-        FacetedContentsResult result1 = this.searchEngineManager.searchFacetedEntities(filters, categories_1, allowedGroup);
+        FacetedContentsResult result1 = this.searchEngineManager.searchFacetedEntities(filters, this.extractCategoryFilters(categories_1), allowedGroup);
         List<String> contents = result1.getContentsId();
         String[] order_a = {"ART120", "EVN25", "ART111"};
         assertEquals(order_a.length, contents.size());
         this.verifyOrder(contents, order_a);
 
-        List<ITreeNode> categories_2 = new ArrayList<>(categories_1);
+        List<Category> categories_2 = new ArrayList<>(categories_1);
         categories_2.add(this.categoryManager.getCategory("general_cat1"));
-        FacetedContentsResult result2 = this.searchEngineManager.searchFacetedEntities(filters, categories_2, allowedGroup);
+        FacetedContentsResult result2 = this.searchEngineManager.searchFacetedEntities(filters, this.extractCategoryFilters(categories_2), allowedGroup);
         contents = result2.getContentsId();
         String[] order_b = {"EVN25", "ART111"};
         assertEquals(order_b.length, contents.size());
@@ -151,7 +153,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.contentManager.insertOnLineContent(newContent);
             super.waitNotifyingThread();
             super.waitThreads(ICmsSearchEngineManager.RELOAD_THREAD_NAME_PREFIX);
-            FacetedContentsResult result3 = this.searchEngineManager.searchFacetedEntities(filters, categories_1, allowedGroup);
+            FacetedContentsResult result3 = this.searchEngineManager.searchFacetedEntities(filters, this.extractCategoryFilters(categories_1), allowedGroup);
             contents = result3.getContentsId();
             String[] order_c = {newContent.getId(), "ART120", "EVN25", "ART111"};
             assertEquals(order_c.length, contents.size());
@@ -161,7 +163,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.contentManager.insertOnLineContent(newContent);
             super.waitNotifyingThread();
             super.waitThreads(ICmsSearchEngineManager.RELOAD_THREAD_NAME_PREFIX);
-            FacetedContentsResult result4 = this.searchEngineManager.searchFacetedEntities(filters, categories_2, allowedGroup);
+            FacetedContentsResult result4 = this.searchEngineManager.searchFacetedEntities(filters, this.extractCategoryFilters(categories_2), allowedGroup);
             contents = result4.getContentsId();
             String[] order_d = {newContent.getId(), "EVN25", "ART111"};
             assertEquals(order_d.length, contents.size());
@@ -173,13 +175,23 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             assertNull(this.contentManager.loadContent(newContent.getId(), false));
         }
     }
+    
+    private SearchEngineFilter[] extractCategoryFilters(Collection<Category> categories) {
+        SearchEngineFilter[] categoryFilterArray = null;
+        if (null != categories) {
+            List<SearchEngineFilter> categoryFilters = categories.stream().filter(c -> c != null)
+                    .map(c -> new SearchEngineFilter("category", false, c.getCode())).collect(Collectors.toList());
+            categoryFilterArray = categoryFilters.toArray(new SearchEngineFilter[categoryFilters.size()]);
+        }
+        return categoryFilterArray;
+    }
 
     private void verifyOrder(List<String> contents, String[] order) {
         for (int i = 0; i < contents.size(); i++) {
             assertEquals(order[i], contents.get(i));
         }
     }
-
+    
     public void testSearchContentsByRole_1() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
@@ -260,5 +272,5 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
 
     }
-
+    
 }
