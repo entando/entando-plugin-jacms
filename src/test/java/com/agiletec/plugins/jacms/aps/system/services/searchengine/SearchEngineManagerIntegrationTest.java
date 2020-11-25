@@ -71,6 +71,7 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
     @Override
     protected void tearDown() throws Exception {
         this.waitThreads(ICmsSearchEngineManager.RELOAD_THREAD_NAME_PREFIX);
+        this.release();
         super.tearDown();
     }
 
@@ -898,5 +899,20 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
             throw e;
         }
     }
-
+    
+    private void release() throws Exception {
+        try {
+            Content artType = this.contentManager.createContentType("ART");
+            DateAttribute dateAttrArt = (DateAttribute) artType.getAttribute("Data");
+            dateAttrArt.setRoles(new String[0]);
+            ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(artType);
+            Content evnType = this.contentManager.createContentType("EVN");
+            DateAttribute dateAttrEnv = (DateAttribute) evnType.getAttribute("DataInizio");
+            dateAttrEnv.setRoles(new String[0]);
+            ((IEntityTypesConfigurer) this.contentManager).updateEntityPrototype(evnType);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
 }
