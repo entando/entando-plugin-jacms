@@ -16,6 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.SmallEntityType;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
+import org.entando.entando.aps.system.services.security.NonceInjector;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
@@ -337,7 +338,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     }
 
     protected void copyProperties(ContentModelDto src, ContentModel dest) {
-        dest.setContentShape(src.getContentShape());
+        dest.setContentShape(NonceInjector.process(src.getContentShape()));
         dest.setContentType(src.getContentType());
         dest.setDescription(src.getDescr());
         dest.setId(src.getId());

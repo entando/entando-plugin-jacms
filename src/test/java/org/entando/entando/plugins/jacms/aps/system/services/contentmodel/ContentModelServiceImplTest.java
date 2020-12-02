@@ -149,13 +149,34 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shouldCreateContentModel() {
+        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+
         ContentModelDto contentModelToCreate = new ContentModelDto();
         contentModelToCreate.setContentType("AAA");
         contentModelToCreate.setId(4L);
+        contentModelToCreate.setContentShape("<script>my_js_script</script>");
 
         ContentModelDto result = contentModelService.create(contentModelToCreate);
         assertThat(result.getId()).isEqualTo(contentModelToCreate.getId());
         assertThat(result.getContentType()).isEqualTo(contentModelToCreate.getContentType());
+        assertThat(result.getContentShape()).isEqualTo(expectedShape);
+    }
+
+    @Test
+    public void shouldCreateContentModelNonceAlreadyAdded() {
+        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+
+        ContentModelDto contentModelToCreate = new ContentModelDto();
+        contentModelToCreate.setContentType("AAA");
+        contentModelToCreate.setId(4L);
+        contentModelToCreate.setContentShape(expectedShape);
+
+        ContentModelDto result = contentModelService.create(contentModelToCreate);
+        assertThat(result.getId()).isEqualTo(contentModelToCreate.getId());
+        assertThat(result.getContentType()).isEqualTo(contentModelToCreate.getContentType());
+
+        //Nothing changed
+        assertThat(result.getContentShape()).isEqualTo(expectedShape);
     }
 
     @Test(expected = ValidationConflictException.class)
@@ -192,10 +213,13 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shouldUpdateContentModel() {
+        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+
         long id = 1L;
         ContentModelDto contentModelToUpdate = new ContentModelDto();
         contentModelToUpdate.setId(id);
         contentModelToUpdate.setContentType("AAA");
+        contentModelToUpdate.setContentShape("<script>my_js_script</script>");
 
         String updatedDescription = "test description";
         String updatedContentType = "BBB";
@@ -209,6 +233,7 @@ public class ContentModelServiceImplTest {
         ContentModelDto result = contentModelService.update(contentModelToUpdate);
         assertThat(result.getDescr()).isEqualTo(updatedDescription);
         assertThat(result.getContentType()).isEqualTo(updatedContentType);
+        assertThat(result.getContentShape()).isEqualTo(expectedShape);
     }
 
     @Test(expected = ResourceNotFoundException.class)
