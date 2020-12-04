@@ -59,6 +59,15 @@ public class AbstractMultiInstanceResourceTest {
         assertEquals("myFile_4_d2_it.jpg", tenthName);
     }
 
+    @Test
+    public void secondFileWithFourRepeatedButAlreadySaved() {
+        // Setup to say that file with the same name already exists
+        resource.setFileExistsCountdown(4);
+
+        String tenthName = resource.getNewInstanceFileName("myFile.jpg", 2, "it", true);
+        assertEquals("myFile_d2_it.jpg", tenthName);
+    }
+
 
     static abstract class TestResource extends AbstractMultiInstanceResource {
 

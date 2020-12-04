@@ -13,14 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import java.io.File;
+import com.agiletec.aps.system.services.category.Category;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-
-import org.entando.entando.ent.exception.EntException;
-import com.agiletec.aps.system.services.category.Category;
 import java.util.Map;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Interfaccia per gli oggetti risorsa.
@@ -210,12 +208,15 @@ public interface ResourceInterface {
 
     /**
      * Obtain and save all instances associated with a resource, valuing the latter
-     *      * with the data of the instances obtained.
+     * with the data of the instances obtained.
      *
      * @param bean The object holding the data of the resource to insert.
+     * @param ignoreMetadataKeys The list of metadata keys to ignore when processing the resource
      * @throws EntException In caso di eccezioni.
      */
-    public void saveResourceInstances(ResourceDataBean bean) throws EntException;
+    default void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException {
+        saveResourceInstances(bean, ignoreMetadataKeys, false);
+    }
 
     /**
      * Obtain and save all instances associated with a resource, valuing the latter
@@ -223,9 +224,11 @@ public interface ResourceInterface {
      *
      * @param bean The object holding the data of the resource to insert.
      * @param ignoreMetadataKeys The list of metadata keys to ignore when processing the resource
+     * @param instancesAlreadySaved Flag to indicate if this instance was already saved.
      * @throws EntException In caso di eccezioni.
      */
-    public void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys) throws EntException;
+    void saveResourceInstances(ResourceDataBean bean, List<String> ignoreMetadataKeys,
+            boolean instancesAlreadySaved) throws EntException;
 
     /**
      * Cancella tutte le istanze associate alla risorsa.
