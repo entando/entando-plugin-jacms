@@ -107,9 +107,12 @@ public class ContentModelServiceImpl implements ContentModelService {
     }
 
     private boolean validateFilters(Filter[] filters) {
-        for (Filter filter : filters) {
-            if (ID_FILTER_NAME.equals(filter.getAttribute()) && !NumberUtils.isParsable(filter.getValue())) {
-                return false;
+        if (filters != null) {
+            for (Filter filter : filters) {
+                if (filter != null && filter.getValue() != null &&
+                        ID_FILTER_NAME.equals(filter.getAttribute()) && !NumberUtils.isParsable(filter.getValue())) {
+                    return false;
+                }
             }
         }
         return true;
