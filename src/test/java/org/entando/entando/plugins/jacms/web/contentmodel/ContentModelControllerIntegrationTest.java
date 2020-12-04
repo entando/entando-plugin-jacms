@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -535,5 +536,28 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
                 AnalysisControllerDiffAnalysisEngineTestsStubs.STATUS_NEW,
                 new ContextOfControllerTests(mockMvc, mapper)
         );
+    }
+
+    @Test
+    public void testGetContentModelsFilterId() throws Exception {
+        mockMvc
+                .perform(get(BASE_URI)
+                        .param("filters[0].attribute", "id")
+                        .param("filters[0].value", "1")
+                        .param("filters[0].operator", "like")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.length()", is(1)));
+
+        mockMvc
+                .perform(get(BASE_URI)
+                        .param("filters[0].attribute", "id")
+                        .param("filters[0].value", "abc")
+                        .param("filters[0].operator", "like")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.length()", is(0)));
     }
 }
