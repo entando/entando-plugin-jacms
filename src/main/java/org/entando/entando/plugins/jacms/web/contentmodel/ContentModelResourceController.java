@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.Map;
 import javax.validation.Valid;
 import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentModelService;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelReferencesValidator;
@@ -32,17 +34,18 @@ import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.entando.entando.web.component.ComponentUsage;
 import org.entando.entando.web.component.ComponentUsageEntity;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,9 +72,11 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public ResponseEntity<PagedRestResponse<ContentModelDto>> getContentModels(RestListRequest requestList) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PagedRestResponse<ContentModelDto>> getContentModels(RestListRequest requestList,
+            BindingResult bindingResult) {
         this.contentModelValidator.validateRestListRequest(requestList, ContentModelDto.class);
+        this.contentModelValidator.validateIdFilter(bindingResult, requestList.getFilters());
         PagedMetadata<ContentModelDto> result = contentModelService.findMany(requestList);
         this.contentModelValidator.validateRestListResult(requestList, result);
         logger.debug("loading contentModel list -> {}", result);
@@ -80,7 +85,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @GetMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentModelDto>> getContentModel(@PathVariable Long modelId) {
         logger.debug("loading contentModel {}", modelId);
         ContentModelDto contentModel = contentModelService.getContentModel(modelId);
@@ -89,7 +94,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentModelDto>> addContentModel(@Valid @RequestBody ContentModelDto contentModel, BindingResult bindingResult) {
         logger.debug("adding content model");
         if (bindingResult.hasErrors()) {
@@ -101,7 +106,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @PutMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentModelDto>> updateContentModel(@PathVariable Long modelId, @Valid @RequestBody ContentModelDto contentModel, BindingResult bindingResult) {
         logger.debug("updating contentModel {}", modelId);
 
@@ -120,7 +125,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteContentModel(@PathVariable Long modelId) {
         logger.info("deleting content model {}", modelId);
         contentModelService.delete(modelId);
@@ -130,7 +135,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}/pagereferences", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @GetMapping(value = "/{modelId}/pagereferences", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedRestResponse<ContentModelReferenceDTO>> getReferences(@PathVariable Long modelId,RestListRequest requestList) {
         logger.debug("loading contentModel references for model {}", modelId);
         this.contentModelReferencesValidator.validateRestListRequest(requestList, ContentModelReferenceDTO.class);
@@ -140,7 +145,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}/usage", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @GetMapping(value = "/{modelId}/usage", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ComponentUsage>> getComponentUsage(@PathVariable Long modelId) {
         logger.debug("loading contentModel usage for model {}", modelId);
         final ComponentUsage componentUsage = contentModelService.getComponentUsage(modelId);
@@ -149,7 +154,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/{modelId}/usage/details", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @GetMapping(value = "/{modelId}/usage/details", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedRestResponse<ComponentUsageEntity>> getComponentUsageDetails(@PathVariable Long modelId, RestListRequest restListRequest) {
         logger.debug("get contentModel usage details for model {}", modelId);
         contentModelUsageDetailsValidator.validateRestListRequest(restListRequest, ComponentUsageEntity.class);
@@ -159,7 +164,7 @@ public class ContentModelResourceController implements ContentModelResource {
 
     @Override
     @RestAccessControl(permission = Permission.SUPERUSER)
-    @RequestMapping(value = "/dictionary", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @GetMapping(value = "/dictionary", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<IEntityModelDictionary>> getDictionary(@RequestParam(value = "typeCode", required = false) String typeCode) {
         logger.debug("loading contentModel dictionary for type {}", typeCode);
         IEntityModelDictionary dictionary = contentModelService.getContentModelDictionary(typeCode);

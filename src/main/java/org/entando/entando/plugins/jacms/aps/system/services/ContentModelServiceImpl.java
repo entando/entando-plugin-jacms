@@ -16,9 +16,6 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.SmallEntityType;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.entando.entando.aps.system.services.security.NonceInjector;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -35,18 +32,19 @@ import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.system.services.DtoBuilder;
 import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
+import org.entando.entando.aps.system.services.security.NonceInjector;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelReferencesRequestListProcessor;
 import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelRequestListProcessor;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
-import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.component.ComponentUsage;
 import org.entando.entando.web.component.ComponentUsageEntity;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -60,8 +58,6 @@ public class ContentModelServiceImpl implements ContentModelService {
     private final IContentModelManager contentModelManager;
     private final ContentModelDictionaryProvider dictionaryProvider;
     private final IDtoBuilder<ContentModel, ContentModelDto> dtoBuilder;
-
-    private static final String ID_FILTER_NAME = "id";
 
     @Autowired
     public ContentModelServiceImpl(IContentManager contentManager, IContentModelManager contentModelManager,
@@ -87,35 +83,18 @@ public class ContentModelServiceImpl implements ContentModelService {
 
     @Override
     public PagedMetadata<ContentModelDto> findMany(RestListRequest requestList) {
-        List<ContentModel> contentModels = new ArrayList<>();
-        List<ContentModelDto> dtoSlice = new ArrayList<>();
-
-        if (validateFilters(requestList.getFilters())) {
-            contentModels = new ContentModelRequestListProcessor(
-                    requestList, this.contentModelManager.getContentModels())
-                    .filterAndSort().toList();
-            //page
-            List<ContentModel> subList = requestList.getSublist(contentModels);
-            dtoSlice = this.dtoBuilder.convert(subList);
-        }
+        List<ContentModel> contentModels = new ContentModelRequestListProcessor(
+                requestList, this.contentModelManager.getContentModels())
+                .filterAndSort().toList();
+        //page
+        List<ContentModel> subList = requestList.getSublist(contentModels);
+        List<ContentModelDto> dtoSlice = this.dtoBuilder.convert(subList);
 
         SearcherDaoPaginatedResult<ContentModelDto> paginatedResult = new SearcherDaoPaginatedResult<>(
                 contentModels.size(), dtoSlice);
         PagedMetadata<ContentModelDto> pagedMetadata = new PagedMetadata<>(requestList, paginatedResult);
         pagedMetadata.setBody(dtoSlice);
         return pagedMetadata;
-    }
-
-    private boolean validateFilters(Filter[] filters) {
-        if (filters != null) {
-            for (Filter filter : filters) {
-                if (filter != null && filter.getValue() != null &&
-                        ID_FILTER_NAME.equals(filter.getAttribute()) && !NumberUtils.isParsable(filter.getValue())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     @Override

@@ -557,7 +557,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
                         .param("filters[0].operator", "like")
                         .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.payload.length()", is(0)));
     }
 }
