@@ -131,5 +131,7 @@ public class JacmsSystemConstants {
     public static final String RESOURE_ATTACH_CODE = "Attach";
 
     public static final String RESOURE_IMAGE_CODE = "Image";
+    
+    public static final String CSP_NONCE_PLACEHOLDER = "{{PLACEHOLDER-9e424db1-ae72-4cca-866a-47397c56d71e}}";
 
 }
