@@ -37,6 +37,7 @@ import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
 import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelReferencesRequestListProcessor;
 import org.entando.entando.plugins.jacms.aps.system.services.contentmodel.ContentModelRequestListProcessor;
+import org.entando.entando.plugins.jacms.aps.system.services.security.VelocityNonceInjector;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
@@ -358,7 +359,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     }
 
     protected void copyProperties(ContentModelDto src, ContentModel dest) {
-        dest.setContentShape(NonceInjector.process(src.getContentShape()));
+        dest.setContentShape(VelocityNonceInjector.process(src.getContentShape()));
         dest.setContentType(src.getContentType());
         dest.setDescription(src.getDescr());
         dest.setId(src.getId());

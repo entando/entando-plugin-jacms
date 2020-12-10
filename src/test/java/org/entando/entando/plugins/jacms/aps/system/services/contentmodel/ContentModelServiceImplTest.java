@@ -149,7 +149,7 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shouldCreateContentModel() {
-        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+        String expectedShape = "<script nonce=\"$content.nonce\">my_js_script</script>";
 
         ContentModelDto contentModelToCreate = new ContentModelDto();
         contentModelToCreate.setContentType("AAA");
@@ -164,7 +164,7 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shouldCreateContentModelNonceAlreadyAdded() {
-        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+        String expectedShape = "<script nonce=\"$content.nonce\">my_js_script</script>";
 
         ContentModelDto contentModelToCreate = new ContentModelDto();
         contentModelToCreate.setContentType("AAA");
@@ -213,7 +213,7 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shouldUpdateContentModel() {
-        String expectedShape = "<script nonce=\"<@wp.cspNonce />\">my_js_script</script>";
+        String expectedShape = "<script nonce=\"$content.nonce\">my_js_script</script>";
 
         long id = 1L;
         ContentModelDto contentModelToUpdate = new ContentModelDto();

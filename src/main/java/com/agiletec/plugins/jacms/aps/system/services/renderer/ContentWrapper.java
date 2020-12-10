@@ -82,6 +82,11 @@ public class ContentWrapper extends EntityWrapper {
 			return null;
         }
     }
+
+    public String getNonce() {
+    	RequestContext ctx = getReqCtx();
+    	return ctx != null ? (String) ctx.getExtraParam(SystemConstants.EXTRAPAR_CSP_NONCE_TOKEN) : null;
+	}
 	
 	public String getLangCode() {
         return super.getRenderingLang();
