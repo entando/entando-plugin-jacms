@@ -540,6 +540,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
     @Test
     public void testGetContentModelsFilterId() throws Exception {
+        
         mockMvc
                 .perform(get(BASE_URI)
                         .param("filters[0].attribute", "id")
@@ -557,7 +558,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
                         .param("filters[0].operator", "like")
                         .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.payload.length()", is(0)));
     }
 }

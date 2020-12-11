@@ -44,9 +44,10 @@ public interface ContentModelResource {
 
     @ApiOperation(value = "Returns a paginated list of content models")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "OK")
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 400, message = "Bad Request")
     })
-    ResponseEntity<PagedRestResponse<ContentModelDto>> getContentModels(RestListRequest requestList);
+    ResponseEntity<PagedRestResponse<ContentModelDto>> getContentModels(RestListRequest requestList, BindingResult bindingResult);
     
     @ApiOperation(value = "Retrieves a content model")
     @ApiResponses(value = {
