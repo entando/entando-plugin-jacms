@@ -25,36 +25,41 @@
         <property name="allowedPublicAttributeMethods" ref="contentModelDictionaryAllowedPublicAttributeMethods" />
     </bean>
     
+    <bean id="contentModelDictionaryContentMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryRootMap">
+        <property name="sourceList">
+            <list merge="true">
+                <value><![CDATA[getNonce()]]></value>
+            </list>
+        </property>
+    </bean>
     
-	<bean id="contentModelDictionaryContentMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryRootMap" />
+    <bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryI18NMap" />
 
-	<bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryI18NMap" />
+    <bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryInfoMap" />
 
-	<bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryInfoMap" />
+    <bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryCommonMap" />
 
-	<bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryCommonMap" />
-
-	<bean id="contentModelDictionaryAllowedPublicAttributeMethods"  class="org.springframework.beans.factory.config.MapFactoryBean" parent="dataModelDictionaryAllowedPublicAttributeMethods">
-	    <property name="sourceMap" >
-	        <map>
-				<entry>
-					<key><value>Link</value></key>
-					<value><![CDATA[text;destination;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];symbolicLink]]></value>
-				</entry>
-				<entry>
-					<key><value>Image</value></key>
-					<value><![CDATA[text;getImagePath(<SIZE_ID>);getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
-				</entry>
-				<entry>
-					<key><value>Attach</value></key>
-					<value><![CDATA[text;attachPath;getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
-				</entry>
-				<entry>
-					<key><value>Hypertext</value></key>
-					<value><![CDATA[text;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];getTextBeforeImage(<PERCENT_VALUE>);getTextByRange(<START_PERCENT_VALUE>,<END_PERCENT_VALUE>);getTextAfterImage(<PERCENT_VALUE>);getHead(<VALUE>);getHeadEscaped(VALUE)]]></value>
-				</entry>
-	        </map>
-	    </property>
-	</bean>
+    <bean id="contentModelDictionaryAllowedPublicAttributeMethods"  class="org.springframework.beans.factory.config.MapFactoryBean" parent="dataModelDictionaryAllowedPublicAttributeMethods">
+        <property name="sourceMap" >
+            <map>
+                <entry>
+                    <key><value>Link</value></key>
+                    <value><![CDATA[text;destination;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];symbolicLink]]></value>
+                </entry>
+                <entry>
+                    <key><value>Image</value></key>
+                    <value><![CDATA[text;getImagePath(<SIZE_ID>);getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
+                </entry>
+                <entry>
+                    <key><value>Attach</value></key>
+                    <value><![CDATA[text;attachPath;getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
+                </entry>
+                <entry>
+                    <key><value>Hypertext</value></key>
+                    <value><![CDATA[text;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];getTextBeforeImage(<PERCENT_VALUE>);getTextByRange(<START_PERCENT_VALUE>,<END_PERCENT_VALUE>);getTextAfterImage(<PERCENT_VALUE>);getHead(<VALUE>);getHeadEscaped(VALUE)]]></value>
+                </entry>
+            </map>
+        </property>
+    </bean>
     
 </beans>

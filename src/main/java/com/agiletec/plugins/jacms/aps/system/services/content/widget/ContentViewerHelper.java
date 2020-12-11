@@ -98,6 +98,8 @@ public class ContentViewerHelper implements IContentViewerHelper {
                     return null;
                 }
                 this.getContentDispenser().resolveLinks(renderizationInfo, reqCtx);
+                String cspToken = (String) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CSP_NONCE_TOKEN);
+                renderizationInfo.replacePlaceholder(JacmsSystemConstants.CSP_NONCE_PLACEHOLDER, cspToken);
                 this.manageAttributeValues(renderizationInfo, publishExtraTitle, reqCtx);
             } else {
                 logger.warn("Parametri visualizzazione contenuto incompleti: " + "contenuto={} modello={}", contentId, modelId);
@@ -135,7 +137,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
             return;
         }
         IPage page = (IPage) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE);
-        if (!page.isUseExtraTitles()) {
+        if (null == page || !page.isUseExtraTitles()) {
             return;
         }
         Integer currentFrame = (Integer) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_FRAME);

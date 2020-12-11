@@ -24,6 +24,7 @@ import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.DateConverter;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 
@@ -82,6 +83,16 @@ public class ContentWrapper extends EntityWrapper {
 			return null;
         }
     }
+
+    /**
+     * Return the nonce placeholder.
+     * This placeholder will be replaced (by the {@link ContentViewerHelper}) 
+     * with the final value given by the current request.
+     * @return 
+     */
+    public String getNonce() {
+    	return JacmsSystemConstants.CSP_NONCE_PLACEHOLDER;
+	}
 	
 	public String getLangCode() {
         return super.getRenderingLang();

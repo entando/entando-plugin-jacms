@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.widget;
 
+import static junit.framework.TestCase.assertEquals;
+
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
 
@@ -24,8 +26,13 @@ import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.util.ApsProperties;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 
 import com.agiletec.plugins.jacms.aps.system.services.Jdk11CompatibleDateFormatter;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
+import org.entando.entando.ent.exception.EntException;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -158,6 +165,36 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         }
     }
     
+    public void testConvertCspNoncePlaceholder() throws Exception {
+        String contentId = "ART120";
+        String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
+        int modelId = 1948;
+        this.getRequestContext().addExtraParam(SystemConstants.EXTRAPAR_CSP_NONCE_TOKEN, "csp_token_value");
+        try {
+            this.addNewContentModel(modelId, contentShapeModel, "ART");
+            super.setUserOnSession("admin");
+            RequestContext reqCtx = this.getRequestContext();
+            ContentRenderizationInfo outputInfo = this._helper.getRenderizationInfo(contentId, String.valueOf(modelId), true, reqCtx);
+            assertEquals("CspNonce Test <script nonce=\"csp_token_value\">my script</script>", outputInfo.getRenderedContent());
+        } catch (Exception t) {
+            throw t;
+        } finally {
+            ContentModel model = this._contentModelManager.getContentModel(modelId);
+            if (null != model) {
+                this._contentModelManager.removeContentModel(model);
+            }
+        }
+    }
+    
+    private void addNewContentModel(int id, String shape, String contentTypeCode) throws EntException {
+        ContentModel model = new ContentModel();
+        model.setContentType(contentTypeCode);
+        model.setDescription("test");
+        model.setId(id);
+        model.setContentShape(shape);
+        this._contentModelManager.addContentModel(model);
+    }
+    
     private void init() throws Exception {
         try {
             this._requestContext = this.getRequestContext();
@@ -190,10 +227,12 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         }
         this._requestContext.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET, widget);
         this.pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);
+        this._contentModelManager = (IContentModelManager) this.getService(JacmsSystemConstants.CONTENT_MODEL_MANAGER);
     }
 
     private RequestContext _requestContext;
     private IPageManager pageManager;
     private IContentViewerHelper _helper;
+    private IContentModelManager _contentModelManager = null;
 
 }
