@@ -540,6 +540,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
     @Test
     public void testGetContentModelsFilterId() throws Exception {
+        
         mockMvc
                 .perform(get(BASE_URI)
                         .param("filters[0].attribute", "id")
