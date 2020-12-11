@@ -228,6 +228,26 @@ public class TestContentDispenser extends BaseTestCase {
         assertEquals("Content model 67 undefined", output.trim());
     }
     
+    public void testCspNoncePlaceholder() throws Throwable {
+        String contentId = "ART120";
+        String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
+        int modelId = 1948;
+        try {
+            this.addNewContentModel(modelId, contentShapeModel, "ART");
+            RequestContext reqCtx = this.getRequestContext();
+            this.setUserOnSession("admin");
+            ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo(contentId, modelId, "en", reqCtx);
+            assertEquals("CspNonce Test <script nonce=\"" + JacmsSystemConstants.CSP_NONCE_PLACEHOLDER + "\">my script</script>", outputInfo.getCachedRenderedContent());
+        } catch (Throwable t) {
+            throw t;
+        } finally {
+            ContentModel model = this._contentModelManager.getContentModel(modelId);
+            if (null != model) {
+                this._contentModelManager.removeContentModel(model);
+            }
+        }
+    }
+    
     private String replaceNewLine(String input) {
         input = input.replaceAll("\\n", "");
         input = input.replaceAll("\\r", "");

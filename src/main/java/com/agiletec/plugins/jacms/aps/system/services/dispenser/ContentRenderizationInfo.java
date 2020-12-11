@@ -21,6 +21,7 @@ import java.util.Map;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeRole;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -153,7 +154,7 @@ public class ContentRenderizationInfo implements Serializable {
         if (StringUtils.isBlank(finalToken) || StringUtils.isBlank(this.getRenderedContent())) {
             return;
         }
-        this.setRenderedContent(this.getRenderedContent().replaceAll(placeholder, finalToken));
+        this.setRenderedContent(this.getRenderedContent().replaceAll(Pattern.quote(placeholder), finalToken));
     }
 	
 	private String _contentId;

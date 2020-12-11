@@ -137,7 +137,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
             return;
         }
         IPage page = (IPage) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE);
-        if (!page.isUseExtraTitles()) {
+        if (null == page || !page.isUseExtraTitles()) {
             return;
         }
         Integer currentFrame = (Integer) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_FRAME);
