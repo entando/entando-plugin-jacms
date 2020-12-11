@@ -337,7 +337,7 @@ public class ContentModelServiceImpl implements ContentModelService {
     }
 
     protected void copyProperties(ContentModelDto src, ContentModel dest) {
-        dest.setContentShape(NonceInjector.process(src.getContentShape()));
+        dest.setContentShape(src.getContentShape());
         dest.setContentType(src.getContentType());
         dest.setDescription(src.getDescr());
         dest.setId(src.getId());
