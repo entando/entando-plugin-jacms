@@ -14,7 +14,11 @@
 package org.entando.entando.plugins.jacms.web.contentmodel.validator;
 
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.entando.entando.web.common.exceptions.ValidationGenericException;
+import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.validator.AbstractPaginationValidator;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 
 public class ContentModelValidator extends AbstractPaginationValidator {
@@ -28,6 +32,8 @@ public class ContentModelValidator extends AbstractPaginationValidator {
     public static final String ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND = "6";
     public static final String ERRCODE_CONTENTMODEL_WRONG_UTILIZER = "7";
     public static final String ERRCODE_CONTENTMODEL_METADATA_REFERENCES = "8";
+
+    private static final String ID_FILTER_NAME = "id";
 
     @Override
     public boolean supports(Class<?> paramClass) {
@@ -45,8 +51,19 @@ public class ContentModelValidator extends AbstractPaginationValidator {
         }
     }
 
+    public void validateIdFilter(BindingResult bindingResult, Filter[] filters) {
+        if (filters != null) {
+            for (Filter filter : filters) {
+                if (filter != null && filter.getValue() != null &&
+                        ID_FILTER_NAME.equals(filter.getAttribute()) && !NumberUtils.isParsable(filter.getValue())) {
+                    throw new ValidationGenericException(bindingResult);
+                }
+            }
+        }
+    }
+
     @Override
     protected String getDefaultSortProperty() {
-        return "id";
+        return ID_FILTER_NAME;
     }
 }
