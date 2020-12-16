@@ -1344,6 +1344,100 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
+    public void testAddAndUpdateContentWithMonolistAttribute2Images() throws Exception {
+        String newContentId = null;
+        String resourceId = null;
+        String accessToken = this.createAccessToken();
+        try {
+            Assert.assertNull(this.contentManager.getEntityPrototype("MON"));
+
+            this.executeContentTypePost("1_POST_type_with_monolist_image.json", accessToken, status().isCreated());
+            Assert.assertNotNull(this.contentManager.getEntityPrototype("MON"));
+
+            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
+
+            resourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_monolist_2_images.json", accessToken,
+                    status().isOk(), resourceId);
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is("MON")))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Content Type MON")))
+                    .andExpect(jsonPath("$.payload[0].description", is("monolistofimages")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.alt", is("alt it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.description", is("desc it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.legend", is("legend it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.title", is("title it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.alt", is("alt it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.description", is("desc it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.legend", is("legend it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.title", is("title it2")));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+            Content newContent = this.contentManager.loadContent(newContentId, false);
+
+            Assert.assertNotNull(newContent);
+
+            this.executeContentPut("1_PUT_valid_with_monolist_2_images.json", newContentId, accessToken,
+                    status().isOk(), resourceId)
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is("MON")))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Content Type MON")))
+                    .andExpect(jsonPath("$.payload[0].description", is("ContentWithMonolistOfImage2")))
+
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.alt", is("alt it1 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.description", is("desc it1 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.legend", is("legend it1 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.title", is("title it1 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.alt", is("alt it2 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.description", is("desc it2 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.legend", is("legend it2 changed")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.title", is("title it2 changed")));
+
+        } finally {
+            if (null != resourceId) {
+                performDeleteResource(accessToken, "image", resourceId)
+                        .andExpect(status().isOk());
+            }
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype("MON")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("MON");
+            }
+        }
+    }
+
+    @Test
     public void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;

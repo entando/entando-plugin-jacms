@@ -1,0 +1,42 @@
+[{
+    "mainGroup":"free",
+    "description":"ContentWithMonolistOfImage2",
+    "attributes":[
+        {
+            "code": "MonolistOfImag",
+            "name":"MonolistOfImages",
+            "elements":[
+                {
+                    "code":"MonolistOfImag",
+                    "values":{
+                        "it":{
+                            "id":"resourceIdPlaceHolder",
+                            "metadata": {
+                                "description":"desc it1 changed",
+                                "title": "title it1 changed",
+                                "legend": "legend it1 changed",
+                                "alt": "alt it1 changed"
+                            }
+                        }
+                    }
+                },
+                {
+                    "code":"MonolistOfImag",
+                    "values":{
+                        "it":{
+                            "id":"resourceIdPlaceHolder",
+                            "metadata": {
+                                "description":"desc it2 changed",
+                                "title": "title it2 changed",
+                                "legend": "legend it2 changed",
+                                "alt": "alt it2 changed"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "id":"**MARKER**",
+    "typeCode":"MON"
+}]
