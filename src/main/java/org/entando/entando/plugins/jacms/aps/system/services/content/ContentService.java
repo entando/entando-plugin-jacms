@@ -189,6 +189,14 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         }
     }
 
+    private void fillComplexAttributes(List<AttributeInterface> srcAttrs, List<EntityAttributeDto> attrs) {
+        for (int i = 0; i < attrs.size(); i++) {
+            if (srcAttrs.get(i).getName().equals(attrs.get(i).getCode())) {
+                fillAttribute(srcAttrs.get(i), attrs.get(i));
+            }
+        }
+    }
+
     private void fillAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         fillResourceAttribute(attribute, attributeDto);
         fillCompositeAttribute(attribute, attributeDto);
@@ -236,7 +244,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     private void fillMonolistAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (attributeDto.getElements() != null && (MonoListAttribute.class.isAssignableFrom(attribute.getClass()))) {
             MonoListAttribute monolistAttribute = (MonoListAttribute) attribute;
-            fillAttributes(monolistAttribute.getAttributes(), attributeDto.getElements());
+            fillComplexAttributes(monolistAttribute.getAttributes(), attributeDto.getElements());
         }
     }
 
