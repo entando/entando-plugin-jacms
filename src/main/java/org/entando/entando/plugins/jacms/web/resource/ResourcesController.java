@@ -13,26 +13,19 @@
  */
 package org.entando.entando.plugins.jacms.web.resource;
 
-import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
-
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.role.Permission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.util.HttpSessionHelper;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.ListAssetsFolderResponse;
@@ -42,24 +35,20 @@ import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequ
 import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidator;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
-import org.entando.entando.web.common.model.PagedMetadata;
-import org.entando.entando.web.common.model.PagedRestResponse;
-import org.entando.entando.web.common.model.RestNamedId;
-import org.entando.entando.web.common.model.RestResponse;
-import org.entando.entando.web.common.model.SimpleRestResponse;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.web.common.exceptions.ValidationGenericException;
+import org.entando.entando.web.common.model.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpSession;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
 
 @RequiredArgsConstructor
 @RestController
@@ -227,12 +216,19 @@ public class ResourcesController {
         if (!resourceValidator.resourceExists(resourceId, correlationCode)) {
             throw new ResourceNotFoundException(ERRCODE_RESOURCE_NOT_FOUND, "asset", resourceIdOrCC.toString());
         }
+        DataBinder binder = new DataBinder(resourceId);
+        BindingResult bindingResult = binder.getBindingResult();
+
         if (!resourceValidator.isResourceDeletableByUser(resourceId, correlationCode, extractCurrentUser(httpSession))) {
-            DataBinder binder = new DataBinder(resourceId);
-            BindingResult bindingResult = binder.getBindingResult();
             bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{resourceIdOrCC.value}, "plugins.jacms.resources.resourceManager.error.delete");
             throw new ResourcePermissionsException(bindingResult);
         }
+
+        resourceValidator.resourceReferencesValidation(resourceId, bindingResult);
+        if (bindingResult.hasErrors()) {
+            throw new ValidationGenericException(bindingResult);
+        }
+
         service.deleteAsset(resourceId, correlationCode);
         return ResponseEntity.ok(new SimpleRestResponse<>(new HashMap()));
     }

@@ -13,18 +13,6 @@
  */
 package org.entando.entando.plugins.jacms.web.resource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.startsWith;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -35,12 +23,6 @@ import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
@@ -52,6 +34,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTest {
     @Autowired
@@ -159,6 +153,19 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
         testCreateEditDeleteFileResourceAuthorization(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
     }
 
+    @Test
+    public void tesDeletetUsedResourceReturnBadRequest() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
+                .build();
+
+        performDeleteResource(user, "image", "44")
+                .andDo(print())
+                .andExpect(jsonPath("$.errors.size()", is(3)))
+                .andExpect(jsonPath("$.errors[0].code", is("21")))
+                .andExpect(status().isBadRequest());
+    }
+
     private void testCreateEditDeleteFileResourceAuthorization(String role, String permission) throws Exception {
         Role roleObject= createRole(role, "descr");
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -199,6 +206,7 @@ public class ResourcesControllerIntegrationTest extends AbstractControllerIntegr
             }
         }
     }
+
 
     @Test
     public void testCreateCloneAssetAuthorizationManageResource() throws Exception {
