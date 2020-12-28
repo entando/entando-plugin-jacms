@@ -368,7 +368,7 @@ jQuery(function($){
 		<@wp.i18n key="DATE_FROM" />
 	</label>
 	<div class="controls">
-		<input id="${formFieldStartNameVar}" name="${formFieldStartNameVar}" value="${formFieldStartValueVar?default("")}" type="text" data-isdate="true" class="input-xlarge" />
+		<input id="${formFieldStartNameVar}" name="${formFieldStartNameVar}" value="${formFieldStartValueVar?default("")}" type="text" data-isdate="true" class="input-xlarge" placeholder="YYYY-MM-DD" />
 	</div>
 </div>
 <div class="control-group">
@@ -378,7 +378,7 @@ jQuery(function($){
 		<@wp.i18n key="DATE_TO" />
 	</label>
 	<div class="controls">
-		<input id="${formFieldEndNameVar}" name="${formFieldEndNameVar}" value="${formFieldEndValueVar?default("")}" type="text" data-isdate="true" class="input-xlarge" />
+		<input id="${formFieldEndNameVar}" name="${formFieldEndNameVar}" value="${formFieldEndValueVar?default("")}" type="text" data-isdate="true" class="input-xlarge" placeholder="YYYY-MM-DD" />
 	</div>
 </div>
 </fieldset>', 1);
