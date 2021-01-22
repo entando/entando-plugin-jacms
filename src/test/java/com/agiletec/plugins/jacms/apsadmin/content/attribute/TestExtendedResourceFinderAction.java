@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.servlet.http.HttpSession;
 
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
@@ -23,12 +28,14 @@ import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.resource.Res
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.agiletec.plugins.jacms.apsadmin.resource.ResourceFinderAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
 
+    @Test
     public void testSearchImageResource_1() throws Throwable {
         this.executeEdit("ART1", "admin");//Contenuto FREE
         String contentOnSessionMarker = super.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
@@ -50,6 +57,7 @@ public class TestExtendedResourceFinderAction extends AbstractBaseTestContentAct
         assertEquals("44", action.getResources().get(1));
     }
 
+    @Test
     public void testSearchImageResource_2() throws Throwable {
         this.executeEdit("ART102", "admin");//Contenuto customers
         String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
@@ -70,6 +78,7 @@ public class TestExtendedResourceFinderAction extends AbstractBaseTestContentAct
         assertTrue(action.getResources().contains("82"));
     }
 
+    @Test
     public void testJoinImageResource() throws Throwable {
         this.executeEdit("ART102", "admin");
         String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);

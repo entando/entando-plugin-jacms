@@ -1,25 +1,32 @@
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AbstractResourceTest {
+import org.entando.entando.ent.exception.EntException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class ResourceTest {
 
     @Spy private TestResource resource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         resource.resetFileExists();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullFilenameShouldReturnException() {
-        resource.getUniqueBaseName(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            resource.getUniqueBaseName(null);
+        });
     }
 
     @Test

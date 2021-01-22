@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import com.agiletec.aps.system.common.tree.ITreeNode;
@@ -22,13 +26,14 @@ import com.agiletec.apsadmin.system.ITreeAction;
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.hypertext.ContentLinkAttributeAction;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 
-	
+	@Test
 	public void testFindContent_1() throws Throwable {
 		this.initIntroContentLink("admin", "ART1");//Contenuto del gruppo Free
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
@@ -38,14 +43,16 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertTrue(contentIds.contains("ART121"));//Contenuto del gruppo "administrators" abilitato al gruppo free
 	}
 
-	public void testFindContent_2() throws Throwable {
+	@Test
+    public void testFindContent_2() throws Throwable {
 		this.initIntroContentLink("admin", "ART120");//Contenuto del gruppo degli amministratori
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
 		assertEquals(24, contentIds.size());//Tutti i contenuti pubblici
 	}
 
-	public void testFindContent_3() throws Throwable {
+	@Test
+    public void testFindContent_3() throws Throwable {
 		this.initIntroContentLink("editorCustomers", "ART102");//Contenuto del gruppo customers
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -56,7 +63,8 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertTrue(contentIds.contains("ART111"));//Contenuto del gruppo "coach" abilitato al gruppo customers
 	}
 
-	public void testFindContent_4() throws Throwable {
+	@Test
+    public void testFindContent_4() throws Throwable {
 		this.initIntroContentLink("admin", "EVN25");//Contenuto del gruppo coach
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -75,7 +83,8 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertEquals(Action.SUCCESS, result);
 	}
 
-	public void testConfigPageLink_1() throws Throwable {
+	@Test
+    public void testConfigPageLink_1() throws Throwable {
 		this.initIntroPageLink("admin", "ART1");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -83,7 +92,8 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertEquals(3, root.getChildrenCodes().length);
 	}
 
-	public void testConfigPageLink_2() throws Throwable {
+	@Test
+    public void testConfigPageLink_2() throws Throwable {
 		this.initIntroPageLink("admin", "ART102");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -91,7 +101,8 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertEquals(4, root.getChildrenCodes().length);
 	}
 
-	public void testOpenPageTree_1() throws Throwable {
+	@Test
+    public void testOpenPageTree_1() throws Throwable {
 		this.openTree("admin", "ART1", "homepage");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -102,17 +113,20 @@ public class TestHypertextAttributeAction extends AbstractBaseTestContentAction 
 		assertEquals(3, showableRoot.getChildrenCodes().length);
 	}
 
-	public void testOpenPageTree_2() throws Throwable {
+	@Test
+    public void testOpenPageTree_2() throws Throwable {
 		this.openTree("admin", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}
 
-	public void testOpenPageTree_3() throws Throwable {
+	@Test
+    public void testOpenPageTree_3() throws Throwable {
 		this.openTree("editorCustomers", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}
 
-	public void testOpenPageTree_4() throws Throwable {
+	@Test
+    public void testOpenPageTree_4() throws Throwable {
 		this.openTreeOnDemand("editorCustomers", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}

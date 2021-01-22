@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.system.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +23,15 @@ import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	
-	public void testValidateAttribute_1() throws Throwable {
+	@Test
+    public void testValidateAttribute_1() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -41,7 +45,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testValidateAttribute_2() throws Throwable {
+	@Test
+    public void testValidateAttribute_2() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -60,7 +65,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, fieldErrors.get("ognlValidationRule.errorMessage").size());
 	}
 	
-	public void testValidateAttribute_3() throws Throwable {
+	@Test
+    public void testValidateAttribute_3() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -70,7 +76,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testValidateAttribute_4() throws Throwable {
+	@Test
+    public void testValidateAttribute_4() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -82,7 +89,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testValidateAttribute_5() throws Throwable {
+	@Test
+    public void testValidateAttribute_5() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -98,7 +106,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, action.getFieldErrors().get("rangeEndDate").size());
 	}
 
-	public void testValidateAttribute_6() throws Throwable {
+	@Test
+    public void testValidateAttribute_6() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -113,7 +122,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, action.getFieldErrors().get("rangeEndDate").size());
 	}
 	
-	public void testValidateAttribute_7() throws Throwable {
+	@Test
+    public void testValidateAttribute_7() throws Throwable {
 		this.executeEditEntityAttributePrototype("EVN", JacmsSystemConstants.CONTENT_MANAGER, "DataInizio");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -125,7 +135,8 @@ public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testValidateAttribute_8() throws Throwable {
+	@Test
+    public void testValidateAttribute_8() throws Throwable {
 		this.executeEditEntityAttributePrototype("EVN", JacmsSystemConstants.CONTENT_MANAGER, "DataInizio");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");

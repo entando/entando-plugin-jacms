@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.agiletec.aps.system.common.entity.ApsEntityManager;
 import com.agiletec.apsadmin.system.BaseAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -23,6 +27,8 @@ import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineM
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Mezzano
@@ -31,12 +37,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
 
     private IResourceManager resourceManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
+    @Test
     public void testOpenIndexProspect() throws Throwable {
         String result = this.executeOpenIndexProspect("admin");
         assertEquals(BaseAction.SUCCESS, result);
@@ -52,6 +53,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         assertEquals("metadataKeyG,metadataKeyK,metadatakeyF", contentAdminAction.buildCsv(IResourceManager.TITLE_METADATA_KEY));
     }
 
+    @Test
     public void testReloadContentsIndex() throws Throwable {
         String result = this.executeReloadContentsIndex("admin");
         assertEquals(BaseAction.SUCCESS, result);
@@ -62,6 +64,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         assertNotNull(contentAdminAction.getLastReloadInfo());
     }
 
+    @Test
     public void testReloadContentsReference() throws Throwable {
         String result = this.executeReloadContentsReference("admin");
         assertEquals(BaseAction.SUCCESS, result);
@@ -72,6 +75,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         assertNull(contentAdminAction.getLastReloadInfo());
     }
 
+    @Test
     public void testUpdateResourceMapping() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
@@ -102,6 +106,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         }
     }
 
+    @Test
     public void testAddNewMetadata() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
@@ -127,6 +132,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         }
     }
 
+    @Test
     public void testRemoveMetadata() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
@@ -150,6 +156,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         }
     }
 
+    @Test
     public void testValidateNewMetadata() throws Throwable {
         this.executeValidateNewMetadata("wrongKey_&&");
         this.executeValidateNewMetadata("wrong key");
@@ -158,6 +165,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         this.executeValidateNewMetadata(IResourceManager.TITLE_METADATA_KEY);
     }
 
+    @Test
     public void testAddValidAspectRatio() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
@@ -177,6 +185,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         }
     }
 
+    @Test
     public void testAddInvalidAspectRatio() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
@@ -261,6 +270,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         }
     }
 
+    @BeforeEach
     protected void init() throws Exception {
         try {
             this.resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);

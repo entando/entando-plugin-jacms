@@ -13,24 +13,21 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import com.agiletec.aps.BaseTestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- * @version 1.1
- * @author M.Morini - C.Siddi
- */
 public class TestContentModelDAO extends BaseTestCase {
 	
-	protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-	
+	@Test
     public void testLoadContentModels() throws Throwable {  
     	Map<Long, ContentModel> models = null;
         try {
@@ -50,6 +47,7 @@ public class TestContentModelDAO extends BaseTestCase {
         assertEquals(contains, true);
     }
     
+    @Test
     public void testAddUpdateContentModel() throws Throwable {
 		ContentModel contentModel = new ContentModel();
 		contentModel.setId(99);
@@ -94,6 +92,7 @@ public class TestContentModelDAO extends BaseTestCase {
         }
 	}
 	
+    @BeforeEach
 	private void init() throws Exception {
 		try {
 			DataSource dataSource = (DataSource) this.getApplicationContext().getBean("portDataSource");

@@ -13,13 +13,12 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.opensymphony.xwork2.Action;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
 
@@ -31,12 +30,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     private String UPLOAD_ID = "aaaa-bbbb-cccc-dddd";
     private String FILE_SIZE = "2000";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        //   this.init();
-    }
-
+    @Test
     public void testUploadNotValidTypeCodeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
@@ -51,6 +45,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
+    @Test
     public void testUploadImageValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
@@ -65,6 +60,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
+    @Test
     public void testUploadImageNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
@@ -78,6 +74,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
+    @Test
     public void testUploadAttachmentValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
@@ -89,6 +86,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
+    @Test
     public void testUploadAttachmentNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
@@ -103,6 +101,7 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
+    @Test
     public void testUploadNotValidDescriptionValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");

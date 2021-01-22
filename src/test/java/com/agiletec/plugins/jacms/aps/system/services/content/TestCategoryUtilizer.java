@@ -13,11 +13,14 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test del servizio gestore categorie.
@@ -26,7 +29,8 @@ import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
  */
 public class TestCategoryUtilizer extends BaseTestCase {
 
-	public void testGetCategoryUtilizers_1() throws Throwable {
+	@Test
+    public void testGetCategoryUtilizers_1() throws Throwable {
 		String[] names = this.getApplicationContext().getBeanNamesForType(CategoryUtilizer.class);
 		assertTrue(names.length >= 2);
 		for (int i = 0; i < names.length; i++) {
@@ -38,7 +42,8 @@ public class TestCategoryUtilizer extends BaseTestCase {
 		}
 	}
 
-	public void testGetCategoryUtilizers_2() throws Throwable {
+	@Test
+    public void testGetCategoryUtilizers_2() throws Throwable {
 		String[] names = this.getApplicationContext().getBeanNamesForType(CategoryUtilizer.class);
 		assertTrue(names.length >= 2);
 		for (int i = 0; i < names.length; i++) {

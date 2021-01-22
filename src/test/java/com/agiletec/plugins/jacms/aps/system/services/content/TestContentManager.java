@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -54,21 +60,17 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Im
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ResourceAttributeInterface;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.common.entity.model.attribute.EnumeratorMapAttribute;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author M. Morini - E.Santoboni
  */
 public class TestContentManager extends BaseTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
+    @Test
     public void testSearchContents_1_1() throws Throwable {
         List<String> contentIds = this._contentManager.searchId(null);
         assertNotNull(contentIds);
@@ -115,6 +117,7 @@ public class TestContentManager extends BaseTestCase {
         this.verifyOrder(contentIds, expected5);
     }
     
+    @Test
     public void testSearchPaginatedContents_1_1() throws Throwable {
         List<String> groupCodes = this._groupManager.getGroups().stream().map(group -> group.getName()).collect(Collectors.toList());
         EntitySearchFilter<String> creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
@@ -142,6 +145,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testSearchContents_1_2() throws Throwable {
         EntitySearchFilter versionFilter = new EntitySearchFilter(IContentManager.CONTENT_CURRENT_VERSION_FILTER_KEY, false, "0.", true);
         EntitySearchFilter[] filters3 = {versionFilter};
@@ -158,6 +162,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals(22, contentIds.size());
     }
 
+    @Test
     public void testSearchContents_1_4() throws Throwable {
         List<String> contentIds = this._contentManager.searchId(null);
         assertNotNull(contentIds);
@@ -181,6 +186,7 @@ public class TestContentManager extends BaseTestCase {
         this.verifyOrder(contentIds, expected1);
     }
     
+    @Test
     public void testSearchContents_1_5() throws Throwable {
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -216,6 +222,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals(expected4.length, contentIds.size());
     }
     
+    @Test
     public void testSearchPaginatedContents_1_5() throws Throwable {
         List<String> groupCodes = this._groupManager.getGroups().stream().map(group -> group.getName()).collect(Collectors.toList());
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
@@ -245,6 +252,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testSearchContents_1_6() throws Throwable {
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -260,6 +268,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals(9, contentIds.size());
     }
 
+    @Test
     public void testSearchContents_2() throws Throwable {
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -272,6 +281,7 @@ public class TestContentManager extends BaseTestCase {
         this.verifyOrder(contentIds, expected);
     }
 
+    @Test
     public void testSearchContents_3() throws Throwable {
         EntitySearchFilter modifyOrder = new EntitySearchFilter(IContentManager.CONTENT_MODIFY_DATE_FILTER_KEY, false);
         modifyOrder.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -285,6 +295,7 @@ public class TestContentManager extends BaseTestCase {
         this.verifyOrder(contentIds, expected);
     }
 
+    @Test
     public void testSearchWorkContents() throws Throwable {
         List<String> contents = this._contentManager.loadWorkContentsId(null, null);
         assertNotNull(contents);
@@ -340,6 +351,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals(25, contents.size());
     }
 
+    @Test
     public void testSearchWorkContents_2_b() throws Throwable {
         List<String> groupCodes = new ArrayList<>();
         groupCodes.add("customers");
@@ -355,6 +367,7 @@ public class TestContentManager extends BaseTestCase {
         this.verifyOrder(contents, order);
     }
 
+    @Test
     public void testSearchWorkContents_3() throws Throwable {
         List<String> groupCodes = new ArrayList<>();
         groupCodes.add(Group.ADMINS_GROUP_NAME);
@@ -403,6 +416,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testLoadContent() throws Throwable {
         Content content = this._contentManager.loadContent("ART111", false);
         assertEquals(Content.STATUS_PUBLIC, content.getStatus());
@@ -435,6 +449,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals("13/12/2006", DateConverter.getFormattedDate(date.getDate(), "dd/MM/yyyy"));
     }
 
+    @Test
     public void testLoadFullContent() throws Throwable {
         Content content = this._contentManager.loadContent("ALL4", false);
         assertEquals(Content.STATUS_PUBLIC, content.getStatus());
@@ -568,28 +583,33 @@ public class TestContentManager extends BaseTestCase {
         assertEquals("Value 1 Bis", enumeratorMapAttribute2.getMapValue());
     }
 
+    @Test
     public void testGetContentTypes() {
         Map<String, SmallContentType> smallContentTypes = _contentManager.getSmallContentTypesMap();
         assertEquals(4, smallContentTypes.size());
     }
 
+    @Test
     public void testCreateContent() {
         Content contentType = _contentManager.createContentType("ART");
         assertNotNull(contentType);
     }
 
+    @Test
     public void testCreateContentWithViewPage() {
         Content content = _contentManager.createContentType("ART");
         String viewPage = content.getViewPage();
         assertEquals(viewPage, "contentview");
     }
 
+    @Test
     public void testCreateContentWithDefaultModel() {
         Content content = _contentManager.createContentType("ART");
         String defaultModel = content.getDefaultModel();
         assertEquals(defaultModel, "1");
     }
 
+    @Test
     public void testGetXML() throws Throwable {
         Content content = this._contentManager.createContentType("ART");
         content.setId("ART1");
@@ -613,11 +633,13 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(xml.indexOf("<category id=\"19\" />") != -1);
     }
 
+    @Test
     public void testLoadPublicContents() throws EntException {
         List<String> contents = _contentManager.loadPublicContentsId(null, null, null);
         assertEquals(15, contents.size());
     }
     
+    @Test
     public void testLoadPublicEvents_1() throws EntException {
         List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, null);
         String[] expectedFreeContentsId = {"EVN194", "EVN193",
@@ -639,6 +661,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("EVN41"));
     }
     
+    @Test
     public void testLoadPaginatedPublicEvents_1() throws EntException {
         List<String> groupCodes = new ArrayList<>();
         groupCodes.add(Group.FREE_GROUP_NAME);
@@ -658,6 +681,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testLoadPublicEvents_2() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add("coach");
@@ -696,6 +720,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_2_1() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add("coach");
@@ -713,6 +738,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals("EVN192", contents.get(1));
     }
 
+    @Test
     public void testLoadPublicEvents_2_2() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add("coach");
@@ -737,6 +763,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals("EVN192", contents.get(1));
     }
 
+    @Test
     public void testLoadPublicEvents_3() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -749,6 +776,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals("EVN192", contents.get(0));
     }
 
+    @Test
     public void testLoadPublicEvents_4() throws EntException {
         this.testLoadPublicEvents_4(true);
         this.testLoadPublicEvents_4(false);
@@ -781,6 +809,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_5() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -798,6 +827,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_6() throws EntException {
         this.testLoadPublicEvents_6(true);
         this.testLoadPublicEvents_6(false);
@@ -823,6 +853,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_7() throws EntException {
         this.testLoadPublicEvents_7(true);
         this.testLoadPublicEvents_7(false);
@@ -849,6 +880,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_8() throws EntException {
         this.testLoadPublicEvents_8(true);
         this.testLoadPublicEvents_8(false);
@@ -874,6 +906,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_9_b() throws EntException {
         this.testLoadPublicEvents_9_b(true);
         this.testLoadPublicEvents_9_b(false);
@@ -896,6 +929,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPublicEvents_9_c() throws EntException {
         this.testLoadPublicEvents_9_c(true);
         this.testLoadPublicEvents_9_c(false);
@@ -918,6 +952,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadWorkEvents_1_b() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -937,6 +972,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadOrderedPublicEvents_1() throws EntException {
         EntitySearchFilter filterForDescr = new EntitySearchFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
         filterForDescr.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -959,6 +995,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadOrderedPublicEvents_2() throws EntException {
         EntitySearchFilter filterForCreation = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -980,6 +1017,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadOrderedPublicEvents_3() throws EntException {
         EntitySearchFilter filterForCreation = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.DESC_ORDER);
@@ -1006,6 +1044,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadOrderedPublicEvents_4() throws Throwable {
         Content masterContent = this._contentManager.loadContent("EVN193", true);
         masterContent.setId(null);
@@ -1037,6 +1076,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadFutureEvents_1() throws EntException {
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
@@ -1051,6 +1091,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadFutureEvents_2() throws EntException {
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
@@ -1065,6 +1106,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadFutureEvents_3() throws EntException {
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         List<String> groups = new ArrayList<>();
@@ -1081,6 +1123,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPastEvents_1() throws EntException {
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
 
@@ -1097,6 +1140,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPastEvents_2() throws EntException {
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
 
@@ -1113,6 +1157,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadPastEvents_3() throws EntException {
         Date today = DateConverter.parseDate("2008-02-13", "yyyy-MM-dd");
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, null, today);
@@ -1130,6 +1175,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadWorkContentsForCategory_1() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -1153,6 +1199,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("EVN25"));
     }
 
+    @Test
     public void testLoadWorkContentsForCategory_2() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -1223,6 +1270,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("ART179"));
     }
 
+    @Test
     public void testLoadPublicContentsForCategory() throws EntException {
         String[] categories1 = {"evento"};
         List<String> contents = _contentManager.loadPublicContentsId(categories1, null, null);
@@ -1236,6 +1284,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("ART180"));
     }
 
+    @Test
     public void testLoadPublicEventsForCategory_1() throws EntException {
         String[] categories = {"evento"};
         List<String> contents = _contentManager.loadPublicContentsId("EVN", categories, null, null);
@@ -1252,6 +1301,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("EVN192"));
     }
 
+    @Test
     public void testLoadPublicEventsForCategory_2() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -1306,6 +1356,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("ART122"));
     }
 
+    @Test
     public void testLoadEventsForGroup() throws EntException {
         List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, null);
         String[] expectedFreeContentsId = {"EVN191", "EVN192", "EVN193", "EVN194",
@@ -1340,6 +1391,7 @@ public class TestContentManager extends BaseTestCase {
         assertTrue(contents.contains("EVN41"));
     }
 
+    @Test
     public void testLoadWorkContentsByAttribute_1() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -1370,6 +1422,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testLoadWorkContentsByAttribute_2() throws EntException {
         List<String> groups = new ArrayList<>();
         groups.add(Group.ADMINS_GROUP_NAME);
@@ -1400,6 +1453,7 @@ public class TestContentManager extends BaseTestCase {
         assertEquals(0, contents.size());
     }
 
+    @Test
     public void testLoadWorkContentsByAttribute_3() throws Throwable {
         List<String> groups = new ArrayList<String>();
         String[] masterContentIds = {"EVN193", "EVN191", "EVN192", "EVN194", "EVN23", "EVN24"};
@@ -1482,6 +1536,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testLoadWorkContentsByAttribute_4() throws Throwable {
         Content prototype = this._contentManager.createContentType("ALL");
         AttributeInterface booleanAttribute = prototype.getAttribute("Boolean");
@@ -1569,6 +1624,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
     
+    @Test
     public void testGetLinkProperties() throws Throwable {
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.DESC_ORDER);
@@ -1617,6 +1673,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @Test
     public void testGetResourceProperties() throws Throwable {
         EntitySearchFilter creationOrder = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.DESC_ORDER);
@@ -1703,6 +1760,7 @@ public class TestContentManager extends BaseTestCase {
         }
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
@@ -44,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
+import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
 import org.entando.entando.plugins.jacms.aps.system.services.content.ContentServiceUtilizer;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
@@ -51,20 +51,23 @@ import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRe
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.PagedMetadata;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 
 /**
  * @author E.Santoboni
  */
+@ExtendWith(MockitoExtension.class)
 public class ContentServiceTest {
 
     public static final String FOUND_CONTENT_01 = "ART2";
@@ -89,7 +92,7 @@ public class ContentServiceTest {
     @InjectMocks
     private ContentService contentService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         ContentServiceUtilizer serviceUtilizer = Mockito.mock(ContentServiceUtilizer.class);
@@ -104,21 +107,19 @@ public class ContentServiceTest {
         when(((GroupUtilizer) this.contentManager).getGroupUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.any(Content.class));
         List<ContentDto> dtos = this.contentService.getGroupUtilizer("groupName");
-        Assert.assertEquals(2, dtos.size());
+        Assertions.assertEquals(2, dtos.size());
         Mockito.verify(((GroupUtilizer<String>) this.contentManager), Mockito.times(1)).getGroupUtilizers(Mockito.anyString());
         Mockito.verify(this.contentManager, Mockito.times(2)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
-    @Test(expected = RestServerError.class)
+    @Test
     public void getGroupUtilizerWithError() throws Exception {
         when(((GroupUtilizer) this.contentManager).getGroupUtilizers(Mockito.anyString())).thenThrow(EntException.class);
-        try {
+        Assertions.assertThrows(RestServerError.class, () -> {
             List<ContentDto> dtos = this.contentService.getGroupUtilizer("groupName");
-            Assert.fail();
-        } finally {
-            Mockito.verify(((GroupUtilizer) this.contentManager), Mockito.times(1)).getGroupUtilizers(Mockito.anyString());
-            Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
-        }
+        });
+        Mockito.verify(((GroupUtilizer) this.contentManager), Mockito.times(1)).getGroupUtilizers(Mockito.anyString());
+        Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
     @Test
@@ -127,21 +128,19 @@ public class ContentServiceTest {
         when(((CategoryUtilizer) this.contentManager).getCategoryUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.any(Content.class));
         List<ContentDto> dtos = this.contentService.getCategoryUtilizer("categoryCode");
-        Assert.assertEquals(3, dtos.size());
+        Assertions.assertEquals(3, dtos.size());
         Mockito.verify(((CategoryUtilizer) this.contentManager), Mockito.times(1)).getCategoryUtilizers(Mockito.anyString());
         Mockito.verify(this.contentManager, Mockito.times(3)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
-    @Test(expected = RestServerError.class)
+    @Test
     public void getCategoryUtilizerWithError() throws Exception {
         when(((CategoryUtilizer) this.contentManager).getCategoryUtilizers(Mockito.anyString())).thenThrow(EntException.class);
-        try {
+        Assertions.assertThrows(RestServerError.class, () -> {
             List<ContentDto> dtos = this.contentService.getCategoryUtilizer("categoryCode");
-            Assert.fail();
-        } finally {
-            Mockito.verify(((CategoryUtilizer) this.contentManager), Mockito.times(1)).getCategoryUtilizers(Mockito.anyString());
-            Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
-        }
+        });
+        Mockito.verify(((CategoryUtilizer) this.contentManager), Mockito.times(1)).getCategoryUtilizers(Mockito.anyString());
+        Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
     @Test
@@ -150,21 +149,19 @@ public class ContentServiceTest {
         when(((PageUtilizer) this.contentManager).getPageUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.any(Content.class));
         List<ContentDto> dtos = this.contentService.getPageUtilizer("pageCode");
-        Assert.assertEquals(5, dtos.size());
+        Assertions.assertEquals(5, dtos.size());
         Mockito.verify(((PageUtilizer) this.contentManager), Mockito.times(1)).getPageUtilizers(Mockito.anyString());
         Mockito.verify(this.contentManager, Mockito.times(5)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
-    @Test(expected = RestServerError.class)
+    @Test
     public void getPageUtilizerWithError() throws Exception {
         when(((PageUtilizer) this.contentManager).getPageUtilizers(Mockito.anyString())).thenThrow(EntException.class);
-        try {
+        Assertions.assertThrows(RestServerError.class, () -> {
             List<ContentDto> dtos = this.contentService.getPageUtilizer("pageCode");
-            Assert.fail();
-        } finally {
-            Mockito.verify(((PageUtilizer) this.contentManager), Mockito.times(1)).getPageUtilizers(Mockito.anyString());
-            Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
-        }
+        });
+        Mockito.verify(((PageUtilizer) this.contentManager), Mockito.times(1)).getPageUtilizers(Mockito.anyString());
+        Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
     @Test
@@ -173,21 +170,19 @@ public class ContentServiceTest {
         when(((ContentUtilizer) this.contentManager).getContentUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.any(Content.class));
         List<ContentDto> dtos = this.contentService.getContentUtilizer("NEW456");
-        Assert.assertEquals(6, dtos.size());
+        Assertions.assertEquals(6, dtos.size());
         Mockito.verify(((ContentUtilizer) this.contentManager), Mockito.times(1)).getContentUtilizers(Mockito.anyString());
         Mockito.verify(this.contentManager, Mockito.times(6)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
-    @Test(expected = RestServerError.class)
+    @Test
     public void getContentUtilizerWithError() throws Exception {
         when(((ContentUtilizer) this.contentManager).getContentUtilizers(Mockito.anyString())).thenThrow(EntException.class);
-        try {
+        Assertions.assertThrows(RestServerError.class, () -> {
             List<ContentDto> dtos = this.contentService.getContentUtilizer("NEW456");
-            Assert.fail();
-        } finally {
-            Mockito.verify(((ContentUtilizer) this.contentManager), Mockito.times(1)).getContentUtilizers(Mockito.anyString());
-            Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
-        }
+        });
+        Mockito.verify(((ContentUtilizer) this.contentManager), Mockito.times(1)).getContentUtilizers(Mockito.anyString());
+        Mockito.verify(this.contentManager, Mockito.times(0)).loadContent(Mockito.anyString(), Mockito.eq(true));
     }
 
     @Test
@@ -206,7 +201,7 @@ public class ContentServiceTest {
         this.createMockContent("ART");
         this.createMockContentModel("ART");
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
-        Assert.assertEquals(2, metadata.getBody().size());
+        Assertions.assertEquals(2, metadata.getBody().size());
         Mockito.verify(this.contentManager, Mockito.times(2)).loadContent(Mockito.anyString(), Mockito.eq(true));
         Mockito.verify(this.contentModelManager, Mockito.times(2)).getContentModel(10);
         Mockito.verify(this.contentDispenser, Mockito.times(2))
@@ -220,7 +215,7 @@ public class ContentServiceTest {
         RestContentListRequest requestList = prepareGetContentTest(user);
         this.createMockContent("ART");
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
-        Assert.assertEquals(3, metadata.getBody().size());
+        Assertions.assertEquals(3, metadata.getBody().size());
         Mockito.verify(this.contentManager, Mockito.times(3)).loadContent(Mockito.anyString(), Mockito.eq(true));
         Mockito.verifyZeroInteractions(this.contentDispenser);
         Mockito.verifyZeroInteractions(this.contentModelManager);
@@ -240,9 +235,9 @@ public class ContentServiceTest {
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
 
         List<ContentDto> body = metadata.getBody();
-        Assert.assertEquals(2, body.size());
-        Assert.assertEquals("GROUP1", body.get(0).getMainGroup());
-        Assert.assertEquals("GROUP1", body.get(1).getMainGroup());
+        Assertions.assertEquals(2, body.size());
+        Assertions.assertEquals("GROUP1", body.get(0).getMainGroup());
+        Assertions.assertEquals("GROUP1", body.get(1).getMainGroup());
     }
 
     @Test
@@ -260,12 +255,12 @@ public class ContentServiceTest {
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
 
         List<ContentDto> body = metadata.getBody();
-        Assert.assertEquals(2, body.size());
-        Assert.assertEquals("GROUP1", body.get(0).getMainGroup());
-        Assert.assertEquals("GROUP2", body.get(1).getMainGroup());
+        Assertions.assertEquals(2, body.size());
+        Assertions.assertEquals("GROUP1", body.get(0).getMainGroup());
+        Assertions.assertEquals("GROUP2", body.get(1).getMainGroup());
     }
 
-    @Test(expected = ValidationGenericException.class)
+    @Test
     public void getContentsWithModelError_1() throws Exception {
         RestContentListRequest requestList = this.createContentsRequest();
         requestList.setStatus(IContentService.STATUS_ONLINE);
@@ -279,18 +274,16 @@ public class ContentServiceTest {
         this.createMockContent("ART");
         this.createMockContentModel("ART");
         when(this.contentModelManager.getContentModel(34)).thenReturn(null);
-        try {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
             PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
-            Assert.fail();
-        } finally {
-            Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
-            Mockito.verify(this.contentModelManager, Mockito.times(1)).getContentModel(34);
-            Mockito.verifyZeroInteractions(this.searchEngineManager);
-            Mockito.verifyZeroInteractions(this.contentDispenser);
-        }
+        });
+        Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
+        Mockito.verify(this.contentModelManager, Mockito.times(1)).getContentModel(34);
+        Mockito.verifyZeroInteractions(this.searchEngineManager);
+        Mockito.verifyZeroInteractions(this.contentDispenser);
     }
 
-    @Test(expected = ValidationGenericException.class)
+    @Test
     public void getContentsWithModelError_2() throws Exception {
         RestContentListRequest requestList = this.createContentsRequest();
         requestList.setStatus(IContentService.STATUS_ONLINE);
@@ -303,15 +296,13 @@ public class ContentServiceTest {
                 Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(contentsId);
         this.createMockContent("ART");
         this.createMockContentModel("NEW");
-        try {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
             PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
-            Assert.fail();
-        } finally {
-            Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
-            Mockito.verify(this.contentModelManager, Mockito.times(1)).getContentModel(10);
-            Mockito.verifyZeroInteractions(this.searchEngineManager);
-            Mockito.verifyZeroInteractions(this.contentDispenser);
-        }
+        });
+        Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
+        Mockito.verify(this.contentModelManager, Mockito.times(1)).getContentModel(10);
+        Mockito.verifyZeroInteractions(this.searchEngineManager);
+        Mockito.verifyZeroInteractions(this.contentDispenser);
     }
 
     protected RestContentListRequest createContentsRequest() {
@@ -367,7 +358,7 @@ public class ContentServiceTest {
         this.createMockContent("ART");
         this.createMockContentModel("ART");
         ContentDto dto = this.contentService.getContent("ART11", "list", IContentService.STATUS_ONLINE, null, false, user);
-        Assert.assertNotNull(dto);
+        Assertions.assertNotNull(dto);
         Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
         Mockito.verify(this.contentModelManager, Mockito.times(1)).getContentModel(10);
         Mockito.verify(this.contentDispenser, Mockito.times(0))
@@ -375,7 +366,7 @@ public class ContentServiceTest {
         Mockito.verifyZeroInteractions(this.searchEngineManager);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void getContentWithError_1() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
         when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
@@ -384,33 +375,28 @@ public class ContentServiceTest {
         when(pcai.isUserAllowed(ArgumentMatchers.<String>anyList())).thenReturn(true);
         when(this.contentAuthorizationHelper.getAuthorizationInfo(Mockito.anyString())).thenReturn(pcai);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(null);
-        try {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             ContentDto dto = this.contentService.getContent("ART11", "list", IContentService.STATUS_ONLINE, null, false, user);
-            Assert.fail();
-        } finally {
-            Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
-            Mockito.verifyZeroInteractions(this.contentModelManager);
-            Mockito.verifyZeroInteractions(this.contentDispenser);
-            Mockito.verifyZeroInteractions(this.searchEngineManager);
-        }
+        });
+        Mockito.verify(this.contentManager, Mockito.times(1)).loadContent(Mockito.anyString(), Mockito.eq(true));
+        Mockito.verifyZeroInteractions(this.contentModelManager);
+        Mockito.verifyZeroInteractions(this.contentDispenser);
+        Mockito.verifyZeroInteractions(this.searchEngineManager);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void getContentWithError_2() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
         when(this.contentAuthorizationHelper.getAuthorizationInfo(Mockito.anyString())).thenReturn(null);
-        try {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             ContentDto dto = this.contentService.getContent("ART11", "list", IContentService.STATUS_ONLINE, null, false, user);
-            Assert.fail();
-        } finally {
-            Mockito.verifyZeroInteractions(this.contentModelManager);
-            Mockito.verifyZeroInteractions(this.contentDispenser);
-            Mockito.verifyZeroInteractions(this.contentManager);
-            Mockito.verifyZeroInteractions(this.searchEngineManager);
-            Mockito.verifyZeroInteractions(this.langManager);
-        }
+        });
+        Mockito.verifyZeroInteractions(this.contentModelManager);
+        Mockito.verifyZeroInteractions(this.contentDispenser);
+        Mockito.verifyZeroInteractions(this.contentManager);
+        Mockito.verifyZeroInteractions(this.searchEngineManager);
+        Mockito.verifyZeroInteractions(this.langManager);
     }
-
 
     private RestContentListRequest prepareGetContentTest(UserDetails user) throws EntException {
         RestContentListRequest requestList = this.createContentsRequest();
@@ -429,4 +415,5 @@ public class ContentServiceTest {
                 Arrays.asList("ART7", FOUND_CONTENT_03, "ART8", "ART12", FOUND_CONTENT_01, FOUND_CONTENT_02));
         return requestList;
     }
+    
 }

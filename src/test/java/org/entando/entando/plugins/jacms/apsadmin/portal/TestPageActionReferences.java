@@ -13,6 +13,10 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.portal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
@@ -26,6 +30,9 @@ import com.agiletec.apsadmin.portal.PageAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
@@ -39,22 +46,7 @@ public class TestPageActionReferences extends ApsAdminBaseTestCase {
     private IPageModelManager pageModelManager = null;
     private IContentManager contentManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-        Page testPage = this.createPage(TEST_PAGE_CODE);
-        this.pageManager.addPage(testPage);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Content content = this.contentManager.loadContent(CONTENT_ID, false);
-        this.contentManager.insertOnLineContent(content);
-        this.pageManager.deletePage(TEST_PAGE_CODE);
-    }
-
+    @Test
     public void test1() throws Throwable {
         int frame = 5;
         String contentId = CONTENT_ID;
@@ -110,14 +102,24 @@ public class TestPageActionReferences extends ApsAdminBaseTestCase {
         return page;
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             this.pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);
             this.pageModelManager = (IPageModelManager) this.getService(SystemConstants.PAGE_MODEL_MANAGER);
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
+            Page testPage = this.createPage(TEST_PAGE_CODE);
+            this.pageManager.addPage(testPage);
         } catch (Throwable t) {
             throw new Exception(t);
         }
+    }
+    
+    @AfterEach
+    protected void dispose() throws Exception {
+        Content content = this.contentManager.loadContent(CONTENT_ID, false);
+        this.contentManager.insertOnLineContent(content);
+        this.pageManager.deletePage(TEST_PAGE_CODE);
     }
 
 }

@@ -28,19 +28,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author E.Santoboni
  */
+@ExtendWith(MockitoExtension.class)
 public class ContentAdminActionTest {
 
     private static final String CONFIG_PARAMETER
@@ -70,7 +75,7 @@ public class ContentAdminActionTest {
     @InjectMocks
     private ContentAdminAction action;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(textProvider.getText(ArgumentMatchers.anyString(), ArgumentMatchers.anyList())).thenReturn(ArgumentMatchers.anyString());
@@ -87,10 +92,10 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_C");
         this.action.validate();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(2, mapping.size());
-        Assert.assertEquals(3, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
-        Assert.assertNull(mapping.get("metadata_C"));
+        Assertions.assertEquals(2, mapping.size());
+        Assertions.assertEquals(3, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertNull(mapping.get("metadata_C"));
     }
 
     @Test
@@ -98,11 +103,11 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_B");
         this.action.validate();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(2, mapping.size());
-        Assert.assertEquals(3, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
-        Assert.assertTrue(action.getFieldErrors().size() > 0);
-        Assert.assertEquals(1, action.getFieldErrors().get("metadataKey").size());
+        Assertions.assertEquals(2, mapping.size());
+        Assertions.assertEquals(3, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertTrue(action.getFieldErrors().size() > 0);
+        Assertions.assertEquals(1, action.getFieldErrors().get("metadataKey").size());
     }
 
     @Test
@@ -110,10 +115,10 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_A");
         this.action.addMetadata();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(2, mapping.size());
-        Assert.assertEquals(3, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
-        Assert.assertEquals(0, action.getFieldErrors().size());
+        Assertions.assertEquals(2, mapping.size());
+        Assertions.assertEquals(3, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertEquals(0, action.getFieldErrors().size());
     }
 
     @Test
@@ -121,11 +126,11 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_C");
         this.action.addMetadata();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(3, mapping.size());
-        Assert.assertEquals(3, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
-        Assert.assertEquals(0, mapping.get("metadata_C").size());
-        Assert.assertEquals(0, action.getFieldErrors().size());
+        Assertions.assertEquals(3, mapping.size());
+        Assertions.assertEquals(3, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertEquals(0, mapping.get("metadata_C").size());
+        Assertions.assertEquals(0, action.getFieldErrors().size());
     }
 
     @Test
@@ -134,11 +139,11 @@ public class ContentAdminActionTest {
         this.action.setMetadataMapping("Value_X,ValueY,Value_Z,Value_K,Value_J");
         this.action.addMetadata();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(3, mapping.size());
-        Assert.assertEquals(3, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
-        Assert.assertEquals(5, mapping.get("metadata_C").size());
-        Assert.assertEquals(0, action.getFieldErrors().size());
+        Assertions.assertEquals(3, mapping.size());
+        Assertions.assertEquals(3, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertEquals(5, mapping.get("metadata_C").size());
+        Assertions.assertEquals(0, action.getFieldErrors().size());
     }
 
     @Test
@@ -147,9 +152,9 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_C");
         this.action.removeMetadata();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(2, mapping.size());
-        Assert.assertEquals(4, mapping.get("metadata_A").size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertEquals(2, mapping.size());
+        Assertions.assertEquals(4, mapping.get("metadata_A").size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
     }
 
     @Test
@@ -157,15 +162,15 @@ public class ContentAdminActionTest {
         this.action.setMetadataKey("metadata_A");
         this.action.removeMetadata();
         Map<String, List<String>> mapping = this.action.getMapping();
-        Assert.assertEquals(1, mapping.size());
-        Assert.assertEquals(1, mapping.get("metadata_B").size());
+        Assertions.assertEquals(1, mapping.size());
+        Assertions.assertEquals(1, mapping.get("metadata_B").size());
     }
 
     @Test
     public void configSystemParams_1() {
         when(configManager.getConfigItem(Mockito.anyString())).thenThrow(RuntimeException.class);
         String result = action.configSystemParams();
-        Assert.assertEquals(BaseAction.FAILURE, result);
+        Assertions.assertEquals(BaseAction.FAILURE, result);
         Mockito.verify(resourceManager, Mockito.times(0)).getMetadataMapping();
     }
 
@@ -174,7 +179,7 @@ public class ContentAdminActionTest {
         when(configManager.getConfigItem(Mockito.anyString())).thenReturn(CONFIG_PARAMETER);
         when(resourceManager.getMetadataMapping()).thenThrow(RuntimeException.class);
         String result = action.configSystemParams();
-        Assert.assertEquals(BaseAction.FAILURE, result);
+        Assertions.assertEquals(BaseAction.FAILURE, result);
     }
 
     @Test
@@ -184,10 +189,10 @@ public class ContentAdminActionTest {
         mapping.put("param_1", new ArrayList<>());
         when(resourceManager.getMetadataMapping()).thenReturn(mapping);
         String result = action.configSystemParams();
-        Assert.assertEquals(BaseAction.SUCCESS, result);
+        Assertions.assertEquals(BaseAction.SUCCESS, result);
         Map<String, List<String>> extractedMapping = this.action.getMapping();
-        Assert.assertEquals(1, extractedMapping.size());
-        Assert.assertEquals(0, extractedMapping.get("param_1").size());
+        Assertions.assertEquals(1, extractedMapping.size());
+        Assertions.assertEquals(0, extractedMapping.get("param_1").size());
     }
 
     @Test
@@ -198,7 +203,7 @@ public class ContentAdminActionTest {
         when(request.getParameterNames()).thenReturn(mockedEnumerator);
         Mockito.doThrow(EntException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
         String result = action.updateSystemParams();
-        Assert.assertEquals(BaseAction.FAILURE, result);
+        Assertions.assertEquals(BaseAction.FAILURE, result);
         Mockito.verify(resourceManager, Mockito.times(0)).updateMetadataMapping(Mockito.any(Map.class));
     }
 
@@ -210,7 +215,7 @@ public class ContentAdminActionTest {
         when(request.getParameterNames()).thenReturn(mockedEnumerator);
         //Mockito.doThrow(EntException.class).when(configManager).updateConfigItem(Mockito.anyString(), Mockito.anyString());
         String result = action.updateSystemParams();
-        Assert.assertEquals(BaseAction.SUCCESS, result);
+        Assertions.assertEquals(BaseAction.SUCCESS, result);
         Mockito.verify(resourceManager, Mockito.times(1)).updateMetadataMapping(Mockito.any(Map.class));
         Mockito.verify(configManager, Mockito.times(1)).updateConfigItem(Mockito.anyString(), Mockito.anyString());
     }
@@ -220,14 +225,14 @@ public class ContentAdminActionTest {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
         when(searchEngineManager.startReloadContentsReferences()).thenThrow(EntException.class);
         String result = action.reloadContentsIndex();
-        Assert.assertEquals(BaseAction.FAILURE, result);
+        Assertions.assertEquals(BaseAction.FAILURE, result);
     }
 
     @Test
     public void reloadContentsIndex_2() throws Exception {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
         String result = action.reloadContentsIndex();
-        Assert.assertEquals(BaseAction.SUCCESS, result);
+        Assertions.assertEquals(BaseAction.SUCCESS, result);
         Mockito.verify(searchEngineManager, Mockito.times(1)).startReloadContentsReferences();
     }
 
@@ -236,14 +241,14 @@ public class ContentAdminActionTest {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
         when(contentManager.reloadEntitiesReferences(null)).thenThrow(RuntimeException.class);
         String result = action.reloadContentsReference();
-        Assert.assertEquals(BaseAction.FAILURE, result);
+        Assertions.assertEquals(BaseAction.FAILURE, result);
     }
 
     @Test
     public void reloadContentsReference_2() throws Exception {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
         String result = action.reloadContentsReference();
-        Assert.assertEquals(BaseAction.SUCCESS, result);
+        Assertions.assertEquals(BaseAction.SUCCESS, result);
         Mockito.verify(contentManager, Mockito.times(1)).reloadEntitiesReferences(null);
     }
 
@@ -252,7 +257,7 @@ public class ContentAdminActionTest {
         List<String> ratio = Arrays.asList("16:9", "4:3");
         action.setRatio(ratio);
         action.validate();
-        Assert.assertFalse(action.hasErrors());
+        Assertions.assertFalse(action.hasErrors());
     }
 
     @Test
@@ -260,7 +265,7 @@ public class ContentAdminActionTest {
         List<String> ratio = Arrays.asList("invalid");
         action.setRatio(ratio);
         action.validate();
-        Assert.assertTrue(action.hasErrors());
+        Assertions.assertTrue(action.hasErrors());
     }
 
     @Test
@@ -272,14 +277,14 @@ public class ContentAdminActionTest {
         List<String> ratio = Arrays.asList("16:9", "4:3");
         action.setRatio(ratio);
         String result = action.updateSystemParams();
-        Assert.assertEquals(BaseAction.SUCCESS, result);
-        Assert.assertEquals("16:9;4:3", action.getAspectRatio());
+        Assertions.assertEquals(BaseAction.SUCCESS, result);
+        Assertions.assertEquals("16:9;4:3", action.getAspectRatio());
     }
 
     @Test
     public void testAspectRatioFromParams() throws Throwable {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(ASPECT_RATIO_PARAMS);
         action.initLocalMap();
-        Assert.assertEquals("16:9;2:3", action.getAspectRatio());
+        Assertions.assertEquals("16:9;2:3", action.getAspectRatio());
     }
 }

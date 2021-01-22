@@ -13,18 +13,22 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.listviewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestTextAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
-	public void testFailureAddTextFilter() throws Throwable {
+	@Test
+    public void testFailureAddTextFilter() throws Throwable {
 		Map<String, String> params = this.getBaseParams("NEW");
 		params.put("filterKey", "Title");
 		params.put("attributeFilter", "true");

@@ -13,6 +13,9 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content.command.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +38,8 @@ import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
 import org.entando.entando.aps.system.services.command.IBulkCommandManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestContentBulkCommand extends BaseTestCase {
 
@@ -42,12 +47,7 @@ public class TestContentBulkCommand extends BaseTestCase {
     private IContentManager contentManager;
     private IBulkCommandManager bulkCommandManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
+    @BeforeEach
     private void init() throws Exception {
         try {
             contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
@@ -58,6 +58,7 @@ public class TestContentBulkCommand extends BaseTestCase {
         }
     }
 
+    @Test
     public void testGroupCommands() {
         Collection<String> items = new ArrayList<>();
         Collection<String> groups = new ArrayList<>();
@@ -69,6 +70,7 @@ public class TestContentBulkCommand extends BaseTestCase {
         assertNotNull(groupCommand);
     }
 
+    @Test
     public void testCategoryCommands() throws Exception {
         List<String> masterContentIds = new ArrayList<>();
         masterContentIds.add("ART102");

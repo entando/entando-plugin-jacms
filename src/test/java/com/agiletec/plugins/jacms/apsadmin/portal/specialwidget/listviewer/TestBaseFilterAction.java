@@ -13,18 +13,22 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.listviewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestBaseFilterAction extends ApsAdminBaseTestCase {
 	
-	public void testNewFilter() throws Throwable {
+	@Test
+    public void testNewFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		this.initAction("/do/jacms/Page/SpecialWidget/ListViewer", "newFilter");
 		this.addParameter("pageCode", "homepage");
@@ -34,7 +38,8 @@ public class TestBaseFilterAction extends ApsAdminBaseTestCase {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testSetFilterType() throws Throwable {
+	@Test
+    public void testSetFilterType() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("pageCode", "homepage");
@@ -59,7 +64,8 @@ public class TestBaseFilterAction extends ApsAdminBaseTestCase {
 		assertEquals(BaseFilterAction.DATE_ATTRIBUTE_FILTER_TYPE, action.getFilterTypeId());
 	}
 	
-	public void testSaveFilter() throws Throwable {
+	@Test
+    public void testSaveFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("pageCode", "homepage");

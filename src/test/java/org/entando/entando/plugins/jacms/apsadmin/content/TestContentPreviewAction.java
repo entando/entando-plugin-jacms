@@ -13,6 +13,10 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +28,14 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentPreviewAction extends AbstractBaseTestContentAction {
 
+    @Test
     public void testPreviewNewContent() throws Throwable {
         String insertedDescr = "XXX Prova preview XXX";
         String contentTypeCode = "ART";
@@ -54,6 +60,7 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         assertEquals("Nuovo titolo di prova", titleAttribute.getTextForLang("it"));
     }
 
+    @Test
     public void testPreviewContent() throws Throwable {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
@@ -77,6 +84,7 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         assertEquals("Nuovo titolo di prova", titleAttribute.getTextForLang("it"));
     }
 
+    @Test
     public void testExecutePreviewContent_1() throws Throwable {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
@@ -89,6 +97,7 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         assertNull(result);
     }
 
+    @Test
     public void testExecutePreviewContent_2() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
@@ -101,6 +110,7 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         assertNull(result);
     }
 
+    @Test
     public void testExecutePreviewContent_3() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
@@ -113,6 +123,7 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         assertNull(result);
     }
 
+    @Test
     public void testFailureExecutePreviewContent() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);

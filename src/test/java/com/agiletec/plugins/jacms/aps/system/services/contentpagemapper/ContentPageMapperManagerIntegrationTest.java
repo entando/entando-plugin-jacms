@@ -13,9 +13,13 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.BaseTestCase;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.0
@@ -23,22 +27,20 @@ import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
  */
 public class ContentPageMapperManagerIntegrationTest extends BaseTestCase {
 	
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
+    @Test
     public void testGetContentPageMapper() throws EntException {
 		String codePage = _contentPageMapperManager.getPageCode("ART1");
 		assertEquals(codePage, "homepage");
 	}
 	
+    @Test
     public void testReloadContentPageMapper() throws EntException{   
         _contentPageMapperManager.reloadContentPageMapper();
         String codePage = _contentPageMapperManager.getPageCode("ART1");
         assertEquals(codePage, "homepage");
     }
     
+    @BeforeEach
     private void init() throws Exception {
     	try {
     		_contentPageMapperManager = (IContentPageMapperManager) this.getService(JacmsSystemConstants.CONTENT_PAGE_MAPPER_MANAGER);

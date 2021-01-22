@@ -13,6 +13,9 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.viewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +23,15 @@ import java.util.Map;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	
-	public void testFindContent_1() throws Throwable {
+	@Test
+    public void testFindContent_1() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "pagina_11", "1", null);//Pagina del gruppo free
 		assertEquals(Action.SUCCESS, result);
 		
@@ -37,7 +42,8 @@ public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 		assertTrue(contentIds.contains("ART121"));//Contenuto del gruppo "administrators" abilitato al gruppo free
 	}
 	
-	public void testFindContent_2() throws Throwable {
+	@Test
+    public void testFindContent_2() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "administrators_page", "1", null);//Pagina del gruppo amministratori
 		assertEquals(Action.SUCCESS, result);
 		
@@ -46,7 +52,8 @@ public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 		assertEquals(24, contentIds.size());//Tutti i contenuti pubblici
 	}
 	
-	public void testFindContent_3() throws Throwable {
+	@Test
+    public void testFindContent_3() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "customers_page", "1", null);//Pagina del gruppo customers
 		assertEquals(Action.SUCCESS, result);
 		
@@ -59,7 +66,8 @@ public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 		assertTrue(contentIds.contains("ART111"));//Contenuto del gruppo "coach" abilitato al gruppo customers
 	}
 	
-	public void testPerformSearch() throws Throwable {
+	@Test
+    public void testPerformSearch() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeParametrizedSearchContents("admin", "pagina_11", "1", null);//Pagina Free
 		ContentFinderViewerAction action = (ContentFinderViewerAction) this.getAction();
@@ -86,7 +94,8 @@ public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
     	}
 	}
 	
-	public void testExtendedSearch() throws Throwable {
+	@Test
+    public void testExtendedSearch() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeParametrizedSearchContents("admin", "pagina_11", "1",  "VN1");//Pagina Free
 		ContentFinderViewerAction action = (ContentFinderViewerAction) this.getAction();
@@ -113,7 +122,8 @@ public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
     	}
 	}
 	
-	public void testFailureJoinContent_1() throws Throwable {
+	@Test
+    public void testFailureJoinContent_1() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", null);//ID Nullo
 		assertEquals(Action.INPUT, result);
 		

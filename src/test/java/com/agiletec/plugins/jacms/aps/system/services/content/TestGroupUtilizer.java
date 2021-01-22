@@ -13,14 +13,20 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
+import org.junit.jupiter.api.Test;
 
 public class TestGroupUtilizer extends BaseTestCase {
-	public void testGetGroupsUtilizers() throws Throwable {
+    
+	@Test
+    public void testGetGroupsUtilizers() throws Throwable {
     	String[] names = this.getApplicationContext().getBeanNamesForType(GroupUtilizer.class);
     	assertTrue(names.length>=4);
     	for (int i=0; i<names.length; i++) {
@@ -33,4 +39,5 @@ public class TestGroupUtilizer extends BaseTestCase {
 			}
 		}
     }
+    
 }

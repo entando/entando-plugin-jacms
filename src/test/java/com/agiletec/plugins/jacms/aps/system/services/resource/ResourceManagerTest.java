@@ -19,18 +19,24 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResour
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.is;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class ResourceManagerTest {
 
     @Mock
@@ -42,7 +48,7 @@ public class ResourceManagerTest {
     @InjectMocks
     private ResourceManager resourceManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         AttachResource mockAttachResource = Mockito.mock(AttachResource.class);
@@ -66,8 +72,8 @@ public class ResourceManagerTest {
 
     public void createResourceType() {
         ResourceInterface type = this.resourceManager.createResourceType("Image");
-        Assert.assertNotNull(type);
-        Assert.assertEquals("Image", type.getType());
+        Assertions.assertNotNull(type);
+        Assertions.assertEquals("Image", type.getType());
     }
 
 }

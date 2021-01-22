@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -32,18 +38,21 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentAction extends AbstractBaseTestContentAction {
     
+    @Test
     public void testEditForAdminUser() throws Throwable {
         this.testSuccesfullEdit("ART1", "admin");
         this.testSuccesfullEdit("RAH101", "admin");
         this.testSuccesfullEdit("EVN103", "admin");
     }
 
+    @Test
     public void testEditForCustomerUser() throws Throwable {
         String username = "editorCustomers";
         this.testFailureEdit("ART1", username);
@@ -51,6 +60,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         this.testFailureEdit("EVN103", username);
     }
 
+    @Test
     public void testEditForCoachUser() throws Throwable {
         String username = "editorCoach";
         this.testFailureEdit("ART1", username);//Contenuto Non autorizzato
@@ -79,6 +89,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(BaseAction.USER_NOT_ALLOWED, result);
     }
 
+    @Test
     public void testValidate_1() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         String contentTypeCode = "ART";
@@ -131,6 +142,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testValidate_2() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         try {
@@ -168,6 +180,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testValidate_3() throws Throwable { // Description maxlength
         String contentTypeCode = "ART";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
@@ -207,6 +220,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
     /*
 	 * We test, among other things the CheckBox attribute
      */
+    @Test
     public void testValidate_4() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
@@ -268,6 +282,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testValidate_5() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
@@ -336,6 +351,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
+    @Test
     public void testValidate_6() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
@@ -372,6 +388,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
+    @Test
     public void testValidate_7() throws Throwable {
         String contentId = "ART112";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
@@ -414,6 +431,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testJoinRemoveCategory() throws Throwable {
         String contentId = "ART1";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
@@ -464,6 +482,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(0, contentOnSession.getCategories().size());
     }
 
+    @Test
     public void testJoinRemoveGroup() throws Throwable {
         String contentId = "ART1";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
@@ -515,6 +534,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(0, contentOnSession.getGroups().size());
     }
 
+    @Test
     public void testSaveNewContent() throws Throwable {
         String contentId = "ART1";
         Content master = this.getContentManager().loadContent(contentId, false);
@@ -545,6 +565,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testSaveContentWithPageReference() throws Throwable {
         String contentId = "ART111";
         this.executeEdit(contentId, "admin");
@@ -599,6 +620,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
+    @Test
     public void testSuspendReferencedContent() throws Throwable {
         String contentId = "ART1";
         Content master = this.getContentManager().loadContent(contentId, false);
@@ -624,6 +646,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
+    @Test
     public void testRedirectFindImageResource() throws Throwable {
         String contentId = "ART1";
         this.executeEdit(contentId, "admin");
@@ -636,6 +659,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(Action.SUCCESS, result);
     }
 
+    @Test
     public void testFailureCopyPaste_1() throws Throwable {
         String contentId = "ART100";//Contenuto inesistente
         boolean publicVersion = false;
@@ -643,6 +667,7 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(BaseAction.FAILURE, result);
     }
 
+    @Test
     public void testFailureCopyPaste_2() throws Throwable {
         String contentId = "ART179";//Contenuto non pubblico
         boolean publicVersion = true;
@@ -650,12 +675,14 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(BaseAction.FAILURE, result);
     }
 
+    @Test
     public void testExecuteCopyPaste_1() throws Throwable {
         String contentId = "ART1";//Contenuto pubblico
         boolean publicVersion = true;
         this.executeSuccessfulCopyPaste(contentId, publicVersion, "admin");
     }
 
+    @Test
     public void testExecuteCopyPaste_2() throws Throwable {
         String contentId = "ART179";//Contenuto non pubblico
         boolean publicVersion = false;

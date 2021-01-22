@@ -13,6 +13,8 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
@@ -20,13 +22,15 @@ import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 
-	public void testValidate_Single_1() throws Throwable {
+	@Test
+    public void testValidate_Single_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -49,7 +53,8 @@ public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_Single_2() throws Throwable {
+	@Test
+    public void testValidate_Single_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -77,7 +82,8 @@ public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_MonolistElement() throws Throwable {
+	@Test
+    public void testValidate_MonolistElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -127,7 +133,8 @@ public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_ListElement() throws Throwable {
+	@Test
+    public void testValidate_ListElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -196,7 +203,8 @@ public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_CompositeElement() throws Throwable {
+	@Test
+    public void testValidate_CompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -240,7 +248,8 @@ public class TestValidateDateAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_MonolistCompositeElement() throws Throwable {
+	@Test
+    public void testValidate_MonolistCompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);

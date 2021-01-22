@@ -13,6 +13,8 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
@@ -20,21 +22,25 @@ import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	
-	public void testValidateSingleBoolean() throws Throwable {
+	@Test
+    public void testValidateSingleBoolean() throws Throwable {
 		this.validateSingle("Boolean");
 	}
 	
-	public void testValidateSingleCheckBox() throws Throwable {
+	@Test
+    public void testValidateSingleCheckBox() throws Throwable {
 		this.validateSingle("CheckBox");
 	}
 	
-	public void testValidateSingleThreeState() throws Throwable {
+	@Test
+    public void testValidateSingleThreeState() throws Throwable {
 		this.validateSingle("ThreeState");
 	}
 	
@@ -66,15 +72,18 @@ public class TestValidateBooleanAttributes extends AbstractTestContentAttribute 
 		}
 	}
 	
-	public void testValidateBooleanMonolist() throws Throwable {
+	@Test
+    public void testValidateBooleanMonolist() throws Throwable {
 		this.validateMonolistElement("MonoLBool");
 	}
 	
-	public void testValidateCheckBoxMonolist() throws Throwable {
+	@Test
+    public void testValidateCheckBoxMonolist() throws Throwable {
 		this.validateMonolistElement("MonoLChec");
 	}
 	
-	public void testValidateThreeStateMonolist() throws Throwable {
+	@Test
+    public void testValidateThreeStateMonolist() throws Throwable {
 		this.validateMonolistElement("MonoL3stat");
 	}
 	
@@ -123,15 +132,18 @@ public class TestValidateBooleanAttributes extends AbstractTestContentAttribute 
 		}
 	}
 	
-	public void testValidateBooleanList() throws Throwable {
+	@Test
+    public void testValidateBooleanList() throws Throwable {
 		this.validateListElement("ListBoolea");
 	}
 	
-	public void testValidateCheckBoxList() throws Throwable {
+	@Test
+    public void testValidateCheckBoxList() throws Throwable {
 		this.validateListElement("ListCheck");
 	}
 	
-	public void testValidateThreeStateList() throws Throwable {
+	@Test
+    public void testValidateThreeStateList() throws Throwable {
 		this.validateListElement("List3Stat");
 	}
 	
@@ -204,15 +216,18 @@ public class TestValidateBooleanAttributes extends AbstractTestContentAttribute 
 		}
 	}
 	
-	public void testValidateBooleanCompositeElement() throws Throwable {
+	@Test
+    public void testValidateBooleanCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "Boolean");
 	}
 	
-	public void testValidateCheckBoxCompositeElement() throws Throwable {
+	@Test
+    public void testValidateCheckBoxCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "CheckBox");
 	}
 	
-	public void testValidateThreeStateCompositeElement() throws Throwable {
+	@Test
+    public void testValidateThreeStateCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "ThreeState");
 	}
 	
@@ -251,15 +266,18 @@ public class TestValidateBooleanAttributes extends AbstractTestContentAttribute 
 		}
 	}
 	
-	public void testValidateBooleanMonolistCompositeElement() throws Throwable {
+	@Test
+    public void testValidateBooleanMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "Boolean");
 	}
 	
-	public void testValidateCheckBoxMonolistCompositeElement() throws Throwable {
+	@Test
+    public void testValidateCheckBoxMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "CheckBox");
 	}
 	
-	public void testValidateThreeStateMonolistCompositeElement() throws Throwable {
+	@Test
+    public void testValidateThreeStateMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "ThreeState");
 	}
 	

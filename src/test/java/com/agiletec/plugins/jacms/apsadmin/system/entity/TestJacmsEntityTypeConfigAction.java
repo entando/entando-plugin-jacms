@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.system.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +32,16 @@ import com.agiletec.apsadmin.system.entity.type.IEntityTypeConfigAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-	
-	public void testFailureAddEntityPrototype() throws Throwable {
+    @Test
+    public void testFailureAddEntityPrototype() throws Throwable {
 		String result = this.executeAddEntityPrototype("wrongEntityManagerName");
 		assertEquals("wrongEntityManager", result);
 		Map<String, List<String>> fieldErrors = this.getAction().getFieldErrors();
@@ -54,7 +56,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	public void testFailureEditEntityPrototype() throws Throwable {
+	@Test
+    public void testFailureEditEntityPrototype() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", "wrongEntityManagerName");
 		assertEquals("wrongEntityManager", result);
 		Map<String, List<String>> fieldErrors = this.getAction().getFieldErrors();
@@ -62,7 +65,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, fieldErrors.get("entityManagerName").size());
 	}
 	
-	public void testEditEntityPrototype() throws Throwable {
+	@Test
+    public void testEditEntityPrototype() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -71,7 +75,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(7, attributes.size());
 	}
 	
-	public void testEditNullEntityPrototype() throws Throwable {
+	@Test
+    public void testEditNullEntityPrototype() throws Throwable {
 		String result = this.executeEditEntityPrototype("WWW", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.INPUT, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -81,7 +86,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, fieldErrors.get("entityTypeCode").size());
 	}
 	
-	public void testMoveAttribute() throws Throwable {
+	@Test
+    public void testMoveAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -105,7 +111,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals("CorpoTesto", attributes.get(2).getName());
 	}
 	
-	public void testRemoveAttribute() throws Throwable {
+	@Test
+    public void testRemoveAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -134,10 +141,9 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		this.addParameter("entityTypeCode", entityTypeCode);
 		return this.executeAction();
 	}
-	
-	
-	
-	public void testValidateSaveEntityType() throws Throwable {
+    
+	@Test
+    public void testValidateSaveEntityType() throws Throwable {
 		Set<String> initEntityTypeCodes = this._contentManager.getEntityPrototypes().keySet();
 		this.setUserOnSession("admin");
 		this.initAction("/do/jacms/Entity", "addEntityType");
@@ -188,7 +194,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		}
 	}
 	
-	public void testSaveEntityType() throws Throwable {
+	@Test
+    public void testSaveEntityType() throws Throwable {
 		String typeCode = "TST";
 		assertNull(this._contentManager.getEntityPrototype(typeCode));
 		try {
@@ -224,7 +231,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	public void testFailureAddAttribute() throws Throwable {
+	@Test
+    public void testFailureAddAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		result = this.executeAddAttribute("WrongAttributeTypeCode");
@@ -240,7 +248,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, fieldErrors.get("attributeTypeCode").size());
 	}
 	
-	public void testAddAttribute() throws Throwable {
+	@Test
+    public void testAddAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		result = this.executeAddAttribute("Monotext");
@@ -256,7 +265,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	public void testFailureEditAttribute() throws Throwable {
+	@Test
+    public void testFailureEditAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -276,7 +286,8 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		assertEquals(1, fieldErrors.get("attributeName").size());
 	}
 	
-	public void testEditAttribute() throws Throwable {
+	@Test
+    public void testEditAttribute() throws Throwable {
 		String result = this.executeEditEntityPrototype("ART", JacmsSystemConstants.CONTENT_MANAGER);
 		assertEquals(Action.SUCCESS, result);
 		IApsEntity contentType = (IApsEntity) this.getRequest().getSession().getAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
@@ -296,6 +307,7 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
+    @BeforeEach
 	private void init() throws Exception {
     	try {
     		this._contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

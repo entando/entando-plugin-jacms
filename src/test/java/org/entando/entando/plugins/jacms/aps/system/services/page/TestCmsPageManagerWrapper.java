@@ -13,24 +13,24 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.page;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.services.page.IPage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni - M.Diana
  */
 public class TestCmsPageManagerWrapper extends BaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testGetContentUtilizers() throws Throwable {
+	@Test
+    public void testGetContentUtilizers() throws Throwable {
 		List<IPage> utilizers = this._pageManagerWrapper.getContentUtilizers("ART187");
 		assertEquals(3, utilizers.size());
 		List<String> codes = new ArrayList<String>();
@@ -49,6 +49,7 @@ public class TestCmsPageManagerWrapper extends BaseTestCase {
 		assertTrue(utilizers.get(0).isOnlineInstance());
 	}
 
+    @BeforeEach
 	private void init() throws Exception {
 		try {
 			this._pageManagerWrapper = (CmsPageManagerWrapper) super.getApplicationContext().getBean("jacmPageManagerWrapper");

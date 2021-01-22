@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.FieldSearchFilter;
@@ -30,6 +36,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author eu
@@ -40,9 +48,8 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     private ICmsSearchEngineManager searchEngineManager = null;
     private ICategoryManager categoryManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    protected void init() throws Exception {
         try {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
@@ -52,6 +59,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
 
+    @Test
     public void testSearchAllContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -78,6 +86,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
+    @Test
     public void testSearchOrderedContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -122,6 +131,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
+    @Test
     public void testSearchContents() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
@@ -192,6 +202,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
+    @Test
     public void testSearchContentsByRole_1() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
@@ -219,6 +230,7 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
 
+    @Test
     public void testSearchContentsByRole_2() throws Exception {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
@@ -270,7 +282,6 @@ public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.contentManager.deleteContent(newContent);
             assertNull(this.contentManager.loadContent(newContent.getId(), false));
         }
-
     }
     
 }

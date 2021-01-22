@@ -21,10 +21,7 @@ import org.entando.entando.plugins.jacms.web.content.ContentTypeResourceControll
 import org.entando.entando.plugins.jacms.web.contentmodel.util.RestControllerTestUtil;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentTypeValidator;
 import org.entando.entando.web.common.model.*;
-import org.junit.*;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 
@@ -37,7 +34,12 @@ import static org.entando.entando.plugins.jacms.web.contentmodel.util.RestContro
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class ContentTypeResourceControllerTest {
 
     private ContentTypeResourceController controller;
@@ -51,7 +53,7 @@ public class ContentTypeResourceControllerTest {
     @Mock
     private ContentTypeValidator validator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         controller = new ContentTypeResourceController(service, validator);
     }

@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -27,6 +33,9 @@ import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test del Data Access Object per gli oggetti contenuto (Content).
@@ -35,19 +44,8 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecor
  */
 public class TestContentDAO extends BaseTestCase {
 	
-	@Override
-	protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-	@Override
-    protected void tearDown() throws Exception {
-		super.tearDown();
-		this.dispose();
-	}
-    
-	public void testDeleteAddContent() throws Throwable {
+	@Test
+    public void testDeleteAddContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			this.deleteContent(mockContent);
@@ -71,7 +69,8 @@ public class TestContentDAO extends BaseTestCase {
 		assertFalse(contentRecord.isOnLine());
 	}
 	
-	public void testGetAllContentIds() throws Throwable {
+	@Test
+    public void testGetAllContentIds() throws Throwable {
 		List<String> contentIds1 = this._contentDao.getAllEntityId();
 		List<String> contentIds2 = this._contentManager.searchId(null);
 		assertEquals(contentIds1.size(), contentIds2.size());
@@ -81,7 +80,8 @@ public class TestContentDAO extends BaseTestCase {
 		}
 	}
 	
-	public void testInsertRemoveOnlineContent() throws Throwable {
+	@Test
+    public void testInsertRemoveOnlineContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			this.insertOnLineContent(mockContent);
@@ -109,7 +109,8 @@ public class TestContentDAO extends BaseTestCase {
 		assertFalse(contentRecord.isOnLine());
 	}
 	
-	public void testUpdateContent() throws Throwable {
+	@Test
+    public void testUpdateContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			mockContent.setDescription("New Description");
@@ -120,7 +121,8 @@ public class TestContentDAO extends BaseTestCase {
 		}
     }
 	
-	public void testGetPageUtilizers() throws Throwable {
+	@Test
+    public void testGetPageUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getPageUtilizers("pagina_11");
 		assertNotNull(contentIds);
 		assertEquals(2, contentIds.size());
@@ -128,7 +130,8 @@ public class TestContentDAO extends BaseTestCase {
 		assertEquals("EVN193", contentId);
     }
 	
-	public void testGetContentUtilizers() throws Throwable {
+	@Test
+    public void testGetContentUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getContentUtilizers("ART1");
 		assertNotNull(contentIds);
 		assertEquals(2, contentIds.size());
@@ -138,7 +141,8 @@ public class TestContentDAO extends BaseTestCase {
 		assertEquals("EVN194", contentId);
     }
 	
-	public void testGetGroupUtilizers() throws Throwable {
+	@Test
+    public void testGetGroupUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getGroupUtilizers("customers");
 		assertNotNull(contentIds);
 		assertEquals(5, contentIds.size());
@@ -149,7 +153,8 @@ public class TestContentDAO extends BaseTestCase {
 		assertTrue(contentIds.contains("ART112"));
     }
 	
-	public void testGetResourceUtilizers() throws Throwable {
+	@Test
+    public void testGetResourceUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getResourceUtilizers("44");
 		assertNotNull(contentIds);
 		assertEquals(3, contentIds.size());
@@ -194,6 +199,7 @@ public class TestContentDAO extends BaseTestCase {
     	return content;
     }
     
+    @AfterEach
     private void dispose() throws Exception {
 		Content mockContent = this.getMockContent();
 		try {
@@ -203,6 +209,7 @@ public class TestContentDAO extends BaseTestCase {
 		}
 	}
     
+    @BeforeEach
     private void init() throws Exception {
 		this._contentDao = new ContentDAO();
 		try {

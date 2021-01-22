@@ -2,14 +2,16 @@ package org.entando.entando.plugins.jacms.aps.system.services.contentsettings;
 
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.entando.entando.aps.system.exception.ResourceNotFoundException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ContentSettingsServiceUnitTest {
 
@@ -18,13 +20,11 @@ public class ContentSettingsServiceUnitTest {
     private List<String> cropRatios;
     private Map<String,List<String>> metadata;
 
-    @Before
+    @BeforeEach
     public void setup() {
         cropRatios =  Arrays.stream(new String[] { "4:3", "16:9" } ).collect(Collectors.toList());
         metadata = new HashMap<>();
         metadata.put("my_key", Arrays.stream(new String[]{ "mapping_1", "mapping_2"}).collect(Collectors.toList()));
-
-
         contentSettingsService = new ContentSettingsService();
     }
 
@@ -33,20 +33,26 @@ public class ContentSettingsServiceUnitTest {
         contentSettingsService.validateCropRatio(cropRatios, "4:4");
         contentSettingsService.validateCropRatio(cropRatios, "1000:1");
     }
-
-    @Test(expected = ValidationGenericException.class)
+    
+    @Test
     public void testCropRatioInvalidFormat1() {
-        contentSettingsService.validateCropRatio(cropRatios, "alfa:3");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateCropRatio(cropRatios, "alfa:3");
+        });
     }
 
-    @Test(expected = ValidationGenericException.class)
+    @Test
     public void testCropRatioInvalidFormat2() {
-        contentSettingsService.validateCropRatio(cropRatios, "4;3");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateCropRatio(cropRatios, "4;3");
+        });
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void testCropRatioConflict() {
-        contentSettingsService.validateCropRatioNotExists(cropRatios, "4:3");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateCropRatioNotExists(cropRatios, "4:3");
+        });
     }
 
     @Test
@@ -55,18 +61,24 @@ public class ContentSettingsServiceUnitTest {
         contentSettingsService.validateMetadata(metadata, "new_key2", "NEW-MAPpinG@1#special;,./ã][´´");
     }
 
-    @Test(expected = ValidationGenericException.class)
+    @Test
     public void testMetadataInvalidFormat1() {
-        contentSettingsService.validateMetadata(metadata, "NEW_key", "new_mapping1,new_mapping2");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateMetadata(metadata, "NEW_key", "new_mapping1,new_mapping2");
+        });
     }
 
-    @Test(expected = ValidationGenericException.class)
+    @Test
     public void testMetadataInvalidFormat2() {
-        contentSettingsService.validateMetadata(metadata, "new-key", "new_mapping1,new_mapping2");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateMetadata(metadata, "new-key", "new_mapping1,new_mapping2");
+        });
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void testMetadataConflict() {
-        contentSettingsService.validateMetadataNotExists(metadata, "my_key");
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            contentSettingsService.validateMetadataNotExists(metadata, "my_key");
+        });
     }
 }

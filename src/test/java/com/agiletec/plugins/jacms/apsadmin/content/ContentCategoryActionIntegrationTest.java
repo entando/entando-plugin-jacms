@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.system.common.tree.ITreeNode;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
@@ -21,20 +25,14 @@ import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentA
 import com.opensymphony.xwork2.Action;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction {
 
     private String contentOnSessionMarker;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    /**
-     * Open a new content for editing.
-     */
+    @BeforeEach
     private void init() throws Exception {
         try {
             this.setUserOnSession("admin");
@@ -60,6 +58,7 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
      * This test has been deliberately created to avoid regression, indeed in
      * the past join a category also caused tree node expansion.
      */
+    @Test
     public void testTreeStateOnJoinCategory() throws Throwable {
 
         String categoryCode = "general";
@@ -87,6 +86,7 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
         assertTrue(getAction().getTreeNodesToOpen().contains("home"));
     }
 
+    @Test
     public void testRemoveCategory() throws Throwable {
         String categoryCode = "cat1";
 
@@ -107,6 +107,7 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
         assertTrue(getAction().getContent().getCategories().isEmpty());
     }
 
+    @Test
     public void testNodeTreeOpen() throws Throwable {
         this.initAction("/do/jacms/Content", "showCategoryTreeOnContentFinding");
         this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
@@ -121,6 +122,7 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
         checkNodeClose("home", "general", "general_cat1");
     }
 
+    @Test
     public void testNodeTreeClose() throws Throwable {
         this.initAction("/do/jacms/Content", "showCategoryTreeOnContentFinding");
         this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
@@ -152,11 +154,11 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
                     break;
                 }
             }
-            assertNotNull("Node " + nodeCode + " not found", nodeFound);
+            assertNotNull(nodeFound);
             if (i < path.length - 1) {
-                assertTrue(nodeCode, nodeFound.isOpen());
+                assertTrue(nodeFound.isOpen());
             } else {
-                assertEquals(nodeCode, open, nodeFound.isOpen());
+                assertEquals(open, nodeFound.isOpen());
             }
         }
     }

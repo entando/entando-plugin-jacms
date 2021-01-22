@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.util;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
@@ -21,17 +23,12 @@ import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
 import com.agiletec.plugins.jacms.apsadmin.content.ContentActionConstants;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author E.Santoboni
  */
 public abstract class AbstractBaseTestContentAction extends ApsAdminBaseTestCase {
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
 
     protected String executeEdit(String contentId, String currentUserName) throws Throwable {
         this.initAction("/do/jacms/Content", "edit");
@@ -103,6 +100,7 @@ public abstract class AbstractBaseTestContentAction extends ApsAdminBaseTestCase
         return newContentIds;
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             _contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

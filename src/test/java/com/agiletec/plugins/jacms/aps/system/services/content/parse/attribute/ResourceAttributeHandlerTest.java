@@ -16,22 +16,27 @@ package com.agiletec.plugins.jacms.aps.system.services.content.parse.attribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ImageAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
  * @author E.Santoboni
  */
+@ExtendWith(MockitoExtension.class)
 public class ResourceAttributeHandlerTest {
 
     @Mock
@@ -46,18 +51,19 @@ public class ResourceAttributeHandlerTest {
     @InjectMocks
     private ResourceAttributeHandler handler;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = SAXException.class)
+    @Test
     public void startAttribute_1() throws SAXException {
         handler.setIntoMetadatas(true);
         when(attributes.getIndex(ArgumentMatchers.anyString())).thenReturn(1);
         when(attributes.getValue(ArgumentMatchers.anyInt())).thenReturn(null);
-        handler.startAttribute(attributes, "metadata");
-        Assert.fail();
+        Assertions.assertThrows(SAXException.class, () -> {
+            handler.startAttribute(attributes, "metadata");
+        });
     }
 
     @Test
@@ -68,8 +74,8 @@ public class ResourceAttributeHandlerTest {
         when(attributes.getIndex("key")).thenReturn(2);
         when(attributes.getValue(2)).thenReturn("test_key");
         handler.startAttribute(attributes, "metadata");
-        Assert.assertEquals("test_key", handler.getMetadataKey());
-        Assert.assertEquals("en", handler.getCurrentLangId());
+        Assertions.assertEquals("test_key", handler.getMetadataKey());
+        Assertions.assertEquals("en", handler.getCurrentLangId());
     }
 
     @Test
@@ -97,9 +103,9 @@ public class ResourceAttributeHandlerTest {
 
     @Test
     public void startAttribute_5() throws Exception {
-        Assert.assertFalse(handler.isIntoMetadatas());
+        Assertions.assertFalse(handler.isIntoMetadatas());
         handler.startAttribute(attributes, "metadatas");
-        Assert.assertTrue(handler.isIntoMetadatas());
+        Assertions.assertTrue(handler.isIntoMetadatas());
     }
 
     @Test
@@ -107,16 +113,17 @@ public class ResourceAttributeHandlerTest {
         when(attributes.getIndex("lang")).thenReturn(1);
         when(attributes.getValue(1)).thenReturn("it");
         handler.startAttribute(attributes, IResourceManager.LEGEND_METADATA_KEY);
-        Assert.assertEquals(IResourceManager.LEGEND_METADATA_KEY, handler.getMetadataKey());
-        Assert.assertEquals("it", handler.getCurrentLangId());
+        Assertions.assertEquals(IResourceManager.LEGEND_METADATA_KEY, handler.getMetadataKey());
+        Assertions.assertEquals("it", handler.getCurrentLangId());
     }
 
-    @Test(expected = SAXException.class)
+    @Test
     public void startAttribute_7() throws SAXException {
         when(attributes.getIndex("lang")).thenReturn(1);
         when(attributes.getValue(1)).thenReturn(null);
-        handler.startAttribute(attributes, "text");
-        Assert.fail();
+        Assertions.assertThrows(SAXException.class, () -> {
+            handler.startAttribute(attributes, "text");
+        });
     }
 
     @Test
@@ -124,7 +131,7 @@ public class ResourceAttributeHandlerTest {
         when(attributes.getIndex("lang")).thenReturn(2);
         when(attributes.getValue(2)).thenReturn("en");
         handler.startAttribute(attributes, "text");
-        Assert.assertEquals("en", handler.getCurrentLangId());
+        Assertions.assertEquals("en", handler.getCurrentLangId());
     }
 
     @Test
@@ -136,8 +143,8 @@ public class ResourceAttributeHandlerTest {
         handler.endAttribute("metadata", buffer);
         Mockito.verify(currentAttr, Mockito.times(1)).setMetadata(ArgumentMatchers.eq("key_1"),
                 ArgumentMatchers.eq("en"), ArgumentMatchers.eq("value"));
-        Assert.assertNull(handler.getCurrentLangId());
-        Assert.assertNull(handler.getMetadataKey());
+        Assertions.assertNull(handler.getCurrentLangId());
+        Assertions.assertNull(handler.getMetadataKey());
     }
 
     @Test
@@ -155,8 +162,8 @@ public class ResourceAttributeHandlerTest {
         handler.endAttribute(IResourceManager.ALT_METADATA_KEY, buffer);
         Mockito.verify(currentAttr, Mockito.times(1)).setMetadata(ArgumentMatchers.eq(IResourceManager.ALT_METADATA_KEY),
                 ArgumentMatchers.eq("dr"), ArgumentMatchers.eq("value"));
-        Assert.assertNull(handler.getCurrentLangId());
-        Assert.assertNull(handler.getMetadataKey());
+        Assertions.assertNull(handler.getCurrentLangId());
+        Assertions.assertNull(handler.getMetadataKey());
     }
 
     @Test
@@ -165,7 +172,7 @@ public class ResourceAttributeHandlerTest {
         StringBuffer buffer = new StringBuffer("new text");
         handler.endAttribute("text", buffer);
         Mockito.verify(currentAttr, Mockito.times(1)).setText(ArgumentMatchers.eq("new text"), ArgumentMatchers.eq("pl"));
-        Assert.assertNull(handler.getCurrentLangId());
+        Assertions.assertNull(handler.getCurrentLangId());
     }
 
 }

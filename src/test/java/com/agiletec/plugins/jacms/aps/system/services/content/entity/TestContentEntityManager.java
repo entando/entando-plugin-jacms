@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Date;
 import java.util.List;
 
@@ -24,18 +29,15 @@ import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentEntityManager extends BaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
+	@Test
 	public void testSearchRecords() throws Throwable {
 		List<ApsEntityRecord> contents = this._contentManager.searchRecords(null);
 		assertNotNull(contents);
@@ -91,6 +93,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testSearchEvents() throws EntException {
 		EntitySearchFilter filterIt = new EntitySearchFilter("Titolo", true, "it", false);
 		filterIt.setLangCode("it");
@@ -137,6 +140,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 	
+	@Test
 	public void testSearchEntities() throws EntException {
 		EntitySearchFilter filter = new EntitySearchFilter("Data", true);
 		EntitySearchFilter[] filters = {filter};
@@ -157,6 +161,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 	
+	@Test
 	public void testLoadOrderedEvents_1() throws EntException {
 		EntitySearchFilter filterForDescr = new EntitySearchFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
 		filterForDescr.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -179,6 +184,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadOrderedEvents_2() throws EntException {
 		EntitySearchFilter filterForCreation = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
 		filterForCreation.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -200,6 +206,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadEvents2() throws EntException {
 		Date start = DateConverter.parseDate("1997-06-10", "yyyy-MM-dd");
 		Date end = DateConverter.parseDate("2020-09-19", "yyyy-MM-dd");
@@ -237,6 +244,7 @@ public class TestContentEntityManager extends BaseTestCase {
 	}
 
 
+	@Test
 	public void testLoadFutureEvents1() throws EntException {
 		Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
 		EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
@@ -252,6 +260,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadFutureEvents2() throws EntException {
 		Date date = DateConverter.parseDate("2008-01-01", "yyyy-MM-dd");
 		EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, date, null);
@@ -266,6 +275,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadFutureEvents3() throws EntException {
 		Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
 		EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
@@ -281,6 +291,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadPastEvents1() throws EntException {
 		Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
 
@@ -297,6 +308,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testLoadPastEvents2() throws EntException {
 		Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
 
@@ -312,7 +324,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
-
+	@Test
 	public void testLoadFutureEntityEvents1() throws Throwable {
 		Date dateForTest = DateConverter.parseDate("1999-03-14", "yyyy-MM-dd");
 
@@ -339,6 +351,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 
+    @Test
 	public void testLoadFutureEntityEvents2() throws Throwable {
 		Date startDateForTest = DateConverter.parseDate("1999-03-14", "yyyy-MM-dd");
 		EntitySearchFilter filter1 = new EntitySearchFilter("DataInizio", true, startDateForTest, null);
@@ -390,6 +403,7 @@ public class TestContentEntityManager extends BaseTestCase {
 		}
 	}
 	
+    @BeforeEach
 	private void init() throws Exception {
 		try {
 			this._contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

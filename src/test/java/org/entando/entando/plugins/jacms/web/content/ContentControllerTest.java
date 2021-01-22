@@ -22,21 +22,26 @@ import javax.servlet.http.HttpSession;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
 import org.entando.entando.web.AbstractControllerTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
+
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.validation.BindingResult;
 
 public class ContentControllerTest extends AbstractControllerTest {
@@ -53,7 +58,7 @@ public class ContentControllerTest extends AbstractControllerTest {
     @InjectMocks
     private ContentController controller;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -63,7 +68,6 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Ignore
     public void shouldGetExistingContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
@@ -84,7 +88,6 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Ignore
     public void testAddContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
@@ -102,7 +105,6 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Ignore
     public void testUpdateContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);

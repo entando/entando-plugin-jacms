@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import org.entando.entando.apsadmin.portal.rs.model.PageJO;
@@ -22,17 +24,14 @@ import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.portal.PageFinderAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class TestPageFinderAction extends ApsAdminBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testGetLastUpdated() throws Throwable {
+	@Test
+    public void testGetLastUpdated() throws Throwable {
 		this.setUserOnSession("admin");
 		this.initAction("/do/rs/Page", "lastUpdated");
 		this.addParameter("lastUpdateResponseSize", 1);
@@ -43,6 +42,7 @@ public class TestPageFinderAction extends ApsAdminBaseTestCase {
 		assertEquals(1, list.size());
 	}
 
+    @BeforeEach
 	private void init() throws Exception {
 		try {
 			this._pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);

@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -23,13 +25,15 @@ import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.resource.Ext
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.resource.ResourceAttributeActionHelper;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestExtendedResourceAction extends AbstractBaseTestContentAction {
 
-	public void testNewImageResource_1() throws Throwable {
+	@Test
+    public void testNewImageResource_1() throws Throwable {
 		this.executeEdit("ART1", "admin");//Contenuto FREE
 		String contentOnSessionMarker = super.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 
@@ -49,7 +53,8 @@ public class TestExtendedResourceAction extends AbstractBaseTestContentAction {
 		assertEquals(1, allowedGroup.size());
 	}
 
-	public void testNewImageResource_2() throws Throwable {
+	@Test
+    public void testNewImageResource_2() throws Throwable {
 		this.executeEdit("ART102", "admin");//Contenuto customers
 		String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
 

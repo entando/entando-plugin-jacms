@@ -13,6 +13,9 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
@@ -30,25 +33,21 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestApiContentTypeInterface extends ApiBaseTestCase {
 
     private final static String CONTENT_VIEW = "contentview";
     private final static String CONTENT_VIEW_TEST = "contentviewtest";
-
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
+    
+    @Test
     public void testGetXmlContent() throws Throwable {
         MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
         this.testGetContentType(mediaType, "admin", "ART", CONTENT_VIEW, "it");
-
     }
 
+    @Test
     public void testCreateNewContentFromXml() throws Throwable {
         MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
         this.testCreateNewContentType(mediaType, "TST");
@@ -58,18 +57,14 @@ public class TestApiContentTypeInterface extends ApiBaseTestCase {
         JAXBContentType jaxbContentType1 = null;
         Properties properties = super.createApiProperties("admin", "it", mediaType);
         jaxbContentType1 = this.testGetContentType(mediaType, "admin", "ART", CONTENT_VIEW, "it");
-
         //Copy the contentType from an existing object to a new one and update some parameters for testing
         JAXBContentType jaxbContentType = jaxbContentType1;
-
         jaxbContentType.setTypeCode(contentTypeId);
         jaxbContentType.setViewPage(CONTENT_VIEW_TEST);
         jaxbContentType.setDefaultModelId(12);
         jaxbContentType.setListModelId(13);
-
         ApiResource contentTypeResource = this.getApiCatalogManager().getResource("jacms", "contentType");
         ApiMethod postMethod = contentTypeResource.getPostMethod();
-
         try {
             Object response = this.getResponseBuilder().createResponse(postMethod, jaxbContentType, properties);
             assertNotNull(response);
@@ -83,9 +78,7 @@ public class TestApiContentTypeInterface extends ApiBaseTestCase {
             if (null != jaxbContentType1) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(contentTypeId);
             }
-
         }
-
     }
 
     protected JAXBContentType testGetContentType(MediaType mediaType, String username, String contentTypeId, String viewPage, String langCode) throws Throwable {
@@ -107,12 +100,11 @@ public class TestApiContentTypeInterface extends ApiBaseTestCase {
         return jaxbContentType;
     }
 
-    private void init() throws Exception {
-        try {
-            this.contentManager = (IContentManager) this.getApplicationContext().getBean(JacmsSystemConstants.CONTENT_MANAGER);
-        } catch (Throwable t) {
-            throw new Exception(t);
-        }
+    @Override
+    @BeforeEach
+    public void init() {
+        super.init();
+        this.contentManager = (IContentManager) this.getApplicationContext().getBean(JacmsSystemConstants.CONTENT_MANAGER);
     }
 
     private IContentManager contentManager;

@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +30,15 @@ import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.link.helper.ILinkAttributeActionHelper;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestUrlLinkAction extends AbstractBaseTestContentAction {
 
-	public void testFailureJoinContentLink_1() throws Throwable {
+	@Test
+    public void testFailureJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("ART1", "VediAnche", "it");
 
 		this.initContentAction("/do/jacms/Content/Link", "joinUrlLink", contentOnSessionMarker);
@@ -44,7 +50,8 @@ public class TestUrlLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(1, typeFieldErrors.size());
 	}
 
-	public void testJoinContentLink_1() throws Throwable {
+	@Test
+    public void testJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("ART1", "VediAnche", "it");
 
 		this.initContentAction("/do/jacms/Content/Link", "joinUrlLink", contentOnSessionMarker);

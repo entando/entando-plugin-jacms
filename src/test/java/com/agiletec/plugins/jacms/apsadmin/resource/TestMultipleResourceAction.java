@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +33,8 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import java.util.HashMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
@@ -36,12 +43,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
 
     private IResourceManager resourceManager = null;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
+    @Test
     public void testTrashResource() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "trash");
@@ -58,6 +60,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         assertEquals(Action.INPUT, result);
     }
 
+    @Test
     public void testDeleteResourceReferencedFromEditor() throws Throwable {
         this.setUserOnSession("mainEditor");
         this.initAction("/do/jacms/Resource", "delete");
@@ -66,6 +69,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         assertEquals("references", result);
     }
 
+    @Test
     public void testDeleteUnknownResource() throws Throwable {
         String result = null;
         try {
@@ -79,6 +83,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     //Test the validation defined in the ResourceAction-validation.xml
+    @Test
     public void testSaveNewResourceStrutsValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "save");
@@ -93,6 +98,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     //Test the validation defined in the MultipleResourceAction.java
+    @Test
     public void testSaveNewResourceMultipleResourceValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "save");
@@ -110,6 +116,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         assertEquals(1, actionFieldErrors.get("fileUploadContentType_0").size());        
     }
 
+    @Test
     public void testSaveNewResource_2() throws Throwable {
         String insertedDescr = "Description ";
         while (insertedDescr.length() < 300) {
@@ -129,6 +136,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
 
     }
 
+    @Test
     public void testSaveEditedResource() throws Throwable {
         String resourceId = "44";
         this.setUserOnSession("admin");
@@ -154,6 +162,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         }
     }
 
+    @Test
     public void testPerformRemoveJoinCategory() throws Throwable {
         this.entryEditResource("44", "admin");
 
@@ -204,6 +213,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         assertTrue(action.getCategoryCodes().contains("resCat3"));
     }
 
+    @Test
     public void testJoinCategoryWithInvalidCategory() throws Throwable {
         String result = null;
         try {
@@ -217,6 +227,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     // * NOTE: we create a fake resource using the manager rather than the most obvious 'save' action.
+    @Test
     public void testDelete() throws Throwable {
         ResourceInterface resource = this.resourceManager.createResourceType("Image");
         String resourceId = null;
@@ -266,6 +277,7 @@ public class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         assertEquals(Action.SUCCESS, result);
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);

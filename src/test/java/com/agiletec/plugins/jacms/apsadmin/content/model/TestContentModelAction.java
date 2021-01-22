@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
@@ -31,24 +36,16 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import com.opensymphony.xwork2.Action;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentModelAction extends ApsAdminBaseTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        this.deleteReferencingPage();
-        super.tearDown();
-    }
-
+    @Test
     public void testNewModel() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/ContentModel", "new");
@@ -56,6 +53,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals(Action.SUCCESS, result);
     }
 
+    @Test
     public void testEdit() throws Throwable {
         long modelId = 1;
         this.setUserOnSession("admin");
@@ -73,6 +71,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals(currentModel.getStylesheet(), action.getStylesheet());
     }
 
+    @Test
     public void testSaveWithErrors_1() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/ContentModel", "save");
@@ -84,6 +83,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals(4, fieldErrors.size());
     }
 
+    @Test
     public void testSaveWithErrors_2() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/ContentModel", "save");
@@ -111,6 +111,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals(2, fieldErrors.get("modelId").size());//wrong format
     }
 
+    @Test
     public void testSaveWithErrors_3() throws Throwable {
         String veryLongDescription = "Very but very very very long description (upper than 50 characters) for invoke description's length validation";
         int negativeModelId = 0;
@@ -138,6 +139,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         }
     }
 
+    @Test
     public void testAddNewModel() throws Throwable {
         List<ContentModel> eventModels = this._contentModelManager.getModelsForContentType("EVN");
         assertEquals(0, eventModels.size());
@@ -170,6 +172,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         }
     }
 
+    @Test
     public void testUpdateModel() throws Throwable {
         List<ContentModel> eventModels = this._contentModelManager.getModelsForContentType("EVN");
         assertEquals(0, eventModels.size());
@@ -207,6 +210,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         }
     }
 
+    @Test
     public void testTrashModel() throws Throwable {
         long modelId = 1;
         this.setUserOnSession("admin");
@@ -217,6 +221,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals(Action.SUCCESS, result);
     }
 
+    @Test
     public void testTrashReferencedModel() throws Throwable {
         long modelId = 2;
         this.setUserOnSession("admin");
@@ -226,6 +231,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         assertEquals("references", result);
     }
 
+    @Test
     public void testDeleteModel() throws Throwable {
         List<ContentModel> eventModels = this._contentModelManager.getModelsForContentType("EVN");
         assertEquals(0, eventModels.size());
@@ -257,6 +263,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         }
     }
 
+    @Test
     public void testDeleteReferencedModel() throws Throwable {
         this.setUserOnSession("admin");
 
@@ -311,6 +318,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         this._contentModelManager.addContentModel(model);
     }
 
+    @BeforeEach
     private void init() throws Exception {
         this._widgetTypeManager = (IWidgetTypeManager) this.getService(SystemConstants.WIDGET_TYPE_MANAGER);
         this._pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);
@@ -380,6 +388,7 @@ public class TestContentModelAction extends ApsAdminBaseTestCase {
         return widget;
     }
 
+    @AfterEach
     private void deleteReferencingPage() throws Exception {
         this._pageManager.deletePage("referencing_page");
     }

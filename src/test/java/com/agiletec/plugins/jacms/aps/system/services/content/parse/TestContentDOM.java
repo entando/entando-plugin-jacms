@@ -13,11 +13,16 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.parse;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.BaseTestCase;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.0
@@ -25,11 +30,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
  */
 public class TestContentDOM extends BaseTestCase {
 	
-	protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
+	@Test
     public void testGetXMLDocument() throws EntException {
     	Content contentTest = this._contentManager.createContentType("ART");
     	assertNotNull(contentTest);
@@ -39,6 +40,7 @@ public class TestContentDOM extends BaseTestCase {
 		assertTrue((index != -1));
 	}
     
+    @BeforeEach
     private void init() throws Exception {
 		try {
 			_contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

@@ -50,9 +50,9 @@ import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -71,7 +71,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     @Autowired
     private IContentManager contentManager;
 
-    @Before
+    @BeforeEach
     public void setupTest() {
         mockMvcHelper = new MockMvcHelper(mockMvc);
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
@@ -101,7 +101,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     @Test
     public void testCreateUnauthorizedContentType() throws Exception {
         String typeCode = "TX0";
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
         content.setTypeDescription("My content type " + typeCode);
@@ -115,14 +115,14 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .content(jsonMapper.writeValueAsString(contentTypeRequest))
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnauthorized());
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
     }
 
     @Test
     public void testCreateContentType() throws Exception {
         String typeCode = "TX1";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
             Content content = new Content();
             content.setTypeCode(typeCode);
             content.setTypeDescription("My content type " + typeCode);
@@ -146,12 +146,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                     .andExpect(jsonPath("$.payload.defaultContentModel", is("My Model")))
                     .andExpect(jsonPath("$.payload.defaultContentModelList", is("Model list")));
 
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -182,7 +182,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -205,7 +205,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -222,12 +222,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.contentTypeCode", is(typeCode)))
                     .andReturn();
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         } catch (Exception e) {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
             throw e;
         }
     }
@@ -280,7 +280,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -306,12 +306,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             placeholders.put("**NAME**", "Different name...");
             executeContentTypePost("1_type_valid.json", placeholders, accessToken, status().isConflict());
 
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -675,7 +675,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -699,7 +699,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -725,7 +725,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -751,7 +751,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -790,7 +790,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -810,7 +810,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -858,7 +858,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -881,7 +881,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -979,7 +979,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -1045,7 +1045,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -1122,7 +1122,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -1163,7 +1163,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     private ContentTypeDto createContentType(String typeCode) throws Exception {
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
         content.setTypeDescription("My content type " + typeCode);
@@ -1177,7 +1177,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonMapper.writeValueAsString(contentTypeRequest))
                 .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
-        Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         return stringToContentTypeDto(mvcResult);
     }
 

@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.viewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,25 +29,22 @@ import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testInitConfigViewerwithNoWidgetCode() throws Throwable {
+	@Test
+    public void testInitConfigViewerwithNoWidgetCode() throws Throwable {
 		String result = this.executeConfigViewer("admin", "homepage", "1", null);
 		assertEquals("pageTree", result);
 		assertEquals(1, this.getAction().getActionErrors().size());
 	}
 
-	public void testInitConfigViewer_1() throws Throwable {
+	@Test
+    public void testInitConfigViewer_1() throws Throwable {
 		String result = this.executeConfigViewer("admin", "homepage", "1", "content_viewer");
 		assertEquals(Action.SUCCESS, result);
 		ContentViewerWidgetAction action = (ContentViewerWidgetAction) this.getAction();
@@ -52,7 +53,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(0, widget.getConfig().size());
 	}
 
-	public void testInitConfigViewer_2() throws Throwable {
+	@Test
+    public void testInitConfigViewer_2() throws Throwable {
 		String result = this.executeConfigViewer("admin", "homepage", "3", null);
 		assertEquals(Action.SUCCESS, result);
 		ContentViewerWidgetAction action = (ContentViewerWidgetAction) this.getAction();
@@ -76,7 +78,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 
-	public void testFailureJoinContent_1() throws Throwable {
+	@Test
+    public void testFailureJoinContent_1() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", null);//ID Nullo
 		assertEquals(Action.INPUT, result);
 
@@ -87,7 +90,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(1, contentIdFieldErrors.size());
 	}
 
-	public void testFailureJoinContent_2() throws Throwable {
+	@Test
+    public void testFailureJoinContent_2() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", "ART179");//ID di contenuto non pubblico
 		assertEquals(Action.INPUT, result);
 
@@ -98,7 +102,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(1, contentIdFieldErrors.size());
 	}
 
-	public void testFailureJoinContent_3() throws Throwable {
+	@Test
+    public void testFailureJoinContent_3() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", "ART122");//ID di contenuto non autorizzato
 		assertEquals(Action.INPUT, result);
 
@@ -109,7 +114,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(1, contentIdFieldErrors.size());
 	}
 
-	public void testJoinContent_1() throws Throwable {
+	@Test
+    public void testJoinContent_1() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", "EVN24");//Contenuto Free
 		assertEquals(Action.SUCCESS, result);
 		ContentViewerWidgetAction action = (ContentViewerWidgetAction) this.getAction();
@@ -127,7 +133,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertNull(newWidget.getConfig().getProperty("modelId"));
 	}
 
-	public void testJoinContent_2() throws Throwable {
+	@Test
+    public void testJoinContent_2() throws Throwable {
 		String result = this.executeJoinContent("admin", "customers_page", "1", "EVN191");//Contenuto Free su pagina non free
 		assertEquals(Action.SUCCESS, result);
 		ContentViewerWidgetAction action = (ContentViewerWidgetAction) this.getAction();
@@ -157,7 +164,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 
-	public void testSave_1() throws Throwable {
+	@Test
+    public void testSave_1() throws Throwable {
 		String pageCode = "pagina_2";
 		int frame = 3;
 		IPage page = this._pageManager.getDraftPage(pageCode);
@@ -193,7 +201,8 @@ public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 		}
 	}
 
-	public void testSave_2() throws Throwable {
+	@Test
+    public void testSave_2() throws Throwable {
 		this.testSave_2("ART102", "customer_subpage_1", 0, Action.INPUT);
 		this.testSave_2("ART104", "customer_subpage_1", 0, Action.INPUT);
 		this.testSave_2("ART111", "customer_subpage_1", 0, "configure");

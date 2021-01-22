@@ -31,13 +31,8 @@ import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.component.ComponentUsageEntity;
 import org.entando.entando.web.page.model.PageSearchRequest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
@@ -47,11 +42,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class ContentTypeServiceTest {
 
     private RestListRequest restListRequest;
@@ -66,7 +67,7 @@ public class ContentTypeServiceTest {
     @InjectMocks
     private ContentTypeService contentTypeService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         when(this.httpSession.getAttribute(anyString())).thenReturn(new MockUser());
@@ -164,7 +165,7 @@ public class ContentTypeServiceTest {
             when(pagedMetadataMapper.getPagedResult(any(), any(), anyString(), anyInt())).thenReturn(pagedMetadata);
 
         } catch (Exception e) {
-            Assert.fail("Mock Exception");
+            Assertions.fail("Mock Exception");
         }
     }
 

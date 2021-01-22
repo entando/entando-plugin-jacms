@@ -16,17 +16,20 @@ package com.agiletec.plugins.jacms.aps.system.services.contentpagemapper;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.events.PageChangedEvent;
 import com.agiletec.plugins.jacms.aps.system.services.contentpagemapper.cache.ContentMapperCacheWrapper;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author E.Santoboni
  */
+@ExtendWith(MockitoExtension.class)
 public class ContentPageMapperManagerTest {
 
 	@Mock
@@ -38,7 +41,7 @@ public class ContentPageMapperManagerTest {
 	@InjectMocks
 	private ContentPageMapperManager pageMapperManager;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 	}
@@ -59,8 +62,8 @@ public class ContentPageMapperManagerTest {
 	public void testGetPage() throws Throwable {
 		Mockito.when(cacheWrapper.getPageCode(Mockito.anyString())).thenReturn("pageCode");
 		String pageCode = this.pageMapperManager.getPageCode("ART1");
-		Assert.assertNotNull(pageCode);
-		Assert.assertEquals("pageCode", pageCode);
+		Assertions.assertNotNull(pageCode);
+		Assertions.assertEquals("pageCode", pageCode);
 	}
 
 	@Test

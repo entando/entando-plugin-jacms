@@ -13,18 +13,22 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.listviewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
 public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
-	public void testFailureAddNumberValueFilter_1() throws Throwable {
+	@Test
+    public void testFailureAddNumberValueFilter_1() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("");
 		assertEquals(Action.INPUT, result);
 		
@@ -35,7 +39,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		assertEquals(1, numberValueErrors.size());
 	}
 	
-	public void testFailureAddNumberValueFilter_2() throws Throwable {
+	@Test
+    public void testFailureAddNumberValueFilter_2() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("wrongFormat");
 		assertEquals(Action.INPUT, result);
 		
@@ -46,7 +51,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		assertEquals(2, numberValueErrors.size());//Errore in conversione e messaggio campo obbligatorio
 	}
 	
-	public void testSuccessAddNumberValueFilter() throws Throwable {
+	@Test
+    public void testSuccessAddNumberValueFilter() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("9");
 		assertEquals(Action.SUCCESS, result);
 	}
@@ -62,7 +68,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		return result;
 	}
 	
-	public void testFailureAddRangeNumberFilter_1() throws Throwable {
+	@Test
+    public void testFailureAddRangeNumberFilter_1() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("", "");
 		assertEquals(Action.INPUT, result);
 		
@@ -73,7 +80,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		assertEquals(1, numberValueErrors.size());//richiesto uno dei campi
 	}
 	
-	public void testFailureAddRangeNumberFilter_2() throws Throwable {
+	@Test
+    public void testFailureAddRangeNumberFilter_2() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("56", "6");
 		assertEquals(Action.INPUT, result);
 		
@@ -84,7 +92,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		assertEquals(1, numberValueErrors.size());//numberStart > numberEnd
 	}
 	
-	public void testFailureAddRangeNumberFilter_3() throws Throwable {
+	@Test
+    public void testFailureAddRangeNumberFilter_3() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("6", "wrongFormat");
 		assertEquals(Action.INPUT, result);
 		
@@ -95,7 +104,8 @@ public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilter
 		assertEquals(1, numberValueErrors.size());//numberEnd wrong Format
 	}
 	
-	public void testSuccesAddRangeNumberFilter() throws Throwable {
+	@Test
+    public void testSuccesAddRangeNumberFilter() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("6", "9");
 		assertEquals(Action.SUCCESS, result);
 		

@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.category.ICategoryManager;
@@ -25,10 +27,12 @@ import com.agiletec.plugins.jacms.aps.system.services.linkresolver.ILinkResolver
 import com.agiletec.plugins.jacms.aps.system.services.renderer.IContentRenderer;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
+import org.junit.jupiter.api.Test;
 
 public class TestCmsApplicationContext extends BaseTestCase {
 
-	public void testGetCmsServices() throws Throwable {
+	@Test
+    public void testGetCmsServices() throws Throwable {
 		try {
 			IResourceManager resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
 			assertNotNull(resourceManager);
