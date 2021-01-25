@@ -251,7 +251,8 @@ public class TestValidateResourceAttribute extends AbstractTestContentAttribute 
     }
 
     @BeforeEach
-    private void init() throws Exception {
+    protected void init() throws Exception {
+        super.init();
         try {
             this._resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
         } catch (Throwable t) {

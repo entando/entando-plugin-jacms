@@ -71,15 +71,15 @@ public class ContentViewerHelperTest {
         currentLang.setCode("en");
         currentLang.setDescr("English");
         IPage currentPage = Mockito.mock(IPage.class);
-        when(currentPage.isUseExtraTitles()).thenReturn(true);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE)).thenReturn(currentPage);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG)).thenReturn(currentLang);
+        Mockito.lenient().when(currentPage.isUseExtraTitles()).thenReturn(true);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE)).thenReturn(currentPage);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG)).thenReturn(currentLang);
 
         ContentRenderizationInfo renderizationInfo = Mockito.mock(ContentRenderizationInfo.class);
-        when(this.contentDispenser.getRenderizationInfo(Mockito.anyString(),
+        Mockito.lenient().when(this.contentDispenser.getRenderizationInfo(Mockito.anyString(),
                 Mockito.anyLong(), Mockito.anyString(), Mockito.any(RequestContext.class), Mockito.anyBoolean())).thenReturn(renderizationInfo);
-        when(renderizationInfo.getCachedRenderedContent()).thenReturn("Cached Rendered Content");
-        when(renderizationInfo.getRenderedContent()).thenReturn("Final Rendered Content");
+        Mockito.lenient().when(renderizationInfo.getCachedRenderedContent()).thenReturn("Cached Rendered Content");
+        Mockito.lenient().when(renderizationInfo.getRenderedContent()).thenReturn("Final Rendered Content");
     }
 
     @Test

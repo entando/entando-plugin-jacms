@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.ObjectError;
@@ -64,21 +64,19 @@ public class ContentModelServiceImplTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         fillMockedContentModelsMap();
         fillMockedContentTypesMap();
         fillMockedEntityTypes();
-        when(contentModelManager.getContentModel(anyLong()))
+        Mockito.lenient().when(contentModelManager.getContentModel(anyLong()))
                 .thenAnswer(invocation -> mockedContentModels.get(invocation.getArgument(0)));
-        when(contentModelManager.getContentModels()).thenReturn(new ArrayList<>(mockedContentModels.values()));
+        Mockito.lenient().when(contentModelManager.getContentModels()).thenReturn(new ArrayList<>(mockedContentModels.values()));
 
-        when(contentManager.getSmallContentTypesMap()).thenReturn(mockedContentTypes);
+        Mockito.lenient().when(contentManager.getSmallContentTypesMap()).thenReturn(mockedContentTypes);
 
-        when(contentModelManager.getContentModelReferences(1L, true))
+        Mockito.lenient().when(contentModelManager.getContentModelReferences(1L, true))
                 .thenReturn(Collections.singletonList(new ContentModelReference()));
 
-        when(contentModelManager.getContentModelReferences(1L, false))
+        Mockito.lenient().when(contentModelManager.getContentModelReferences(1L, false))
                 .thenReturn(Collections.singletonList(new ContentModelReference()));
 
         dictionaryProvider.setContentMap(new ArrayList<>());
@@ -94,7 +92,7 @@ public class ContentModelServiceImplTest {
         PagedMetadata<ContentModelDto> result = contentModelService.findMany(request);
         assertThat(result.getBody()).isNotNull().hasSize(3);
     }
-
+    
     @Test
     public void findManyShouldFilter() {
         RestListRequest request = new RestListRequest();
@@ -273,8 +271,8 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shoudlFailDeletingContentModelWithDefaultModelTemplate() {
-        when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
-        when(contentManager.getDefaultModel("BBB")).thenReturn("2");
+        Mockito.lenient().when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
+        Mockito.lenient().when(contentManager.getDefaultModel("BBB")).thenReturn("2");
         ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.delete(2L);
         });
@@ -285,8 +283,8 @@ public class ContentModelServiceImplTest {
 
     @Test
     public void shoudlFailDeletingContentModelWithDefaultModelListTemplate() {
-        when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
-        when(contentManager.getListModel("BBB")).thenReturn("2");
+        Mockito.lenient().when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
+        Mockito.lenient().when(contentManager.getListModel("BBB")).thenReturn("2");
         ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.delete(2L);
         });
@@ -328,7 +326,7 @@ public class ContentModelServiceImplTest {
         int componentUsage = contentModelService.getComponentUsage(5000L).getUsage();
         assertEquals(0, componentUsage);
     }
-
+    
     private void fillMockedContentModelsMap() {
         this.mockedContentModels = new HashMap<>();
         addMockedContentModel(1L, "AAA");

@@ -13,6 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
+import static com.agiletec.aps.BaseTestCase.createRequestContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.agiletec.aps.BaseTestCase;
+import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.FieldSearchFilter.Order;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
@@ -48,13 +50,18 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
+import javax.servlet.ServletContext;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter.TextSearchOption;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.mock.web.MockServletContext;
 
 /**
  * Test del servizio detentore delle operazioni sul motore di ricerca.
@@ -69,13 +76,21 @@ public class SearchEngineManagerIntegrationTest extends BaseTestCase {
     private IResourceManager resourceManager = null;
     private ICmsSearchEngineManager searchEngineManager = null;
     private ICategoryManager categoryManager;
-
-    /*
-    @Override
-    protected ConfigTestUtils getConfigUtils() {
-        return new CustomConfigTestUtils();
+    
+    @BeforeAll
+    public static void setUp() throws Exception {
+        try {
+            ServletContext srvCtx = new MockServletContext("", new FileSystemResourceLoader());
+            ApplicationContext applicationContext = (new CustomConfigTestUtils()).createApplicationContext(srvCtx);
+            setApplicationContext(applicationContext);
+            RequestContext reqCtx = createRequestContext(applicationContext, srvCtx);
+            setRequestContext(reqCtx);
+            setUserOnSession("guest");
+        } catch (Exception e) {
+            throw e;
+        }
     }
-    */
+    
     @Test
     public void testSearchAllContents() throws Throwable {
         try {

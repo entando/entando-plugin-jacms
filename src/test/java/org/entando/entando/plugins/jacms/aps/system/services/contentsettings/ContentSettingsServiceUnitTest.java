@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ public class ContentSettingsServiceUnitTest {
 
     @Test
     public void testCropRatioConflict() {
-        Assertions.assertThrows(ValidationGenericException.class, () -> {
+        Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentSettingsService.validateCropRatioNotExists(cropRatios, "4:3");
         });
     }
@@ -77,7 +76,7 @@ public class ContentSettingsServiceUnitTest {
 
     @Test
     public void testMetadataConflict() {
-        Assertions.assertThrows(ValidationGenericException.class, () -> {
+        Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentSettingsService.validateMetadataNotExists(metadata, "my_key");
         });
     }

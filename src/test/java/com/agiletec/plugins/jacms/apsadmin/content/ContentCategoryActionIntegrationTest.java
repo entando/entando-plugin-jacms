@@ -33,7 +33,8 @@ public class ContentCategoryActionIntegrationTest extends AbstractBaseTestConten
     private String contentOnSessionMarker;
 
     @BeforeEach
-    private void init() throws Exception {
+    protected void init() throws Exception {
+        super.init();
         try {
             this.setUserOnSession("admin");
 
