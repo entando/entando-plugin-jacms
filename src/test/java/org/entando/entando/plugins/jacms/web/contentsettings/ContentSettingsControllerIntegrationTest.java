@@ -341,11 +341,6 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
             .andExpect(jsonPath("$.payload.referencesStatus", Matchers.equalTo(1)));
     }
 
-    private String createAccessToken() throws Exception {
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        return mockOAuthInterceptor(user);
-    }
-
     private ResultActions performGetContentSettings(UserDetails user) throws Exception {
         String path = "/plugins/cms/contentSettings";
         if (null == user) {
