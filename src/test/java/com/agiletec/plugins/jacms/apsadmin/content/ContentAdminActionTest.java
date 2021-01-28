@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -77,14 +76,13 @@ public class ContentAdminActionTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        when(textProvider.getText(ArgumentMatchers.anyString(), ArgumentMatchers.anyList())).thenReturn(ArgumentMatchers.anyString());
+        Mockito.lenient().when(textProvider.getText(ArgumentMatchers.anyString(), ArgumentMatchers.anyList())).thenReturn(ArgumentMatchers.anyString());
         List<String> metadataKeys = new ArrayList<>();
         metadataKeys.add("metadata_A");
         metadataKeys.add("metadata_B");
         this.action.setMetadataKeys(metadataKeys);
         when(request.getParameter("resourceMetadata_mapping_metadata_A")).thenReturn("value1,value2,value3");
-        when(request.getParameter("resourceMetadata_mapping_metadata_B")).thenReturn("Value_a");
+        Mockito.lenient().when(request.getParameter("resourceMetadata_mapping_metadata_B")).thenReturn("Value_a");
     }
 
     @Test

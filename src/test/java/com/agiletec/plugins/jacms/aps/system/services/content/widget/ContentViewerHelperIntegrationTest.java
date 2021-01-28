@@ -117,7 +117,6 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         assertEquals(nullExtraParam, null != this._requestContext.getExtraParam(SystemConstants.EXTRAPAR_EXTRA_PAGE_TITLES));
     }
     
-    @Test
     public void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
         this.configureCurrentWidget(contentId, modelId);
         String renderedContent = this._helper.getRenderedContent(null, null, _requestContext);

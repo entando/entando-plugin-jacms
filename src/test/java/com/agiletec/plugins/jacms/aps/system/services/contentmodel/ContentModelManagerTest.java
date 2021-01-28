@@ -37,13 +37,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,11 +67,6 @@ public class ContentModelManagerTest {
 
     @Mock
     private Content mockedContent;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testGetContentModel() {
@@ -223,12 +216,7 @@ public class ContentModelManagerTest {
         assertEquals("art_1", ref5.getContentsId().get(0));
         assertEquals("art_2", ref5.getContentsId().get(1));
         assertTrue(ref5.isOnline());
-
     }
-
-
-
-
 
     @Test
     public void testGetContentModelReferencesIncludingDefaultTemplates() throws Exception {

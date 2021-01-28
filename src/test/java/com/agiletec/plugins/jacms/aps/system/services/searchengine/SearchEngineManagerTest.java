@@ -60,7 +60,6 @@ public class SearchEngineManagerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         when(this.factory.getIndexer()).thenReturn(indexerDao);
         when(this.factory.getSearcher()).thenReturn(searcherDao);
         this.searchEngineManager.init();
@@ -173,11 +172,11 @@ public class SearchEngineManagerTest {
         Content type1 = Mockito.mock(Content.class);
         Content type2 = Mockito.mock(Content.class);
         AttributeInterface attributeType1 = Mockito.mock(AttributeInterface.class);
-        when(attributeType1.getIndexingType()).thenReturn(IndexableAttributeInterface.INDEXING_TYPE_TEXT);
-        when(type1.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType1)));
+        Mockito.lenient().when(attributeType1.getIndexingType()).thenReturn(IndexableAttributeInterface.INDEXING_TYPE_TEXT);
+        Mockito.lenient().when(type1.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType1)));
         AttributeInterface attributeType2 = Mockito.mock(AttributeInterface.class);
-        when(attributeType2.getIndexingType()).thenReturn(null);
-        when(type2.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType2)));
+        Mockito.lenient().when(attributeType2.getIndexingType()).thenReturn(null);
+        Mockito.lenient().when(type2.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType2)));
         event.setOldEntityType(type1);
         event.setNewEntityType(type2);
         event.setEntityManagerName(JacmsSystemConstants.CONTENT_MANAGER);

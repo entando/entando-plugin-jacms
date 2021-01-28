@@ -16,7 +16,9 @@ import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.entando.entando.TestEntandoJndiUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +50,11 @@ public class ResourcesServiceUnitTest {
     private IAuthorizationManager authorizationManager;
     private ResourcesService resourcesService;
 
+    @BeforeAll
+    public static void init() throws Exception {
+        TestEntandoJndiUtils.setupJndi();
+    }
+
     @BeforeEach
     public void setup() {
         authorizationManager = mock(IAuthorizationManager.class);
@@ -76,30 +83,30 @@ public class ResourcesServiceUnitTest {
 
     @Test
     public void testMimeTypeValidation() {
-        resourcesService.validateMimeType("Image", "application/jpeg");
-        resourcesService.validateMimeType("Image", "application/png");
-        resourcesService.validateMimeType("Attach", "application/pdf");
-        resourcesService.validateMimeType("Attach", "application/txt");
+        resourcesService.validateMimeType("image", "application/jpeg");
+        resourcesService.validateMimeType("image", "application/png");
+        resourcesService.validateMimeType("file", "application/pdf");
+        resourcesService.validateMimeType("file", "application/txt");
     }
 
     @Test
     public void testInvalidImageMimeType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
-            resourcesService.validateMimeType("Image", "application/pdf");
+            resourcesService.validateMimeType("image", "application/pdf");
         });
     }
 
     @Test
     public void testInvalidAttachMimeType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
-            resourcesService.validateMimeType("Attach", "application/jpeg");
+            resourcesService.validateMimeType("attach", "application/jpeg");
         });
     }
 
     @Test
     public void testInvalidResourceType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
-            resourcesService.validateMimeType("image", "application/jpeg");
+            resourcesService.validateMimeType("image", "application/txt");
         });
     }
 

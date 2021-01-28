@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,13 +49,12 @@ public class ResourceManagerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         AttachResource mockAttachResource = Mockito.mock(AttachResource.class);
-        when(mockAttachResource.getType()).thenReturn("Attach");
-        when(mockAttachResource.getResourcePrototype()).thenReturn(mockAttachResource);
+        Mockito.lenient().when(mockAttachResource.getType()).thenReturn("Attach");
+        Mockito.lenient().when(mockAttachResource.getResourcePrototype()).thenReturn(mockAttachResource);
         ImageResource mockImageResource = Mockito.mock(ImageResource.class);
-        when(mockImageResource.getResourcePrototype()).thenReturn(mockImageResource);
-        when(mockImageResource.getType()).thenReturn("Image");
+        Mockito.lenient().when(mockImageResource.getResourcePrototype()).thenReturn(mockImageResource);
+        Mockito.lenient().when(mockImageResource.getType()).thenReturn("Image");
         Map<String, ResourceInterface> types = new HashMap<>();
         types.put("Image", mockImageResource);
         types.put("Attach", mockAttachResource);

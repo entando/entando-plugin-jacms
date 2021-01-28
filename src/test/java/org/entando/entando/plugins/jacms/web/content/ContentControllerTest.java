@@ -42,8 +42,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BindingResult;
 
+@ExtendWith(MockitoExtension.class)
 public class ContentControllerTest extends AbstractControllerTest {
 
     @Mock
@@ -60,7 +63,6 @@ public class ContentControllerTest extends AbstractControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(entandoOauth2Interceptor)
                 .setHandlerExceptionResolvers(createHandlerExceptionResolver())
@@ -73,7 +75,7 @@ public class ContentControllerTest extends AbstractControllerTest {
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART123", IContentService.STATUS_DRAFT)).thenReturn(true);
         when(this.contentService.getContent(Mockito.eq("ART123"), Mockito.isNull(),
-                Mockito.eq("draft"), Mockito.isNull(), Mockito.anyBoolean(), Mockito.any(UserDetails.class))).thenReturn(Mockito.mock(ContentDto.class));
+                Mockito.eq("draft"), Mockito.isNull(), Mockito.anyBoolean(), Mockito.any(UserDetails.class))).thenReturn(new ContentDto());
         ResultActions result = performGetContent("ART123", null, false, null, user);
         result.andExpect(status().isOk());
     }
@@ -81,7 +83,7 @@ public class ContentControllerTest extends AbstractControllerTest {
     @Test
     public void testUnexistingContent() throws Exception {
         UserDetails user = this.createUser(true);
-        when(this.httpSession.getAttribute("user")).thenReturn(user);
+        Mockito.lenient().when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART098", IContentService.STATUS_ONLINE)).thenReturn(false);
         ResultActions result = performGetContent("ART098", null, true, null, user);
         result.andExpect(status().isNotFound());
@@ -92,7 +94,7 @@ public class ContentControllerTest extends AbstractControllerTest {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.addContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
-                .thenReturn(Mockito.mock(ContentDto.class));
+                .thenReturn(new ContentDto());
         String mockJson = "[{\n"
                 + "    \"id\": \"ART123\",\n"
                 + "    \"typeCode\": \"ART\",\n"
@@ -109,7 +111,7 @@ public class ContentControllerTest extends AbstractControllerTest {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.updateContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
-                .thenReturn(Mockito.mock(ContentDto.class));
+                .thenReturn(new ContentDto());
         String mockJson = "{\n"
                 + "    \"id\": \"ART123\",\n"
                 + "    \"typeCode\": \"ART\",\n"

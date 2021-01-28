@@ -34,14 +34,15 @@ import org.junit.jupiter.api.Test;
  * @author E.Santoboni
  */
 public class TestContentPreviewAction extends AbstractBaseTestContentAction {
-
+    
     @Test
     public void testPreviewNewContent() throws Throwable {
         String insertedDescr = "XXX Prova preview XXX";
         String contentTypeCode = "ART";
         Content prototype = this.getContentManager().createContentType(contentTypeCode);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(prototype, ApsAdminSystemConstants.ADD);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeCreateNewVoid(contentTypeCode, insertedDescr, Content.STATUS_DRAFT, Group.FREE_GROUP_NAME, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -65,7 +66,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeEdit(contentId, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -89,7 +91,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeEdit(contentId, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -102,7 +105,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeEdit(contentId, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -115,7 +119,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeEdit(contentId, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -128,7 +133,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
-
+        super.getRequest().getSession().removeAttribute(contentOnSessionMarker);
+        
         String result = this.executeEdit(contentId, "admin");
         assertEquals(Action.SUCCESS, result);
 
@@ -143,7 +149,8 @@ public class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     private String executePreviewPage(String pageDest, String contentOnSessionMarker) throws Throwable {
-        this.initContentAction("/do/jacms/Content", "executePreview", contentOnSessionMarker);
+        this.initAction("/do/jacms/Content", "executePreview", true);
+        this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
         this.addParameter("previewPageCode", pageDest);
         return this.executeAction();
     }

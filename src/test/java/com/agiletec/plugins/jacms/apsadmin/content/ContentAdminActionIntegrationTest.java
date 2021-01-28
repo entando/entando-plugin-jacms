@@ -72,7 +72,6 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         ContentAdminAction contentAdminAction = (ContentAdminAction) this.getAction();
         assertEquals(IContentManager.STATUS_READY, contentAdminAction.getContentManagerStatus());
         assertEquals(ICmsSearchEngineManager.STATUS_READY, contentAdminAction.getSearcherManagerStatus());
-        assertNull(contentAdminAction.getLastReloadInfo());
     }
 
     @Test
@@ -263,8 +262,7 @@ public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAc
         for (int i = 0; i < threads.length; i++) {
             Thread currentThread = threads[i];
             if (currentThread != null
-                    && (currentThread.getName().startsWith(SearchEngineManager.RELOAD_THREAD_NAME_PREFIX)
-                    || currentThread.getName().startsWith(ApsEntityManager.RELOAD_REFERENCES_THREAD_NAME_PREFIX))) {
+                    && (currentThread.getName().startsWith(SearchEngineManager.RELOAD_THREAD_NAME_PREFIX) || currentThread.getName().startsWith(ApsEntityManager.RELOAD_REFERENCES_THREAD_NAME_PREFIX))) {
                 currentThread.join();
             }
         }

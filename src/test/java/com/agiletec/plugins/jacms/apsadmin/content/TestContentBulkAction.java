@@ -40,8 +40,10 @@ public class TestContentBulkAction extends AbstractBaseTestContentAction {
     private ILangManager langManager;
     private IGroupManager groupManager;
 
+    @Override
     @BeforeEach
     protected void init() throws Exception {
+        super.init();
         this.langManager = (ILangManager) super.getService(SystemConstants.LANGUAGE_MANAGER);
         this.groupManager = (IGroupManager) super.getService(SystemConstants.GROUP_MANAGER);
     }

@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.aps.system.services;
+package org.entando.entando.plugins.jacms.aps.system.services.content;
 
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
@@ -21,8 +21,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.entando.entando.aps.system.services.mockhelper.PageMockHelper;
 import org.entando.entando.aps.system.services.userprofile.MockUser;
 import org.entando.entando.plugins.jacms.aps.system.services.assertionhelper.ContentTypeAssertionHelper;
-import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
-import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.aps.system.services.mockhelper.ContentMockHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.mockhelper.ContentTypeMockHelper;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
@@ -40,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
 
 import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,6 +49,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +70,7 @@ public class ContentTypeServiceTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-        when(this.httpSession.getAttribute(anyString())).thenReturn(new MockUser());
+        Mockito.lenient().when(this.httpSession.getAttribute(anyString())).thenReturn(new MockUser());
         this.restListRequest = ContentTypeMockHelper.mockRestListRequest();
 
         Field f = this.contentTypeService.getClass().getDeclaredField("httpSession");

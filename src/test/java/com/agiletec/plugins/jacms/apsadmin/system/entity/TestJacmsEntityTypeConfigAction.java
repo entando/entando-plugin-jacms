@@ -311,6 +311,7 @@ public class TestJacmsEntityTypeConfigAction extends ApsAdminBaseTestCase {
 	private void init() throws Exception {
     	try {
     		this._contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
+            super.getRequest().getSession().removeAttribute(IEntityTypeConfigAction.ENTITY_TYPE_ON_EDIT_SESSION_PARAM);
     	} catch (Throwable t) {
             throw new Exception(t);
         }

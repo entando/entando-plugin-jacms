@@ -51,6 +51,7 @@ public class ContentPreviewAction extends AbstractContentAction implements Servl
 			}
 			this.setPreviewPageCode(previewPageCode);
 		} catch (Throwable t) {
+            t.printStackTrace();
 			_logger.error("error in preview", t);
 			return FAILURE;
 		}
@@ -82,6 +83,7 @@ public class ContentPreviewAction extends AbstractContentAction implements Servl
 			this.prepareForward(pageDestCode);
 			this.getRequest().setCharacterEncoding("UTF-8");
 		} catch (Throwable t) {
+            t.printStackTrace();
 			_logger.error("error in executePreview", t);
 			throw new RuntimeException("error in executePreview", t);
 		}

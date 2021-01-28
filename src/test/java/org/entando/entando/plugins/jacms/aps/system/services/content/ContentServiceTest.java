@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.apsadmin.content;
+package org.entando.entando.plugins.jacms.aps.system.services.content;
 
 import static org.mockito.Mockito.when;
 
@@ -44,9 +44,6 @@ import java.util.Map;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.ent.exception.EntException;
-import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
-import org.entando.entando.plugins.jacms.aps.system.services.content.ContentServiceUtilizer;
-import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
@@ -94,11 +91,10 @@ public class ContentServiceTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         ContentServiceUtilizer serviceUtilizer = Mockito.mock(ContentServiceUtilizer.class);
         Map<String, ContentServiceUtilizer> map = new HashMap<>();
         map.put("service", serviceUtilizer);
-        when(this.applicationContext.getBeansOfType(ContentServiceUtilizer.class)).thenReturn(map);
+        Mockito.lenient().when(this.applicationContext.getBeansOfType(ContentServiceUtilizer.class)).thenReturn(map);
     }
 
     @Test
@@ -266,7 +262,7 @@ public class ContentServiceTest {
         requestList.setStatus(IContentService.STATUS_ONLINE);
         requestList.setModel("34");
         UserDetails user = Mockito.mock(UserDetails.class);
-        when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
+        Mockito.lenient().when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
         List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3", "ART4", "ART5", "ART6");
         when((this.contentManager).loadPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
@@ -289,7 +285,7 @@ public class ContentServiceTest {
         requestList.setStatus(IContentService.STATUS_ONLINE);
         requestList.setModel("list");
         UserDetails user = Mockito.mock(UserDetails.class);
-        when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
+        Mockito.lenient().when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
         List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3", "ART4", "ART5", "ART6");
         when((this.contentManager).loadPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
@@ -340,8 +336,8 @@ public class ContentServiceTest {
 
     protected void createMockContentModel(String typeCode) throws Exception {
         ContentModel mockContentModel = Mockito.mock(ContentModel.class);
-        when(mockContentModel.getContentType()).thenReturn(typeCode);
-        when(mockContentModel.getContentShape()).thenReturn("Content model");
+        Mockito.lenient().when(mockContentModel.getContentType()).thenReturn(typeCode);
+        Mockito.lenient().when(mockContentModel.getContentShape()).thenReturn("Content model");
         when(this.contentModelManager.getContentModel(Mockito.anyLong())).thenReturn(mockContentModel);
     }
 
@@ -353,7 +349,7 @@ public class ContentServiceTest {
         PublicContentAuthorizationInfo pcai = Mockito.mock(PublicContentAuthorizationInfo.class);
         when(pcai.isUserAllowed(ArgumentMatchers.<String>anyList())).thenReturn(true);
         when(this.contentAuthorizationHelper.getAuthorizationInfo(Mockito.anyString())).thenReturn(pcai);
-        when((this.contentDispenser).getRenderizationInfo(Mockito.nullable(String.class), Mockito.anyLong(),
+        Mockito.lenient().when((this.contentDispenser).getRenderizationInfo(Mockito.nullable(String.class), Mockito.anyLong(),
                 Mockito.nullable(String.class), Mockito.nullable(RequestContext.class), Mockito.anyBoolean())).thenReturn(Mockito.mock(ContentRenderizationInfo.class));
         this.createMockContent("ART");
         this.createMockContentModel("ART");
@@ -369,7 +365,7 @@ public class ContentServiceTest {
     @Test
     public void getContentWithError_1() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
-        when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
+        Mockito.lenient().when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
         PublicContentAuthorizationInfo pcai = Mockito.mock(PublicContentAuthorizationInfo.class);
         when(pcai.isUserAllowed(ArgumentMatchers.<String>anyList())).thenReturn(true);
