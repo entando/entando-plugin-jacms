@@ -22,9 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsCropRatioRequest;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsEditorRequest;
@@ -33,14 +35,24 @@ import org.entando.entando.plugins.jacms.web.contentsettings.model.EditContentSe
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     private ObjectMapper mapper = new ObjectMapper();
-
+    
+    @Autowired
+    private IContentManager contentManager;
+    
+    @BeforeEach
+    protected void init() throws Throwable {
+        ((IManager) contentManager).refresh();
+    }
+    
     @Test
     public void testGetContentSettingsUnauthorized() throws Exception {
         performGetContentSettings(null)
