@@ -22,11 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
+import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsCropRatioRequest;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsEditorRequest;
@@ -46,11 +45,11 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     private ObjectMapper mapper = new ObjectMapper();
     
     @Autowired
-    private IContentManager contentManager;
+    private SearchEngineManager searchEngineManager;
     
     @BeforeEach
     protected void init() throws Throwable {
-        ((IManager) contentManager).refresh();
+        searchEngineManager.refresh();
     }
     
     @Test
