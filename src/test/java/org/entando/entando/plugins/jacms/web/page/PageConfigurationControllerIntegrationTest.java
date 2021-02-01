@@ -825,10 +825,6 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
             Widget[] defaultWidgetConfiguration = pageModel.getDefaultWidget();
             
             result.andExpect(status().isOk());
-            String stringResult = result.andReturn().getResponse().getContentAsString();
-            System.out.println("*********************************************");
-            System.out.println(stringResult);
-            System.out.println("*********************************************");
             result.andExpect(jsonPath("$.payload.widgets", Matchers.hasSize(pageModel.getConfiguration().length)));
             for (int i = 0; i < pageModel.getConfiguration().length; i++) {
                 String path = String.format("$.payload.widgets[%d]", i);
