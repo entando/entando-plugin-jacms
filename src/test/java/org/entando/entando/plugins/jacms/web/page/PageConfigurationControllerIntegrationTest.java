@@ -728,8 +728,7 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
             assertEquals(pageStatusBeforeRestore.getUnpublished(), pageStatusAfterRestore.getUnpublished());
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
+            Assertions.fail(e);
         } finally {
             pageManager.deletePage(pageCode);
         }
@@ -773,8 +772,7 @@ public class PageConfigurationControllerIntegrationTest extends AbstractControll
             assertEquals(pageStatusBeforeRestore.getUnpublished(), pageStatusAfterRestore.getUnpublished());
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
+            Assertions.fail(e);
         } finally {
             pageManager.deletePage(pageCode);
         }
