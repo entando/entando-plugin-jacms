@@ -431,7 +431,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
         List<String> resourcesId = resourceManager.searchResourcesId(resourceType, null, null, allowedGroups);
         int initsize = resourcesId.size();
         ResourceDataBean bean = this.getNullMockResource(resourceType, resDescrToAdd);
-        Assertions.assertThrows(EntException.class, () -> {
+        Assertions.assertThrows(Exception.class, () -> {
             this.resourceManager.addResource(bean);
         });
         this.verifyTestAddNullResource(resDescrToAdd, resourceType, initsize);

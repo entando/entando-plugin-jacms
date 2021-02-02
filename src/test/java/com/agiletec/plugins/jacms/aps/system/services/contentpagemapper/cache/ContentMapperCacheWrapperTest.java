@@ -77,6 +77,7 @@ class ContentMapperCacheWrapperTest {
 		Mockito.when(pageManager.getOnlineRoot()).thenReturn(this.createMockPage());
 		Mockito.when(cacheManager.getCache(IContentMapperCacheWrapper.CONTENT_MAPPER_CACHE_NAME)).thenReturn(this.cache);
 		cacheWrapper.initCache(this.pageManager);
+        Assertions.assertNotNull(this.cacheWrapper);
 	}
 
 	@Test
