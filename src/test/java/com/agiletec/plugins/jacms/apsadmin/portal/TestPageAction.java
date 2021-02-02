@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -35,22 +40,19 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestPageAction extends ApsAdminBaseTestCase {
+class TestPageAction extends ApsAdminBaseTestCase {
 
     private IPageManager pageManager = null;
     private IWidgetTypeManager widgetTypeManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    public void testSavePage() throws Throwable {
+    @Test
+    void testSavePage() throws Throwable {
         String pageCode = "customer_subpage_2";
         IPage page = this.pageManager.getDraftPage(pageCode);
         assertNotNull(page);
@@ -92,7 +94,8 @@ public class TestPageAction extends ApsAdminBaseTestCase {
         }
     }
 
-    public void testValidateSavePage_1() throws Throwable {
+    @Test
+    void testValidateSavePage_1() throws Throwable {
         String pageCode = "page_test_1";
         assertNull(this.pageManager.getDraftPage(pageCode));
         try {
@@ -136,7 +139,8 @@ public class TestPageAction extends ApsAdminBaseTestCase {
         }
     }
 
-    public void testValidateSavePage_2() throws Throwable {
+    @Test
+    void testValidateSavePage_2() throws Throwable {
         String pageCode = "page_test_2";
         assertNull(this.pageManager.getDraftPage(pageCode));
         IPage parentPage = this.pageManager.getDraftPage("service");
@@ -204,6 +208,7 @@ public class TestPageAction extends ApsAdminBaseTestCase {
         return result;
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             this.pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);

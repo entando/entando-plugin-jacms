@@ -16,7 +16,6 @@ package org.entando.entando.plugins.jacms.web.page;
 import com.agiletec.aps.system.services.user.UserDetails;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Test;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -24,14 +23,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Test;
+
 /**
  *
  * @author paddeo
  */
-public class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
-    public void testPageGet() throws Exception {
+    void testPageGet() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -44,7 +45,7 @@ public class PageControllerIntegrationTest extends AbstractControllerIntegration
     }
 
     @Test
-    public void testPageGetReferences() throws Exception {
+    void testPageGetReferences() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc

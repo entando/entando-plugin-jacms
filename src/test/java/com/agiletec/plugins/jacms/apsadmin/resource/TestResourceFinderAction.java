@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
@@ -20,13 +24,15 @@ import com.opensymphony.xwork2.Action;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestResourceFinderAction extends ApsAdminBaseTestCase {
+class TestResourceFinderAction extends ApsAdminBaseTestCase {
 
-    public void testViewImageResources() throws Throwable {
+    @Test
+    void testViewImageResources() throws Throwable {
         String result = this.executeShowList("admin", "Image");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -39,7 +45,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("Home", root.getTitle());
     }
 
-    public void testViewAttachResources() throws Throwable {
+    @Test
+    void testViewAttachResources() throws Throwable {
         String result = this.executeShowList("admin", "Attach");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -52,7 +59,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("Home", root.getTitle());
     }
 
-    public void testViewImageResourcesByCustomerUser() throws Throwable {
+    @Test
+    void testViewImageResourcesByCustomerUser() throws Throwable {
         String result = this.executeShowList("editorCustomers", "Image");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -65,7 +73,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("Home", root.getTitle());
     }
 
-    public void testViewImagesWithUserNotAllowed() throws Throwable {
+    @Test
+    void testViewImagesWithUserNotAllowed() throws Throwable {
         String result = this.executeShowList("pageManagerCustomers", "Image");
         assertEquals("userNotAllowed", result);
     }
@@ -77,7 +86,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         return this.executeAction();
     }
 
-    public void testSearchResources_1() throws Throwable {
+    @Test
+    void testSearchResources_1() throws Throwable {
         String result = this.executeSearchResource("admin", "Attach", "WrongDescription", null, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -85,7 +95,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("WrongDescription", action.getText());
     }
 
-    public void testSearchResources_2() throws Throwable {
+    @Test
+    void testSearchResources_2() throws Throwable {
         String result = this.executeSearchResource("admin", "Attach", "", null, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -93,7 +104,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("", action.getText());
     }
 
-    public void testSearchResources_3() throws Throwable {
+    @Test
+    void testSearchResources_3() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", null, null, "jpg", null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -113,7 +125,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals("ando.JPG", action.getFileName());
     }
 
-    public void testSearchByCategory() throws Throwable {
+    @Test
+    void testSearchByCategory() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", "", null, null, "resCat1");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -132,7 +145,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertTrue(action.getResources().isEmpty());
     }
 
-    public void testSearchByGroup_1() throws Throwable {
+    @Test
+    void testSearchByGroup_1() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", null, Group.FREE_GROUP_NAME, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -149,7 +163,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals(1, action.getResources().size());
     }
 
-    public void testSearchByGroup_2() throws Throwable {
+    @Test
+    void testSearchByGroup_2() throws Throwable {
         String result = this.executeSearchResource("editorCoach", "Image", null, Group.FREE_GROUP_NAME, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -166,7 +181,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         assertEquals(1, action.getResources().size());
     }
 
-    public void testSearchWithOrder_1() throws Throwable {
+    @Test
+    void testSearchWithOrder_1() throws Throwable {
         List<String> expected = Arrays.asList(new String[]{"22", "44", "82"});
         this.executeTestSearchWithOrder_1(expected, "created");
         expected = Arrays.asList(new String[]{"44", "82", "22"});
@@ -175,7 +191,8 @@ public class TestResourceFinderAction extends ApsAdminBaseTestCase {
         this.executeTestSearchWithOrder_1(expected, "descr");
     }
 
-    public void testSearchWithOrder_2() throws Throwable {
+    @Test
+    void testSearchWithOrder_2() throws Throwable {
         String result = this.executeSearchResourceWithOrder("admin", "Image", "lastModified", "created", "DESC");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();

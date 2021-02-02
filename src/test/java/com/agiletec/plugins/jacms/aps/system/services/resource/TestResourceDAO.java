@@ -13,6 +13,9 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import javax.sql.DataSource;
 
 import com.agiletec.aps.BaseTestCase;
@@ -21,19 +24,17 @@ import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceRecordVO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.0
  * @author M.Diana
  */
-public class TestResourceDAO extends BaseTestCase {
+class TestResourceDAO extends BaseTestCase {
 	
-	protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-    public void testAddDeleteResource() throws Throwable {  
+	@Test
+    void testAddDeleteResource() throws Throwable {  
 		DataSource dataSource = (DataSource) this.getApplicationContext().getBean("portDataSource");
     	MockResourcesDAO mockResourcesDao = new MockResourcesDAO();
     	mockResourcesDao.setDataSource(dataSource);
@@ -59,6 +60,7 @@ public class TestResourceDAO extends BaseTestCase {
     	assertNull(resourceRecordVO);
     }
     
+    @BeforeEach
     private void init() throws Exception {
 		try {
 			DataSource dataSource = (DataSource) this.getApplicationContext().getBean("portDataSource");

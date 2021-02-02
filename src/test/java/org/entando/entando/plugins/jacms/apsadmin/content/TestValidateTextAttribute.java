@@ -13,19 +13,23 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestValidateTextAttribute extends AbstractTestContentAttribute {
+class TestValidateTextAttribute extends AbstractTestContentAttribute {
 
-	public void testValidate_Single_1() throws Throwable {
+	@Test
+    void testValidate_Single_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -43,7 +47,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_Single_2() throws Throwable {
+	@Test
+    void testValidate_Single_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -83,7 +88,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_Single_3() throws Throwable {
+	@Test
+    void testValidate_Single_3() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -124,7 +130,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_MonoListElement_1() throws Throwable {
+	@Test
+    void testValidate_MonoListElement_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -169,7 +176,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_MonoListElement_2() throws Throwable {
+	@Test
+    void testValidate_MonoListElement_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -237,7 +245,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_CompositeElement() throws Throwable {
+	@Test
+    void testValidate_CompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -278,7 +287,8 @@ public class TestValidateTextAttribute extends AbstractTestContentAttribute {
 		}
 	}
 
-	public void testValidate_MonolistCompositeElement() throws Throwable {
+	@Test
+    void testValidate_MonolistCompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);

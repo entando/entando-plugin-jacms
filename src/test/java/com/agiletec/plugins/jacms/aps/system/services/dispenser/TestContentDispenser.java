@@ -27,19 +27,20 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 
 import static com.agiletec.plugins.jacms.aps.system.services.Jdk11CompatibleDateFormatter.formatMediumDate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author W.Ambu - E.Santoboni
  */
-public class TestContentDispenser extends BaseTestCase {
+class TestContentDispenser extends BaseTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-    public void testGetRenderedContent_1() throws Throwable {
+    @Test
+    void testGetRenderedContent_1() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
 
         ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo("ART1", 2, "en", reqCtx);
@@ -84,7 +85,8 @@ public class TestContentDispenser extends BaseTestCase {
         return (UserDetails) super.getRequestContext().getRequest().getSession().getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER);
     }
 
-    public void testGetRenderedContent_2() throws Throwable {
+    @Test
+    void testGetRenderedContent_2() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         this.setUserOnSession("admin");
 
@@ -108,17 +110,20 @@ public class TestContentDispenser extends BaseTestCase {
         assertEquals(this.replaceNewLine(_attendedEnART122_cached.trim()), this.replaceNewLine(outputInfo.getCachedRenderedContent().trim()));
     }
     
-    public void testGetRenderedContent_3_1() throws Throwable {
+    @Test
+    void testGetRenderedContent_3_1() throws Throwable {
         this.executeTestGetRenderedContent_3(Boolean.FALSE, false);
         this.executeTestGetRenderedContent_3(Boolean.FALSE, true);
     }
     
-    public void testGetRenderedContent_3_2() throws Throwable {
+    @Test
+    void testGetRenderedContent_3_2() throws Throwable {
         this.executeTestGetRenderedContent_3(Boolean.TRUE, false);
         this.executeTestGetRenderedContent_3(Boolean.TRUE, true);
     }
     
-    public void testGetRenderedContent_3_3() throws Throwable {
+    @Test
+    void testGetRenderedContent_3_3() throws Throwable {
         this.executeTestGetRenderedContent_3(null, false);
     }
     
@@ -169,7 +174,8 @@ public class TestContentDispenser extends BaseTestCase {
         }
     }
     
-    public void testGetRenderedContent_4() throws Throwable {
+    @Test
+    void testGetRenderedContent_4() throws Throwable {
         String contentId = "ART120";
         String contentShapeModel = "title (Text): testo=$content.Titolo.getText()";
         int modelId = 1972;
@@ -207,7 +213,8 @@ public class TestContentDispenser extends BaseTestCase {
         this._contentModelManager.addContentModel(model);
     }
 
-    public void testGetUnauthorizedContent() throws Throwable {
+    @Test
+    void testGetUnauthorizedContent() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
 
         ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo("ART104", 2, "it", reqCtx);
@@ -222,13 +229,15 @@ public class TestContentDispenser extends BaseTestCase {
         assertEquals("Current user 'supervisorCustomers' can't view this content", outputInfo.getCachedRenderedContent().trim());
     }
 
-    public void testGetRenderedContentWithWrongModel() throws Throwable {
+    @Test
+    void testGetRenderedContentWithWrongModel() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String output = _contentDispenser.getRenderedContent("ART1", 67, "en", reqCtx);
         assertEquals("Content model 67 undefined", output.trim());
     }
     
-    public void testCspNoncePlaceholder() throws Throwable {
+    @Test
+    void testCspNoncePlaceholder() throws Throwable {
         String contentId = "ART120";
         String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
         int modelId = 1948;
@@ -254,6 +263,7 @@ public class TestContentDispenser extends BaseTestCase {
         return input;
     }
     
+    @BeforeAll
     private void init() throws Exception {
         try {
             this._contentDispenser = (IContentDispenser) this.getService(JacmsSystemConstants.CONTENT_DISPENSER_MANAGER);

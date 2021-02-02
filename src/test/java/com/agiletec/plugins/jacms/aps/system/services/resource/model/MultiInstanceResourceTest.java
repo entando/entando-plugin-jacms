@@ -1,18 +1,19 @@
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import org.junit.*;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.assertEquals;
-
-@RunWith(MockitoJUnitRunner.class)
-public class AbstractMultiInstanceResourceTest {
+@ExtendWith(MockitoExtension.class)
+class MultiInstanceResourceTest {
 
     @Spy TestResource resource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         resource.resetFileExists();
     }

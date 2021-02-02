@@ -25,22 +25,25 @@ import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.plugins.jacms.aps.system.services.contentpagemapper.ContentPageMapper;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
 import org.entando.entando.aps.system.services.widgettype.WidgetTypeParameter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 /**
  * @author E.Santoboni
  */
-public class ContentMapperCacheWrapperTest {
+@ExtendWith(MockitoExtension.class)
+class ContentMapperCacheWrapperTest {
 
 	@Mock
 	private CacheManager cacheManager;
@@ -57,25 +60,28 @@ public class ContentMapperCacheWrapperTest {
 	@InjectMocks
 	private ContentMapperCacheWrapper cacheWrapper;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 	}
 
-	@Test(expected = EntException.class)
-	public void testInitCacheWithError() throws Throwable {
-		cacheWrapper.initCache(this.pageManager);
+	@Test
+	void testInitCacheWithError() throws Throwable {
+        Assertions.assertThrows(EntException.class, () -> {
+            this.cacheWrapper.initCache(this.pageManager);
+        });
 	}
 
 	@Test
-	public void testInitCache() throws Throwable {
+	void testInitCache() throws Throwable {
 		Mockito.when(pageManager.getOnlineRoot()).thenReturn(this.createMockPage());
 		Mockito.when(cacheManager.getCache(IContentMapperCacheWrapper.CONTENT_MAPPER_CACHE_NAME)).thenReturn(this.cache);
 		cacheWrapper.initCache(this.pageManager);
+        Assertions.assertNotNull(this.cacheWrapper);
 	}
 
 	@Test
-	public void testGetPageCode() throws Throwable {
+	void testGetPageCode() throws Throwable {
 		ContentPageMapper contentPageMapper = new ContentPageMapper();
 		contentPageMapper.add("ART12", "temp_page");
 		contentPageMapper.add("NEW56", "wring_page");
@@ -83,8 +89,8 @@ public class ContentMapperCacheWrapperTest {
 		Mockito.when(cache.get(Mockito.anyString())).thenReturn(valueWrapper);
 		Mockito.when(cacheManager.getCache(Mockito.anyString())).thenReturn(this.cache);
 		String pageCode = this.cacheWrapper.getPageCode("ART12");
-		Assert.assertNotNull(pageCode);
-		Assert.assertEquals("temp_page", pageCode);
+		Assertions.assertNotNull(pageCode);
+		Assertions.assertEquals("temp_page", pageCode);
 	}
 
 	private IPage createMockPage() {

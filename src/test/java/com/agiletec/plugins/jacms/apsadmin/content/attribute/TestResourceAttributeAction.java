@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import javax.servlet.http.HttpSession;
 
 import org.entando.entando.ent.exception.EntException;
@@ -27,13 +31,15 @@ import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.resource.ResourceAttributeActionHelper;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
+class TestResourceAttributeAction extends AbstractBaseTestContentAction {
 
-    public void testChooseImageResource() throws Throwable {
+    @Test
+    void testChooseImageResource() throws Throwable {
         String contentId = "ART1";
         Content content = this.getContentManager().loadContent(contentId, false);
         this.executeEdit(contentId, "admin");
@@ -53,7 +59,8 @@ public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
         assertNull(session.getAttribute(ResourceAttributeActionHelper.LIST_ELEMENT_INDEX_SESSION_PARAM));
     }
 
-    public void testRemoveImageResource_1() throws Throwable {
+    @Test
+    void testRemoveImageResource_1() throws Throwable {
         String contentOnSessionMarker = this.initForImageRemovingTest();
 
         this.initContentAction("/do/jacms/Content", "removeResource", contentOnSessionMarker);
@@ -68,7 +75,8 @@ public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
         assertNull(imageAttribute.getResource("en"));
     }
 
-    public void testRemoveImageResource_2() throws Throwable {
+    @Test
+    void testRemoveImageResource_2() throws Throwable {
         String contentOnSessionMarker = this.initForImageRemovingTest();
 
         this.initContentAction("/do/jacms/Content", "removeResource", contentOnSessionMarker);
@@ -102,7 +110,8 @@ public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
         return contentOnSessionMarker;
     }
 
-    public void testRemoveAttachResource() throws Throwable {
+    @Test
+    void testRemoveAttachResource() throws Throwable {
         String contentId = "RAH1";
         Content content = this.getContentManager().loadContent(contentId, false);
         this.executeEdit(contentId, "admin");
@@ -125,7 +134,8 @@ public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
         assertNull(attachAttribute.getResource("en"));
     }
 
-    public void testUpdateAttachResource() throws Throwable {
+    @Test
+    void testUpdateAttachResource() throws Throwable {
         String[] addedContents = null;
         try {
             addedContents = super.addDraftContentsForTest(new String[]{"ALL4"}, true);

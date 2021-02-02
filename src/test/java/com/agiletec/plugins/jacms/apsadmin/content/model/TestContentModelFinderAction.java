@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
@@ -20,19 +22,17 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import com.opensymphony.xwork2.Action;
 
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
+class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testList() throws Throwable {
+	@Test
+    void testList() throws Throwable {
 		this.initAction("/do/jacms/ContentModel", "list");
 		this.setUserOnSession("admin");
 		String result = this.executeAction();
@@ -42,7 +42,8 @@ public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 		assertEquals(6, contentModels.size());
 	}
 
-	public void testSearch_1() throws Throwable {
+	@Test
+    void testSearch_1() throws Throwable {
 		String result = this.executeSearch("ART");
 		assertEquals(Action.SUCCESS, result);
 		IContentModelFinderAction contentModelFinderAction = (IContentModelFinderAction) this.getAction();
@@ -56,7 +57,8 @@ public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 		assertEquals(0, contentModels.size());
 	}
 
-	public void testSearch_2() throws Throwable {
+	@Test
+    void testSearch_2() throws Throwable {
 		ContentModel contentModel = this.createContentModel(MODEL_ID, "EVN");
 		this._contentModelManager.addContentModel(contentModel);
 
@@ -89,13 +91,13 @@ public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 		return model;
 	}
 
+    @BeforeEach
 	private void init() {
 		_contentModelManager = (IContentModelManager) this.getService(JacmsSystemConstants.CONTENT_MODEL_MANAGER);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@AfterEach
+	protected void destroy() throws Exception {
 		ContentModel model = this._contentModelManager.getContentModel(MODEL_ID);
 		if (null != model) {
 			this._contentModelManager.removeContentModel(model);

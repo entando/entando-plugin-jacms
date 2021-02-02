@@ -12,21 +12,22 @@ import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.MockMvcHelper;
 import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ContentModelControllerIntegrationTest extends AbstractControllerIntegrationTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class ContentModelControllerIntegrationTest extends AbstractControllerIntegrationTest {
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private static final String BASE_URI = "/plugins/cms/contentmodels";
@@ -39,7 +40,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    @Before
+    @BeforeEach
     public void init() {
         mockMvcHelper = new MockMvcHelper(mockMvc);
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
@@ -47,7 +48,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelsSortId() throws Exception {
+    void testGetContentModelsSortId() throws Exception {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         ResultActions result = mockMvc
@@ -68,7 +69,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelDefaultSorting() throws Exception {
+    void testGetContentModelDefaultSorting() throws Exception {
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
                         .header("Authorization", "Bearer " + accessToken));
@@ -79,7 +80,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelsSortByDescr() throws Exception {
+    void testGetContentModelsSortByDescr() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
@@ -100,7 +101,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelsWithFilters() throws Exception {
+    void testGetContentModelsWithFilters() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI)
@@ -126,7 +127,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelOk() throws Exception {
+    void testGetContentModelOk() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{modelId}", "1")
@@ -137,7 +138,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelKo() throws Exception {
+    void testGetContentModelKo() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{modelId}", "0")
@@ -147,7 +148,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelDictionary() throws Exception {
+    void testGetContentModelDictionary() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
@@ -157,7 +158,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelDictionaryWithTypeCode() throws Exception {
+    void testGetContentModelDictionaryWithTypeCode() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
@@ -169,7 +170,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelDictionaryValidTypeCodeInvalid() throws Exception {
+    void testGetContentModelDictionaryValidTypeCodeInvalid() throws Exception {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/dictionary")
@@ -180,7 +181,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testCrudContentModel() throws Exception {
+    void testCrudContentModel() throws Exception {
         long modelId = 2001;
         try {
             String payload = null;
@@ -251,7 +252,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testAddWithInvalidContentType() throws Exception {
+    void testAddWithInvalidContentType() throws Exception {
         long modelId = 2001;
         try {
             String payload = null;
@@ -283,7 +284,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testAddWithIdAboveMax() throws Exception {
+    void testAddWithIdAboveMax() throws Exception {
         long modelId = new Long("2147483648");
         try {
             String payload = null;
@@ -315,7 +316,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testChangeContentType() throws Exception {
+    void testChangeContentType() throws Exception {
         long modelId = 2001;
         try {
             String payload = null;
@@ -365,7 +366,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testChangeWithInvalidContentType() throws Exception {
+    void testChangeWithInvalidContentType() throws Exception {
         long modelId = 2001;
         try {
             String payload = null;
@@ -412,7 +413,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testChangeContentShapeToNull() throws Exception {
+    void testChangeContentShapeToNull() throws Exception {
         long modelId = 2001;
         try {
             String payload = null;
@@ -462,7 +463,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
 
     @Test
-    public void testDeleteReferencedModel() throws Throwable {
+    void testDeleteReferencedModel() throws Throwable {
 
         ResultActions result = mockMvc
                 .perform(delete(BASE_URI + "/{id}", 2)
@@ -474,7 +475,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetModelPageReferences() throws Throwable {
+    void testGetModelPageReferences() throws Throwable {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{id}/pagereferences", 2)
@@ -484,7 +485,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetTemplateUsage() throws Throwable {
+    void testGetTemplateUsage() throws Throwable {
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{id}/usage", 2)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -495,7 +496,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetTemplateUsageCount() throws Throwable {
+    void testGetTemplateUsageCount() throws Throwable {
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{id}/usage/details", 2)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -507,7 +508,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
 
 
     @Test
-    public void askingForUsageCountForNotExistingCodeShouldReturnZero() throws Throwable {
+    void askingForUsageCountForNotExistingCodeShouldReturnZero() throws Throwable {
 
         String code = "9999";
 
@@ -520,7 +521,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testComponentExistenceAnalysis() throws Exception {
+    void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
         AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
                 AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TEMPLATES,
@@ -539,7 +540,7 @@ public class ContentModelControllerIntegrationTest extends AbstractControllerInt
     }
 
     @Test
-    public void testGetContentModelsFilterId() throws Exception {
+    void testGetContentModelsFilterId() throws Exception {
         
         mockMvc
                 .perform(get(BASE_URI)

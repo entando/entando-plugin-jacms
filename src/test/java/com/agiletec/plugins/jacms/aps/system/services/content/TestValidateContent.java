@@ -13,6 +13,9 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
 import com.agiletec.aps.BaseTestCase;
@@ -28,19 +31,16 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.util.ICmsAttributeErrorCodes;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestValidateContent extends BaseTestCase {
+class TestValidateContent extends BaseTestCase {
 	
-	@Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-    public void testValidate_1() throws Throwable {
+	@Test
+    void testValidate_1() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         try {
             Content content = this.createNewVoid("ART", insertedDescr, Content.STATUS_DRAFT, Group.FREE_GROUP_NAME, "admin");
@@ -70,7 +70,8 @@ public class TestValidateContent extends BaseTestCase {
         }
     }
     
-    public void testValidate_2() throws Throwable {
+    @Test
+    void testValidate_2() throws Throwable {
         try {
             Content content = this._contentManager.loadContent("EVN21", true);
             content.setId(null);
@@ -105,7 +106,8 @@ public class TestValidateContent extends BaseTestCase {
         }
     }
     
-    public void testValidate_3() throws Throwable {
+    @Test
+    void testValidate_3() throws Throwable {
         try {
             Content content = this.createNewVoid("RAH", "descr", Content.STATUS_DRAFT, Group.FREE_GROUP_NAME, "admin");
             ITextAttribute emailAttribute = (ITextAttribute) content.getAttribute("email");
@@ -121,7 +123,8 @@ public class TestValidateContent extends BaseTestCase {
         }
     }
     
-    public void testValidate_4() throws Throwable {
+    @Test
+    void testValidate_4() throws Throwable {
         String shortTitle = "short";
         String longTitle = "Titolo che supera la lunghezza massima di cento caratteri; "
                 + "Ripeto, Titolo che supera la lunghezza massima di cento caratteri";
@@ -168,6 +171,7 @@ public class TestValidateContent extends BaseTestCase {
         return content;
     }
     
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

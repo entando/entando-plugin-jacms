@@ -13,6 +13,10 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.page.IPageManager;
@@ -38,11 +42,14 @@ import org.entando.entando.aps.system.services.actionlog.IActionLogManager;
 import org.entando.entando.aps.system.services.actionlog.model.ActionLogRecord;
 import org.entando.entando.aps.system.services.actionlog.model.ActionLogRecordSearchBean;
 import org.entando.entando.aps.system.services.actionlog.model.ActivityStreamSeachBean;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestActivityStream extends ApsAdminBaseTestCase {
+class TestActivityStream extends ApsAdminBaseTestCase {
 
     private IActionLogManager actionLoggerManager;
     private IPageManager pageManager = null;
@@ -50,14 +57,8 @@ public class TestActivityStream extends ApsAdminBaseTestCase {
     private IContentManager contentManager = null;
     private ActionLoggerTestHelper helper;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-        this.helper.cleanRecords();
-    }
-
-    public void testSaveNewContent_1() throws Throwable {
+    @Test
+    void testSaveNewContent_1() throws Throwable {
         Content content = this.contentManager.loadContent("ART1", false);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -106,7 +107,8 @@ public class TestActivityStream extends ApsAdminBaseTestCase {
         }
     }
 
-    public void testSaveNewContent_2() throws Throwable {
+    @Test
+    void testSaveNewContent_2() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -143,7 +145,8 @@ public class TestActivityStream extends ApsAdminBaseTestCase {
         }
     }
 
-    public void testActivityStreamSearchBean() throws Throwable {
+    @Test
+    void testActivityStreamSearchBean() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -207,7 +210,8 @@ public class TestActivityStream extends ApsAdminBaseTestCase {
         }
     }
 
-    public void testLastUpdate() throws Throwable {
+    @Test
+    void testLastUpdate() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -259,18 +263,19 @@ public class TestActivityStream extends ApsAdminBaseTestCase {
         this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
     }
 
+    @BeforeEach
     private void init() {
         this.actionLoggerManager = (IActionLogManager) this.getService(SystemConstants.ACTION_LOGGER_MANAGER);
         this.pageManager = (IPageManager) this.getService(SystemConstants.PAGE_MANAGER);
         this.langManager = (ILangManager) this.getService(SystemConstants.LANGUAGE_MANAGER);
         this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
         this.helper = new ActionLoggerTestHelper(this.getApplicationContext());
+        this.helper.cleanRecords();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterEach
+    protected void dispose() throws Exception {
         this.helper.cleanRecords();
-        super.tearDown();
     }
 
 }

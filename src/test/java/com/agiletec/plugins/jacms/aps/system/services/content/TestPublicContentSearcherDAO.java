@@ -13,27 +13,26 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import com.agiletec.aps.BaseTestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestPublicContentSearcherDAO extends BaseTestCase {
+class TestPublicContentSearcherDAO extends BaseTestCase {
 	
-	@Override
-	protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-	//TODO DA AGGIUNGERE TEST
-	
-    public void testLoadContentsId_1() throws Throwable {
+	@Test
+    void testLoadContentsId_1() throws Throwable {
     	List<String> list = null;
 		try {
 			list = _contentSearcherDao.loadContentsId("ART", null, false, null, null);
@@ -48,7 +47,8 @@ public class TestPublicContentSearcherDAO extends BaseTestCase {
 		assertFalse(list.contains("ART102"));//contenuto di gruppo customers
 	}
     
-    public void testLoadContentsId_2() throws Throwable {
+    @Test
+    void testLoadContentsId_2() throws Throwable {
 		List<String> list = null;
 		try {
 			List<String> groups = new ArrayList<>();
@@ -68,6 +68,7 @@ public class TestPublicContentSearcherDAO extends BaseTestCase {
 		assertTrue(list.contains("ART112"));
 	}
 	
+    @BeforeEach
 	private void init() throws Exception {
 		try {
 			_contentSearcherDao = new PublicContentSearcherDAO();

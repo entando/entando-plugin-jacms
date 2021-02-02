@@ -50,9 +50,9 @@ import org.entando.entando.web.common.model.RestResponse;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -60,7 +60,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTest {
 
     private ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
@@ -71,7 +71,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     @Autowired
     private IContentManager contentManager;
 
-    @Before
+    @BeforeEach
     public void setupTest() {
         mockMvcHelper = new MockMvcHelper(mockMvc);
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
@@ -79,7 +79,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetReturnsList() throws Exception {
+    void testGetReturnsList() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypes")
                 .header("Authorization", "Bearer " + accessToken)
@@ -99,9 +99,9 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateUnauthorizedContentType() throws Exception {
+    void testCreateUnauthorizedContentType() throws Exception {
         String typeCode = "TX0";
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
         content.setTypeDescription("My content type " + typeCode);
@@ -115,14 +115,14 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .content(jsonMapper.writeValueAsString(contentTypeRequest))
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnauthorized());
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
     }
 
     @Test
-    public void testCreateContentType() throws Exception {
+    void testCreateContentType() throws Exception {
         String typeCode = "TX1";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
             Content content = new Content();
             content.setTypeCode(typeCode);
             content.setTypeDescription("My content type " + typeCode);
@@ -146,17 +146,17 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                     .andExpect(jsonPath("$.payload.defaultContentModel", is("My Model")))
                     .andExpect(jsonPath("$.payload.defaultContentModelList", is("Model list")));
 
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testUpdateContentType() throws Exception {
+    void testUpdateContentType() throws Exception {
         String typeCode = "TX2";
         try {
             ContentTypeDto createdContentType = createContentType(typeCode);
@@ -182,12 +182,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testUpdateNonExistentContentType() throws Exception {
+    void testUpdateNonExistentContentType() throws Exception {
         String typeCode = "TX2";
         try {
             ContentTypeDto createdContentType = createContentType(typeCode);
@@ -205,12 +205,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testDeleteContentType() throws Exception {
+    void testDeleteContentType() throws Exception {
         String typeCode = "TX3";
         try {
             this.createContentType(typeCode);
@@ -222,18 +222,18 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.contentTypeCode", is(typeCode)))
                     .andReturn();
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         } catch (Exception e) {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
             throw e;
         }
     }
 
     @Test
-    public void testGetContentType() throws Exception {
+    void testGetContentType() throws Exception {
         this.executeGetContentType("ART", status().isOk());
         this.executeGetContentType("XXX", status().isNotFound());
     }
@@ -255,7 +255,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateAndGetContentType() throws Exception {
+    void testCreateAndGetContentType() throws Exception {
         String typeCode = "TX4";
         mockMvc.perform(
                 get("/plugins/cms/contentTypes/{code}", typeCode)
@@ -280,12 +280,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testCreateExistingContentType() throws Exception {
+    void testCreateExistingContentType() throws Exception {
         String typeCode = "FIR";
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("**MARKER**", typeCode);
@@ -306,17 +306,17 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             placeholders.put("**NAME**", "Different name...");
             executeContentTypePost("1_type_valid.json", placeholders, accessToken, status().isConflict());
 
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         } finally {
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testGetAllAttributes() throws Exception {
+    void testGetAllAttributes() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes")
                 .header("Authorization", "Bearer " + accessToken)
@@ -335,7 +335,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetAttachAttribute() throws Exception {
+    void testGetAttachAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Attach")
                 .header("Authorization", "Bearer " + accessToken)
@@ -351,7 +351,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetBooleanAttribute() throws Exception {
+    void testGetBooleanAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Boolean")
                         .header("Authorization", "Bearer " + accessToken)
@@ -367,7 +367,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetCheckBoxAttribute() throws Exception {
+    void testGetCheckBoxAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "CheckBox")
                         .header("Authorization", "Bearer " + accessToken)
@@ -383,7 +383,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetCompositeAttribute() throws Exception {
+    void testGetCompositeAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Composite")
                         .header("Authorization", "Bearer " + accessToken)
@@ -399,7 +399,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetDateAttribute() throws Exception {
+    void testGetDateAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Date")
                         .header("Authorization", "Bearer " + accessToken)
@@ -415,7 +415,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetEnumeratorAttribute() throws Exception {
+    void testGetEnumeratorAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Enumerator")
                         .header("Authorization", "Bearer " + accessToken)
@@ -431,7 +431,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetEnumeratorMapAttribute() throws Exception {
+    void testGetEnumeratorMapAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "EnumeratorMap")
                         .header("Authorization", "Bearer " + accessToken)
@@ -447,7 +447,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetHypertextAttribute() throws Exception {
+    void testGetHypertextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Hypertext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -463,7 +463,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetImageAttribute() throws Exception {
+    void testGetImageAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Image")
                         .header("Authorization", "Bearer " + accessToken)
@@ -479,7 +479,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetLinkAttribute() throws Exception {
+    void testGetLinkAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Link")
                         .header("Authorization", "Bearer " + accessToken)
@@ -495,7 +495,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetListAttribute() throws Exception {
+    void testGetListAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "List")
                         .header("Authorization", "Bearer " + accessToken)
@@ -511,7 +511,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetLongtextAttribute() throws Exception {
+    void testGetLongtextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Longtext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -527,7 +527,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetMonolistAttribute() throws Exception {
+    void testGetMonolistAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Monolist")
                         .header("Authorization", "Bearer " + accessToken)
@@ -543,7 +543,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetMonotextAttribute() throws Exception {
+    void testGetMonotextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Monotext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -559,7 +559,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetNumberAttribute() throws Exception {
+    void testGetNumberAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Number")
                         .header("Authorization", "Bearer " + accessToken)
@@ -575,7 +575,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetTextAttribute() throws Exception {
+    void testGetTextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Text")
                         .header("Authorization", "Bearer " + accessToken)
@@ -591,7 +591,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetThreeStateAttribute() throws Exception {
+    void testGetThreeStateAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "ThreeState")
                         .header("Authorization", "Bearer " + accessToken)
@@ -607,7 +607,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testGetTimestampAttribute() throws Exception {
+    void testGetTimestampAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Timestamp")
                         .header("Authorization", "Bearer " + accessToken)
@@ -623,7 +623,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
     
     @Test
-    public void testGetContentAttributeType() throws Exception {
+    void testGetContentAttributeType() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contentTypeAttributes/{contentTypeCode}/attribute/{attributeTypeCode}", new Object[]{"XXX", "Monotext"})
                         .header("Authorization", "Bearer " + accessToken));
@@ -649,7 +649,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
     
     @Test
-    public void testCreateContentTypeAttribute() throws Exception {
+    void testCreateContentTypeAttribute() throws Exception {
         String typeCode = "TX5";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -675,12 +675,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testGetAttributeFromContentType() throws Exception {
+    void testGetAttributeFromContentType() throws Exception {
         String typeCode = "TX5";
         try {
             EntityTypeAttributeFullDto contentTypeAttribute = this.createContentTypeAttribute(typeCode);
@@ -699,12 +699,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testListAttributesFromContentType() throws Exception {
+    void testListAttributesFromContentType() throws Exception {
         String typeCode = "TX5";
         try {
             List<EntityTypeAttributeFullDto> contentTypeAttribute = this.createContentTypeAttributes(typeCode);
@@ -725,12 +725,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testUpdateAttributeFromContentType() throws Exception {
+    void testUpdateAttributeFromContentType() throws Exception {
         String typeCode = "TX6";
         try {
             EntityTypeAttributeFullDto contentTypeAttribute = createContentTypeAttribute(typeCode);
@@ -751,12 +751,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testDeleteContentTypeAttribute() throws Exception {
+    void testDeleteContentTypeAttribute() throws Exception {
         String typeCode = "TX7";
         EntityTypeAttributeFullDto attribute = createContentTypeAttribute(typeCode);
         try {
@@ -790,12 +790,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testRefreshContentType() throws Exception {
+    void testRefreshContentType() throws Exception {
         String typeCode = "TX8";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -810,12 +810,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testReloadReferences() throws Exception {
+    void testReloadReferences() throws Exception {
         ContentTypeRefreshRequest bodyRequest = new ContentTypeRefreshRequest();
         mockMvc.perform(
                 post("/plugins/cms/contentTypesStatus")
@@ -829,7 +829,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testExtractStatus() throws Exception {
+    void testExtractStatus() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypesStatus")
                 .header("Authorization", "Bearer " + accessToken)
@@ -858,7 +858,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
@@ -881,12 +881,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testGetContentTypeUsage() throws Exception {
+    void testGetContentTypeUsage() throws Exception {
         String code = "ART";
 
         mockMvc.perform(get("/plugins/cms/contentTypes/{code}/usage", code)
@@ -917,7 +917,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     @Test
-    public void testCreateContentTypeAttributeWithMultipleLanguagesName() throws Exception {
+    void testCreateContentTypeAttributeWithMultipleLanguagesName() throws Exception {
         String typeCode = "TX5";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -979,12 +979,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testContentTypeAttributeNamesToNameFallback() throws Exception {
+    void testContentTypeAttributeNamesToNameFallback() throws Exception {
         String typeCode = "TX6";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -1045,12 +1045,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testContentTypeAttributeNameToNamesFallback() throws Exception {
+    void testContentTypeAttributeNameToNamesFallback() throws Exception {
         String typeCode = "TX7";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -1122,12 +1122,12 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
-            Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
 
     @Test
-    public void testComponentExistenceAnalysis() throws Exception {
+    void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
         AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
                 AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TYPES,
@@ -1163,7 +1163,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
     }
 
     private ContentTypeDto createContentType(String typeCode) throws Exception {
-        Assert.assertNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
         content.setTypeCode(typeCode);
         content.setTypeDescription("My content type " + typeCode);
@@ -1177,7 +1177,7 @@ public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegr
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonMapper.writeValueAsString(contentTypeRequest))
                 .accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
-        Assert.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
+        Assertions.assertNotNull(this.contentManager.getEntityPrototype(typeCode));
         return stringToContentTypeDto(mvcResult);
     }
 

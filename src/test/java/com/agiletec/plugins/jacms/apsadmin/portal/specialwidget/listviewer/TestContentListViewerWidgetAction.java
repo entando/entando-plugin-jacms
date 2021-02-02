@@ -13,6 +13,9 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.portal.specialwidget.listviewer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +27,15 @@ import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.plugins.jacms.aps.system.services.content.widget.util.FilterUtils;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
+class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	
-	public void testInitConfigListViewer_1() throws Throwable {
+	@Test
+    void testInitConfigListViewer_1() throws Throwable {
 		String result = this.executeConfigListViewer("admin", "homepage", "1", "content_viewer_list");
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -42,7 +47,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(0, filtersProperties.size());
 	}
 	
-	public void testInitConfigListViewer_2() throws Throwable {
+	@Test
+    void testInitConfigListViewer_2() throws Throwable {
 		String result = this.executeConfigListViewer("admin", "homepage", "0", null);
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -64,7 +70,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals("Date", firstFilter.getProperty(EntitySearchFilter.KEY_PARAM));
 	}
 	
-	public void testFailureConfigContentType_1() throws Throwable {
+	@Test
+    void testFailureConfigContentType_1() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "");
 		assertEquals(Action.INPUT, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -74,7 +81,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(0, props.size());
 	}
 	
-	public void testFailureConfigContentType_2() throws Throwable {
+	@Test
+    void testFailureConfigContentType_2() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "WRO");//Tipo contenuto inesistente
 		assertEquals(Action.INPUT, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -84,7 +92,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals(0, props.size());
 	}
 	
-	public void testConfigContentType() throws Throwable {
+	@Test
+    void testConfigContentType() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "ART");
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -119,7 +128,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	public void testMoveFilter() throws Throwable {
+	@Test
+    void testMoveFilter() throws Throwable {
 		Map<String, String> paramsUp = new HashMap<String, String>();
 		paramsUp.put("movement","UP");
 		paramsUp.put("filterIndex","1");
@@ -171,7 +181,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	public void testDeleteFilter() throws Throwable {
+	@Test
+    void testDeleteFilter() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("filterIndex","1");
 		params.put("filters", "(order=DESC;attributeFilter=true;likeOption=false;key=Date)+(order=ASC;attributeFilter=true;likeOption=false;key=Title)");
@@ -187,7 +198,8 @@ public class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 		assertEquals("Date", firstFilter.getProperty(EntitySearchFilter.KEY_PARAM));
 	}
 	
-	public void testAddFilter() throws Throwable {
+	@Test
+    void testAddFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("pageCode", "homepage");

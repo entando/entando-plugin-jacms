@@ -15,7 +15,6 @@ import org.entando.entando.aps.system.services.page.IPageService;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,16 +22,20 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+
 import org.springframework.test.web.servlet.ResultMatcher;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControllerIntegrationTest {
+import org.junit.jupiter.api.Test;
+
+class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Autowired
     private IPageManager pageManager;
@@ -41,7 +44,7 @@ public class PageConfigurationControllerWidgetsIntegrationTest extends AbstractC
     private IWidgetTypeManager widgetTypeManager;
 
     @Test
-    public void testConfigureListViewer() throws Exception {
+    void testConfigureListViewer() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -104,7 +107,7 @@ public class PageConfigurationControllerWidgetsIntegrationTest extends AbstractC
     }
 
     @Test
-    public void testContentViewer() throws Exception {
+    void testContentViewer() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -186,7 +189,7 @@ public class PageConfigurationControllerWidgetsIntegrationTest extends AbstractC
     }
 
     @Test
-    public void testConfigurationRestore() throws Exception {
+    void testConfigurationRestore() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -257,7 +260,7 @@ public class PageConfigurationControllerWidgetsIntegrationTest extends AbstractC
     }
 
     @Test
-    public void testConfigurationDelete() throws Exception {
+    void testConfigurationDelete() throws Exception {
         String pageCode = "draft_page_x";
         try {
             Page mockPage = createPage(pageCode);

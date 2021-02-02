@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -20,36 +24,37 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContent
 
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.1
  * @author W.Ambu - S.Didaci - C.Siddi
  */
-public class ContentModelManagerIntegrationTest extends BaseTestCase {
+class ContentModelManagerIntegrationTest extends BaseTestCase {
 	
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-    public void testGetContentModel() {
+    @Test
+    void testGetContentModel() {
     	ContentModel model = this._contentModelManager.getContentModel(1);
     	assertNotNull(model);
     }
     
-    public void testGetContentModels() {
+    @Test
+    void testGetContentModels() {
     	List<ContentModel> models = this._contentModelManager.getContentModels();
     	assertNotNull(models);
     	assertEquals(6, models.size());
     }
     
-    public void testGetModelsForContentType() {
+    @Test
+    void testGetModelsForContentType() {
     	List<ContentModel> models = this._contentModelManager.getModelsForContentType("ART");
     	assertNotNull(models);
     	assertEquals(4, models.size());
     }
     
-    public void testAddDeleteContentModel() throws Throwable {
+    @Test
+    void testAddDeleteContentModel() throws Throwable {
     	List<ContentModel> contentModels = this._contentModelManager.getContentModels();
     	int size = contentModels.size();
     	ContentModel contentModel = new ContentModel();
@@ -74,7 +79,8 @@ public class ContentModelManagerIntegrationTest extends BaseTestCase {
 		}
     }
     
-    public void testUpdateContentModel() throws Throwable {
+    @Test
+    void testUpdateContentModel() throws Throwable {
     	List<ContentModel> contentModels = _contentModelManager.getContentModels();
     	int size = contentModels.size();
     	ContentModel contentModel = new ContentModel();
@@ -108,13 +114,15 @@ public class ContentModelManagerIntegrationTest extends BaseTestCase {
 		}
     }
     
-    public void testGetReferencingPages() {
+    @Test
+    void testGetReferencingPages() {
     	Map<String, List<IPage>> utilizers = this._contentModelManager.getReferencingPages(2);
     	assertNotNull(utilizers);
     	assertEquals(1, utilizers.size());
     }
     
-    public void testGetTypeUtilizer() throws Throwable {
+    @Test
+    void testGetTypeUtilizer() throws Throwable {
     	SmallContentType utilizer = this._contentModelManager.getDefaultUtilizer(1);
     	assertNotNull(utilizer);
     	assertEquals("ART", utilizer.getCode());
@@ -128,6 +136,7 @@ public class ContentModelManagerIntegrationTest extends BaseTestCase {
     	assertEquals("RAH", utilizer.getCode());
     }
     
+    @BeforeEach
     private void init() throws Exception {
     	try {
     		this._contentModelManager = (IContentModelManager) this.getService(JacmsSystemConstants.CONTENT_MODEL_MANAGER);

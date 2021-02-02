@@ -13,6 +13,8 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
@@ -23,23 +25,21 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Ab
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestValidateResourceAttribute extends AbstractTestContentAttribute {
+class TestValidateResourceAttribute extends AbstractTestContentAttribute {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    public void testValidate_SingleAttach() throws Throwable {
+    @Test
+    void testValidate_SingleAttach() throws Throwable {
         this.testValidate_Single("Attach", "7");
     }
 
-    public void testValidate_SingleImage() throws Throwable {
+    @Test
+    void testValidate_SingleImage() throws Throwable {
         this.testValidate_Single("Image", "22");
     }
 
@@ -76,11 +76,13 @@ public class TestValidateResourceAttribute extends AbstractTestContentAttribute 
         }
     }
 
-    public void testValidate_AttachMonoList() throws Throwable {
+    @Test
+    void testValidate_AttachMonoList() throws Throwable {
         this.testValidate_MonoListElement("MonoLAtta");
     }
 
-    public void testValidate_ImageMonoList() throws Throwable {
+    @Test
+    void testValidate_ImageMonoList() throws Throwable {
         this.testValidate_MonoListElement("MonoLImage");
     }
 
@@ -139,11 +141,13 @@ public class TestValidateResourceAttribute extends AbstractTestContentAttribute 
         }
     }
 
-    public void testValidate_AttachCompositeElement() throws Throwable {
+    @Test
+    void testValidate_AttachCompositeElement() throws Throwable {
         this.testValidate_CompositeElement("Attach", "7");
     }
 
-    public void testValidate_ImageCompositeElement() throws Throwable {
+    @Test
+    void testValidate_ImageCompositeElement() throws Throwable {
         this.testValidate_CompositeElement("Image", "44");
     }
 
@@ -187,11 +191,13 @@ public class TestValidateResourceAttribute extends AbstractTestContentAttribute 
         }
     }
 
-    public void testValidate_AttachMonolistCompositeElement() throws Throwable {
+    @Test
+    void testValidate_AttachMonolistCompositeElement() throws Throwable {
         this.testValidate_MonolistCompositeElement("Attach", "7");
     }
 
-    public void testValidate_ImageMonolistCompositeElement() throws Throwable {
+    @Test
+    void testValidate_ImageMonolistCompositeElement() throws Throwable {
         this.testValidate_MonolistCompositeElement("Image", "44");
     }
 
@@ -244,7 +250,9 @@ public class TestValidateResourceAttribute extends AbstractTestContentAttribute 
         }
     }
 
-    private void init() throws Exception {
+    @BeforeEach
+    protected void init() throws Exception {
+        super.init();
         try {
             this._resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
         } catch (Throwable t) {

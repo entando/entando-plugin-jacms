@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +32,15 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Li
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.link.helper.ILinkAttributeActionHelper;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
+class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 
-	public void testChooseLink_1() throws Throwable {
+	@Test
+    void testChooseLink_1() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -54,7 +60,8 @@ public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 		assertEquals("Articolo", currentContent.getDescription());
 	}
 
-	public void testChooseLink_2() throws Throwable {
+	@Test
+    void testChooseLink_2() throws Throwable {
 		String contentId = "EVN191";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -99,7 +106,8 @@ public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 		assertEquals("Evento 1", currentContent.getDescription());
 	}
 
-	public void testRemoveLink() throws Throwable {
+	@Test
+    void testRemoveLink() throws Throwable {
 		String contentId = "ART102";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -126,7 +134,8 @@ public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 		assertNull(symbolicLink);
 	}
 
-	public void testFailureChooseLinkType_1() throws Throwable {
+	@Test
+    void testFailureChooseLinkType_1() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -150,7 +159,8 @@ public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 		assertEquals("Articolo", currentContent.getDescription());
 	}
 
-	public void testFailureChooseLinkType_2() throws Throwable {
+	@Test
+    void testFailureChooseLinkType_2() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -184,7 +194,8 @@ public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 		assertEquals("Articolo", currentContent.getDescription());
 	}
 
-	public void testChooseLinkType() throws Throwable {
+	@Test
+    void testChooseLinkType() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");

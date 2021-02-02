@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.category;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,19 +26,16 @@ import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.category.CategoryAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
+class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testTrashReferencedCategory() throws Throwable {
+	@Test
+    void testTrashReferencedCategory() throws Throwable {
 		String categoryCode = "evento";
 		Category masterCategory = this._categoryManager.getCategory(categoryCode);
 		assertNotNull(masterCategory);
@@ -60,6 +61,7 @@ public class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
 		}
 	}
 
+    @BeforeEach
 	private void init() throws Exception {
 		this._categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
 	}

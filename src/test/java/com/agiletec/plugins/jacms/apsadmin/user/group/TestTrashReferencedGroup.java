@@ -13,15 +13,20 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.user.group;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 import java.util.Map;
 
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.user.group.GroupAction;
+import org.junit.jupiter.api.Test;
 
-public class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
+class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
 
-	public void testFailureTrashReferencedGroup() throws Throwable {
+	@Test
+    void testFailureTrashReferencedGroup() throws Throwable {
 		String result = this.executeTrash("admin", "customers");
 		assertEquals("references", result);
 		GroupAction groupAction = (GroupAction) this.getAction();

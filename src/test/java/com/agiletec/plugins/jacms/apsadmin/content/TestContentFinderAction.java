@@ -13,6 +13,9 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +24,15 @@ import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentFinderAction extends AbstractBaseTestContentAction {
+class TestContentFinderAction extends AbstractBaseTestContentAction {
 	
-	public void testGetList() throws Throwable {
+	@Test
+    void testGetList() throws Throwable {
 		String result = this.executeGetList("admin");
 		assertEquals(Action.SUCCESS, result);
 		List<String> contents = (List<String>) ((ContentFinderAction)this.getAction()).getContents();
@@ -53,7 +58,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 		return this.executeAction();
 	}
 	
-	public void testPerformSearch_1() throws Throwable {
+	@Test
+    void testPerformSearch_1() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeSearch("admin", params);
 		ContentFinderAction action = (ContentFinderAction) this.getAction();
@@ -78,7 +84,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 	
-	public void testPerformSearch_2() throws Throwable {
+	@Test
+    void testPerformSearch_2() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeSearch("supervisorCoach", params);
 		ContentFinderAction action = (ContentFinderAction) this.getAction();
@@ -100,7 +107,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 	
-	public void testPerformSearch_3() throws Throwable {
+	@Test
+    void testPerformSearch_3() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");
@@ -120,7 +128,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 	/**
 	 * Test the newly added search criteria contentId, #1
 	 */
-	public void testPerformSearch_4() throws Throwable {
+	@Test
+    void testPerformSearch_4() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");
@@ -141,7 +150,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 	/**
 	 * Thest the newly added search criteria contentId, #2
 	 */
-	public void testPerformSearch_5() throws Throwable {
+	@Test
+    void testPerformSearch_5() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "DESC");
 		params.put("lastGroupBy", "created");
@@ -162,7 +172,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 
-	public void testPerformSearch_6() throws Throwable {
+	@Test
+    void testPerformSearch_6() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		this.executeSearch("admin", params);
@@ -176,7 +187,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 
-	public void testPerformSearch_7() throws Throwable {
+	@Test
+    void testPerformSearch_7() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		params.put("Data_dateStartFieldName", "12/02/2009");
@@ -197,7 +209,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 		assertTrue(contents.contains("ART179"));
 	}
 	
-	public void testPerformSearch_8() throws Throwable {
+	@Test
+    void testPerformSearch_8() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		params.put("Data_dateStartFieldName", "12/02/2009");
@@ -212,7 +225,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 	
-	public void testPerformSearch_9() throws Throwable {
+	@Test
+    void testPerformSearch_9() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "EVN");
 		this.executeSearch("editorCoach", params);
@@ -243,7 +257,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 		assertTrue(contents.contains("EVN41"));
 	}
 	
-	public void testPerformSearch_10() throws Throwable {
+	@Test
+    void testPerformSearch_10() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("categoryCode", "home");
 		params.put("contentType", "EVN");
@@ -269,7 +284,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 
-	public void testPerformSearch_11() throws Throwable {
+	@Test
+    void testPerformSearch_11() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("ownerGroupName", "coach");
 		this.executeSearch("admin", params);
@@ -302,7 +318,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
     	}
 	}
 
-	public void testPerformSearch_12() throws Throwable {
+	@Test
+    void testPerformSearch_12() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("ownerGroupName", "coach");
 		this.executeSearch("editorCoach", params);
@@ -353,7 +370,8 @@ public class TestContentFinderAction extends AbstractBaseTestContentAction {
 		assertEquals(Action.SUCCESS, result);
 	}
 	
-	public void testSearchWithWrongStatus() throws Throwable {
+	@Test
+    void testSearchWithWrongStatus() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");

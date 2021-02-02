@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -32,26 +38,30 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentAction extends AbstractBaseTestContentAction {
+class TestContentAction extends AbstractBaseTestContentAction {
     
-    public void testEditForAdminUser() throws Throwable {
+    @Test
+    void testEditForAdminUser() throws Throwable {
         this.testSuccesfullEdit("ART1", "admin");
         this.testSuccesfullEdit("RAH101", "admin");
         this.testSuccesfullEdit("EVN103", "admin");
     }
 
-    public void testEditForCustomerUser() throws Throwable {
+    @Test
+    void testEditForCustomerUser() throws Throwable {
         String username = "editorCustomers";
         this.testFailureEdit("ART1", username);
         this.testSuccesfullEdit("RAH101", username);
         this.testFailureEdit("EVN103", username);
     }
 
-    public void testEditForCoachUser() throws Throwable {
+    @Test
+    void testEditForCoachUser() throws Throwable {
         String username = "editorCoach";
         this.testFailureEdit("ART1", username);//Contenuto Non autorizzato
         this.testSuccesfullEdit("RAH101", username);
@@ -79,7 +89,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(BaseAction.USER_NOT_ALLOWED, result);
     }
 
-    public void testValidate_1() throws Throwable {
+    @Test
+    void testValidate_1() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         String contentTypeCode = "ART";
         Content prototype = this.getContentManager().createContentType(contentTypeCode);
@@ -131,7 +142,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testValidate_2() throws Throwable {
+    @Test
+    void testValidate_2() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         try {
             Content contentForTest = this.getContentManager().loadContent("EVN191", true);
@@ -168,7 +180,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testValidate_3() throws Throwable { // Description maxlength
+    @Test
+    void testValidate_3() throws Throwable { // Description maxlength
         String contentTypeCode = "ART";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
         String marker = "__DESCR_TEST__";
@@ -207,7 +220,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
     /*
 	 * We test, among other things the CheckBox attribute
      */
-    public void testValidate_4() throws Throwable {
+    @Test
+    void testValidate_4() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
         String insertedDescr = "XXX Prova Validazione XXX";
@@ -268,7 +282,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testValidate_5() throws Throwable {
+    @Test
+    void testValidate_5() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
         String insertedDescr = "XXX Prova Validazione XXX";
@@ -336,7 +351,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
-    public void testValidate_6() throws Throwable {
+    @Test
+    void testValidate_6() throws Throwable {
         String contentTypeCode = "RAH";
         String contentOnSessionMarker = this.extractSessionMarker(contentTypeCode, ApsAdminSystemConstants.ADD);
         String longDescr = IntStream.range(0, 25).mapToObj(i -> "1234567890 ").collect(Collectors.joining());
@@ -372,7 +388,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
-    public void testValidate_7() throws Throwable {
+    @Test
+    void testValidate_7() throws Throwable {
         String contentId = "ART112";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
         try {
@@ -414,7 +431,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testJoinRemoveCategory() throws Throwable {
+    @Test
+    void testJoinRemoveCategory() throws Throwable {
         String contentId = "ART1";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 
@@ -464,7 +482,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(0, contentOnSession.getCategories().size());
     }
 
-    public void testJoinRemoveGroup() throws Throwable {
+    @Test
+    void testJoinRemoveGroup() throws Throwable {
         String contentId = "ART1";
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 
@@ -515,7 +534,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(0, contentOnSession.getGroups().size());
     }
 
-    public void testSaveNewContent() throws Throwable {
+    @Test
+    void testSaveNewContent() throws Throwable {
         String contentId = "ART1";
         Content master = this.getContentManager().loadContent(contentId, false);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(master, ApsAdminSystemConstants.ADD);
@@ -545,7 +565,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testSaveContentWithPageReference() throws Throwable {
+    @Test
+    void testSaveContentWithPageReference() throws Throwable {
         String contentId = "ART111";
         this.executeEdit(contentId, "admin");
         Content master = this.getContentManager().loadContent(contentId, false);
@@ -599,7 +620,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
     
-    public void testSuspendReferencedContent() throws Throwable {
+    @Test
+    void testSuspendReferencedContent() throws Throwable {
         String contentId = "ART1";
         Content master = this.getContentManager().loadContent(contentId, false);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(master, ApsAdminSystemConstants.EDIT);
@@ -624,7 +646,8 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         }
     }
 
-    public void testRedirectFindImageResource() throws Throwable {
+    @Test
+    void testRedirectFindImageResource() throws Throwable {
         String contentId = "ART1";
         this.executeEdit(contentId, "admin");
         String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
@@ -636,27 +659,31 @@ public class TestContentAction extends AbstractBaseTestContentAction {
         assertEquals(Action.SUCCESS, result);
     }
 
-    public void testFailureCopyPaste_1() throws Throwable {
+    @Test
+    void testFailureCopyPaste_1() throws Throwable {
         String contentId = "ART100";//Contenuto inesistente
         boolean publicVersion = false;
         String result = this.executeCopyPaste(contentId, publicVersion, "admin");
         assertEquals(BaseAction.FAILURE, result);
     }
 
-    public void testFailureCopyPaste_2() throws Throwable {
+    @Test
+    void testFailureCopyPaste_2() throws Throwable {
         String contentId = "ART179";//Contenuto non pubblico
         boolean publicVersion = true;
         String result = this.executeCopyPaste(contentId, publicVersion, "admin");
         assertEquals(BaseAction.FAILURE, result);
     }
 
-    public void testExecuteCopyPaste_1() throws Throwable {
+    @Test
+    void testExecuteCopyPaste_1() throws Throwable {
         String contentId = "ART1";//Contenuto pubblico
         boolean publicVersion = true;
         this.executeSuccessfulCopyPaste(contentId, publicVersion, "admin");
     }
 
-    public void testExecuteCopyPaste_2() throws Throwable {
+    @Test
+    void testExecuteCopyPaste_2() throws Throwable {
         String contentId = "ART179";//Contenuto non pubblico
         boolean publicVersion = false;
         this.executeSuccessfulCopyPaste(contentId, publicVersion, "admin");

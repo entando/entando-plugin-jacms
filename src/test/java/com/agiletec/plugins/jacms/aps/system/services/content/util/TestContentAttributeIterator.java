@@ -13,20 +13,23 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.util;
 
-import com.agiletec.aps.BaseTestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoTextAttribute;
 import com.agiletec.aps.system.common.util.EntityAttributeIterator;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.0
  * @author M. Morini
  */
-public class TestContentAttributeIterator extends BaseTestCase {
+class TestContentAttributeIterator {
 	
-    public void testIterator() throws EntException {  
+    @Test
+    void testIterator() throws EntException {  
 		Content content = new Content();
     	AttributeInterface attribute = new MonoTextAttribute();
     	attribute.setName("temp");

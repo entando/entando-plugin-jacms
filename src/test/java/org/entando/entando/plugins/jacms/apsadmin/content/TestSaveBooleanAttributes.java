@@ -13,19 +13,27 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.system.common.entity.model.attribute.BooleanAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.CheckBoxAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ThreeStateAttribute;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
+class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
 
-    public void testSaveBooleanAttribute() throws Throwable {
+    @Test
+    void testSaveBooleanAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -63,7 +71,8 @@ public class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
         }
     }
 
-    public void testSaveCheckBoxAttribute() throws Throwable {
+    @Test
+    void testSaveCheckBoxAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -101,7 +110,8 @@ public class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
         }
     }
 
-    public void testSaveThreeStateAttribute() throws Throwable {
+    @Test
+    void testSaveThreeStateAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);

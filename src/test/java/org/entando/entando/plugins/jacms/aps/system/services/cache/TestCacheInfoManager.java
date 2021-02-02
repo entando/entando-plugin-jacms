@@ -13,6 +13,11 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.entando.entando.aps.system.services.cache.CacheInfoManager;
@@ -33,19 +38,16 @@ import com.agiletec.plugins.jacms.aps.system.services.dispenser.BaseContentDispe
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispenser;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestCacheInfoManager extends BaseTestCase {
+class TestCacheInfoManager extends BaseTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    public void testGetRenderedContent_1() throws Throwable {
+    @Test
+    void testGetRenderedContent_1() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -69,7 +71,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContent_2() throws Throwable {
+    @Test
+    void testGetRenderedContent_2() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -98,7 +101,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContent_3() throws Throwable {
+    @Test
+    void testGetRenderedContent_3() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -127,7 +131,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContentsGroup_1() throws Throwable {
+    @Test
+    void testGetRenderedContentsGroup_1() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -142,7 +147,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContentsGroup_2() throws Throwable {
+    @Test
+    void testGetRenderedContentsGroup_2() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -157,7 +163,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContentsGroup_3() throws Throwable {
+    @Test
+    void testGetRenderedContentsGroup_3() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -200,7 +207,8 @@ public class TestCacheInfoManager extends BaseTestCase {
     }
 
     //---------------------------------------------- ContentList
-    public void testGetContents_1() throws Throwable {
+    @Test
+    void testGetContents_1() throws Throwable {
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
             MockContentListBean bean = new MockContentListBean();
@@ -221,7 +229,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetContents_2() throws Throwable {
+    @Test
+    void testGetContents_2() throws Throwable {
         String contentId = null;
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
@@ -254,7 +263,8 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
-    public void testGetContentsGroup() throws Throwable {
+    @Test
+    void testGetContentsGroup() throws Throwable {
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
             MockContentListBean bean = new MockContentListBean();
@@ -315,6 +325,7 @@ public class TestCacheInfoManager extends BaseTestCase {
         }
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._contentDispenser = (IContentDispenser) this.getService(JacmsSystemConstants.CONTENT_DISPENSER_MANAGER);

@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 
 import com.agiletec.aps.system.services.group.Group;
@@ -20,13 +25,15 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentGroupAction extends AbstractBaseTestContentAction {
+class TestContentGroupAction extends AbstractBaseTestContentAction {
 	
-	public void testInsertOnLineContents_1() throws Throwable {
+	@Test
+    void testInsertOnLineContents_1() throws Throwable {
 		this.setUserOnSession("admin");
 		String[] masterContentIds = {"ART111", "EVN20"};//CONTENUTI FREE
 		String[] newContentIds = null;
@@ -54,7 +61,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testInsertOnLineContents_2() throws Throwable {
+	@Test
+    void testInsertOnLineContents_2() throws Throwable {
 		this.setUserOnSession("supervisorCoach");
 		String[] masterContentIds = {"ART180", "EVN20", "ART104", "ART102"};//2 CONTENUTI FREE, 1 Customers e 1 Coach
 		String[] newContentIds = null;
@@ -91,7 +99,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testInsertOnLineContents_3() throws Throwable {
+	@Test
+    void testInsertOnLineContents_3() throws Throwable {
 		this.setUserOnSession("admin");
 		String[] masterContentIds = {"ART179"};//CONTENUTO FREE con errori di validazione
 		String[] newContentIds = null;
@@ -117,7 +126,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testSuspendContents_1() throws Throwable {
+	@Test
+    void testSuspendContents_1() throws Throwable {
 		this.setUserOnSession("admin");
 		String[] masterContentIds = {"ART111", "EVN20"};//CONTENUTO FREE
 		String[] newContentIds = null;
@@ -143,7 +153,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testSuspendContents_2() throws Throwable {
+	@Test
+    void testSuspendContents_2() throws Throwable {
 		this.setUserOnSession("supervisorCoach");
 		String[] masterContentIds = {"ART180", "EVN20", "ART104", "ART102"};//2 CONTENUTI FREE, 1 Customers e 1 Coach
 		String[] newContentIds = null;
@@ -180,7 +191,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testDeleteContents_1() throws Throwable {
+	@Test
+    void testDeleteContents_1() throws Throwable {
 		this.setUserOnSession("admin");
 		String[] masterContentIds = {"ART111", "EVN20"};//CONTENUTO FREE
 		String[] newContentIds = null;
@@ -206,7 +218,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testDeleteContents_2() throws Throwable {
+	@Test
+    void testDeleteContents_2() throws Throwable {
 		this.setUserOnSession("supervisorCoach");
 		String[] masterContentIds = {"ART180", "EVN20", "ART104", "ART102"};//2 CONTENUTI FREE, 1 Customers e 1 Coach
 		String[] newContentIds = null;
@@ -244,7 +257,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 		}
 	}
 	
-	public void testDeleteContents_3() throws Throwable {
+	@Test
+    void testDeleteContents_3() throws Throwable {
 		this.setUserOnSession("admin");
 		String[] masterContentIds = {"ART111", "EVN20"};//CONTENUTO FREE
 		String[] newContentIds = null;
@@ -279,7 +293,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 	 * Test trashing published contents
 	 * @throws Throwable
 	 */
-	public void testTrashContents_1() throws Throwable {
+	@Test
+    void testTrashContents_1() throws Throwable {
 		String result = null;
 		String[] testContentsIds = null;
 		String[] contentIds_1 = {"ART111", "EVN20"};
@@ -302,7 +317,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 	 * Test trashing invalid (non existent) content
 	 * @throws Throwable
 	 */
-	public void testTrashContents_2() throws Throwable {
+	@Test
+    void testTrashContents_2() throws Throwable {
 		String result = null;
 		String[] tempContents = null;
 		String[] sourceContents = {"ART111", "EVN41", "RAH101"};
@@ -330,7 +346,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 	 * Test trashing non published contents; one belongs to the free group
 	 * @throws Throwable
 	 */
-	public void testTrashContents_3() throws Throwable {
+	@Test
+    void testTrashContents_3() throws Throwable {
 		String result = null;
 		String[] testContentsIds = null;
 		String[] contentIds_1 = {"ART111", "EVN20"};
@@ -353,7 +370,8 @@ public class TestContentGroupAction extends AbstractBaseTestContentAction {
 	 * Test trashing non published contents belonging to group which current user cannot handle 
 	 * @throws Throwable
 	 */
-	public void testTrashContents_4() throws Throwable {
+	@Test
+    void testTrashContents_4() throws Throwable {
 		String result = null;
 		String[] testContentsIds = null;
 		String[] contentIds_1 = {"ART120", "ART179"};		

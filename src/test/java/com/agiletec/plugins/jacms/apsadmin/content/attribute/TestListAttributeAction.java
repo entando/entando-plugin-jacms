@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
@@ -24,13 +26,15 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestListAttributeAction extends AbstractBaseTestContentAction {
+class TestListAttributeAction extends AbstractBaseTestContentAction {
 
-	public void testAddListElement() throws Throwable {
+	@Test
+    void testAddListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "addListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");
@@ -44,7 +48,8 @@ public class TestListAttributeAction extends AbstractBaseTestContentAction {
 		this.verifyText(attributes, expected);
 	}
 
-	public void testMoveListElement() throws Throwable {
+	@Test
+    void testMoveListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "moveListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");
@@ -73,7 +78,8 @@ public class TestListAttributeAction extends AbstractBaseTestContentAction {
 		this.verifyText(attributes, expected2);
 	}
 
-	public void testRemoveListElement() throws Throwable {
+	@Test
+    void testRemoveListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "removeListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");

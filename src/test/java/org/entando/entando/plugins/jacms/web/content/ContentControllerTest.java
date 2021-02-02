@@ -22,24 +22,32 @@ import javax.servlet.http.HttpSession;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
 import org.entando.entando.web.AbstractControllerTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
+
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BindingResult;
 
-public class ContentControllerTest extends AbstractControllerTest {
+@ExtendWith(MockitoExtension.class)
+class ContentControllerTest extends AbstractControllerTest {
 
     @Mock
     private ContentValidator contentValidator;
@@ -53,9 +61,8 @@ public class ContentControllerTest extends AbstractControllerTest {
     @InjectMocks
     private ContentController controller;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(entandoOauth2Interceptor)
                 .setHandlerExceptionResolvers(createHandlerExceptionResolver())
@@ -63,33 +70,31 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Ignore
     public void shouldGetExistingContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART123", IContentService.STATUS_DRAFT)).thenReturn(true);
         when(this.contentService.getContent(Mockito.eq("ART123"), Mockito.isNull(),
-                Mockito.eq("draft"), Mockito.isNull(), Mockito.anyBoolean(), Mockito.any(UserDetails.class))).thenReturn(Mockito.mock(ContentDto.class));
+                Mockito.eq("draft"), Mockito.isNull(), Mockito.anyBoolean(), Mockito.any(UserDetails.class))).thenReturn(new ContentDto());
         ResultActions result = performGetContent("ART123", null, false, null, user);
         result.andExpect(status().isOk());
     }
 
     @Test
-    public void testUnexistingContent() throws Exception {
+    void testUnexistingContent() throws Exception {
         UserDetails user = this.createUser(true);
-        when(this.httpSession.getAttribute("user")).thenReturn(user);
+        Mockito.lenient().when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART098", IContentService.STATUS_ONLINE)).thenReturn(false);
         ResultActions result = performGetContent("ART098", null, true, null, user);
         result.andExpect(status().isNotFound());
     }
 
     @Test
-    @Ignore
-    public void testAddContent() throws Exception {
+    void testAddContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.addContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
-                .thenReturn(Mockito.mock(ContentDto.class));
+                .thenReturn(new ContentDto());
         String mockJson = "[{\n"
                 + "    \"id\": \"ART123\",\n"
                 + "    \"typeCode\": \"ART\",\n"
@@ -102,12 +107,11 @@ public class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Ignore
-    public void testUpdateContent() throws Exception {
+    void testUpdateContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.updateContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
-                .thenReturn(Mockito.mock(ContentDto.class));
+                .thenReturn(new ContentDto());
         String mockJson = "{\n"
                 + "    \"id\": \"ART123\",\n"
                 + "    \"typeCode\": \"ART\",\n"

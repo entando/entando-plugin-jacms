@@ -13,6 +13,10 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,13 +26,15 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
+class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 
-	public void testOpenNew() throws Throwable {
+	@Test
+    void testOpenNew() throws Throwable {
 		String result = this.executeOpenNew("admin");
 		assertEquals(Action.SUCCESS, result);
 
@@ -42,7 +48,8 @@ public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 		return this.executeAction();
 	}
 
-	public void testCreateNewVoid() throws Throwable {
+	@Test
+    void testCreateNewVoid() throws Throwable {
 		String contentTypeCode = "ART";
 		Content prototype = this.getContentManager().createContentType(contentTypeCode);
 		String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(prototype, ApsAdminSystemConstants.ADD);
@@ -73,7 +80,8 @@ public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 		assertEquals(contentTypeCode, content.getTypeCode());
 	}
 
-	public void testCreateNewVoid_2() throws Throwable {
+	@Test
+    void testCreateNewVoid_2() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		String result = this.executeAction();
@@ -83,7 +91,8 @@ public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 		assertEquals(3, fieldErros.size());
 	}
 
-	public void testCreateNewVoid_3() throws Throwable {
+	@Test
+    void testCreateNewVoid_3() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		this.addParameter("contentTypeCode", "ART");
@@ -97,7 +106,8 @@ public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 		assertEquals(1, fieldErros.get("contentMainGroup").size());
 	}
 
-	public void testCreateNewVoid_4() throws Throwable {
+	@Test
+    void testCreateNewVoid_4() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		this.addParameter("contentTypeCode", "ART");
@@ -111,7 +121,8 @@ public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 		assertEquals(1, fieldErros.get("contentMainGroup").size());
 	}
 
-	public void testCreateNewVoid_5() throws Throwable {
+	@Test
+    void testCreateNewVoid_5() throws Throwable {
 		this.setUserOnSession("editorCustomers");
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.addParameter("contentTypeCode", "ART");

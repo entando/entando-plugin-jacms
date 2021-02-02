@@ -22,8 +22,6 @@ import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.parse.ContentDOM;
 import com.agiletec.plugins.jacms.aps.system.services.content.parse.ContentTypeDOM;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -32,12 +30,18 @@ import org.springframework.beans.factory.BeanFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class ContentManagerTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class ContentManagerTest {
 
     @Mock
     private IEntityTypeFactory entityTypeFactory;
@@ -64,7 +68,7 @@ public class ContentManagerTest {
     @InjectMocks
     private ContentManager contentManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.contentManager.setEntityClassName(className);
@@ -73,7 +77,7 @@ public class ContentManagerTest {
     }
 
     @Test
-    public void testCreateContent() throws EntException {
+    void testCreateContent() throws EntException {
         String typeCode = "ART";
         // @formatter:off
         when(entityTypeFactory.extractEntityType(
@@ -92,7 +96,7 @@ public class ContentManagerTest {
     }
 
     @Test
-    public void testGetXML() throws Throwable {
+    void testGetXML() throws Throwable {
         String typeCode = "ART";
         // @formatter:off
         when(entityTypeFactory.extractEntityType(

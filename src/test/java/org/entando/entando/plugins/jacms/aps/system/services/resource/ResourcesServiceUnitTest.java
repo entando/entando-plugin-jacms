@@ -3,31 +3,46 @@ package org.entando.entando.plugins.jacms.aps.system.services.resource;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import org.entando.entando.plugins.jacms.aps.system.services.util.TestHelper;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import com.agiletec.aps.system.services.role.Permission;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.entando.entando.TestEntandoJndiUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+/*
 @ActiveProfiles("test")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ResourcesServiceUnitTest {
+*/
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = {
+    "classpath*:spring/testpropertyPlaceholder.xml",
+    "classpath*:spring/baseSystemConfig.xml",
+    "classpath*:spring/aps/**/**.xml",
+    "classpath*:spring/apsadmin/**/**.xml",
+    "classpath*:spring/plugins/**/aps/**/**.xml",
+    "classpath*:spring/plugins/**/apsadmin/**/**.xml",
+    "classpath*:spring/web/**.xml"
+})
+@WebAppConfiguration(value = "")
+class ResourcesServiceUnitTest {
 
     @Autowired
     private MessageSource messageSource;
@@ -35,7 +50,12 @@ public class ResourcesServiceUnitTest {
     private IAuthorizationManager authorizationManager;
     private ResourcesService resourcesService;
 
-    @Before
+    @BeforeAll
+    public static void init() throws Exception {
+        TestEntandoJndiUtils.setupJndi();
+    }
+
+    @BeforeEach
     public void setup() {
         authorizationManager = mock(IAuthorizationManager.class);
         resourcesService = new ResourcesService();
@@ -48,38 +68,46 @@ public class ResourcesServiceUnitTest {
         resourcesService.setImageAllowedExtensions(Arrays.stream(new String[] { "jpeg","png" }).collect(Collectors.toList()));
     }
 
-    @Test(expected = ValidationGenericException.class)
-    public void testInvalidGroup() {
-        resourcesService.validateGroup(null, "invalidGroup");
+    @Test
+    void testInvalidGroup() {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            resourcesService.validateGroup(null, "invalidGroup");
+        });
     }
 
     @Test
-    public void testGroupValidation() {
+    void testGroupValidation() {
         resourcesService.validateGroup(null, "free");
         resourcesService.validateGroup(null, "admin");
     }
 
     @Test
-    public void testMimeTypeValidation() {
-        resourcesService.validateMimeType("Image", "application/jpeg");
-        resourcesService.validateMimeType("Image", "application/png");
-        resourcesService.validateMimeType("Attach", "application/pdf");
-        resourcesService.validateMimeType("Attach", "application/txt");
-    }
-
-    @Test(expected = ValidationGenericException.class)
-    public void testInvalidImageMimeType() {
-        resourcesService.validateMimeType("Image", "application/pdf");
-    }
-
-    @Test(expected = ValidationGenericException.class)
-    public void testInvalidAttachMimeType() {
-        resourcesService.validateMimeType("Attach", "application/jpeg");
-    }
-
-    @Test(expected = ValidationGenericException.class)
-    public void testInvalidResourceType() {
+    void testMimeTypeValidation() {
         resourcesService.validateMimeType("image", "application/jpeg");
+        resourcesService.validateMimeType("image", "application/png");
+        resourcesService.validateMimeType("file", "application/pdf");
+        resourcesService.validateMimeType("file", "application/txt");
+    }
+
+    @Test
+    void testInvalidImageMimeType() {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            resourcesService.validateMimeType("image", "application/pdf");
+        });
+    }
+
+    @Test
+    void testInvalidAttachMimeType() {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            resourcesService.validateMimeType("attach", "application/jpeg");
+        });
+    }
+
+    @Test
+    void testInvalidResourceType() {
+        Assertions.assertThrows(ValidationGenericException.class, () -> {
+            resourcesService.validateMimeType("image", "application/txt");
+        });
     }
 
     private String resolveLocalizedMessage(String code, Object... args) {

@@ -13,15 +13,14 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.opensymphony.xwork2.Action;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
-public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
+class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
 
     private String FILE_UPLOAD_CONTENT_TYPE = "content-type";
     private String FILE_NAME_ATTACHMENT = "filename.txt";
@@ -31,13 +30,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     private String UPLOAD_ID = "aaaa-bbbb-cccc-dddd";
     private String FILE_SIZE = "2000";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        //   this.init();
-    }
-
-    public void testUploadNotValidTypeCodeValidation() throws Throwable {
+    @Test
+    void testUploadNotValidTypeCodeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -51,7 +45,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
-    public void testUploadImageValidation() throws Throwable {
+    @Test
+    void testUploadImageValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -65,7 +60,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
-    public void testUploadImageNotValidTypeValidation() throws Throwable {
+    @Test
+    void testUploadImageNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -78,7 +74,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
-    public void testUploadAttachmentValidation() throws Throwable {
+    @Test
+    void testUploadAttachmentValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -89,7 +86,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
-    public void testUploadAttachmentNotValidTypeValidation() throws Throwable {
+    @Test
+    void testUploadAttachmentNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -103,7 +101,8 @@ public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
         assertEquals("VALIDATION_ERROR", action.getResultMessage());
     }
 
-    public void testUploadNotValidDescriptionValidation() throws Throwable {
+    @Test
+    void testUploadNotValidDescriptionValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));

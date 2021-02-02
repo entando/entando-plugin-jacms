@@ -1,7 +1,7 @@
 package org.entando.entando.plugins.jacms.aps.system.services.contentmodel;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -32,15 +32,19 @@ import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.model.Filter;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.ObjectError;
 
-public class ContentModelServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class ContentModelServiceImplTest {
 
     @Mock
     private IContentManager contentManager;
@@ -58,23 +62,21 @@ public class ContentModelServiceImplTest {
     private Map<String, SmallContentType> mockedContentTypes;
     private List<SmallEntityType> mockedEntityTypes;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         fillMockedContentModelsMap();
         fillMockedContentTypesMap();
         fillMockedEntityTypes();
-        when(contentModelManager.getContentModel(anyLong()))
+        Mockito.lenient().when(contentModelManager.getContentModel(anyLong()))
                 .thenAnswer(invocation -> mockedContentModels.get(invocation.getArgument(0)));
-        when(contentModelManager.getContentModels()).thenReturn(new ArrayList<>(mockedContentModels.values()));
+        Mockito.lenient().when(contentModelManager.getContentModels()).thenReturn(new ArrayList<>(mockedContentModels.values()));
 
-        when(contentManager.getSmallContentTypesMap()).thenReturn(mockedContentTypes);
+        Mockito.lenient().when(contentManager.getSmallContentTypesMap()).thenReturn(mockedContentTypes);
 
-        when(contentModelManager.getContentModelReferences(1L, true))
+        Mockito.lenient().when(contentModelManager.getContentModelReferences(1L, true))
                 .thenReturn(Collections.singletonList(new ContentModelReference()));
 
-        when(contentModelManager.getContentModelReferences(1L, false))
+        Mockito.lenient().when(contentModelManager.getContentModelReferences(1L, false))
                 .thenReturn(Collections.singletonList(new ContentModelReference()));
 
         dictionaryProvider.setContentMap(new ArrayList<>());
@@ -90,7 +92,7 @@ public class ContentModelServiceImplTest {
         PagedMetadata<ContentModelDto> result = contentModelService.findMany(request);
         assertThat(result.getBody()).isNotNull().hasSize(3);
     }
-
+    
     @Test
     public void findManyShouldFilter() {
         RestListRequest request = new RestListRequest();
@@ -118,14 +120,12 @@ public class ContentModelServiceImplTest {
         assertThat(contentModelService.getContentModel(1L)).isNotNull();
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void shouldFailWithNotFound() {
-        try {
+        ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             contentModelService.getContentModel(20L);
-        } catch (ResourceNotFoundException ex) {
-            assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
-            throw ex;
-        }
+        });
+        assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
     }
 
     @Test
@@ -179,36 +179,29 @@ public class ContentModelServiceImplTest {
         assertThat(result.getContentShape()).isEqualTo(expectedShape);
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void shouldFailCreatingContentModel() {
-        try {
-            ContentModelDto contentModelToCreate = new ContentModelDto();
-
-            // Existing content model id
-            long id = 1L;
-
-            // Content type not found
-            contentModelToCreate.setContentType("XXX");
-            contentModelToCreate.setId(id);
-
-            // Wrong utilizer
-            SmallContentType utilizer = new SmallContentType();
-            utilizer.setCode("DEF");
-            when(contentModelManager.getDefaultUtilizer(id)).thenReturn(utilizer);
-
+        ContentModelDto contentModelToCreate = new ContentModelDto();
+        // Existing content model id
+        long id = 1L;
+        // Content type not found
+        contentModelToCreate.setContentType("XXX");
+        contentModelToCreate.setId(id);
+        // Wrong utilizer
+        SmallContentType utilizer = new SmallContentType();
+        utilizer.setCode("DEF");
+        when(contentModelManager.getDefaultUtilizer(id)).thenReturn(utilizer);
+        ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.create(contentModelToCreate);
-
-        } catch (ValidationConflictException ex) {
-            List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-            assertThat(errors).isNotNull().hasSize(3);
-            assertThat(errors.stream().map(e -> e.getCode()))
-                    .containsExactlyInAnyOrder(
-                            ContentModelValidator.ERRCODE_CONTENTMODEL_ALREADY_EXISTS,
-                            ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND,
-                            ContentModelValidator.ERRCODE_CONTENTMODEL_WRONG_UTILIZER
-                    );
-            throw ex;
-        }
+        });
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        assertThat(errors).isNotNull().hasSize(3);
+        assertThat(errors.stream().map(e -> e.getCode()))
+                .containsExactlyInAnyOrder(
+                        ContentModelValidator.ERRCODE_CONTENTMODEL_ALREADY_EXISTS,
+                        ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND,
+                        ContentModelValidator.ERRCODE_CONTENTMODEL_WRONG_UTILIZER
+                );
     }
 
     @Test
@@ -236,33 +229,29 @@ public class ContentModelServiceImplTest {
         assertThat(result.getContentShape()).isEqualTo(expectedShape);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void shouldFailUpdatingContentModelBecauseNotFound() {
-        try {
-            long id = 20L; // inexistent content model
-            ContentModelDto contentModelToUpdate = new ContentModelDto();
-            contentModelToUpdate.setId(id);
+        long id = 20L; // inexistent content model
+        ContentModelDto contentModelToUpdate = new ContentModelDto();
+        contentModelToUpdate.setId(id);
+        ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             contentModelService.update(contentModelToUpdate);
-        } catch (ResourceNotFoundException ex) {
-            assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
-            throw ex;
-        }
+        });
+        assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void shouldFailUpdatingContentModelBecauseContentTypeNotFound() {
-        try {
-            long id = 3L;
-            ContentModelDto contentModelToUpdate = new ContentModelDto();
-            contentModelToUpdate.setId(id);
-            contentModelToUpdate.setContentType("CCC");
+        long id = 3L;
+        ContentModelDto contentModelToUpdate = new ContentModelDto();
+        contentModelToUpdate.setId(id);
+        contentModelToUpdate.setContentType("CCC");
+        ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.update(contentModelToUpdate);
-        } catch (ValidationConflictException ex) {
-            List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-            assertThat(errors).isNotNull().hasSize(1);
-            assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND);
-            throw ex;
-        }
+        });
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_TYPECODE_NOT_FOUND);
     }
 
     @Test
@@ -270,44 +259,38 @@ public class ContentModelServiceImplTest {
         contentModelService.delete(2L);
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void shoudlFailDeletingContentModel() {
-        try {
+        ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.delete(1L);
-        } catch (ValidationConflictException ex) {
-            List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-            assertThat(errors).isNotNull().hasSize(1);
-            assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_REFERENCES);
-            throw ex;
-        }
+        });
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_REFERENCES);
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void shoudlFailDeletingContentModelWithDefaultModelTemplate() {
-        when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
-        when(contentManager.getDefaultModel("BBB")).thenReturn("2");
-        try {
+        Mockito.lenient().when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
+        Mockito.lenient().when(contentManager.getDefaultModel("BBB")).thenReturn("2");
+        ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.delete(2L);
-        } catch (ValidationConflictException ex) {
-            List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-            assertThat(errors).isNotNull().hasSize(1);
-            assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES);
-            throw ex;
-        }
+        });
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES);
     }
 
-    @Test(expected = ValidationConflictException.class)
+    @Test
     public void shoudlFailDeletingContentModelWithDefaultModelListTemplate() {
-        when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
-        when(contentManager.getListModel("BBB")).thenReturn("2");
-        try {
+        Mockito.lenient().when(contentManager.getSmallEntityTypes()).thenReturn(mockedEntityTypes);
+        Mockito.lenient().when(contentManager.getListModel("BBB")).thenReturn("2");
+        ValidationConflictException ex = Assertions.assertThrows(ValidationConflictException.class, () -> {
             contentModelService.delete(2L);
-        } catch (ValidationConflictException ex) {
-            List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-            assertThat(errors).isNotNull().hasSize(1);
-            assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES);
-            throw ex;
-        }
+        });
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors.get(0).getCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_METADATA_REFERENCES);
     }
 
     @Test
@@ -319,15 +302,13 @@ public class ContentModelServiceImplTest {
         assertThat(contentModelReferences.getTotalItems()).isEqualTo(1);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void shouldFailReturningReferences() {
-        try {
-            RestListRequest restListRequest =  new RestListRequest();
-            contentModelService.getContentModelReferences(20L,restListRequest);
-        } catch (ResourceNotFoundException ex) {
-            assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
-            throw ex;
-        }
+        RestListRequest restListRequest = new RestListRequest();
+        ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            contentModelService.getContentModelReferences(20L, restListRequest);
+        });
+        assertThat(ex.getErrorCode()).isEqualTo(ContentModelValidator.ERRCODE_CONTENTMODEL_NOT_FOUND);
     }
 
     @Test
@@ -345,7 +326,7 @@ public class ContentModelServiceImplTest {
         int componentUsage = contentModelService.getComponentUsage(5000L).getUsage();
         assertEquals(0, componentUsage);
     }
-
+    
     private void fillMockedContentModelsMap() {
         this.mockedContentModels = new HashMap<>();
         addMockedContentModel(1L, "AAA");

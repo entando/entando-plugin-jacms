@@ -13,19 +13,24 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentInspectionAction extends AbstractBaseTestContentAction {
+class TestContentInspectionAction extends AbstractBaseTestContentAction {
 	
-	public void testInspectContent_1() throws Throwable {
+	@Test
+    void testInspectContent_1() throws Throwable {
 		String result = this.executeInspect("ART102", true, "admin");
 		assertEquals(Action.SUCCESS, result);
 		ContentInspectionAction action = (ContentInspectionAction) this.getAction();
@@ -46,7 +51,8 @@ public class TestContentInspectionAction extends AbstractBaseTestContentAction {
 		assertEquals(0, referencingPages.size());
 	}
 	
-	public void testInspectContent_2() throws Throwable {
+	@Test
+    void testInspectContent_2() throws Throwable {
 		String result = this.executeInspect("ART111", false, "admin");
 		assertEquals(Action.SUCCESS, result);
 		ContentInspectionAction action = (ContentInspectionAction) this.getAction();

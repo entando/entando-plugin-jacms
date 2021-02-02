@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.aps.system;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -22,13 +24,15 @@ import com.agiletec.plugins.jacms.aps.system.services.linkresolver.ILinkResolver
 import com.agiletec.plugins.jacms.aps.system.services.renderer.IContentRenderer;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author W.Ambu
  */
-public class TestApplicationContext extends BaseTestCase {
+class TestApplicationContext extends BaseTestCase {
 
-	public void testGetServices() {
+	@Test
+    void testGetServices() {
 		IResourceManager resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
 		assertNotNull(resourceManager);
 		IContentManager contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

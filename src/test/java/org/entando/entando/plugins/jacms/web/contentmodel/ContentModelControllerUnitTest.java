@@ -34,8 +34,6 @@ import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.component.ComponentUsageEntity;
 import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -43,12 +41,18 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class ContentModelControllerUnitTest extends AbstractControllerTest {
+@ExtendWith(MockitoExtension.class)
+class ContentModelControllerUnitTest extends AbstractControllerTest {
+    
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsAdminPagerTag.class);
 
     private static final String BASE_URI = "/plugins/cms/contentmodels";
@@ -73,9 +77,8 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
     private List<ContentModelReferenceDTO> mockedReferences;
     private List<ComponentUsageEntity> mockedUsageDetails;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(entandoOauth2Interceptor)
                 .setHandlerExceptionResolvers(createHandlerExceptionResolver())
@@ -298,7 +301,7 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
     }
 
     private void initContentModelServiceMocks() {
-        when(contentModelService.getContentModel(anyLong()))
+        Mockito.lenient().when(contentModelService.getContentModel(anyLong()))
                 .thenAnswer(invocation -> {
                     ContentModelDto dto = mockedContentModels.get((long) invocation.getArgument(0));
                     if (dto == null) {
@@ -307,8 +310,8 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
                     return dto;
                 });
 
-        when(contentModelService.create(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(contentModelService.update(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.lenient().when(contentModelService.create(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.lenient().when(contentModelService.update(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         PagedMetadata<ContentModelDto> pagedMetadata = new PagedMetadata<>();
         pagedMetadata.setBody(new ArrayList<>(mockedContentModels.values()));
@@ -320,14 +323,14 @@ public class ContentModelControllerUnitTest extends AbstractControllerTest {
         PagedMetadata<ComponentUsageEntity> pagedMetadataUsageDetails = new PagedMetadata<>();
         pagedMetadataUsageDetails.setBody(mockedUsageDetails);
 
-        when(contentModelService.findMany(any())).thenReturn(pagedMetadata);
+        Mockito.lenient().when(contentModelService.findMany(any())).thenReturn(pagedMetadata);
 
-        when(contentModelService.getContentModelReferences(anyLong(), Mockito.any(RestListRequest.class)))
+        Mockito.lenient().when(contentModelService.getContentModelReferences(anyLong(), Mockito.any(RestListRequest.class)))
                 .thenReturn(pagedMetadataReferences);
 
-        when(contentModelService.getContentModelDictionary(any()))
+        Mockito.lenient().when(contentModelService.getContentModelDictionary(any()))
                 .thenReturn(getContentModelDictionary());
-        when(contentModelService.getComponentUsageDetails(anyLong(), Mockito.any(RestListRequest.class))).thenReturn(pagedMetadataUsageDetails);;
+        Mockito.lenient().when(contentModelService.getComponentUsageDetails(anyLong(), Mockito.any(RestListRequest.class))).thenReturn(pagedMetadataUsageDetails);;
 
     }
 

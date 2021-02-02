@@ -13,6 +13,11 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content.bulk;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,16 +39,13 @@ import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
+class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testUserNotAllowed() throws Throwable {
+	@Test
+    void testUserNotAllowed() throws Throwable {
 		String[] contentIds = {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = {"cat1"};
 		int strutsAction = ApsAdminSystemConstants.ADD;
@@ -71,7 +73,8 @@ public class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 		assertEquals(BaseAction.USER_NOT_ALLOWED, result);
 	}
 
-	public void testEntryCheckApply() throws Throwable {
+	@Test
+    void testEntryCheckApply() throws Throwable {
 		String currentUser = "editorCustomers";
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = new String[] {"cat1", "evento"};
@@ -90,7 +93,8 @@ public class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 		this.checkItems(categoryCodes, ((ContentCategoryBulkAction) this.getAction()).getCategoryCodes());
 	}
 
-	public void testJoinDisjoin() throws Throwable {
+	@Test
+    void testJoinDisjoin() throws Throwable {
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = new String[] {"cat1", "evento"};
 		String username = "editorCustomers";
@@ -120,7 +124,8 @@ public class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 		this.checkItems(new String[] {"cat1", "evento"}, foundCategoryCodes);
 	}
 
-	public void testApplyAddRemove() throws Throwable {
+	@Test
+    void testApplyAddRemove() throws Throwable {
 		String currentUser = "mainEditor";
 		String[] categoryCodes = new String[] {"cat1", "evento"};
 		int size = 8;
@@ -269,6 +274,7 @@ public class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 		}
 	}
 
+    @BeforeEach
 	private void init() {
 		this._contentManager = (IContentManager) this.getApplicationContext().getBean(JacmsSystemConstants.CONTENT_MANAGER);
 		this._bulkCommandManager = (IBulkCommandManager) this.getApplicationContext().getBean(SystemConstants.BULK_COMMAND_MANAGER);

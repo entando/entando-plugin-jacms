@@ -13,6 +13,8 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.system.SystemConstants;
 import java.util.List;
 
@@ -26,31 +28,35 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
 import java.util.ArrayList;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentBulkAction extends AbstractBaseTestContentAction {
+class TestContentBulkAction extends AbstractBaseTestContentAction {
     
     private ILangManager langManager;
     private IGroupManager groupManager;
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    protected void init() throws Exception {
+        super.init();
         this.langManager = (ILangManager) super.getService(SystemConstants.LANGUAGE_MANAGER);
         this.groupManager = (IGroupManager) super.getService(SystemConstants.GROUP_MANAGER);
     }
     
-    public void testBulkContent() throws Throwable {
+    @Test
+    void testBulkContent() throws Throwable {
         EntitySearchFilter typeFilter = new EntitySearchFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ALL", false);
         EntitySearchFilter[] filters = {typeFilter};
         List<String> userGroups = new ArrayList<>();
         userGroups.add(Group.ADMINS_GROUP_NAME);
         
         List<String> contentIds = this.getContentManager().loadWorkContentsId(filters, userGroups);
-        Assert.assertEquals(1, contentIds.size());
+        Assertions.assertEquals(1, contentIds.size());
         List<String> addedContents = new ArrayList<>();
         try {
             for (int i = 0; i < 4; i++) {
@@ -63,7 +69,7 @@ public class TestContentBulkAction extends AbstractBaseTestContentAction {
                 addedContents.add(content.getId());
             }
             contentIds = this.getContentManager().loadWorkContentsId(filters, userGroups);
-            Assert.assertEquals(5, contentIds.size());
+            Assertions.assertEquals(5, contentIds.size());
             
             this.initAction("/do/jacms/Content/Bulk", "applyOnline");
             this.setUserOnSession("admin");
@@ -71,7 +77,7 @@ public class TestContentBulkAction extends AbstractBaseTestContentAction {
             String result = this.executeAction();
             assertEquals(Action.SUCCESS, result);
             contentIds = this.getContentManager().loadPublicContentsId(null, filters, userGroups);
-            Assert.assertEquals(5, contentIds.size());
+            Assertions.assertEquals(5, contentIds.size());
         } catch (Throwable t) {
             throw t;
         } finally {

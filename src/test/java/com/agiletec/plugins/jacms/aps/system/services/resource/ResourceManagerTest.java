@@ -19,19 +19,24 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResour
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.is;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
 
-public class ResourceManagerTest {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class ResourceManagerTest {
 
     @Mock
     private IResourceManagerCacheWrapper cacheWrapper;
@@ -42,15 +47,14 @@ public class ResourceManagerTest {
     @InjectMocks
     private ResourceManager resourceManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         AttachResource mockAttachResource = Mockito.mock(AttachResource.class);
-        when(mockAttachResource.getType()).thenReturn("Attach");
-        when(mockAttachResource.getResourcePrototype()).thenReturn(mockAttachResource);
+        Mockito.lenient().when(mockAttachResource.getType()).thenReturn("Attach");
+        Mockito.lenient().when(mockAttachResource.getResourcePrototype()).thenReturn(mockAttachResource);
         ImageResource mockImageResource = Mockito.mock(ImageResource.class);
-        when(mockImageResource.getResourcePrototype()).thenReturn(mockImageResource);
-        when(mockImageResource.getType()).thenReturn("Image");
+        Mockito.lenient().when(mockImageResource.getResourcePrototype()).thenReturn(mockImageResource);
+        Mockito.lenient().when(mockImageResource.getType()).thenReturn("Image");
         Map<String, ResourceInterface> types = new HashMap<>();
         types.put("Image", mockImageResource);
         types.put("Attach", mockAttachResource);
@@ -66,8 +70,8 @@ public class ResourceManagerTest {
 
     public void createResourceType() {
         ResourceInterface type = this.resourceManager.createResourceType("Image");
-        Assert.assertNotNull(type);
-        Assert.assertEquals("Image", type.getType());
+        Assertions.assertNotNull(type);
+        Assertions.assertEquals("Image", type.getType());
     }
 
 }

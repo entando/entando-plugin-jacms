@@ -1,9 +1,8 @@
 package com.agiletec.plugins.jacms.aps.system.services.resource.model.imageresizer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.io.File;
@@ -11,17 +10,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import org.entando.entando.ent.exception.EntException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PNGImageResizerTest {
+@ExtendWith(MockitoExtension.class)
+class PNGImageResizerTest {
 
     private PNGImageResizer pngImageResizer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         pngImageResizer = new PNGImageResizer();
     }

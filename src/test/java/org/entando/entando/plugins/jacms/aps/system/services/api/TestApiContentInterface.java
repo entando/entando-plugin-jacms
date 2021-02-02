@@ -13,6 +13,11 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractComplexAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractListAttribute;
@@ -36,38 +41,37 @@ import org.entando.entando.aps.system.services.api.ApiBaseTestCase;
 import org.entando.entando.aps.system.services.api.UnmarshalUtils;
 import org.entando.entando.aps.system.services.api.model.ApiMethod;
 import org.entando.entando.aps.system.services.api.model.ApiResource;
-import org.entando.entando.aps.system.services.api.model.StringApiResponse;
 import org.entando.entando.aps.system.services.api.server.IResponseBuilder;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.CmsApiResponse;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBContent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestApiContentInterface extends ApiBaseTestCase {
+class TestApiContentInterface extends ApiBaseTestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.init();
-	}
-
-	public void testGetXmlContent() throws Throwable {
+	@Test
+    void testGetXmlContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "it");
 	}
 
-	public void testGetJsonContent() throws Throwable {
+	@Test
+    void testGetJsonContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "en");
 	}
 
-	public void testCreateNewContentFromXml() throws Throwable {
+	@Test
+    void testCreateNewContentFromXml() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
 	}
 
-	public void testCreateNewContentFromJson() throws Throwable {
+	@Test
+    void testCreateNewContentFromJson() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
 	}
@@ -167,12 +171,11 @@ public class TestApiContentInterface extends ApiBaseTestCase {
 		return jaxbContent;
 	}
 
-	private void init() throws Exception {
-		try {
-			this._contentManager = (IContentManager) this.getApplicationContext().getBean(JacmsSystemConstants.CONTENT_MANAGER);
-		} catch (Throwable t) {
-			throw new Exception(t);
-		}
+    @Override
+    @BeforeEach
+	public void init() {
+        super.init();
+		this._contentManager = (IContentManager) this.getApplicationContext().getBean(JacmsSystemConstants.CONTENT_MANAGER);
 	}
 
 	private IContentManager _contentManager;

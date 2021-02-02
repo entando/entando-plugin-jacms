@@ -13,6 +13,12 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.authorization;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.authorization.Authorization;
@@ -27,19 +33,16 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentAuthorization extends BaseTestCase {
+class TestContentAuthorization extends BaseTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-
-    public void testCheckAdminUser() throws Throwable {
+    @Test
+    void testCheckAdminUser() throws Throwable {
         UserDetails adminUser = this.getUser("admin");
         assertNotNull(adminUser);
         assertEquals("admin", adminUser.getUsername());
@@ -57,7 +60,8 @@ public class TestContentAuthorization extends BaseTestCase {
         assertTrue(check);
     }
 
-    public void testCheckCustomerUser() throws Throwable {
+    @Test
+    void testCheckCustomerUser() throws Throwable {
         UserDetails extractedUser = this.getUser("pageManagerCustomers");
         assertNotNull(extractedUser);
         assertEquals("pageManagerCustomers", extractedUser.getUsername());
@@ -78,7 +82,8 @@ public class TestContentAuthorization extends BaseTestCase {
     /*
      * This test is fully inherited from the original TestAuthorizationManager in jAPS2 (2.0.6)
      */
-    public void testCheckNewUser() throws Throwable {
+    @Test
+    void testCheckNewUser() throws Throwable {
         String username = "UserForTest";
         String password = "PasswordForTest";
         this.addUserForTest(username, password);
@@ -141,6 +146,7 @@ public class TestContentAuthorization extends BaseTestCase {
         this._authorizationManager.addUserAuthorization(username, auth);
     }
 
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._authorizationManager = (IAuthorizationManager) this.getService(SystemConstants.AUTHORIZATION_SERVICE);

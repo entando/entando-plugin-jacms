@@ -13,34 +13,38 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.linkresolver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author W.Ambu - M.Diana
  */
-public class TestLinkResolverManager extends BaseTestCase {
+class TestLinkResolverManager extends BaseTestCase {
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void init() throws Exception {
         try {
-            super.setUp();
             _reqCtx = this.getRequestContext();
             Lang lang = new Lang();
             lang.setCode("it");
             lang.setDescr("italiano");
             _reqCtx.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG, lang);
-            this.init();
+            _resolver = (ILinkResolverManager) this.getService(JacmsSystemConstants.LINK_RESOLVER_MANAGER);
         } catch (Throwable t) {
             throw new Exception(t);
         }
     }
 
-    public void testResolveNoLinks() {
+    @Test
+    void testResolveNoLinks() {
         String text = "";
         String resolvedText;
         resolvedText = _resolver.resolveLinks(text, null, _reqCtx);
@@ -53,7 +57,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(text, resolvedText);
     }
 
-    public void testResolvePageLink() {
+    @Test
+    void testResolvePageLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToPage("primapagina");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -62,7 +67,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveURLLink() {
+    @Test
+    void testResolveURLLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToUrl("http://www.google.it");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -71,7 +77,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveContentOnPageLink() {
+    @Test
+    void testResolveContentOnPageLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -80,7 +87,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveContentLink() {
+    @Test
+    void testResolveContentLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContent("ART1");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -89,7 +97,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveWithNoise() {
+    @Test
+    void testResolveWithNoise() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String text = "Trabocchetto: " + SymbolicLink.SYMBOLIC_DEST_PREFIX
@@ -107,7 +116,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveMix() {
+    @Test
+    void testResolveMix() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String one = link.getSymbolicDestination();
@@ -129,7 +139,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveContentOnProtectedPageLink() throws Throwable {
+    @Test
+    void testResolveContentOnProtectedPageLink() throws Throwable {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContent("ART187");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -156,7 +167,8 @@ public class TestLinkResolverManager extends BaseTestCase {
         assertEquals(expected, resolvedText);
     }
 
-    public void testResolveResourceLink() throws Throwable {
+    @Test
+    void testResolveResourceLink() throws Throwable {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToResource("44");
         String text = "The link is: '" + link.getSymbolicDestination() + "'; end";
@@ -170,14 +182,6 @@ public class TestLinkResolverManager extends BaseTestCase {
         expected = "The second resource link is: '/Entando/protected/82/0/def/ref/ART122/'; end";
         resolvedText = _resolver.resolveLinks(text, "ART122", _reqCtx);
         assertEquals(expected, resolvedText);
-    }
-
-    private void init() throws Exception {
-        try {
-            _resolver = (ILinkResolverManager) this.getService(JacmsSystemConstants.LINK_RESOLVER_MANAGER);
-        } catch (Throwable t) {
-            throw new Exception(t);
-        }
     }
 
     private RequestContext _reqCtx;

@@ -15,9 +15,9 @@ package org.entando.entando.plugins.jacms.web.content;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -72,8 +72,8 @@ import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTest
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -82,7 +82,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-public class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Autowired
     private IContentManager contentManager;
@@ -101,7 +101,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
 
     @Test
-    public void testGetContentWithModel() throws Exception {
+    void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
                 .build();
@@ -110,13 +110,13 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         System.out.println(result1);
         result.andExpect(status().isOk());
         String html1 = JsonPath.read(result1, "$.payload.html");
-        Assert.assertTrue(!StringUtils.isBlank(html1));
+        Assertions.assertTrue(!StringUtils.isBlank(html1));
 
         result.andExpect(MockMvcResultMatchers.jsonPath("$.payload.html", Matchers.anything()));
         result = this.performGetContent("ART180", "11", true, null, true, user);
         String result2 = result.andReturn().getResponse().getContentAsString();
         String html2 = JsonPath.read(result2, "$.payload.html");
-        Assert.assertTrue(!StringUtils.isBlank(html2));
+        Assertions.assertTrue(!StringUtils.isBlank(html2));
         System.out.println(result2);
 
         result.andExpect(status().isOk());
@@ -126,18 +126,18 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         System.out.println(result1_copy);
         result.andExpect(status().isOk());
         String htmlCopy = JsonPath.read(result1_copy, "$.payload.html");
-        Assert.assertTrue(!StringUtils.isBlank(htmlCopy));
-        Assert.assertEquals(html1, htmlCopy);
+        Assertions.assertTrue(!StringUtils.isBlank(htmlCopy));
+        Assertions.assertEquals(html1, htmlCopy);
 
         result = this.performGetContent("ART180", "list", true, null, true, user);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.payload.html", Matchers.anything()));
         String result2_copy = result.andReturn().getResponse().getContentAsString();
         System.out.println(result2);
         String html2Copy = JsonPath.read(result2_copy, "$.payload.html");
-        Assert.assertTrue(!StringUtils.isBlank(html2Copy));
+        Assertions.assertTrue(!StringUtils.isBlank(html2Copy));
         result.andExpect(status().isOk());
-        Assert.assertTrue(!StringUtils.isBlank(html2Copy));
-        Assert.assertEquals(html2, html2Copy);
+        Assertions.assertTrue(!StringUtils.isBlank(html2Copy));
+        Assertions.assertEquals(html2, html2Copy);
 
         result = this.performGetContent("ART180", "list", true, "en", true, user);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.payload.html", Matchers.anything()));
@@ -145,11 +145,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         System.out.println(result2_copy_en);
         String html2Copy_en = JsonPath.read(result2_copy_en, "$.payload.html");
         result.andExpect(status().isOk());
-        Assert.assertNotEquals(html2Copy_en, html2Copy);
+        Assertions.assertNotEquals(html2Copy_en, html2Copy);
     }
 
     @Test
-    public void testGetInvalidContent() throws Exception {
+    void testGetInvalidContent() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         ResultActions result = this.performGetContent("ART985", null, true, null, true, user);
         System.out.println(result.andReturn().getResponse().getContentAsString());
@@ -157,14 +157,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContent() throws Exception {
+    void testAddUpdateContent() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = this.executeContentPost("1_POST_invalid.json", accessToken, status().isBadRequest());
             result.andExpect(jsonPath("$.payload.size()", is(0)));
@@ -188,19 +188,19 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             Map<String, ResourceInterface> attResources = (Map<String,ResourceInterface>) newContent.getAttributeList().get(10).getValue();
             Map<String, ResourceInterface> imgResources = (Map<String,ResourceInterface>) newContent.getAttributeList().get(11).getValue();
 
-            Assert.assertEquals(attResources.get("en").getId(), "6");
-            Assert.assertEquals(attResources.get("it").getId(), "7");
+            Assertions.assertEquals(attResources.get("en").getId(), "6");
+            Assertions.assertEquals(attResources.get("it").getId(), "7");
 
-            Assert.assertEquals(imgResources.get("en").getId(), "44");
-            Assert.assertEquals(imgResources.get("it").getId(), "22");
+            Assertions.assertEquals(imgResources.get("en").getId(), "44");
+            Assertions.assertEquals(imgResources.get("it").getId(), "22");
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             Date date = (Date) newContent.getAttribute("Date").getValue();
-            Assert.assertEquals("2017-09-21", DateConverter.getFormattedDate(date, "yyyy-MM-dd"));
+            Assertions.assertEquals("2017-09-21", DateConverter.getFormattedDate(date, "yyyy-MM-dd"));
             Boolean booleanValue = (Boolean) newContent.getAttribute("Boolean").getValue();
-            Assert.assertTrue(booleanValue);
+            Assertions.assertTrue(booleanValue);
             Boolean threeState = (Boolean) newContent.getAttribute("ThreeState").getValue();
-            Assert.assertNull(threeState);
+            Assertions.assertNull(threeState);
 
             ResultActions result3 = this.executeContentPut("1_PUT_valid.json", "invalid", accessToken, status().isNotFound());
             result3.andExpect(jsonPath("$.payload.size()", is(0)));
@@ -225,24 +225,24 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             result4.andExpect(jsonPath("$.payload[0].restriction", is("OPEN")));
             newContent = this.contentManager.loadContent(newContentId, false);
             date = (Date) newContent.getAttribute("Date").getValue();
-            Assert.assertEquals("2018-03-21", DateConverter.getFormattedDate(date, "yyyy-MM-dd"));
+            Assertions.assertEquals("2018-03-21", DateConverter.getFormattedDate(date, "yyyy-MM-dd"));
             booleanValue = (Boolean) newContent.getAttribute("Boolean").getValue();
-            Assert.assertFalse(booleanValue);
+            Assertions.assertFalse(booleanValue);
             threeState = (Boolean) newContent.getAttribute("ThreeState").getValue();
-            Assert.assertNotNull(threeState);
-            Assert.assertTrue(threeState);
+            Assertions.assertNotNull(threeState);
+            Assertions.assertTrue(threeState);
 
             attResources = (Map<String,ResourceInterface>) newContent.getAttributeList().get(10).getValue();
             imgResources = (Map<String,ResourceInterface>) newContent.getAttributeList().get(11).getValue();
 
-            Assert.assertEquals(attResources.get("en").getId(), "7");
-            Assert.assertEquals(attResources.get("it").getId(), "6");
+            Assertions.assertEquals(attResources.get("en").getId(), "7");
+            Assertions.assertEquals(attResources.get("it").getId(), "6");
 
-            Assert.assertEquals(imgResources.get("en").getId(), "22");
-            Assert.assertEquals(imgResources.get("it").getId(), "44");
+            Assertions.assertEquals(imgResources.get("en").getId(), "22");
+            Assertions.assertEquals(imgResources.get("it").getId(), "44");
 
             ListAttribute list = (ListAttribute) newContent.getAttribute("multilist");
-            Assert.assertEquals(4, list.getAttributeList("en").size());
+            Assertions.assertEquals(4, list.getAttributeList("en").size());
 
             ResultActions result5 = this
                     .executeContentPut("1_PUT_maingroup.json", newContentId, accessToken, status().isOk());
@@ -267,14 +267,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithSpecificId() throws Exception {
+    void testAddContentWithSpecificId() throws Exception {
         String contentId = "TST123";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_id.json", accessToken, status().isOk());
             result.andDo(print());
@@ -301,14 +301,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithLinkAttribute() throws Exception {
+    void testAddContentWithLinkAttribute() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_links.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_links.json", accessToken, status().isOk())
                     .andDo(print())
@@ -352,7 +352,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != newContentId) {
@@ -368,14 +368,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentWithLinkAttribute() throws Exception {
+    void testAddUpdateContentWithLinkAttribute() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_link.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -390,7 +390,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_link.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -426,14 +426,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentWithLinkAttributeThenRemoveIt() throws Exception {
+    void testAddUpdateContentWithLinkAttributeThenRemoveIt() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_link.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -448,7 +448,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_link.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -483,14 +483,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentWithLinksAttributeThenRemoveIt() throws Exception {
+    void testAddUpdateContentWithLinksAttributeThenRemoveIt() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_links.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_some_links.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -513,7 +513,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_some_more_links.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -562,14 +562,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithLinksAndRemoveMandatoryLink() throws Exception {
+    void testAddContentWithLinksAndRemoveMandatoryLink() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_mandatory_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_some_links.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -586,7 +586,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_mandatory_link.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -620,14 +620,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentWithBooleanAttributeThenEditIt() throws Exception {
+    void testAddUpdateContentWithBooleanAttributeThenEditIt() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("BOL"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("BOL"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_boolean.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("BOL"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("BOL"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_boolean_null.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -641,7 +641,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_boolean_true.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -689,14 +689,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentWithCheckboxAttributeThenEditIt() throws Exception {
+    void testAddUpdateContentWithCheckboxAttributeThenEditIt() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CHE"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CHE"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_checkbox.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CHE"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CHE"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_checkbox_null.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -710,7 +710,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_checkbox_true.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -758,15 +758,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithAllFields() throws Exception {
+    void testAddContentWithImageAttributeWithAllFields() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("IMG"));
 
             this.executeContentTypePost("1_POST_type_with_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -799,7 +799,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != resourceId) {
@@ -819,15 +819,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithoutMetadata() throws Exception {
+    void testAddContentWithImageAttributeWithoutMetadata() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("IMG"));
 
             this.executeContentTypePost("1_POST_type_with_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -852,7 +852,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != resourceId) {
@@ -872,15 +872,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithoutName() throws Exception {
+    void testAddContentWithImageAttributeWithoutName() throws Exception {
         String resourceId = null;
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("IMG"));
 
             this.executeContentTypePost("1_POST_type_with_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -909,7 +909,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != resourceId) {
@@ -929,15 +929,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithAttachAttribute() throws Exception {
+    void testAddContentWithAttachAttribute() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("ATT"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("ATT"));
 
             this.executeContentTypePost("1_POST_type_with_attach.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("ATT"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("ATT"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "file", "free", "application/pdf");
 
@@ -962,7 +962,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != resourceId) {
@@ -982,16 +982,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithAttachAndImageAttribute() throws Exception {
+    void testAddContentWithAttachAndImageAttribute() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String imageResourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("IAT"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("IAT"));
 
             this.executeContentTypePost("1_POST_type_with_image_and_attach.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("IAT"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("IAT"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -1032,11 +1032,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
 
             newContentId1 = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent1 = this.contentManager.loadContent(newContentId1, false);
-            Assert.assertNotNull(newContent1);
+            Assertions.assertNotNull(newContent1);
 
             newContentId2 = JsonPath.read(bodyResult, "$.payload[1].id");
             Content newContent2 = this.contentManager.loadContent(newContentId2, false);
-            Assert.assertNotNull(newContent2);
+            Assertions.assertNotNull(newContent2);
 
 
         } finally {
@@ -1063,15 +1063,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithListAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LST"));
 
             this.executeContentTypePost("1_POST_type_with_list_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LST"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -1099,7 +1099,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_image.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1132,15 +1132,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithListAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LTF"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LTF"));
 
             this.executeContentTypePost("1_POST_type_with_list_file.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LTF"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LTF"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "file", "free", "application/pdf");
 
@@ -1168,7 +1168,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_file.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1201,14 +1201,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeBoolean() throws Exception {
+    void testAddAndUpdateContentWithListAttributeBoolean() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LSB"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LSB"));
 
             this.executeContentTypePost("1_POST_type_with_list_bool.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LSB"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LSB"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_list_bool.json", accessToken, status().isOk());
             result.andDo(print())
@@ -1236,7 +1236,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_bool.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1276,15 +1276,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("MON"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("MON"));
 
             this.executeContentTypePost("1_POST_type_with_monolist_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("MON"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("MON"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -1311,7 +1311,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_monolist_image.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1344,15 +1344,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttribute2Images() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttribute2Images() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("MON"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("MON"));
 
             this.executeContentTypePost("1_POST_type_with_monolist_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("MON"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("MON"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -1390,7 +1390,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_monolist_2_images.json", newContentId, accessToken,
                     status().isOk(), resourceId)
@@ -1438,15 +1438,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("MOF"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("MOF"));
 
             this.executeContentTypePost("1_POST_type_with_monolist_file.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("MOF"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("MOF"));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "file", "free", "application/pdf");
 
@@ -1473,7 +1473,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_monolist_file.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1506,16 +1506,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         String contentType = "COI";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(contentType));
 
             this.executeContentTypePost("1_POST_type_with_composite_image.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(contentType));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -1542,7 +1542,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_composite_image.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1575,16 +1575,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         String contentType = "COF";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(contentType));
 
             this.executeContentTypePost("1_POST_type_with_composite_file.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(contentType));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "file", "free", "application/pdf");
 
@@ -1611,7 +1611,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_composite_file.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1644,14 +1644,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeDate() throws Exception {
+    void testAddAndUpdateContentWithListAttributeDate() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TLL"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TLL"));
 
             this.executeContentTypePost("1_POST_type_with_list_date.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TLL"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TLL"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_list_date.json", accessToken, status().isOk());
             result.andDo(print())
@@ -1676,7 +1676,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_date.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1728,14 +1728,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeDate2() throws Exception {
+    void testAddAndUpdateContentWithListAttributeDate2() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CLD"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CLD"));
 
             this.executeContentTypePost("1_POST_type_with_list_date2.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CLD"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CLD"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_list_date2.json", accessToken, status().isOk());
             result.andDo(print())
@@ -1757,7 +1757,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
         } finally {
             if (null != newContentId) {
@@ -1773,14 +1773,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeEnumerator() throws Exception {
+    void testAddAndUpdateContentWithListAttributeEnumerator() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("ENU"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("ENU"));
 
             this.executeContentTypePost("1_POST_type_with_list_enum.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("ENU"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("ENU"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_list_enum.json", accessToken, status().isOk());
             result.andDo(print())
@@ -1805,7 +1805,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_enum.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1857,14 +1857,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeEnumeratorMap() throws Exception {
+    void testAddAndUpdateContentWithListAttributeEnumeratorMap() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("ENM"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("ENM"));
 
             this.executeContentTypePost("1_POST_type_with_list_enum_map.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("ENM"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("ENM"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_list_enum_map.json", accessToken, status().isOk());
             result.andDo(print())
@@ -1889,7 +1889,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_list_enum_map.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -1941,13 +1941,13 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentInvalidResourceGroup() throws Exception {
+    void testAddContentInvalidResourceGroup() throws Exception {
         try {
-            Assert.assertNull(contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(contentManager.getEntityPrototype("TST"));
             String accessToken = createAccessToken();
 
             executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(contentManager.getEntityPrototype("TST"));
 
             executeContentPost("1_POST_invalid_resource.json", accessToken, status().isBadRequest())
                     .andDo(print())
@@ -1960,13 +1960,13 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentResourceNotFound() throws Exception {
+    void testAddContentResourceNotFound() throws Exception {
         try {
-            Assert.assertNull(contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(contentManager.getEntityPrototype("TST"));
             String accessToken = createAccessToken();
 
             executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(contentManager.getEntityPrototype("TST"));
 
             executeContentPost("1_POST_resource_not_found.json", accessToken, status().isBadRequest())
                     .andDo(print())
@@ -1979,14 +1979,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddUpdateContentCategories() throws Exception {
+    void testAddUpdateContentCategories() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = executeContentPost("1_POST_valid.json", accessToken, status().isOk())
                     .andDo(print())
@@ -2029,14 +2029,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddDeleteContent() throws Exception {
+    void testAddDeleteContent() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = this.executeContentPost("1_POST_valid.json", accessToken, status().isOk());
             result.andExpect(jsonPath("$.payload.size()", is(1)));
@@ -2046,9 +2046,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             Content newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNull(newPublicContent);
+            Assertions.assertNull(newPublicContent);
 
             ContentStatusRequest contentStatusRequest = new ContentStatusRequest();
             contentStatusRequest.setStatus("published");
@@ -2059,7 +2059,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
             newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNotNull(newPublicContent);
+            Assertions.assertNotNull(newPublicContent);
 
             contentStatusRequest.setStatus("draft");
             result = mockMvc
@@ -2069,7 +2069,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
             newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNull(newPublicContent);
+            Assertions.assertNull(newPublicContent);
 
             result = mockMvc
                     .perform(delete("/plugins/cms/contents")
@@ -2079,7 +2079,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             result.andExpect(status().isOk());
             result.andExpect(jsonPath("$.payload.size()", is(1)));
             result.andExpect(jsonPath("$.payload[0]", is(newContentId)));
-            Assert.assertNull(this.contentManager.loadContent(newContentId, false));
+            Assertions.assertNull(this.contentManager.loadContent(newContentId, false));
         } finally {
             if (null != newContentId) {
                 Content newContent = this.contentManager.loadContent(newContentId, false);
@@ -2094,14 +2094,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testUpdateContents() throws Exception {
+    void testUpdateContents() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             ResultActions result = this.executeContentPost("1_POST_valid.json", accessToken, status().isOk());
             result.andExpect(jsonPath("$.payload.size()", is(1)));
@@ -2111,9 +2111,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             Content newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNull(newPublicContent);
+            Assertions.assertNull(newPublicContent);
 
             BatchContentStatusRequest batchContentStatusRequest = new BatchContentStatusRequest();
             batchContentStatusRequest.setStatus("published");
@@ -2126,7 +2126,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
             newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNotNull(newPublicContent);
+            Assertions.assertNotNull(newPublicContent);
 
             batchContentStatusRequest.setStatus("draft");
             result = mockMvc
@@ -2136,7 +2136,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                             .header("Authorization", "Bearer " + accessToken));
             result.andExpect(status().isOk());
             newPublicContent = this.contentManager.loadContent(newContentId, true);
-            Assert.assertNull(newPublicContent);
+            Assertions.assertNull(newPublicContent);
 
             result = mockMvc
                     .perform(delete("/plugins/cms/contents")
@@ -2146,7 +2146,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             result.andExpect(status().isOk());
             result.andExpect(jsonPath("$.payload.size()", is(1)));
             result.andExpect(jsonPath("$.payload[0]", is(newContentId)));
-            Assert.assertNull(this.contentManager.loadContent(newContentId, false));
+            Assertions.assertNull(this.contentManager.loadContent(newContentId, false));
         } finally {
             if (null != newContentId) {
                 Content newContent = this.contentManager.loadContent(newContentId, false);
@@ -2161,16 +2161,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testUpdateContentsBatch() throws Exception {
+    void testUpdateContentsBatch() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String newContentId3 = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
 
             BatchContentStatusRequest batchContentStatusRequest = new BatchContentStatusRequest();
             batchContentStatusRequest.setStatus("published");
@@ -2179,9 +2179,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId1 = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId1, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             Content newPublicContent = this.contentManager.loadContent(newContentId1, true);
-            Assert.assertNull(newPublicContent);
+            Assertions.assertNull(newPublicContent);
 
             batchContentStatusRequest.getCodes().add(newContentId1);
 
@@ -2199,10 +2199,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
 
             batchContentStatusRequest.getCodes().stream().forEach(code -> {
                 try {
-                    Assert.assertNotNull(this.contentManager.loadContent(code, false));
-                    Assert.assertNull(this.contentManager.loadContent(code, true));
+                    Assertions.assertNotNull(this.contentManager.loadContent(code, false));
+                    Assertions.assertNull(this.contentManager.loadContent(code, true));
                 } catch (Exception e) {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             });
 
@@ -2215,10 +2215,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
 
             batchContentStatusRequest.getCodes().stream().forEach(code -> {
                 try {
-                    Assert.assertNotNull(this.contentManager.loadContent(code, false));
-                    Assert.assertNotNull(this.contentManager.loadContent(code, true));
+                    Assertions.assertNotNull(this.contentManager.loadContent(code, false));
+                    Assertions.assertNotNull(this.contentManager.loadContent(code, true));
                 } catch (Exception e) {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             });
 
@@ -2233,10 +2233,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
 
             batchContentStatusRequest.getCodes().stream().forEach(code -> {
                 try {
-                    Assert.assertNotNull(this.contentManager.loadContent(code, false));
-                    Assert.assertNull(this.contentManager.loadContent(code, true));
+                    Assertions.assertNotNull(this.contentManager.loadContent(code, false));
+                    Assertions.assertNull(this.contentManager.loadContent(code, true));
                 } catch (Exception e) {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             });
 
@@ -2266,16 +2266,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeImageAttributeText() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeImageAttributeText() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         String contentType = "CIT";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNull(this.contentManager.getEntityPrototype(contentType));
 
             this.executeContentTypePost("1_POST_type_with_composite_image_text.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype(contentType));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(contentType));
 
             ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
 
@@ -2304,7 +2304,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             this.executeContentPut("1_PUT_valid_with_composite_image_text.json", newContentId, accessToken, status().isOk(), resourceId)
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -2462,7 +2462,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetContents() throws Exception {
+    void testGetContents() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -2480,7 +2480,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetContentsPaginated() throws Exception {
+    void testGetContentsPaginated() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -2503,7 +2503,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetContentsByGuestUser() throws Exception {
+    void testGetContentsByGuestUser() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -2518,7 +2518,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetReturnsList() throws Exception {
+    void testGetReturnsList() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2542,11 +2542,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                         .accept(MediaType.APPLICATION_JSON_UTF8));
         String bodyResult2 = result.andReturn().getResponse().getContentAsString();
         int payloadSize2 = JsonPath.read(bodyResult2, "$.payload.size()");
-        Assert.assertEquals(payloadSize2, payloadSize);
+        Assertions.assertEquals(payloadSize2, payloadSize);
     }
 
     @Test
-    public void testLoadPublicEvents_1() throws Exception {
+    void testLoadPublicEvents_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2564,10 +2564,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         List<String> expectedFreeContentsId = Arrays.asList("EVN194", "EVN193",
                 "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191");
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeContentsId.size(), payloadSize);
+        Assertions.assertEquals(expectedFreeContentsId.size(), payloadSize);
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertTrue(expectedFreeContentsId.contains(extractedId));
+            Assertions.assertTrue(expectedFreeContentsId.contains(extractedId));
         }
 
         user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -2588,15 +2588,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         List<String> newExpectedFreeContentsId = new ArrayList<>(expectedFreeContentsId);
         newExpectedFreeContentsId.add("EVN103");
         newExpectedFreeContentsId.add("EVN41");
-        Assert.assertEquals(newExpectedFreeContentsId.size(), payloadSize);
+        Assertions.assertEquals(newExpectedFreeContentsId.size(), payloadSize);
         for (int i = 0; i < payloadSize; i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertTrue(newExpectedFreeContentsId.contains(extractedId));
+            Assertions.assertTrue(newExpectedFreeContentsId.contains(extractedId));
         }
     }
 
     @Test
-    public void testLoadPublicEvents_2() throws Exception {
+    void testLoadPublicEvents_2() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2620,16 +2620,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String[] expected = {"EVN25", "EVN21", "EVN20", "EVN41", "EVN193",
                 "EVN192", "EVN103", "EVN23", "EVN24"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expected.length, payloadSize);
+        Assertions.assertEquals(expected.length, payloadSize);
         for (int i = 0; i < expected.length; i++) {
             String expectedId = expected[i];
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedId, extractedId);
+            Assertions.assertEquals(expectedId, extractedId);
         }
     }
 
     @Test
-    public void testLoadPublicEvents_3() throws Exception {
+    void testLoadPublicEvents_3() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization("coach", "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2654,16 +2654,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         String[] expected = {"EVN193", "EVN192"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expected.length, payloadSize);
+        Assertions.assertEquals(expected.length, payloadSize);
         for (int i = 0; i < expected.length; i++) {
             String expectedId = expected[i];
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedId, extractedId);
+            Assertions.assertEquals(expectedId, extractedId);
         }
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_1() throws Exception {
+    void testLoadOrderedPublicEvents_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2682,16 +2682,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String[] expectedFreeContentsId = {"EVN24", "EVN23",
                 "EVN191", "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeContentsId.length, payloadSize);
+        Assertions.assertEquals(expectedFreeContentsId.length, payloadSize);
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             String expectedId = expectedFreeContentsId[i];
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedId, extractedId);
+            Assertions.assertEquals(expectedId, extractedId);
         }
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_2() throws Exception {
+    void testLoadOrderedPublicEvents_2() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -2732,7 +2732,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_3() throws Exception {
+    void testLoadOrderedPublicEvents_3() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2752,11 +2752,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String[] expectedFreeOrderedContentsId_1 = {"EVN194", "EVN193", "EVN24",
                 "EVN23", "EVN25"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeOrderedContentsId_1.length, payloadSize);
+        Assertions.assertEquals(expectedFreeOrderedContentsId_1.length, payloadSize);
         for (int i = 0; i < expectedFreeOrderedContentsId_1.length; i++) {
             String expectedId = expectedFreeOrderedContentsId_1[i];
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedId, extractedId);
+            Assertions.assertEquals(expectedId, extractedId);
         }
 
         result = mockMvc
@@ -2775,16 +2775,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         String[] expectedFreeOrderedContentsId_2 = {"EVN191", "EVN192", "EVN21", "EVN20", "EVN25", "EVN23"};
         int payloadSize_2 = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeOrderedContentsId_2.length, payloadSize_2);
+        Assertions.assertEquals(expectedFreeOrderedContentsId_2.length, payloadSize_2);
         for (int i = 0; i < expectedFreeOrderedContentsId_2.length; i++) {
             String expectedId = expectedFreeOrderedContentsId_2[i];
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedId, extractedId);
+            Assertions.assertEquals(expectedId, extractedId);
         }
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_4() throws Throwable {
+    void testLoadOrderedPublicEvents_4() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2811,11 +2811,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(),
                     "EVN193", "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
             int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-            Assert.assertEquals(expectedFreeOrderedContentsId.length, payloadSize);
+            Assertions.assertEquals(expectedFreeOrderedContentsId.length, payloadSize);
             for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
                 String expectedId = expectedFreeOrderedContentsId[i];
                 String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-                Assert.assertEquals(expectedId, extractedId);
+                Assertions.assertEquals(expectedId, extractedId);
             }
         } catch (Throwable t) {
             throw t;
@@ -2828,7 +2828,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_5() throws Throwable {
+    void testLoadOrderedPublicEvents_5() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2858,7 +2858,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_6() throws Throwable {
+    void testLoadOrderedPublicEvents_6() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2880,7 +2880,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_7() throws Throwable {
+    void testLoadOrderedPublicEvents_7() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2900,7 +2900,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_8() throws Throwable {
+    void testLoadOrderedPublicEvents_8() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2929,7 +2929,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_9() throws Throwable {
+    void testLoadOrderedPublicEvents_9() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2958,7 +2958,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_10() throws Throwable {
+    void testLoadOrderedPublicEvents_10() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2987,7 +2987,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_11() throws Throwable {
+    void testLoadOrderedPublicEvents_11() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3015,7 +3015,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .andExpect(jsonPath("$.payload[8].id", is("EVN191")));
     }
 
-    public void testFilteredContent_1() throws Throwable {
+    void testFilteredContent_1() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3036,7 +3036,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_2() throws Throwable {
+    void testFilteredContent_2() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3057,7 +3057,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_3() throws Throwable {
+    void testFilteredContent_3() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3075,7 +3075,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_4() throws Throwable {
+    void testFilteredContent_4() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3097,7 +3097,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_5() throws Throwable {
+    void testFilteredContent_5() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3119,7 +3119,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_6() throws Throwable {
+    void testFilteredContent_6() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3140,7 +3140,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_7() throws Throwable {
+    void testFilteredContent_7() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3162,7 +3162,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_8() throws Throwable {
+    void testFilteredContent_8() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3184,7 +3184,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_9() throws Throwable {
+    void testFilteredContent_9() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3206,7 +3206,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_10() throws Throwable {
+    void testFilteredContent_10() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3226,7 +3226,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_11() throws Throwable {
+    void testFilteredContent_11() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3247,7 +3247,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_12() throws Throwable {
+    void testFilteredContent_12() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3267,7 +3267,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_13() throws Throwable {
+    void testFilteredContent_13() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3287,7 +3287,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_14() throws Throwable {
+    void testFilteredContent_14() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3308,7 +3308,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_15() throws Throwable {
+    void testFilteredContent_15() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3335,7 +3335,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_16() throws Throwable {
+    void testFilteredContent_16() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3356,7 +3356,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testFilteredContent_17() throws Throwable {
+    void testFilteredContent_17() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3377,7 +3377,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testLoadPublicContentsWithHtml() throws Exception {
+    void testLoadPublicContentsWithHtml() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -3390,8 +3390,8 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(expectedFreeContentsId.size())));
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedFreeContentsId.get(i), extractedId);
-            Assert.assertNull(JsonPath.read(bodyResult, "$.payload[" + i + "].html"));
+            Assertions.assertEquals(expectedFreeContentsId.get(i), extractedId);
+            Assertions.assertNull(JsonPath.read(bodyResult, "$.payload[" + i + "].html"));
         }
 
         Map<String, String> extractedHtml = new HashMap<>();
@@ -3408,9 +3408,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(expectedFreeContentsId.size())));
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedFreeContentsId.get(i), extractedId);
+            Assertions.assertEquals(expectedFreeContentsId.get(i), extractedId);
             String html = JsonPath.read(bodyResult, "$.payload[" + i + "].html");
-            Assert.assertNotNull(html);
+            Assertions.assertNotNull(html);
             extractedHtml.put(extractedId, html);
         }
         result = mockMvc
@@ -3426,16 +3426,16 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         bodyResult = result.andReturn().getResponse().getContentAsString();
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedFreeContentsId.get(i), extractedId);
+            Assertions.assertEquals(expectedFreeContentsId.get(i), extractedId);
             String html = JsonPath.read(bodyResult, "$.payload[" + i + "].html");
-            Assert.assertNotNull(html);
-            Assert.assertNotNull(extractedHtml.get(extractedId));
-            Assert.assertFalse(html.equals(extractedHtml.get(extractedId)));
+            Assertions.assertNotNull(html);
+            Assertions.assertNotNull(extractedHtml.get(extractedId));
+            Assertions.assertFalse(html.equals(extractedHtml.get(extractedId)));
         }
     }
 
     @Test
-    public void testLoadPublicContentsForCategory_1() throws Exception {
+    void testLoadPublicContentsForCategory_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3449,10 +3449,10 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         List<String> expectedFreeContentsId = Arrays.asList("EVN192", "EVN193");
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeContentsId.size(), payloadSize);
+        Assertions.assertEquals(expectedFreeContentsId.size(), payloadSize);
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertTrue(expectedFreeContentsId.contains(extractedId));
+            Assertions.assertTrue(expectedFreeContentsId.contains(extractedId));
         }
 
         result = mockMvc
@@ -3468,13 +3468,13 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
         int newPayloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(1, newPayloadSize);
+        Assertions.assertEquals(1, newPayloadSize);
         String extractedId = JsonPath.read(bodyResult, "$.payload[0].id");
-        Assert.assertEquals("EVN192", extractedId);
+        Assertions.assertEquals("EVN192", extractedId);
     }
 
     @Test
-    public void testLoadPublicEventsForCategory_2() throws Exception {
+    void testLoadPublicEventsForCategory_2() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -3487,9 +3487,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(1, payloadSize);
+        Assertions.assertEquals(1, payloadSize);
         String singleId = JsonPath.read(bodyResult, "$.payload[0].id");
-        Assert.assertEquals("ART120", singleId);
+        Assertions.assertEquals("ART120", singleId);
 
         result = mockMvc
                 .perform(get("/plugins/cms/contents")
@@ -3503,15 +3503,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         List<String> expectedFreeContentsId = Arrays.asList("ART111", "ART120", "ART122", "EVN25");
         int newPayloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedFreeContentsId.size(), newPayloadSize);
+        Assertions.assertEquals(expectedFreeContentsId.size(), newPayloadSize);
         for (int i = 0; i < expectedFreeContentsId.size(); i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertTrue(expectedFreeContentsId.contains(extractedId));
+            Assertions.assertTrue(expectedFreeContentsId.contains(extractedId));
         }
     }
 
     @Test
-    public void testLoadWorkContentsByAttribute() throws Exception {
+    void testLoadWorkContentsByAttribute() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -3528,24 +3528,24 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         result.andExpect(status().isOk());
         String[] expectedContentsId = {"ART120", "ART121"};
         int payloadSize = JsonPath.read(bodyResult, "$.payload.size()");
-        Assert.assertEquals(expectedContentsId.length, payloadSize);
+        Assertions.assertEquals(expectedContentsId.length, payloadSize);
         for (int i = 0; i < expectedContentsId.length; i++) {
             String extractedId = JsonPath.read(bodyResult, "$.payload[" + i + "].id");
-            Assert.assertEquals(expectedContentsId[i], extractedId);
+            Assertions.assertEquals(expectedContentsId[i], extractedId);
         }
     }
 
     @Test
-    public void testAddContentWithLinkNumberAndCompositeBool() throws Exception {
+    void testAddContentWithLinkNumberAndCompositeBool() throws Exception {
         String newContentId = null;
         try {
 
             String accessToken = this.createAccessToken();
-            Assert.assertNull(this.contentManager.getEntityPrototype("AL1"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("AL1"));
 
             this.executeContentTypePost("1_POST_type_with_link_number_composite_bool.json", accessToken,
                     status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("AL1"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("AL1"));
 
             ResultActions result = this
                     .executeContentPost("1_POST_valid_with_link_number_composite_bool.json", accessToken,
@@ -3586,15 +3586,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithAllAttributes() throws Exception {
+    void testAddContentWithAllAttributes() throws Exception {
         String newContentId = null;
         try {
 
             String accessToken = this.createAccessToken();
-            Assert.assertNull(this.contentManager.getEntityPrototype("AL2"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("AL2"));
 
             this.executeContentTypePost("1_POST_type_with_all_attributes.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("AL2"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("AL2"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_all_attributes.json", accessToken, status().isOk());
             result.andDo(print())
@@ -3660,14 +3660,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
         }
     }
 
-    public void testGetPageOfflineNoWidgetErrorMessage() throws Exception {
+    void testGetPageOfflineNoWidgetErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             Page mockPage = createPage(pageCode, false);
             this.pageManager.addPage(mockPage);
@@ -3692,14 +3692,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetPageOfflineWithWidgetErrorMessage() throws Exception {
+    void testGetPageOfflineWithWidgetErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             Page mockPage = createPage(pageCode, true);
             this.pageManager.addPage(mockPage);
@@ -3724,15 +3724,15 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
+    void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
         String pageCode = "page_test";
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             Page mockPage = createPage(pageCode, false);
             this.pageManager.addPage(mockPage);
@@ -3772,14 +3772,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetPageOnlineWrongGroupErrorMessage() throws Exception {
+    void testGetPageOnlineWrongGroupErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             Page mockPage = createPage(pageCode, true, "wrongGroup");
             this.pageManager.addPage(mockPage);
@@ -3815,14 +3815,14 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testAddContentWithEmptyLinkAttribute() throws Exception {
+    void testAddContentWithEmptyLinkAttribute() throws Exception {
         String newContentId = null;
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_empty_link.json", accessToken, status().isOk())
                     .andDo(print())
@@ -3842,7 +3842,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             this.contentManager.deleteContent(newContent);
 
             result = this.executeContentPost("1_POST_valid_with_empty_link2.json", accessToken, status().isOk())
@@ -3863,7 +3863,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             this.contentManager.deleteContent(newContent);
 
             result = this.executeContentPost("1_POST_valid_with_empty_link3.json", accessToken, status().isOk())
@@ -3884,7 +3884,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             this.contentManager.deleteContent(newContent);
 
             result = this.executeContentPost("1_POST_valid_with_empty_link4.json", accessToken, status().isOk())
@@ -3905,7 +3905,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             this.contentManager.deleteContent(newContent);
 
             result = this.executeContentPost("1_POST_valid_with_empty_link5.json", accessToken, status().isOk())
@@ -3926,7 +3926,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             newContent = this.contentManager.loadContent(newContentId, false);
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
             this.contentManager.deleteContent(newContent);
 
 
@@ -3944,13 +3944,13 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testInvalidLinkMessage() throws Exception {
+    void testInvalidLinkMessage() throws Exception {
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             this.executeContentPost("1_POST_invalid_with_link2.json", accessToken, status().isBadRequest())
                     .andExpect(jsonPath("$.payload.size()", is(0)))
@@ -3980,18 +3980,18 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testContentWithReference() throws Exception {
+    void testContentWithReference() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
                 .build();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_link.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("CML"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("CML"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_link.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -4005,7 +4005,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId1 = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId1, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             ContentStatusRequest contentStatusRequest = new ContentStatusRequest();
             contentStatusRequest.setStatus("published");
@@ -4076,7 +4076,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testContentWithReferenceBatch() throws Exception {
+    void testContentWithReferenceBatch() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String newContentId3 = null;
@@ -4085,11 +4085,11 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
                 .build();
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
             this.executeContentTypePost("1_POST_type_with_links.json", accessToken, status().isCreated());
-            Assert.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("LNK"));
 
             ResultActions result = this.executeContentPost("1_POST_valid_with_empty_links.json", accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
@@ -4103,7 +4103,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId1 = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId1, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             ContentStatusRequest contentStatusRequest = new ContentStatusRequest();
             contentStatusRequest.setStatus("published");
@@ -4126,7 +4126,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
             newContentId2 = JsonPath.read(bodyResult, "$.payload[0].id");
             newContent = this.contentManager.loadContent(newContentId2, false);
 
-            Assert.assertNotNull(newContent);
+            Assertions.assertNotNull(newContent);
 
             result = mockMvc
                     .perform(put("/plugins/cms/contents/{code}/status", newContentId2)
@@ -4219,7 +4219,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testGetContentsWithLinkability() throws Exception {
+    void testGetContentsWithLinkability() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
 
@@ -4241,9 +4241,9 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testContentWithRegex() throws Exception {
+    void testContentWithRegex() throws Exception {
         try {
-            Assert.assertNull(this.contentManager.getEntityPrototype("LNK"));
+            Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
 
             ResultActions result = this.executeContentTypePost("1_POST_type_with_link_regex.json", accessToken, status().isCreated());
@@ -4262,7 +4262,7 @@ public class ContentControllerIntegrationTest extends AbstractControllerIntegrat
     }
 
     @Test
-    public void testComponentExistenceAnalysis() throws Exception {
+    void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
         AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
                 AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,

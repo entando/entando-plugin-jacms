@@ -13,7 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.widget;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.aps.system.services.widgettype.WidgetType;
@@ -33,12 +33,14 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
 import org.entando.entando.ent.exception.EntException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author W.Ambu
  */
-public class ContentViewerHelperIntegrationTest extends BaseTestCase {
+class ContentViewerHelperIntegrationTest extends BaseTestCase {
     
     private static final String ART1_MODEL_1_IT_RENDER = "<h1 class=\"titolo\">Il titolo</h1>"
             + "<p>Data: " + Jdk11CompatibleDateFormatter.formatLongDate("10-mar-2004") + "</p>"
@@ -68,13 +70,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
             + "<a href=\"http://www.entando.com/Entando/it/homepage.page\">Details...</a>"
             + "Benvenuto Name Surname (admin - Name.Surname)";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.init();
-    }
-    
-    public void testGetRenderedContent_1() throws Throwable {
+    @Test
+    void testGetRenderedContent_1() throws Throwable {
         try {
             String contentId = "ART1";
             String modelId = "3";
@@ -85,7 +82,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         }
     }
     
-    public void testGetRenderedContent_2() throws Throwable {
+    @Test
+    void testGetRenderedContent_2() throws Throwable {
         this.testGetRenderedByModel("ART1", null, ART1_MODEL_1_IT_RENDER);
         this.testGetRenderedByModel("ART1", "", ART1_MODEL_1_IT_RENDER);
         this.testGetRenderedByModel("ART1", "   ", ART1_MODEL_1_IT_RENDER);
@@ -95,7 +93,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         this.testGetRenderedByModel("ART1", "3", ART1_MODEL_3_IT_RENDER);
     }
     
-    public void testGetRenderedContent_4() throws Throwable {
+    @Test
+    void testGetRenderedContent_4() throws Throwable {
         this.executeGetRenderedContent_4(true, 3, "ART1", ART1_MODEL_1_IT_RENDER, true);
         this.executeGetRenderedContent_4(false, 3, "ART1", ART1_MODEL_1_IT_RENDER, false);
         this.executeGetRenderedContent_4(true, 4, "ART1", ART1_MODEL_1_IT_RENDER, false);
@@ -118,13 +117,14 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         assertEquals(nullExtraParam, null != this._requestContext.getExtraParam(SystemConstants.EXTRAPAR_EXTRA_PAGE_TITLES));
     }
     
-    public void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
+    void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
         this.configureCurrentWidget(contentId, modelId);
         String renderedContent = this._helper.getRenderedContent(null, null, _requestContext);
         assertEquals(replaceNewLine(expected.trim()), replaceNewLine(renderedContent.trim()));
     }
 
-    public void testGetRenderedContentWithParams() throws Throwable {
+    @Test
+    void testGetRenderedContentWithParams() throws Throwable {
         try {
             String contentId = "ART1";
             String modelId = "11";
@@ -141,7 +141,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         return input;
     }
     
-    public void testGetRenderedContentNotApproved() throws Throwable {
+    @Test
+    void testGetRenderedContentNotApproved() throws Throwable {
         try {
             String contentId = "ART2";
             String modelId = "3";
@@ -153,7 +154,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         }
     }
 
-    public void testGetRenderedContentNotPresent() throws Throwable {
+    @Test
+    void testGetRenderedContentNotPresent() throws Throwable {
         try {
             String contentId = "ART3";
             String modelId = "3";
@@ -165,7 +167,8 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         }
     }
     
-    public void testConvertCspNoncePlaceholder() throws Exception {
+    @Test
+    void testConvertCspNoncePlaceholder() throws Exception {
         String contentId = "ART120";
         String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
         int modelId = 1948;
@@ -195,6 +198,7 @@ public class ContentViewerHelperIntegrationTest extends BaseTestCase {
         this._contentModelManager.addContentModel(model);
     }
     
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._requestContext = this.getRequestContext();

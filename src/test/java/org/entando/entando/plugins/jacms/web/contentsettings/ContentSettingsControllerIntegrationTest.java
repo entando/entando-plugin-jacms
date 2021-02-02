@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.searchengine.SearchEngineManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsCropRatioRequest;
 import org.entando.entando.plugins.jacms.web.contentsettings.model.ContentSettingsEditorRequest;
@@ -33,33 +34,43 @@ import org.entando.entando.plugins.jacms.web.contentsettings.model.EditContentSe
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     private ObjectMapper mapper = new ObjectMapper();
-
+    
+    @Autowired
+    private SearchEngineManager searchEngineManager;
+    
+    @BeforeEach
+    protected void init() throws Throwable {
+        searchEngineManager.refresh();
+    }
+    
     @Test
-    public void testGetContentSettingsUnauthorized() throws Exception {
+    void testGetContentSettingsUnauthorized() throws Exception {
         performGetContentSettings(null)
             .andDo(print())
             .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetContentSettingsAuthorizationContentEditor() throws Exception {
+    void testGetContentSettingsAuthorizationContentEditor() throws Exception {
         testGetContentSettings(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
     }
 
     @Test
-    public void testGetContentSettingsAuthorizationContentSupervisor() throws Exception {
+    void testGetContentSettingsAuthorizationContentSupervisor() throws Exception {
         testGetContentSettings(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
     }
 
     @Test
-    public void testGetContentSettingsAuthorizationManageResources() throws Exception {
+    void testGetContentSettingsAuthorizationManageResources() throws Exception {
         testGetContentSettings(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
     }
 
@@ -88,7 +99,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateEditAndRemoveMetadata() throws Exception {
+    void testCreateEditAndRemoveMetadata() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -125,7 +136,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateDuplicateMetadata() throws Exception {
+    void testCreateDuplicateMetadata() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -149,7 +160,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testEditNonExistentMetadata() throws Exception {
+    void testEditNonExistentMetadata() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -160,7 +171,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testRemoveNonExistentMetadata() throws Exception {
+    void testRemoveNonExistentMetadata() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -171,7 +182,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateInvalidMetadata() throws Exception {
+    void testCreateInvalidMetadata() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -190,7 +201,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateEditAndRemoveCropRatios() throws Exception {
+    void testCreateEditAndRemoveCropRatios() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -229,7 +240,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateDuplicateCropRatios() throws Exception {
+    void testCreateDuplicateCropRatios() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -251,7 +262,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testCreateCropRatiosInvalidFormat() throws Exception {
+    void testCreateCropRatiosInvalidFormat() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -266,7 +277,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testEditCropRatiosInvalidFormat() throws Exception {
+    void testEditCropRatiosInvalidFormat() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -291,7 +302,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testChangeEditor() throws Exception {
+    void testChangeEditor() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -310,7 +321,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testReloadIndexes() throws Exception {
+    void testReloadIndexes() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -326,7 +337,7 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
     }
 
     @Test
-    public void testReloadReferences() throws Exception {
+    void testReloadReferences() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
@@ -339,11 +350,6 @@ public class ContentSettingsControllerIntegrationTest extends AbstractController
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.payload.referencesStatus", Matchers.equalTo(1)));
-    }
-
-    private String createAccessToken() throws Exception {
-        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-        return mockOAuthInterceptor(user);
     }
 
     private ResultActions performGetContentSettings(UserDetails user) throws Exception {

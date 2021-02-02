@@ -13,6 +13,11 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +32,15 @@ import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.link.Content
 import com.agiletec.plugins.jacms.apsadmin.content.attribute.action.link.helper.ILinkAttributeActionHelper;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author E.Santoboni
  */
-public class TestContentLinkAction extends AbstractBaseTestContentAction {
+class TestContentLinkAction extends AbstractBaseTestContentAction {
 
-	public void testFindContent_1() throws Throwable {
+	@Test
+    void testFindContent_1() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");//Contenuto del gruppo Free
 
@@ -49,7 +56,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertTrue(contentIds.contains("ART121"));//Contenuto del gruppo "administrators" abilitato al gruppo free
 	}
 
-	public void testFindContent_2() throws Throwable {
+	@Test
+    void testFindContent_2() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART120", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "ART120", "VediAnche", "it");//Contenuto del gruppo degli amministratori
 
@@ -63,7 +71,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(24, contentIds.size());//Tutti i contenuti pubblici
 	}
 
-	public void testFindContent_3() throws Throwable {
+	@Test
+    void testFindContent_3() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("editorCustomers", "ART102", "VediAnche", "it");//Contenuto del gruppo customers
 
@@ -81,7 +90,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertTrue(contentIds.contains("ART111"));//Contenuto del gruppo "coach" abilitato al gruppo customers
 	}
 
-	public void testFindContent_4() throws Throwable {
+	@Test
+    void testFindContent_4() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("EVN25", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "EVN25", "LinkCorrelati", "it");//Contenuto del gruppo coach
 
@@ -99,7 +109,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertTrue(contentIds.contains("ART111"));//Contenuto del gruppo "coach" abilitato al gruppo customers
 	}
 
-	public void testFailureJoinContentLink_1() throws Throwable {
+	@Test
+    void testFailureJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 
@@ -112,7 +123,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(1, typeFieldErrors.size());
 	}
 
-	public void testFailureJoinContentLink_2() throws Throwable {
+	@Test
+    void testFailureJoinContentLink_2() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 
@@ -122,7 +134,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(BaseAction.FAILURE, result);
 	}
 
-	public void testFailureJoinContentLink_3() throws Throwable {
+	@Test
+    void testFailureJoinContentLink_3() throws Throwable {
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 
 		this.initAction("/do/jacms/Content/Link", "joinContentLink");
@@ -131,7 +144,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(BaseAction.FAILURE, result);
 	}
 
-	public void testJoinContentLink_1() throws Throwable {
+	@Test
+    void testJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 
@@ -148,7 +162,8 @@ public class TestContentLinkAction extends AbstractBaseTestContentAction {
 		assertEquals("ART1", symbolicLink.getContentDest());
 	}
 
-	public void testJoinContentLink_2() throws Throwable {
+	@Test
+    void testJoinContentLink_2() throws Throwable {
 		this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initAction("/do/jacms/Content/Link", "joinContentLink");
 		this.addParameter("contentId", "ART1");

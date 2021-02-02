@@ -19,29 +19,29 @@ import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.event.EntityTypesChangingEvent;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
-import com.agiletec.aps.system.common.tree.ITreeNode;
 import org.entando.entando.ent.exception.EntException;
-import com.agiletec.apsadmin.system.ITreeAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.event.PublicContentChangedEvent;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author E.Santoboni
  */
-public class SearchEngineManagerTest {
+@ExtendWith(MockitoExtension.class)
+class SearchEngineManagerTest {
 
     @Mock
     private IContentManager contentManager;
@@ -58,20 +58,19 @@ public class SearchEngineManagerTest {
     @InjectMocks
     private SearchEngineManager searchEngineManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         when(this.factory.getIndexer()).thenReturn(indexerDao);
         when(this.factory.getSearcher()).thenReturn(searcherDao);
         this.searchEngineManager.init();
     }
-
+    /*
     public void init() throws Exception {
         this.searchEngineManager.init();
         Mockito.verify(factory, Mockito.times(1)).getIndexer();
         Mockito.verify(factory, Mockito.times(1)).getSearcher();
     }
-
+    */
     @Test
     public void addContentNotify() throws Exception {
         when(this.factory.checkCurrentSubfolder()).thenReturn(false);
@@ -148,7 +147,7 @@ public class SearchEngineManagerTest {
         EntityTypesChangingEvent event = this.initEntityTypeNotify();
         event.setOperationCode(EntityTypesChangingEvent.INSERT_OPERATION_CODE);
         this.searchEngineManager.updateFromEntityTypesChanging(event);
-        Assert.assertEquals(ICmsSearchEngineManager.STATUS_READY, this.searchEngineManager.getStatus());
+        Assertions.assertEquals(ICmsSearchEngineManager.STATUS_READY, this.searchEngineManager.getStatus());
     }
 
     @Test
@@ -156,7 +155,7 @@ public class SearchEngineManagerTest {
         EntityTypesChangingEvent event = this.initEntityTypeNotify();
         event.setOperationCode(EntityTypesChangingEvent.UPDATE_OPERATION_CODE);
         this.searchEngineManager.updateFromEntityTypesChanging(event);
-        Assert.assertEquals(ICmsSearchEngineManager.STATUS_NEED_TO_RELOAD_INDEXES, this.searchEngineManager.getStatus());
+        Assertions.assertEquals(ICmsSearchEngineManager.STATUS_NEED_TO_RELOAD_INDEXES, this.searchEngineManager.getStatus());
     }
 
     @Test
@@ -164,7 +163,7 @@ public class SearchEngineManagerTest {
         EntityTypesChangingEvent event = this.initEntityTypeNotify();
         event.setOperationCode(EntityTypesChangingEvent.REMOVE_OPERATION_CODE);
         this.searchEngineManager.updateFromEntityTypesChanging(event);
-        Assert.assertEquals(ICmsSearchEngineManager.STATUS_NEED_TO_RELOAD_INDEXES, this.searchEngineManager.getStatus());
+        Assertions.assertEquals(ICmsSearchEngineManager.STATUS_NEED_TO_RELOAD_INDEXES, this.searchEngineManager.getStatus());
     }
 
     private EntityTypesChangingEvent initEntityTypeNotify() {
@@ -173,11 +172,11 @@ public class SearchEngineManagerTest {
         Content type1 = Mockito.mock(Content.class);
         Content type2 = Mockito.mock(Content.class);
         AttributeInterface attributeType1 = Mockito.mock(AttributeInterface.class);
-        when(attributeType1.getIndexingType()).thenReturn(IndexableAttributeInterface.INDEXING_TYPE_TEXT);
-        when(type1.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType1)));
+        Mockito.lenient().when(attributeType1.getIndexingType()).thenReturn(IndexableAttributeInterface.INDEXING_TYPE_TEXT);
+        Mockito.lenient().when(type1.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType1)));
         AttributeInterface attributeType2 = Mockito.mock(AttributeInterface.class);
-        when(attributeType2.getIndexingType()).thenReturn(null);
-        when(type2.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType2)));
+        Mockito.lenient().when(attributeType2.getIndexingType()).thenReturn(null);
+        Mockito.lenient().when(type2.getAttributeList()).thenReturn(new ArrayList<>(Arrays.asList(attributeType2)));
         event.setOldEntityType(type1);
         event.setNewEntityType(type2);
         event.setEntityManagerName(JacmsSystemConstants.CONTENT_MANAGER);
@@ -186,18 +185,21 @@ public class SearchEngineManagerTest {
     }
 
     @Test
-    public void testSearchIds() throws Exception {
+    void testSearchIds() throws Exception {
         when(this.searcherDao.searchContentsId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>(Arrays.asList("Art123", "Art456")));
         when(this.factory.checkCurrentSubfolder()).thenReturn(Boolean.TRUE);
         List<String> resources = this.searchEngineManager.searchEntityId("it", "test", Arrays.asList("group1", "group2"));
-        Assert.assertEquals(2, resources.size());
+        Assertions.assertEquals(2, resources.size());
     }
 
-    @Test(expected = EntException.class)
-    public void testSearchIds_withErrors() throws Exception {
+    @Test
+    void testSearchIds_withErrors() throws Exception {
         Mockito.doThrow(EntException.class).when(this.searcherDao).searchContentsId(Mockito.any(), Mockito.any(), Mockito.any());
         when(this.factory.checkCurrentSubfolder()).thenReturn(Boolean.TRUE);
-        this.searchEngineManager.searchEntityId("it", "test", Arrays.asList("group1", "group2"));
+        Assertions.assertThrows(EntException.class, () -> {
+            this.searchEngineManager.searchEntityId("it", "test", Arrays.asList("group1", "group2"));
+        });
+        
     }
 
 }

@@ -16,18 +16,23 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
 import java.util.List;
 import org.jdom.Element;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author E.Santoboni
  */
-public class AbstractResourceAttributeTest {
+@ExtendWith(MockitoExtension.class)
+class ResourceAttributeTest {
 
     @Mock
     public ImageResource resource;
@@ -35,7 +40,7 @@ public class AbstractResourceAttributeTest {
     @InjectMocks
     private ImageAttribute imageAttribute;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.imageAttribute.setType("Image");
@@ -60,49 +65,49 @@ public class AbstractResourceAttributeTest {
     }
 
     private void testGetJDOMElement(boolean hasMetadata) throws Exception {
-        Assert.assertNotNull(imageAttribute.getResources());
+        Assertions.assertNotNull(imageAttribute.getResources());
         Element element = this.imageAttribute.getJDOMElement();
-        Assert.assertNotNull(element);
-        Assert.assertEquals("Image", element.getAttributeValue("attributetype"));
-        Assert.assertEquals("ImageKey", element.getAttributeValue("name"));
+        Assertions.assertNotNull(element);
+        Assertions.assertEquals("Image", element.getAttributeValue("attributetype"));
+        Assertions.assertEquals("ImageKey", element.getAttributeValue("name"));
         List<Element> resourceElements = element.getChildren("resource");
-        Assert.assertNotNull(resourceElements);
-        Assert.assertEquals(1, resourceElements.size());
+        Assertions.assertNotNull(resourceElements);
+        Assertions.assertEquals(1, resourceElements.size());
         Element resourceElement = resourceElements.get(0);
-        Assert.assertEquals("Image", resourceElement.getAttributeValue("resourcetype"));
-        Assert.assertEquals("idResource", resourceElement.getAttributeValue("id"));
+        Assertions.assertEquals("Image", resourceElement.getAttributeValue("resourcetype"));
+        Assertions.assertEquals("idResource", resourceElement.getAttributeValue("id"));
         List<Element> textElements = element.getChildren("text");
-        Assert.assertEquals(2, textElements.size());
+        Assertions.assertEquals(2, textElements.size());
         for (Element textElement : textElements) {
             String langCode = textElement.getAttributeValue("lang");
             String text = textElement.getText();
             if (langCode.equals("en")) {
-                Assert.assertEquals("Text EN", text);
+                Assertions.assertEquals("Text EN", text);
             } else if (langCode.equals("it")) {
-                Assert.assertEquals("Text IT", text);
+                Assertions.assertEquals("Text IT", text);
             } else {
-                Assert.fail();
+                Assertions.fail();
             }
         }
         Element metadatasElement = element.getChild("metadatas");
         if (hasMetadata) {
-            Assert.assertNotNull(metadatasElement);
+            Assertions.assertNotNull(metadatasElement);
             List<Element> metadataElements = metadatasElement.getChildren("metadata");
-            Assert.assertEquals(2, metadataElements.size());
+            Assertions.assertEquals(2, metadataElements.size());
             for (Element metadataElement : metadataElements) {
-                Assert.assertEquals("en", metadataElement.getAttributeValue("lang"));
+                Assertions.assertEquals("en", metadataElement.getAttributeValue("lang"));
                 String key = metadataElement.getAttributeValue("key");
                 String value = metadataElement.getText();
                 if (key.equals("metadata_key_1")) {
-                    Assert.assertEquals("metadata_value_1", value);
+                    Assertions.assertEquals("metadata_value_1", value);
                 } else if (key.equals("metadata_key_2")) {
-                    Assert.assertEquals("metadata_value_2", value);
+                    Assertions.assertEquals("metadata_value_2", value);
                 } else {
-                    Assert.fail();
+                    Assertions.fail();
                 }
             }
         } else {
-            Assert.assertNull(metadatasElement);
+            Assertions.assertNull(metadatasElement);
         }
     }
 

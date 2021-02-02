@@ -13,16 +13,20 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource.parse;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.agiletec.aps.BaseTestCase;
 import org.entando.entando.ent.exception.EntException;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.0
  * @author M. Morini
  */
-public class TestResourceDOM extends BaseTestCase {
+class TestResourceDOM extends BaseTestCase {
 	
-    public void testGetXMLDocument() throws EntException {  
+    @Test
+    void testGetXMLDocument() throws EntException {  
 		ResourceDOM resourceDom = new ResourceDOM();
         resourceDom.addCategory("tempcategory");
         int index = resourceDom.getXMLDocument().indexOf("tempcategory");

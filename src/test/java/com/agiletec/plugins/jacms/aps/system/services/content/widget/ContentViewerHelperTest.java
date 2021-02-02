@@ -30,16 +30,20 @@ import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderiza
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispenser;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 
-public class ContentViewerHelperTest {
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class ContentViewerHelperTest {
 
     @Mock
     private IContentModelManager contentModelManager;
@@ -59,35 +63,34 @@ public class ContentViewerHelperTest {
     @InjectMocks
     private ContentViewerHelper contentViewerHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         Lang currentLang = new Lang();
         currentLang.setCode("en");
         currentLang.setDescr("English");
         IPage currentPage = Mockito.mock(IPage.class);
-        when(currentPage.isUseExtraTitles()).thenReturn(true);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE)).thenReturn(currentPage);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG)).thenReturn(currentLang);
+        Mockito.lenient().when(currentPage.isUseExtraTitles()).thenReturn(true);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE)).thenReturn(currentPage);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG)).thenReturn(currentLang);
 
         ContentRenderizationInfo renderizationInfo = Mockito.mock(ContentRenderizationInfo.class);
-        when(this.contentDispenser.getRenderizationInfo(Mockito.anyString(),
+        Mockito.lenient().when(this.contentDispenser.getRenderizationInfo(Mockito.anyString(),
                 Mockito.anyLong(), Mockito.anyString(), Mockito.any(RequestContext.class), Mockito.anyBoolean())).thenReturn(renderizationInfo);
-        when(renderizationInfo.getCachedRenderedContent()).thenReturn("Cached Rendered Content");
-        when(renderizationInfo.getRenderedContent()).thenReturn("Final Rendered Content");
+        Mockito.lenient().when(renderizationInfo.getCachedRenderedContent()).thenReturn("Cached Rendered Content");
+        Mockito.lenient().when(renderizationInfo.getRenderedContent()).thenReturn("Final Rendered Content");
     }
-
+    
     @Test
-    public void testGetRenderedContent() throws Exception {
+    void testGetRenderedContent() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         ContentModel model = Mockito.mock(ContentModel.class);
         when(this.contentModelManager.getContentModel(Mockito.anyLong())).thenReturn(model);
         when(model.getStylesheet()).thenReturn("..css style..");
-        when(model.getContentShape()).thenReturn("Body of content model");
+        Mockito.lenient().when(model.getContentShape()).thenReturn("Body of content model");
         String renderedContent = this.contentViewerHelper.getRenderedContent("ART123", "11", reqCtx);
-        Assert.assertNotNull(renderedContent);
-        Assert.assertEquals("Final Rendered Content", renderedContent);
+        Assertions.assertNotNull(renderedContent);
+        Assertions.assertEquals("Final Rendered Content", renderedContent);
         Mockito.verify(hic, Mockito.times(1)).addInfo("CSS", "..css style..");
         Mockito.verify(contentDispenser, Mockito.times(1)).getRenderizationInfo("ART123", 11, "en", reqCtx, true);
         Mockito.verify(contentDispenser, Mockito.times(1)).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
@@ -98,17 +101,17 @@ public class ContentViewerHelperTest {
     }
 
     @Test
-    public void testGetRenderedContentWithListModel() throws Exception {
+    void testGetRenderedContentWithListModel() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         ContentModel model = Mockito.mock(ContentModel.class);
         when(this.contentModelManager.getContentModel(Mockito.anyLong())).thenReturn(model);
         when(this.contentManager.getListModel(Mockito.anyString())).thenReturn("34");
         when(model.getStylesheet()).thenReturn("..other css style..");
-        when(model.getContentShape()).thenReturn("Body of content model");
+        Mockito.lenient().when(model.getContentShape()).thenReturn("Body of content model");
         String renderedContent = this.contentViewerHelper.getRenderedContent("ART123", "list", reqCtx);
-        Assert.assertNotNull(renderedContent);
-        Assert.assertEquals("Final Rendered Content", renderedContent);
+        Assertions.assertNotNull(renderedContent);
+        Assertions.assertEquals("Final Rendered Content", renderedContent);
         Mockito.verify(hic, Mockito.times(1)).addInfo("CSS", "..other css style..");
         Mockito.verify(contentDispenser, Mockito.times(1)).getRenderizationInfo("ART123", 34, "en", reqCtx, true);
         Mockito.verify(contentDispenser, Mockito.times(1)).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
@@ -117,38 +120,35 @@ public class ContentViewerHelperTest {
         Mockito.verify(reqCtx, Mockito.times(1)).getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER);
         Mockito.verify(contentManager, Mockito.times(1)).getListModel("ART123");
     }
-
-    @Test(expected = EntException.class)
-    public void testGetRenderedContentWithError() throws Exception {
+    
+    @Test
+    void testGetRenderedContentWithError() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
-        when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
+        Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         Mockito.doThrow(RuntimeException.class).when(this.contentDispenser).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
-        try {
+        Assertions.assertThrows(EntException.class, () -> {
             this.contentViewerHelper.getRenderedContent("NEW123", "10", reqCtx);
-            Assert.fail();
-        } catch (Exception e) {
-            Mockito.verify(hic, Mockito.times(0)).addInfo(Mockito.anyString(), Mockito.anyString());
-            Mockito.verify(reqCtx, Mockito.times(1)).getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG);
-            Mockito.verify(contentDispenser, Mockito.times(1)).getRenderizationInfo("NEW123", 10, "en", reqCtx, true);
-            Mockito.verify(contentDispenser, Mockito.times(1)).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
-            Mockito.verify(reqCtx, Mockito.times(0)).getExtraParam(SystemConstants.EXTRAPAR_CURRENT_FRAME);
-            Mockito.verifyZeroInteractions(contentManager);
-            throw e;
-        }
+        });
+        Mockito.verify(hic, Mockito.times(0)).addInfo(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(reqCtx, Mockito.times(1)).getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG);
+        Mockito.verify(contentDispenser, Mockito.times(1)).getRenderizationInfo("NEW123", 10, "en", reqCtx, true);
+        Mockito.verify(contentDispenser, Mockito.times(1)).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
+        Mockito.verify(reqCtx, Mockito.times(0)).getExtraParam(SystemConstants.EXTRAPAR_CURRENT_FRAME);
+        Mockito.verifyZeroInteractions(contentManager);
     }
-
+    
     @Test
     public void getRenderizationInfo() throws Exception {
         ContentModel model = Mockito.mock(ContentModel.class);
         when(this.contentModelManager.getContentModel(Mockito.anyLong())).thenReturn(model);
         when(this.contentManager.getDefaultModel(Mockito.anyString())).thenReturn("68");
         when(model.getStylesheet()).thenReturn(null);
-        when(model.getContentShape()).thenReturn("Body of content model");
+        Mockito.lenient().when(model.getContentShape()).thenReturn("Body of content model");
         when(this.contentDispenser.getRenderizationInfo(Mockito.anyString(),
                 Mockito.anyLong(), Mockito.anyString(), Mockito.any(RequestContext.class), Mockito.anyBoolean())).thenReturn(null);
         String renderedContent = this.contentViewerHelper.getRenderedContent("ART124", "default", reqCtx);
-        Assert.assertNotNull(renderedContent);
-        Assert.assertTrue(StringUtils.isBlank(renderedContent));
+        Assertions.assertNotNull(renderedContent);
+        Assertions.assertTrue(StringUtils.isBlank(renderedContent));
         Mockito.verify(contentDispenser, Mockito.times(1)).getRenderizationInfo("ART124", 68, "en", reqCtx, true);
         Mockito.verify(contentDispenser, Mockito.times(0)).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));
         Mockito.verify(reqCtx, Mockito.times(1)).getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG);
@@ -167,7 +167,7 @@ public class ContentViewerHelperTest {
         currentWidget.setConfig(properties);
         when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET)).thenReturn(currentWidget);
         PublicContentAuthorizationInfo pcai = contentViewerHelper.getAuthorizationInfo(null, reqCtx);
-        Assert.assertNotNull(pcai);
+        Assertions.assertNotNull(pcai);
         Mockito.verify(reqCtx, Mockito.times(0)).getRequest();
     }
 
@@ -182,12 +182,12 @@ public class ContentViewerHelperTest {
         currentWidget.setConfig(properties);
         when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET)).thenReturn(currentWidget);
         PublicContentAuthorizationInfo pcai = contentViewerHelper.getAuthorizationInfo(null, reqCtx);
-        Assert.assertNull(pcai);
+        Assertions.assertNull(pcai);
         Mockito.verify(reqCtx, Mockito.times(1)).getRequest();
         Mockito.verify(contentAuthorizationHelper, Mockito.times(0)).getAuthorizationInfo(Mockito.anyString(), Mockito.anyBoolean());
     }
 
-    @Test(expected = EntException.class)
+    @Test
     public void getAuthorizationInfoWithError() throws Exception {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         when(mockRequest.getParameter(SystemConstants.K_CONTENT_ID_PARAM)).thenReturn("ART123");
@@ -196,13 +196,10 @@ public class ContentViewerHelperTest {
         currentWidget.setConfig(new ApsProperties());
         when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_WIDGET)).thenReturn(currentWidget);
         Mockito.doThrow(RuntimeException.class).when(this.contentAuthorizationHelper).getAuthorizationInfo("ART123", true);
-        try {
-            contentViewerHelper.getAuthorizationInfo(null, reqCtx);
-            Assert.fail();
-        } catch (Exception e) {
-            Mockito.verify(reqCtx, Mockito.times(1)).getRequest();
-            throw e;
-        }
+        Assertions.assertThrows(EntException.class, () -> {
+            this.contentViewerHelper.getAuthorizationInfo(null, reqCtx);
+        });
+        Mockito.verify(reqCtx, Mockito.times(1)).getRequest();
     }
-
+    
 }
