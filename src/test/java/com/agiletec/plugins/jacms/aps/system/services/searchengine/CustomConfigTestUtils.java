@@ -16,7 +16,7 @@ package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 import com.agiletec.ConfigTestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class CustomConfigTestUtils extends ConfigTestUtils {
+class CustomConfigTestUtils extends ConfigTestUtils {
 
     @Override
     protected String[] getSpringConfigFilePaths() {

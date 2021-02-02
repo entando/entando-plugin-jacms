@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentEntityManager extends BaseTestCase {
+class TestContentEntityManager extends BaseTestCase {
 
 	@Test
 	public void testSearchRecords() throws Throwable {

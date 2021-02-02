@@ -29,7 +29,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import org.junit.jupiter.api.Test;
 
-public class TestCmsApplicationContext extends BaseTestCase {
+class TestCmsApplicationContext extends BaseTestCase {
 
 	@Test
     public void testGetCmsServices() throws Throwable {

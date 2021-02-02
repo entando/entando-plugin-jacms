@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentAction extends AbstractBaseTestContentAction {
+class TestContentAction extends AbstractBaseTestContentAction {
     
     @Test
     public void testEditForAdminUser() throws Throwable {

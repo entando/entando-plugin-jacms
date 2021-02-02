@@ -65,7 +65,7 @@ import org.springframework.lang.Nullable;
  * @author E.Santoboni
  */
 @ExtendWith(MockitoExtension.class)
-public class ContentServiceTest {
+class ContentServiceTest {
 
     public static final String FOUND_CONTENT_01 = "ART2";
     public static final String FOUND_CONTENT_02 = "ART5";

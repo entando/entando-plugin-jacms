@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestResourceAttributeAction extends AbstractBaseTestContentAction {
+class TestResourceAttributeAction extends AbstractBaseTestContentAction {
 
     @Test
     public void testChooseImageResource() throws Throwable {

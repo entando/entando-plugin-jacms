@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestPageActionReferences extends ApsAdminBaseTestCase {
+class TestPageActionReferences extends ApsAdminBaseTestCase {
 
     private static final String TEST_PAGE_CODE = "delete_me_001";
 

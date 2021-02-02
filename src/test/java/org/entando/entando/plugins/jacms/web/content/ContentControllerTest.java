@@ -47,7 +47,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BindingResult;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentControllerTest extends AbstractControllerTest {
+class ContentControllerTest extends AbstractControllerTest {
 
     @Mock
     private ContentValidator contentValidator;

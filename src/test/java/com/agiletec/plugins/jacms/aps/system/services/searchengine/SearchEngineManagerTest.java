@@ -41,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author E.Santoboni
  */
 @ExtendWith(MockitoExtension.class)
-public class SearchEngineManagerTest {
+class SearchEngineManagerTest {
 
     @Mock
     private IContentManager contentManager;

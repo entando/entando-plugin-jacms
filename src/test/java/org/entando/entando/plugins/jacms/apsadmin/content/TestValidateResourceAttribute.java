@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestValidateResourceAttribute extends AbstractTestContentAttribute {
+class TestValidateResourceAttribute extends AbstractTestContentAttribute {
 
     @Test
     public void testValidate_SingleAttach() throws Throwable {

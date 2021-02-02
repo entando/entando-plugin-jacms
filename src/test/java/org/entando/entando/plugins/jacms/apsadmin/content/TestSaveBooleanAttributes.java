@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
+class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
 
     @Test
     public void testSaveBooleanAttribute() throws Throwable {

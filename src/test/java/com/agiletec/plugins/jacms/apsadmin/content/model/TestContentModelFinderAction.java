@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentModelFinderAction extends ApsAdminBaseTestCase {
+class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 
 	@Test
     public void testList() throws Throwable {

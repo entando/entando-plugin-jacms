@@ -23,7 +23,7 @@ import com.agiletec.apsadmin.ApsAdminBaseTestCase;
 import com.agiletec.apsadmin.user.group.GroupAction;
 import org.junit.jupiter.api.Test;
 
-public class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
+class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
 
 	@Test
     public void testFailureTrashReferencedGroup() throws Throwable {

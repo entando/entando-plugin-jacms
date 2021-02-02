@@ -44,7 +44,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.ObjectError;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentModelServiceImplTest {
+class ContentModelServiceImplTest {
 
     @Mock
     private IContentManager contentManager;

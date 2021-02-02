@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
+class TestContentViewerWidgetAction extends ApsAdminBaseTestCase {
 
 	@Test
     public void testInitConfigViewerwithNoWidgetCode() throws Throwable {

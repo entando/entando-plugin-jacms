@@ -36,7 +36,7 @@ import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestApiContentTypeInterface extends ApiBaseTestCase {
+class TestApiContentTypeInterface extends ApiBaseTestCase {
 
     private final static String CONTENT_VIEW = "contentview";
     private final static String CONTENT_VIEW_TEST = "contentviewtest";

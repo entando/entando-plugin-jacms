@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestPublicContentSearcherDAO extends BaseTestCase {
+class TestPublicContentSearcherDAO extends BaseTestCase {
 	
 	@Test
     public void testLoadContentsId_1() throws Throwable {

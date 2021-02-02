@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentGroupAction extends AbstractBaseTestContentAction {
+class TestContentGroupAction extends AbstractBaseTestContentAction {
 	
 	@Test
     public void testInsertOnLineContents_1() throws Throwable {

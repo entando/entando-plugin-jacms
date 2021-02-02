@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-public class TestPageFinderAction extends ApsAdminBaseTestCase {
+class TestPageFinderAction extends ApsAdminBaseTestCase {
 
 	@Test
     public void testGetLastUpdated() throws Throwable {

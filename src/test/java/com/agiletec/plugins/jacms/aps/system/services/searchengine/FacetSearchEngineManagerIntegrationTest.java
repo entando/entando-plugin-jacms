@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author eu
  */
-public class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
+class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
 
     private IContentManager contentManager = null;
     private ICmsSearchEngineManager searchEngineManager = null;

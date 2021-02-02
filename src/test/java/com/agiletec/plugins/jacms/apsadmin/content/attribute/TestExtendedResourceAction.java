@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestExtendedResourceAction extends AbstractBaseTestContentAction {
+class TestExtendedResourceAction extends AbstractBaseTestContentAction {
 
 	@Test
     public void testNewImageResource_1() throws Throwable {

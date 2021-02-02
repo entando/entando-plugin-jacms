@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
+class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 
 	@Test
     public void testValidate_Single_1() throws Throwable {

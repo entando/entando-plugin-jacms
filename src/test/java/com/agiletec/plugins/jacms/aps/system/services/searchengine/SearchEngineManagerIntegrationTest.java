@@ -68,7 +68,7 @@ import org.springframework.mock.web.MockServletContext;
  *
  * @author E.Santoboni
  */
-public class SearchEngineManagerIntegrationTest extends BaseTestCase {
+class SearchEngineManagerIntegrationTest extends BaseTestCase {
 
     private final String ROLE_FOR_TEST = "jacmstest:date";
 

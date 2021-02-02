@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestPageLinkAction extends AbstractBaseTestContentAction {
+class TestPageLinkAction extends AbstractBaseTestContentAction {
 
 	@Test
     public void testConfigPageLink_1() throws Throwable {

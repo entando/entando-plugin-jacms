@@ -28,7 +28,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction {
+class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction {
 
     private String contentOnSessionMarker;
 

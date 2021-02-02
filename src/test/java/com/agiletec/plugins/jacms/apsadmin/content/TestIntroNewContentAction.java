@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestIntroNewContentAction extends AbstractBaseTestContentAction {
+class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 
 	@Test
     public void testOpenNew() throws Throwable {

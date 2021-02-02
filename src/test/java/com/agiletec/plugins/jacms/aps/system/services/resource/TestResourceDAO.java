@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.0
  * @author M.Diana
  */
-public class TestResourceDAO extends BaseTestCase {
+class TestResourceDAO extends BaseTestCase {
 	
 	@Test
     public void testAddDeleteResource() throws Throwable {  

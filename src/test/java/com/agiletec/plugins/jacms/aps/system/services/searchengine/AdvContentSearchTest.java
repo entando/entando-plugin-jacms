@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * Rewriting of some default test for content manager
  * @author E.Santoboni
  */
-public class AdvContentSearchTest extends BaseTestCase {
+class AdvContentSearchTest extends BaseTestCase {
 
     private IContentManager contentManager = null;
     private ICmsSearchEngineManager searchEngineManager = null;

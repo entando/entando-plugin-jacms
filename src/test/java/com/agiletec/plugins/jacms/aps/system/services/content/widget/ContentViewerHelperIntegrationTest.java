@@ -40,7 +40,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author W.Ambu
  */
-public class ContentViewerHelperIntegrationTest extends BaseTestCase {
+class ContentViewerHelperIntegrationTest extends BaseTestCase {
     
     private static final String ART1_MODEL_1_IT_RENDER = "<h1 class=\"titolo\">Il titolo</h1>"
             + "<p>Data: " + Jdk11CompatibleDateFormatter.formatLongDate("10-mar-2004") + "</p>"

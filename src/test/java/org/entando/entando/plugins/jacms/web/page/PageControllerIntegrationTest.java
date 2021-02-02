@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author paddeo
  */
-public class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testPageGet() throws Exception {

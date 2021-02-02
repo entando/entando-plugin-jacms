@@ -43,7 +43,7 @@ import org.springframework.cache.CacheManager;
  * @author E.Santoboni
  */
 @ExtendWith(MockitoExtension.class)
-public class ContentMapperCacheWrapperTest {
+class ContentMapperCacheWrapperTest {
 
 	@Mock
 	private CacheManager cacheManager;

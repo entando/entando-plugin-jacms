@@ -42,7 +42,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
     "classpath*:spring/web/**.xml"
 })
 @WebAppConfiguration(value = "")
-public class ResourcesServiceUnitTest {
+class ResourcesServiceUnitTest {
 
     @Autowired
     private MessageSource messageSource;
@@ -69,20 +69,20 @@ public class ResourcesServiceUnitTest {
     }
 
     @Test
-    public void testInvalidGroup() {
+    void testInvalidGroup() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
             resourcesService.validateGroup(null, "invalidGroup");
         });
     }
 
     @Test
-    public void testGroupValidation() {
+    void testGroupValidation() {
         resourcesService.validateGroup(null, "free");
         resourcesService.validateGroup(null, "admin");
     }
 
     @Test
-    public void testMimeTypeValidation() {
+    void testMimeTypeValidation() {
         resourcesService.validateMimeType("image", "application/jpeg");
         resourcesService.validateMimeType("image", "application/png");
         resourcesService.validateMimeType("file", "application/pdf");
@@ -90,21 +90,21 @@ public class ResourcesServiceUnitTest {
     }
 
     @Test
-    public void testInvalidImageMimeType() {
+    void testInvalidImageMimeType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
             resourcesService.validateMimeType("image", "application/pdf");
         });
     }
 
     @Test
-    public void testInvalidAttachMimeType() {
+    void testInvalidAttachMimeType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
             resourcesService.validateMimeType("attach", "application/jpeg");
         });
     }
 
     @Test
-    public void testInvalidResourceType() {
+    void testInvalidResourceType() {
         Assertions.assertThrows(ValidationGenericException.class, () -> {
             resourcesService.validateMimeType("image", "application/txt");
         });

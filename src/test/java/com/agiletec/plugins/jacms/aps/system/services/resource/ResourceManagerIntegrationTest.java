@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author W.Ambu - E.Santoboni
  */
-public class ResourceManagerIntegrationTest extends BaseTestCase {
+class ResourceManagerIntegrationTest extends BaseTestCase {
 
     private IResourceManager resourceManager;
     private IGroupManager groupManager;

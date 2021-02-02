@@ -20,7 +20,7 @@ import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.opensymphony.xwork2.Action;
 import org.junit.jupiter.api.Test;
 
-public class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
+class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
 
     private String FILE_UPLOAD_CONTENT_TYPE = "content-type";
     private String FILE_NAME_ATTACHMENT = "filename.txt";

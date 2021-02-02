@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestValidateContent extends BaseTestCase {
+class TestValidateContent extends BaseTestCase {
 	
 	@Test
     public void testValidate_1() throws Throwable {

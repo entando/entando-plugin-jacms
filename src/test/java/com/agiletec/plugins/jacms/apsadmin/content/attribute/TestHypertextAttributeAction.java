@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
+class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
 	public void testFindContent_1() throws Throwable {

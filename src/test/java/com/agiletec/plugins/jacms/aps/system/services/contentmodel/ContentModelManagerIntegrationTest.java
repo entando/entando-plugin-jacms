@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.1
  * @author W.Ambu - S.Didaci - C.Siddi
  */
-public class ContentModelManagerIntegrationTest extends BaseTestCase {
+class ContentModelManagerIntegrationTest extends BaseTestCase {
 	
     @Test
     public void testGetContentModel() {

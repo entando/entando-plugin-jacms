@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.0
  * @author M. Morini
  */
-public class TestContentDOM extends BaseTestCase {
+class TestContentDOM extends BaseTestCase {
 	
 	@Test
     public void testGetXMLDocument() throws EntException {

@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  * @author E.Santoboni
  */
 @ExtendWith(MockitoExtension.class)
-public class ResourceAttributeHandlerTest {
+class ResourceAttributeHandlerTest {
 
     @Mock
     public Attributes attributes;

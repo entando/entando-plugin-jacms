@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
+class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
 
     @Test
     public void testSearchImageResource_1() throws Throwable {

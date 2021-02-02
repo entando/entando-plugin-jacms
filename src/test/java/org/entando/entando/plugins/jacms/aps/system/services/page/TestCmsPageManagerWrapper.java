@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni - M.Diana
  */
-public class TestCmsPageManagerWrapper extends BaseTestCase {
+class TestCmsPageManagerWrapper extends BaseTestCase {
 
 	@Test
     public void testGetContentUtilizers() throws Throwable {

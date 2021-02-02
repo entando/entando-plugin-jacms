@@ -39,7 +39,7 @@ import com.opensymphony.xwork2.Action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
+class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 
 	@Test
     public void testUserNotAllowed() throws Throwable {

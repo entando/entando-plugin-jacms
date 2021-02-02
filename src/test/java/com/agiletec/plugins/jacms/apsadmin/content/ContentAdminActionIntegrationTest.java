@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Mezzano
  */
-public class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
+class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
 
     private IResourceManager resourceManager;
 

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.0
  * @author M.Casari
  */
-public class ContentPageMapperManagerIntegrationTest extends BaseTestCase {
+class ContentPageMapperManagerIntegrationTest extends BaseTestCase {
 	
     @Test
     public void testGetContentPageMapper() throws EntException {

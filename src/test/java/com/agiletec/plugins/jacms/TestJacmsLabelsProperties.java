@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-public class TestJacmsLabelsProperties extends TestLabelsProperties {
+class TestJacmsLabelsProperties extends TestLabelsProperties {
 
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(TestLabelsProperties.class);
     private static String PLUGIN_PATH = "com/agiletec/plugins/jacms/apsadmin/";

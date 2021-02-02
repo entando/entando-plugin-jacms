@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.0
  * @author M. Morini
  */
-public class TestContentAttributeIterator {
+class TestContentAttributeIterator {
 	
     @Test
     public void testIterator() throws EntException {  

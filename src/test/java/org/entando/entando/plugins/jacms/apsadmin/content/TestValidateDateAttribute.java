@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestValidateDateAttribute extends AbstractTestContentAttribute {
+class TestValidateDateAttribute extends AbstractTestContentAttribute {
 
 	@Test
     public void testValidate_Single_1() throws Throwable {

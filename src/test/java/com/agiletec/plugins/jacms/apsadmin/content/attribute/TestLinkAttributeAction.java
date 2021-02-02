@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestLinkAttributeAction extends AbstractBaseTestContentAction {
+class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
     public void testChooseLink_1() throws Throwable {

@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class AnalysisControllerCmsTest extends AbstractControllerTest {
+class AnalysisControllerCmsTest extends AbstractControllerTest {
 
     @Test
     public void testRunAnalysis() throws Exception {

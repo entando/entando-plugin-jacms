@@ -53,7 +53,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentTypeServiceTest {
+class ContentTypeServiceTest {
 
     private RestListRequest restListRequest;
 

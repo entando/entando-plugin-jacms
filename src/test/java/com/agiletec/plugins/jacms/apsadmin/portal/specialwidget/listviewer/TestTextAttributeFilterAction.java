@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestTextAttributeFilterAction extends TestAbstractAttributeFilterAction {
+class TestTextAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
     public void testFailureAddTextFilter() throws Throwable {

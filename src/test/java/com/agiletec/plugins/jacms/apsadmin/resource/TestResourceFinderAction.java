@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestResourceFinderAction extends ApsAdminBaseTestCase {
+class TestResourceFinderAction extends ApsAdminBaseTestCase {
 
     @Test
     public void testViewImageResources() throws Throwable {

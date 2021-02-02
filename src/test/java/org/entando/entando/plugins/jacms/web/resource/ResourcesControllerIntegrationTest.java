@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 
-public class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTest {
     
     @Autowired
     private ICategoryManager categoryManager;

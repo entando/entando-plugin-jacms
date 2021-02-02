@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author E.Santoboni
  */
-public class TestCategoryUtilizer extends BaseTestCase {
+class TestCategoryUtilizer extends BaseTestCase {
 
 	@Test
     public void testGetCategoryUtilizers_1() throws Throwable {

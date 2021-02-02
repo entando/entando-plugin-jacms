@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
+class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
 
 	@Test
     public void testTrashReferencedCategory() throws Throwable {

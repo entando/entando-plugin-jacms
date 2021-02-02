@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestActivityStream extends ApsAdminBaseTestCase {
+class TestActivityStream extends ApsAdminBaseTestCase {
 
     private IActionLogManager actionLoggerManager;
     private IPageManager pageManager = null;

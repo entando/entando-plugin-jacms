@@ -41,7 +41,7 @@ import org.entando.entando.aps.system.services.command.IBulkCommandManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestContentBulkCommand extends BaseTestCase {
+class TestContentBulkCommand extends BaseTestCase {
 
     private ICategoryManager categoryManager;
     private IContentManager contentManager;

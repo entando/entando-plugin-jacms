@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentModelAction extends ApsAdminBaseTestCase {
+class TestContentModelAction extends ApsAdminBaseTestCase {
 
     @Test
     public void testNewModel() throws Throwable {

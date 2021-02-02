@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
+class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	
 	@Test
     public void testValidateAttribute_1() throws Throwable {

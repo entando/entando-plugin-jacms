@@ -60,7 +60,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-public class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTest {
 
     private ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 

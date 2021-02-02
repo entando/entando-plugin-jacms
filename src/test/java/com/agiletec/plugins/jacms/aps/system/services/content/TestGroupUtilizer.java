@@ -23,7 +23,7 @@ import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import org.junit.jupiter.api.Test;
 
-public class TestGroupUtilizer extends BaseTestCase {
+class TestGroupUtilizer extends BaseTestCase {
     
 	@Test
     public void testGetGroupsUtilizers() throws Throwable {

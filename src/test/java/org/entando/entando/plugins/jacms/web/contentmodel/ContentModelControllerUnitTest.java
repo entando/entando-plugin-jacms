@@ -51,7 +51,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentModelControllerUnitTest extends AbstractControllerTest {
+class ContentModelControllerUnitTest extends AbstractControllerTest {
     
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(CmsAdminPagerTag.class);
 

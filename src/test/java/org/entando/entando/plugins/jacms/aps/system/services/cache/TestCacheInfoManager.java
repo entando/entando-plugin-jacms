@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestCacheInfoManager extends BaseTestCase {
+class TestCacheInfoManager extends BaseTestCase {
 
     @Test
     public void testGetRenderedContent_1() throws Throwable {

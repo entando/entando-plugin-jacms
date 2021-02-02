@@ -50,7 +50,7 @@ import org.springframework.cache.CacheManager;
 /**
  * @author E.Santoboni
  */
-public class ContentListHelperIntegrationTest extends BaseTestCase {
+class ContentListHelperIntegrationTest extends BaseTestCase {
 
     private IContentManager contentManager;
     private CacheManager springCacheManager;

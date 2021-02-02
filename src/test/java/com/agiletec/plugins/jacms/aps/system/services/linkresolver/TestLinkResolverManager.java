@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author W.Ambu - M.Diana
  */
-public class TestLinkResolverManager extends BaseTestCase {
+class TestLinkResolverManager extends BaseTestCase {
 
     @BeforeEach
     public void init() throws Exception {

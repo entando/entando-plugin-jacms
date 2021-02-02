@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestBaseFilterAction extends ApsAdminBaseTestCase {
+class TestBaseFilterAction extends ApsAdminBaseTestCase {
 	
 	@Test
     public void testNewFilter() throws Throwable {

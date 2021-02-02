@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestApiContentInterface extends ApiBaseTestCase {
+class TestApiContentInterface extends ApiBaseTestCase {
 
 	@Test
     public void testGetXmlContent() throws Throwable {

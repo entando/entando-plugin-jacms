@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentAuthorization extends BaseTestCase {
+class TestContentAuthorization extends BaseTestCase {
 
     @Test
     public void testCheckAdminUser() throws Throwable {

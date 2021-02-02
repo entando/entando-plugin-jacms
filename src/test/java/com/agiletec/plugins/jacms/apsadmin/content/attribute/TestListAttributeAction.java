@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestListAttributeAction extends AbstractBaseTestContentAction {
+class TestListAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
     public void testAddListElement() throws Throwable {

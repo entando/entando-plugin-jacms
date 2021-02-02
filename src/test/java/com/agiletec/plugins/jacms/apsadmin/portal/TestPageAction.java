@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestPageAction extends ApsAdminBaseTestCase {
+class TestPageAction extends ApsAdminBaseTestCase {
 
     private IPageManager pageManager = null;
     private IWidgetTypeManager widgetTypeManager;

@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author W.Ambu - E.Santoboni
  */
-public class TestContentDispenser extends BaseTestCase {
+class TestContentDispenser extends BaseTestCase {
 
     @Test
     public void testGetRenderedContent_1() throws Throwable {

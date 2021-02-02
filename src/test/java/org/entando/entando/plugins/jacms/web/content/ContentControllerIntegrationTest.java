@@ -82,7 +82,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-public class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Autowired
     private IContentManager contentManager;

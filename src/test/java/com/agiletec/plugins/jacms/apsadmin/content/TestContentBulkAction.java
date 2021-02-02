@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentBulkAction extends AbstractBaseTestContentAction {
+class TestContentBulkAction extends AbstractBaseTestContentAction {
     
     private ILangManager langManager;
     private IGroupManager groupManager;

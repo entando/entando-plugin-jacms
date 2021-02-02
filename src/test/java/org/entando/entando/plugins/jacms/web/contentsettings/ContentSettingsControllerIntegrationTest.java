@@ -40,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegrationTest {
+class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     private ObjectMapper mapper = new ObjectMapper();
     

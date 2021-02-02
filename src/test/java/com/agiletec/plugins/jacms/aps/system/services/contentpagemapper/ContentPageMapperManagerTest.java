@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author E.Santoboni
  */
 @ExtendWith(MockitoExtension.class)
-public class ContentPageMapperManagerTest {
+class ContentPageMapperManagerTest {
 
 	@Mock
 	private IPageManager pageManager;

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestJacmsEntityManagersAction extends ApsAdminBaseTestCase {
+class TestJacmsEntityManagersAction extends ApsAdminBaseTestCase {
 	
 	@Test
     public void testFailureGetEntityPrototypes() throws Throwable {

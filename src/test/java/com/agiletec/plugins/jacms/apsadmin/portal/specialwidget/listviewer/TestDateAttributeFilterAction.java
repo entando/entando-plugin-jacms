@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
+class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
     public void testFailureAddDateValueFilter_1() throws Throwable {

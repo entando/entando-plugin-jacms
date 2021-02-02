@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
+class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	
 	@Test
     public void testFindContent_1() throws Throwable {

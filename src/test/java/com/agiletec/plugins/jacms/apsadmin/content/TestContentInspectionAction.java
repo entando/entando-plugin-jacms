@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestContentInspectionAction extends AbstractBaseTestContentAction {
+class TestContentInspectionAction extends AbstractBaseTestContentAction {
 	
 	@Test
     public void testInspectContent_1() throws Throwable {

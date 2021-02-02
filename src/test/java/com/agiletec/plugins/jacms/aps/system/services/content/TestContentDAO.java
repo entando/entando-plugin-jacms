@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.0
  * @author M.Morini - S.Didaci - E.Santoboni
  */
-public class TestContentDAO extends BaseTestCase {
+class TestContentDAO extends BaseTestCase {
 	
 	@Test
     public void testDeleteAddContent() throws Throwable {

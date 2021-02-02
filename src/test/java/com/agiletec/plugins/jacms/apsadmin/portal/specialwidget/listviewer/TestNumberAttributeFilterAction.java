@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author E.Santoboni
  */
-public class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction {
+class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
     public void testFailureAddNumberValueFilter_1() throws Throwable {

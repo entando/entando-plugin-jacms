@@ -25,7 +25,7 @@ import com.agiletec.aps.BaseTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestContentModelDAO extends BaseTestCase {
+class TestContentModelDAO extends BaseTestCase {
 	
 	@Test
     public void testLoadContentModels() throws Throwable {  
