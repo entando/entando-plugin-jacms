@@ -133,8 +133,7 @@ class TestJacmsEntityManagersAction extends ApsAdminBaseTestCase {
 		return this.executeAction();
 	}
 	
-	@Test
-    private void addEntityTypeForTest(String typeCode, String typeDescr) throws Throwable {
+	private void addEntityTypeForTest(String typeCode, String typeDescr) throws Throwable {
 		assertNull(this._contentManager.getEntityPrototype(typeCode));
 		IApsEntity prototype = this._contentManager.getEntityPrototype("ART");
 		prototype.setTypeCode(typeCode);

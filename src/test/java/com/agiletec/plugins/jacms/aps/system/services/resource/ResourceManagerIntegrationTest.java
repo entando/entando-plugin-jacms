@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.agiletec.aps.BaseTestCase;
 import com.agiletec.aps.system.SystemConstants;
@@ -43,6 +42,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.entando.entando.ent.exception.EntException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -154,7 +155,6 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
         this.testAddRemoveImageResource(Group.ADMINS_GROUP_NAME);
     }
 
-    @Test
     private void testAddRemoveImageResource(String mainGroup) throws Throwable {
         List<String> allowedGroups = this.getAllGroupCodes();
         ResourceInterface res = null;
@@ -431,14 +431,10 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
         List<String> resourcesId = resourceManager.searchResourcesId(resourceType, null, null, allowedGroups);
         int initsize = resourcesId.size();
         ResourceDataBean bean = this.getNullMockResource(resourceType, resDescrToAdd);
-        try {
+        Assertions.assertThrows(EntException.class, () -> {
             this.resourceManager.addResource(bean);
-            fail();
-        } catch (Throwable t) {
-            //nothing to do
-        } finally {
-            this.verifyTestAddNullResource(resDescrToAdd, resourceType, initsize);
-        }
+        });
+        this.verifyTestAddNullResource(resDescrToAdd, resourceType, initsize);
     }
     
     private void verifyTestAddNullResource(String resDescrToAdd, String resourceType, int initsize) throws Throwable {
