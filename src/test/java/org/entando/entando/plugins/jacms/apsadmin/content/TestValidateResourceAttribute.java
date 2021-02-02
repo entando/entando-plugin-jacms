@@ -34,12 +34,12 @@ import org.junit.jupiter.api.Test;
 class TestValidateResourceAttribute extends AbstractTestContentAttribute {
 
     @Test
-    public void testValidate_SingleAttach() throws Throwable {
+    void testValidate_SingleAttach() throws Throwable {
         this.testValidate_Single("Attach", "7");
     }
 
     @Test
-    public void testValidate_SingleImage() throws Throwable {
+    void testValidate_SingleImage() throws Throwable {
         this.testValidate_Single("Image", "22");
     }
 
@@ -77,12 +77,12 @@ class TestValidateResourceAttribute extends AbstractTestContentAttribute {
     }
 
     @Test
-    public void testValidate_AttachMonoList() throws Throwable {
+    void testValidate_AttachMonoList() throws Throwable {
         this.testValidate_MonoListElement("MonoLAtta");
     }
 
     @Test
-    public void testValidate_ImageMonoList() throws Throwable {
+    void testValidate_ImageMonoList() throws Throwable {
         this.testValidate_MonoListElement("MonoLImage");
     }
 
@@ -142,12 +142,12 @@ class TestValidateResourceAttribute extends AbstractTestContentAttribute {
     }
 
     @Test
-    public void testValidate_AttachCompositeElement() throws Throwable {
+    void testValidate_AttachCompositeElement() throws Throwable {
         this.testValidate_CompositeElement("Attach", "7");
     }
 
     @Test
-    public void testValidate_ImageCompositeElement() throws Throwable {
+    void testValidate_ImageCompositeElement() throws Throwable {
         this.testValidate_CompositeElement("Image", "44");
     }
 
@@ -192,12 +192,12 @@ class TestValidateResourceAttribute extends AbstractTestContentAttribute {
     }
 
     @Test
-    public void testValidate_AttachMonolistCompositeElement() throws Throwable {
+    void testValidate_AttachMonolistCompositeElement() throws Throwable {
         this.testValidate_MonolistCompositeElement("Attach", "7");
     }
 
     @Test
-    public void testValidate_ImageMonolistCompositeElement() throws Throwable {
+    void testValidate_ImageMonolistCompositeElement() throws Throwable {
         this.testValidate_MonolistCompositeElement("Image", "44");
     }
 

@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class TestContentDispenser extends BaseTestCase {
 
     @Test
-    public void testGetRenderedContent_1() throws Throwable {
+    void testGetRenderedContent_1() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
 
         ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo("ART1", 2, "en", reqCtx);
@@ -86,7 +86,7 @@ class TestContentDispenser extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContent_2() throws Throwable {
+    void testGetRenderedContent_2() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         this.setUserOnSession("admin");
 
@@ -111,19 +111,19 @@ class TestContentDispenser extends BaseTestCase {
     }
     
     @Test
-    public void testGetRenderedContent_3_1() throws Throwable {
+    void testGetRenderedContent_3_1() throws Throwable {
         this.executeTestGetRenderedContent_3(Boolean.FALSE, false);
         this.executeTestGetRenderedContent_3(Boolean.FALSE, true);
     }
     
     @Test
-    public void testGetRenderedContent_3_2() throws Throwable {
+    void testGetRenderedContent_3_2() throws Throwable {
         this.executeTestGetRenderedContent_3(Boolean.TRUE, false);
         this.executeTestGetRenderedContent_3(Boolean.TRUE, true);
     }
     
     @Test
-    public void testGetRenderedContent_3_3() throws Throwable {
+    void testGetRenderedContent_3_3() throws Throwable {
         this.executeTestGetRenderedContent_3(null, false);
     }
     
@@ -175,7 +175,7 @@ class TestContentDispenser extends BaseTestCase {
     }
     
     @Test
-    public void testGetRenderedContent_4() throws Throwable {
+    void testGetRenderedContent_4() throws Throwable {
         String contentId = "ART120";
         String contentShapeModel = "title (Text): testo=$content.Titolo.getText()";
         int modelId = 1972;
@@ -214,7 +214,7 @@ class TestContentDispenser extends BaseTestCase {
     }
 
     @Test
-    public void testGetUnauthorizedContent() throws Throwable {
+    void testGetUnauthorizedContent() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
 
         ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo("ART104", 2, "it", reqCtx);
@@ -230,14 +230,14 @@ class TestContentDispenser extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContentWithWrongModel() throws Throwable {
+    void testGetRenderedContentWithWrongModel() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String output = _contentDispenser.getRenderedContent("ART1", 67, "en", reqCtx);
         assertEquals("Content model 67 undefined", output.trim());
     }
     
     @Test
-    public void testCspNoncePlaceholder() throws Throwable {
+    void testCspNoncePlaceholder() throws Throwable {
         String contentId = "ART120";
         String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
         int modelId = 1948;

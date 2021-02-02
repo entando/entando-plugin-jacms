@@ -60,7 +60,7 @@ class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction
      * the past join a category also caused tree node expansion.
      */
     @Test
-    public void testTreeStateOnJoinCategory() throws Throwable {
+    void testTreeStateOnJoinCategory() throws Throwable {
 
         String categoryCode = "general";
 
@@ -88,7 +88,7 @@ class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction
     }
 
     @Test
-    public void testRemoveCategory() throws Throwable {
+    void testRemoveCategory() throws Throwable {
         String categoryCode = "cat1";
 
         // Join the category
@@ -109,7 +109,7 @@ class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction
     }
 
     @Test
-    public void testNodeTreeOpen() throws Throwable {
+    void testNodeTreeOpen() throws Throwable {
         this.initAction("/do/jacms/Content", "showCategoryTreeOnContentFinding");
         this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
         this.addParameter("treeNodeActionMarkerCode", "open");
@@ -124,7 +124,7 @@ class ContentCategoryActionIntegrationTest extends AbstractBaseTestContentAction
     }
 
     @Test
-    public void testNodeTreeClose() throws Throwable {
+    void testNodeTreeClose() throws Throwable {
         this.initAction("/do/jacms/Content", "showCategoryTreeOnContentFinding");
         this.addParameter("contentOnSessionMarker", contentOnSessionMarker);
         this.addParameter("treeNodeActionMarkerCode", "close");

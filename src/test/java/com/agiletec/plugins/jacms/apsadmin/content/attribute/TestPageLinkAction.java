@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class TestPageLinkAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testConfigPageLink_1() throws Throwable {
+    void testConfigPageLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "configPageLink", contentOnSessionMarker);
 		String result = this.executeAction();
@@ -55,7 +55,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testConfigPageLink_2() throws Throwable {
+    void testConfigPageLink_2() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART102", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "configPageLink", contentOnSessionMarker);
 		String result = this.executeAction();
@@ -70,7 +70,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testOpenPageNode_1() throws Throwable {
+    void testOpenPageNode_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART102", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "openCloseTreeNode", contentOnSessionMarker);
 		this.addParameter("treeNodeActionMarkerCode", ITreeAction.ACTION_MARKER_OPEN);
@@ -81,7 +81,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testOpenPageNode_2() throws Throwable {
+    void testOpenPageNode_2() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("editorCustomers", "ART102", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "openCloseTreeNode", contentOnSessionMarker);
 		this.addParameter("treeNodeActionMarkerCode", ITreeAction.ACTION_MARKER_OPEN);
@@ -101,7 +101,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 		assertEquals(4, showableRoot.getChildrenCodes().length);
 	}
 
-	public void testFailureJoinPageLink_1() throws Throwable {
+	void testFailureJoinPageLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "joinPageLink", contentOnSessionMarker);
 		this.addParameter("linkType", String.valueOf(SymbolicLink.PAGE_TYPE));
@@ -114,7 +114,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFailureJoinPageLink_2() throws Throwable {
+    void testFailureJoinPageLink_2() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "joinPageLink", contentOnSessionMarker);
 		this.addParameter("linkType", String.valueOf(SymbolicLink.PAGE_TYPE));
@@ -128,7 +128,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFailureJoinPageLink_3() throws Throwable {
+    void testFailureJoinPageLink_3() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "joinPageLink", contentOnSessionMarker);
 		this.addParameter("linkType", String.valueOf(SymbolicLink.PAGE_TYPE));
@@ -142,7 +142,7 @@ class TestPageLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testJoinPageLink_1() throws Throwable {
+    void testJoinPageLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("admin", "ART1", "VediAnche", "it");
 		this.initContentAction("/do/jacms/Content/Link", "joinPageLink", contentOnSessionMarker);
 		this.addParameter("linkType", String.valueOf(SymbolicLink.PAGE_TYPE));

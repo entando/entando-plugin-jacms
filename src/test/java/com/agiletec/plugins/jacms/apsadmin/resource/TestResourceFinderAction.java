@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class TestResourceFinderAction extends ApsAdminBaseTestCase {
 
     @Test
-    public void testViewImageResources() throws Throwable {
+    void testViewImageResources() throws Throwable {
         String result = this.executeShowList("admin", "Image");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -46,7 +46,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testViewAttachResources() throws Throwable {
+    void testViewAttachResources() throws Throwable {
         String result = this.executeShowList("admin", "Attach");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -60,7 +60,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testViewImageResourcesByCustomerUser() throws Throwable {
+    void testViewImageResourcesByCustomerUser() throws Throwable {
         String result = this.executeShowList("editorCustomers", "Image");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -74,7 +74,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testViewImagesWithUserNotAllowed() throws Throwable {
+    void testViewImagesWithUserNotAllowed() throws Throwable {
         String result = this.executeShowList("pageManagerCustomers", "Image");
         assertEquals("userNotAllowed", result);
     }
@@ -87,7 +87,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchResources_1() throws Throwable {
+    void testSearchResources_1() throws Throwable {
         String result = this.executeSearchResource("admin", "Attach", "WrongDescription", null, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -96,7 +96,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchResources_2() throws Throwable {
+    void testSearchResources_2() throws Throwable {
         String result = this.executeSearchResource("admin", "Attach", "", null, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -105,7 +105,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchResources_3() throws Throwable {
+    void testSearchResources_3() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", null, null, "jpg", null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -126,7 +126,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchByCategory() throws Throwable {
+    void testSearchByCategory() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", "", null, null, "resCat1");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -146,7 +146,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchByGroup_1() throws Throwable {
+    void testSearchByGroup_1() throws Throwable {
         String result = this.executeSearchResource("admin", "Image", null, Group.FREE_GROUP_NAME, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -164,7 +164,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchByGroup_2() throws Throwable {
+    void testSearchByGroup_2() throws Throwable {
         String result = this.executeSearchResource("editorCoach", "Image", null, Group.FREE_GROUP_NAME, null, null);
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();
@@ -182,7 +182,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchWithOrder_1() throws Throwable {
+    void testSearchWithOrder_1() throws Throwable {
         List<String> expected = Arrays.asList(new String[]{"22", "44", "82"});
         this.executeTestSearchWithOrder_1(expected, "created");
         expected = Arrays.asList(new String[]{"44", "82", "22"});
@@ -192,7 +192,7 @@ class TestResourceFinderAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSearchWithOrder_2() throws Throwable {
+    void testSearchWithOrder_2() throws Throwable {
         String result = this.executeSearchResourceWithOrder("admin", "Image", "lastModified", "created", "DESC");
         assertEquals(Action.SUCCESS, result);
         ResourceFinderAction action = (ResourceFinderAction) this.getAction();

@@ -66,21 +66,21 @@ class ContentMapperCacheWrapperTest {
 	}
 
 	@Test
-	public void testInitCacheWithError() throws Throwable {
+	void testInitCacheWithError() throws Throwable {
         Assertions.assertThrows(EntException.class, () -> {
             this.cacheWrapper.initCache(this.pageManager);
         });
 	}
 
 	@Test
-	public void testInitCache() throws Throwable {
+	void testInitCache() throws Throwable {
 		Mockito.when(pageManager.getOnlineRoot()).thenReturn(this.createMockPage());
 		Mockito.when(cacheManager.getCache(IContentMapperCacheWrapper.CONTENT_MAPPER_CACHE_NAME)).thenReturn(this.cache);
 		cacheWrapper.initCache(this.pageManager);
 	}
 
 	@Test
-	public void testGetPageCode() throws Throwable {
+	void testGetPageCode() throws Throwable {
 		ContentPageMapper contentPageMapper = new ContentPageMapper();
 		contentPageMapper.add("ART12", "temp_page");
 		contentPageMapper.add("NEW56", "wring_page");

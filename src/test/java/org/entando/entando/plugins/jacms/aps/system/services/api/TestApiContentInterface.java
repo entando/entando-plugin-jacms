@@ -53,25 +53,25 @@ import org.junit.jupiter.api.Test;
 class TestApiContentInterface extends ApiBaseTestCase {
 
 	@Test
-    public void testGetXmlContent() throws Throwable {
+    void testGetXmlContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "it");
 	}
 
 	@Test
-    public void testGetJsonContent() throws Throwable {
+    void testGetJsonContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "en");
 	}
 
 	@Test
-    public void testCreateNewContentFromXml() throws Throwable {
+    void testCreateNewContentFromXml() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
 	}
 
 	@Test
-    public void testCreateNewContentFromJson() throws Throwable {
+    void testCreateNewContentFromJson() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
 	}

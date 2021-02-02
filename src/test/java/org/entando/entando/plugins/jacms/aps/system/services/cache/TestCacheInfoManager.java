@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
 class TestCacheInfoManager extends BaseTestCase {
 
     @Test
-    public void testGetRenderedContent_1() throws Throwable {
+    void testGetRenderedContent_1() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -72,7 +72,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContent_2() throws Throwable {
+    void testGetRenderedContent_2() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -102,7 +102,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContent_3() throws Throwable {
+    void testGetRenderedContent_3() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
         String contentId = null;
         String langCode = "en";
@@ -132,7 +132,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContentsGroup_1() throws Throwable {
+    void testGetRenderedContentsGroup_1() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -148,7 +148,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContentsGroup_2() throws Throwable {
+    void testGetRenderedContentsGroup_2() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -164,7 +164,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContentsGroup_3() throws Throwable {
+    void testGetRenderedContentsGroup_3() throws Throwable {
         String contentId = null;
         long modelId = -1;
         try {
@@ -208,7 +208,7 @@ class TestCacheInfoManager extends BaseTestCase {
 
     //---------------------------------------------- ContentList
     @Test
-    public void testGetContents_1() throws Throwable {
+    void testGetContents_1() throws Throwable {
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
             MockContentListBean bean = new MockContentListBean();
@@ -230,7 +230,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetContents_2() throws Throwable {
+    void testGetContents_2() throws Throwable {
         String contentId = null;
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
@@ -264,7 +264,7 @@ class TestCacheInfoManager extends BaseTestCase {
     }
 
     @Test
-    public void testGetContentsGroup() throws Throwable {
+    void testGetContentsGroup() throws Throwable {
         try {
             UserDetails guestUser = super.getUser(SystemConstants.GUEST_USER_NAME);
             MockContentListBean bean = new MockContentListBean();

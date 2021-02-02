@@ -59,7 +59,7 @@ class TestContentBulkCommand extends BaseTestCase {
     }
 
     @Test
-    public void testGroupCommands() {
+    void testGroupCommands() {
         Collection<String> items = new ArrayList<>();
         Collection<String> groups = new ArrayList<>();
         UserDetails currentUser = null;
@@ -71,7 +71,7 @@ class TestContentBulkCommand extends BaseTestCase {
     }
 
     @Test
-    public void testCategoryCommands() throws Exception {
+    void testCategoryCommands() throws Exception {
         List<String> masterContentIds = new ArrayList<>();
         masterContentIds.add("ART102");
         masterContentIds.add("ART111");

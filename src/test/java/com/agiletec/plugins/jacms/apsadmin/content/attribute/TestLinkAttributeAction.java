@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testChooseLink_1() throws Throwable {
+    void testChooseLink_1() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -61,7 +61,7 @@ class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testChooseLink_2() throws Throwable {
+    void testChooseLink_2() throws Throwable {
 		String contentId = "EVN191";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -107,7 +107,7 @@ class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testRemoveLink() throws Throwable {
+    void testRemoveLink() throws Throwable {
 		String contentId = "ART102";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -135,7 +135,7 @@ class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFailureChooseLinkType_1() throws Throwable {
+    void testFailureChooseLinkType_1() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -160,7 +160,7 @@ class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFailureChooseLinkType_2() throws Throwable {
+    void testFailureChooseLinkType_2() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");
@@ -195,7 +195,7 @@ class TestLinkAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testChooseLinkType() throws Throwable {
+    void testChooseLinkType() throws Throwable {
 		String contentId = "ART1";
 		String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
 		this.executeEdit(contentId, "admin");

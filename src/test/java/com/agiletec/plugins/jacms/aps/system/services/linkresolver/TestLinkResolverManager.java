@@ -44,7 +44,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveNoLinks() {
+    void testResolveNoLinks() {
         String text = "";
         String resolvedText;
         resolvedText = _resolver.resolveLinks(text, null, _reqCtx);
@@ -58,7 +58,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolvePageLink() {
+    void testResolvePageLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToPage("primapagina");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -68,7 +68,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveURLLink() {
+    void testResolveURLLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToUrl("http://www.google.it");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -78,7 +78,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveContentOnPageLink() {
+    void testResolveContentOnPageLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -88,7 +88,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveContentLink() {
+    void testResolveContentLink() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContent("ART1");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -98,7 +98,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveWithNoise() {
+    void testResolveWithNoise() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String text = "Trabocchetto: " + SymbolicLink.SYMBOLIC_DEST_PREFIX
@@ -117,7 +117,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveMix() {
+    void testResolveMix() {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContentOnPage("ART1", "homepage");
         String one = link.getSymbolicDestination();
@@ -140,7 +140,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveContentOnProtectedPageLink() throws Throwable {
+    void testResolveContentOnProtectedPageLink() throws Throwable {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToContent("ART187");
         String text = "Qui c'è un link: '" + link.getSymbolicDestination() + "'; fine";
@@ -168,7 +168,7 @@ class TestLinkResolverManager extends BaseTestCase {
     }
 
     @Test
-    public void testResolveResourceLink() throws Throwable {
+    void testResolveResourceLink() throws Throwable {
         SymbolicLink link = new SymbolicLink();
         link.setDestinationToResource("44");
         String text = "The link is: '" + link.getSymbolicDestination() + "'; end";

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
-    public void testFailureAddNumberValueFilter_1() throws Throwable {
+    void testFailureAddNumberValueFilter_1() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("");
 		assertEquals(Action.INPUT, result);
 		
@@ -40,7 +40,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testFailureAddNumberValueFilter_2() throws Throwable {
+    void testFailureAddNumberValueFilter_2() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("wrongFormat");
 		assertEquals(Action.INPUT, result);
 		
@@ -52,7 +52,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testSuccessAddNumberValueFilter() throws Throwable {
+    void testSuccessAddNumberValueFilter() throws Throwable {
 		String result = this.executeSaveNumberValueFilter("9");
 		assertEquals(Action.SUCCESS, result);
 	}
@@ -69,7 +69,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testFailureAddRangeNumberFilter_1() throws Throwable {
+    void testFailureAddRangeNumberFilter_1() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("", "");
 		assertEquals(Action.INPUT, result);
 		
@@ -81,7 +81,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testFailureAddRangeNumberFilter_2() throws Throwable {
+    void testFailureAddRangeNumberFilter_2() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("56", "6");
 		assertEquals(Action.INPUT, result);
 		
@@ -93,7 +93,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testFailureAddRangeNumberFilter_3() throws Throwable {
+    void testFailureAddRangeNumberFilter_3() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("6", "wrongFormat");
 		assertEquals(Action.INPUT, result);
 		
@@ -105,7 +105,7 @@ class TestNumberAttributeFilterAction extends TestAbstractAttributeFilterAction 
 	}
 	
 	@Test
-    public void testSuccesAddRangeNumberFilter() throws Throwable {
+    void testSuccesAddRangeNumberFilter() throws Throwable {
 		String result = this.executeSaveRangeNumberFilter("6", "9");
 		assertEquals(Action.SUCCESS, result);
 		

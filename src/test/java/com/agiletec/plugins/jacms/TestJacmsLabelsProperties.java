@@ -32,12 +32,12 @@ class TestJacmsLabelsProperties extends TestLabelsProperties {
     private static String PLUGIN_PATH = "com/agiletec/plugins/jacms/apsadmin/";
 
     @Test
-    public void testGlobalProperties() throws Throwable {
+    void testGlobalProperties() throws Throwable {
         super.testGlobalMessagesLabelsTranslations(PLUGIN_PATH);
     }
 
     @Test
-    public void testResourceProperties() throws Throwable {
+    void testResourceProperties() throws Throwable {
         super.testPackageLabelsTranslations(PLUGIN_PATH + "resource/");
     }
 

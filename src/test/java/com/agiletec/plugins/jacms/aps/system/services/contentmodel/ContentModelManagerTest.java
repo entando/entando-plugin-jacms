@@ -69,14 +69,14 @@ class ContentModelManagerTest {
     private Content mockedContent;
     
     @Test
-    public void testGetContentModel() {
+    void testGetContentModel() {
         when(contentModelManager.getContentModel(1)).thenReturn(new ContentModel());
         ContentModel model = this.contentModelManager.getContentModel(1);
         assertThat(model, is(not(nullValue())));
     }
 
     @Test
-    public void testGetContentModels() {
+    void testGetContentModels() {
         List<ContentModel> fakeModels = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             fakeModels.add(createContentModel(i, "ART"));
@@ -88,7 +88,7 @@ class ContentModelManagerTest {
     }
 
     @Test
-    public void testGetModelsForContentType() {
+    void testGetModelsForContentType() {
         List<ContentModel> fakeModels = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             fakeModels.add(createContentModel(i, "ART"));
@@ -100,7 +100,7 @@ class ContentModelManagerTest {
     }
 
     @Test
-    public void testAddDeleteContentModel() throws Throwable {
+    void testAddDeleteContentModel() throws Throwable {
         List<ContentModel> fakeModels = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             fakeModels.add(createContentModel(i, "ART"));
@@ -129,7 +129,7 @@ class ContentModelManagerTest {
     }
     
     @Test
-    public void testGetContentModelReferences() throws Exception {
+    void testGetContentModelReferences() throws Exception {
         ContentModel contentModel = createContentModel(1, "ART");
         Mockito.lenient().when(contentModelManager.getContentModel(1)).thenReturn(contentModel);
 
@@ -219,7 +219,7 @@ class ContentModelManagerTest {
     }
     
     @Test
-    public void testGetContentModelReferencesIncludingDefaultTemplates() throws Exception {
+    void testGetContentModelReferencesIncludingDefaultTemplates() throws Exception {
         ContentModel contentModel = createContentModel(1, null);
 
         Mockito.lenient().when(contentModelManager.getContentModel(1)).thenReturn(contentModel);
@@ -329,7 +329,7 @@ class ContentModelManagerTest {
     }
     
     @Test
-    public void testUpdateContentModel() throws Throwable {
+    void testUpdateContentModel() throws Throwable {
         ContentModel contentModel = new ContentModel();
         contentModel.setId(99);
         contentModel.setContentType("ART");

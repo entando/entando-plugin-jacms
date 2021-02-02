@@ -34,27 +34,27 @@ import org.junit.jupiter.api.Test;
 class ContentModelManagerIntegrationTest extends BaseTestCase {
 	
     @Test
-    public void testGetContentModel() {
+    void testGetContentModel() {
     	ContentModel model = this._contentModelManager.getContentModel(1);
     	assertNotNull(model);
     }
     
     @Test
-    public void testGetContentModels() {
+    void testGetContentModels() {
     	List<ContentModel> models = this._contentModelManager.getContentModels();
     	assertNotNull(models);
     	assertEquals(6, models.size());
     }
     
     @Test
-    public void testGetModelsForContentType() {
+    void testGetModelsForContentType() {
     	List<ContentModel> models = this._contentModelManager.getModelsForContentType("ART");
     	assertNotNull(models);
     	assertEquals(4, models.size());
     }
     
     @Test
-    public void testAddDeleteContentModel() throws Throwable {
+    void testAddDeleteContentModel() throws Throwable {
     	List<ContentModel> contentModels = this._contentModelManager.getContentModels();
     	int size = contentModels.size();
     	ContentModel contentModel = new ContentModel();
@@ -80,7 +80,7 @@ class ContentModelManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testUpdateContentModel() throws Throwable {
+    void testUpdateContentModel() throws Throwable {
     	List<ContentModel> contentModels = _contentModelManager.getContentModels();
     	int size = contentModels.size();
     	ContentModel contentModel = new ContentModel();
@@ -115,14 +115,14 @@ class ContentModelManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetReferencingPages() {
+    void testGetReferencingPages() {
     	Map<String, List<IPage>> utilizers = this._contentModelManager.getReferencingPages(2);
     	assertNotNull(utilizers);
     	assertEquals(1, utilizers.size());
     }
     
     @Test
-    public void testGetTypeUtilizer() throws Throwable {
+    void testGetTypeUtilizer() throws Throwable {
     	SmallContentType utilizer = this._contentModelManager.getDefaultUtilizer(1);
     	assertNotNull(utilizer);
     	assertEquals("ART", utilizer.getCode());

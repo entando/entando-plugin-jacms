@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 class TestExtendedResourceAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testNewImageResource_1() throws Throwable {
+    void testNewImageResource_1() throws Throwable {
 		this.executeEdit("ART1", "admin");//Contenuto FREE
 		String contentOnSessionMarker = super.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 
@@ -54,7 +54,7 @@ class TestExtendedResourceAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testNewImageResource_2() throws Throwable {
+    void testNewImageResource_2() throws Throwable {
 		this.executeEdit("ART102", "admin");//Contenuto customers
 		String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
 

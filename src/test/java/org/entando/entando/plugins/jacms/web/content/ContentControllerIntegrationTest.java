@@ -101,7 +101,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
 
     @Test
-    public void testGetContentWithModel() throws Exception {
+    void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
                 .build();
@@ -149,7 +149,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetInvalidContent() throws Exception {
+    void testGetInvalidContent() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         ResultActions result = this.performGetContent("ART985", null, true, null, true, user);
         System.out.println(result.andReturn().getResponse().getContentAsString());
@@ -157,7 +157,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContent() throws Exception {
+    void testAddUpdateContent() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
@@ -267,7 +267,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithSpecificId() throws Exception {
+    void testAddContentWithSpecificId() throws Exception {
         String contentId = "TST123";
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
@@ -301,7 +301,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithLinkAttribute() throws Exception {
+    void testAddContentWithLinkAttribute() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
@@ -368,7 +368,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentWithLinkAttribute() throws Exception {
+    void testAddUpdateContentWithLinkAttribute() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -426,7 +426,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentWithLinkAttributeThenRemoveIt() throws Exception {
+    void testAddUpdateContentWithLinkAttributeThenRemoveIt() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -483,7 +483,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentWithLinksAttributeThenRemoveIt() throws Exception {
+    void testAddUpdateContentWithLinksAttributeThenRemoveIt() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
@@ -562,7 +562,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithLinksAndRemoveMandatoryLink() throws Exception {
+    void testAddContentWithLinksAndRemoveMandatoryLink() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
@@ -620,7 +620,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentWithBooleanAttributeThenEditIt() throws Exception {
+    void testAddUpdateContentWithBooleanAttributeThenEditIt() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("BOL"));
@@ -689,7 +689,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentWithCheckboxAttributeThenEditIt() throws Exception {
+    void testAddUpdateContentWithCheckboxAttributeThenEditIt() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CHE"));
@@ -758,7 +758,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithAllFields() throws Exception {
+    void testAddContentWithImageAttributeWithAllFields() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -819,7 +819,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithoutMetadata() throws Exception {
+    void testAddContentWithImageAttributeWithoutMetadata() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -872,7 +872,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithImageAttributeWithoutName() throws Exception {
+    void testAddContentWithImageAttributeWithoutName() throws Exception {
         String resourceId = null;
         String newContentId = null;
         String accessToken = this.createAccessToken();
@@ -929,7 +929,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithAttachAttribute() throws Exception {
+    void testAddContentWithAttachAttribute() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -982,7 +982,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithAttachAndImageAttribute() throws Exception {
+    void testAddContentWithAttachAndImageAttribute() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String imageResourceId = null;
@@ -1063,7 +1063,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithListAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1132,7 +1132,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithListAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1201,7 +1201,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeBoolean() throws Exception {
+    void testAddAndUpdateContentWithListAttributeBoolean() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -1276,7 +1276,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1344,7 +1344,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttribute2Images() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttribute2Images() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1438,7 +1438,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1506,7 +1506,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeImage() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeImage() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1575,7 +1575,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeFile() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -1644,7 +1644,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeDate() throws Exception {
+    void testAddAndUpdateContentWithListAttributeDate() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -1728,7 +1728,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeDate2() throws Exception {
+    void testAddAndUpdateContentWithListAttributeDate2() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -1773,7 +1773,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeEnumerator() throws Exception {
+    void testAddAndUpdateContentWithListAttributeEnumerator() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -1857,7 +1857,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithListAttributeEnumeratorMap() throws Exception {
+    void testAddAndUpdateContentWithListAttributeEnumeratorMap() throws Exception {
         String newContentId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -1941,7 +1941,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentInvalidResourceGroup() throws Exception {
+    void testAddContentInvalidResourceGroup() throws Exception {
         try {
             Assertions.assertNull(contentManager.getEntityPrototype("TST"));
             String accessToken = createAccessToken();
@@ -1960,7 +1960,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentResourceNotFound() throws Exception {
+    void testAddContentResourceNotFound() throws Exception {
         try {
             Assertions.assertNull(contentManager.getEntityPrototype("TST"));
             String accessToken = createAccessToken();
@@ -1979,7 +1979,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddUpdateContentCategories() throws Exception {
+    void testAddUpdateContentCategories() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
@@ -2029,7 +2029,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddDeleteContent() throws Exception {
+    void testAddDeleteContent() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
@@ -2094,7 +2094,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testUpdateContents() throws Exception {
+    void testUpdateContents() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
@@ -2161,7 +2161,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testUpdateContentsBatch() throws Exception {
+    void testUpdateContentsBatch() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String newContentId3 = null;
@@ -2266,7 +2266,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddAndUpdateContentWithCompositeAttributeImageAttributeText() throws Exception {
+    void testAddAndUpdateContentWithCompositeAttributeImageAttributeText() throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -2462,7 +2462,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetContents() throws Exception {
+    void testGetContents() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -2480,7 +2480,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetContentsPaginated() throws Exception {
+    void testGetContentsPaginated() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -2503,7 +2503,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetContentsByGuestUser() throws Exception {
+    void testGetContentsByGuestUser() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -2518,7 +2518,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetReturnsList() throws Exception {
+    void testGetReturnsList() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2546,7 +2546,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicEvents_1() throws Exception {
+    void testLoadPublicEvents_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2596,7 +2596,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicEvents_2() throws Exception {
+    void testLoadPublicEvents_2() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2629,7 +2629,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicEvents_3() throws Exception {
+    void testLoadPublicEvents_3() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization("coach", "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2663,7 +2663,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_1() throws Exception {
+    void testLoadOrderedPublicEvents_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2691,7 +2691,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_2() throws Exception {
+    void testLoadOrderedPublicEvents_2() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -2732,7 +2732,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_3() throws Exception {
+    void testLoadOrderedPublicEvents_3() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2784,7 +2784,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_4() throws Throwable {
+    void testLoadOrderedPublicEvents_4() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2828,7 +2828,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_5() throws Throwable {
+    void testLoadOrderedPublicEvents_5() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2858,7 +2858,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_6() throws Throwable {
+    void testLoadOrderedPublicEvents_6() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2880,7 +2880,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_7() throws Throwable {
+    void testLoadOrderedPublicEvents_7() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2900,7 +2900,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_8() throws Throwable {
+    void testLoadOrderedPublicEvents_8() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2929,7 +2929,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_9() throws Throwable {
+    void testLoadOrderedPublicEvents_9() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2958,7 +2958,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_10() throws Throwable {
+    void testLoadOrderedPublicEvents_10() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -2987,7 +2987,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadOrderedPublicEvents_11() throws Throwable {
+    void testLoadOrderedPublicEvents_11() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3015,7 +3015,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[8].id", is("EVN191")));
     }
 
-    public void testFilteredContent_1() throws Throwable {
+    void testFilteredContent_1() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3036,7 +3036,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_2() throws Throwable {
+    void testFilteredContent_2() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3057,7 +3057,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_3() throws Throwable {
+    void testFilteredContent_3() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3075,7 +3075,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_4() throws Throwable {
+    void testFilteredContent_4() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3097,7 +3097,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_5() throws Throwable {
+    void testFilteredContent_5() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3119,7 +3119,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_6() throws Throwable {
+    void testFilteredContent_6() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3140,7 +3140,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_7() throws Throwable {
+    void testFilteredContent_7() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3162,7 +3162,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_8() throws Throwable {
+    void testFilteredContent_8() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3184,7 +3184,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_9() throws Throwable {
+    void testFilteredContent_9() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3206,7 +3206,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_10() throws Throwable {
+    void testFilteredContent_10() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3226,7 +3226,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_11() throws Throwable {
+    void testFilteredContent_11() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3247,7 +3247,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_12() throws Throwable {
+    void testFilteredContent_12() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3267,7 +3267,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_13() throws Throwable {
+    void testFilteredContent_13() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3287,7 +3287,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_14() throws Throwable {
+    void testFilteredContent_14() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3308,7 +3308,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_15() throws Throwable {
+    void testFilteredContent_15() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3335,7 +3335,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_16() throws Throwable {
+    void testFilteredContent_16() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3356,7 +3356,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testFilteredContent_17() throws Throwable {
+    void testFilteredContent_17() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3377,7 +3377,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicContentsWithHtml() throws Exception {
+    void testLoadPublicContentsWithHtml() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
@@ -3435,7 +3435,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicContentsForCategory_1() throws Exception {
+    void testLoadPublicContentsForCategory_1() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
@@ -3474,7 +3474,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadPublicEventsForCategory_2() throws Exception {
+    void testLoadPublicEventsForCategory_2() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -3511,7 +3511,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testLoadWorkContentsByAttribute() throws Exception {
+    void testLoadWorkContentsByAttribute() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -3536,7 +3536,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithLinkNumberAndCompositeBool() throws Exception {
+    void testAddContentWithLinkNumberAndCompositeBool() throws Exception {
         String newContentId = null;
         try {
 
@@ -3586,7 +3586,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithAllAttributes() throws Exception {
+    void testAddContentWithAllAttributes() throws Exception {
         String newContentId = null;
         try {
 
@@ -3660,7 +3660,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         }
     }
 
-    public void testGetPageOfflineNoWidgetErrorMessage() throws Exception {
+    void testGetPageOfflineNoWidgetErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -3692,7 +3692,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetPageOfflineWithWidgetErrorMessage() throws Exception {
+    void testGetPageOfflineWithWidgetErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -3724,7 +3724,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
+    void testCreateContentWithLinkToPageWithoutWidgets() throws Exception {
         String pageCode = "page_test";
         String newContentId = null;
         try {
@@ -3772,7 +3772,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetPageOnlineWrongGroupErrorMessage() throws Exception {
+    void testGetPageOnlineWrongGroupErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -3815,7 +3815,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testAddContentWithEmptyLinkAttribute() throws Exception {
+    void testAddContentWithEmptyLinkAttribute() throws Exception {
         String newContentId = null;
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
@@ -3944,7 +3944,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testInvalidLinkMessage() throws Exception {
+    void testInvalidLinkMessage() throws Exception {
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("CML"));
             String accessToken = this.createAccessToken();
@@ -3980,7 +3980,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testContentWithReference() throws Exception {
+    void testContentWithReference() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -4076,7 +4076,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testContentWithReferenceBatch() throws Exception {
+    void testContentWithReferenceBatch() throws Exception {
         String newContentId1 = null;
         String newContentId2 = null;
         String newContentId3 = null;
@@ -4219,7 +4219,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testGetContentsWithLinkability() throws Exception {
+    void testGetContentsWithLinkability() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
 
@@ -4241,7 +4241,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testContentWithRegex() throws Exception {
+    void testContentWithRegex() throws Exception {
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype("LNK"));
             String accessToken = this.createAccessToken();
@@ -4262,7 +4262,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testComponentExistenceAnalysis() throws Exception {
+    void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
         AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
                 AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENTS,

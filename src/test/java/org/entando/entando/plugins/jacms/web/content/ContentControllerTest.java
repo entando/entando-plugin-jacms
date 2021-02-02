@@ -81,7 +81,7 @@ class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testUnexistingContent() throws Exception {
+    void testUnexistingContent() throws Exception {
         UserDetails user = this.createUser(true);
         Mockito.lenient().when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART098", IContentService.STATUS_ONLINE)).thenReturn(false);
@@ -90,7 +90,7 @@ class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testAddContent() throws Exception {
+    void testAddContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.addContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
@@ -107,7 +107,7 @@ class ContentControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testUpdateContent() throws Exception {
+    void testUpdateContent() throws Exception {
         UserDetails user = this.createUser(true);
         when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.updateContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))

@@ -475,7 +475,7 @@ class ContentModelControllerIntegrationTest extends AbstractControllerIntegratio
     }
 
     @Test
-    public void testGetModelPageReferences() throws Throwable {
+    void testGetModelPageReferences() throws Throwable {
 
         ResultActions result = mockMvc
                 .perform(get(BASE_URI + "/{id}/pagereferences", 2)

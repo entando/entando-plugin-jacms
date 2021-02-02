@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testFailureTrashReferencedGroup() throws Throwable {
+    void testFailureTrashReferencedGroup() throws Throwable {
 		String result = this.executeTrash("admin", "customers");
 		assertEquals("references", result);
 		GroupAction groupAction = (GroupAction) this.getAction();

@@ -45,7 +45,7 @@ class TestPageActionReferences extends ApsAdminBaseTestCase {
     private IContentManager contentManager;
 
     @Test
-    public void testValidatePage() throws Throwable {
+    void testValidatePage() throws Throwable {
         int frame = 5;
         String contentId = null;
         String modelId = "1";

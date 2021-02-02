@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 class TestUrlLinkAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testFailureJoinContentLink_1() throws Throwable {
+    void testFailureJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("ART1", "VediAnche", "it");
 
 		this.initContentAction("/do/jacms/Content/Link", "joinUrlLink", contentOnSessionMarker);
@@ -51,7 +51,7 @@ class TestUrlLinkAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testJoinContentLink_1() throws Throwable {
+    void testJoinContentLink_1() throws Throwable {
 		String contentOnSessionMarker = this.initJoinLinkTest("ART1", "VediAnche", "it");
 
 		this.initContentAction("/do/jacms/Content/Link", "joinUrlLink", contentOnSessionMarker);

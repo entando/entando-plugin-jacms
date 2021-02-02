@@ -52,7 +52,7 @@ class TestPageAction extends ApsAdminBaseTestCase {
     private IWidgetTypeManager widgetTypeManager;
 
     @Test
-    public void testSavePage() throws Throwable {
+    void testSavePage() throws Throwable {
         String pageCode = "customer_subpage_2";
         IPage page = this.pageManager.getDraftPage(pageCode);
         assertNotNull(page);
@@ -95,7 +95,7 @@ class TestPageAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testValidateSavePage_1() throws Throwable {
+    void testValidateSavePage_1() throws Throwable {
         String pageCode = "page_test_1";
         assertNull(this.pageManager.getDraftPage(pageCode));
         try {
@@ -140,7 +140,7 @@ class TestPageAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testValidateSavePage_2() throws Throwable {
+    void testValidateSavePage_2() throws Throwable {
         String pageCode = "page_test_2";
         assertNull(this.pageManager.getDraftPage(pageCode));
         IPage parentPage = this.pageManager.getDraftPage("service");

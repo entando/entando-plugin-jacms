@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testUserNotAllowed() throws Throwable {
+    void testUserNotAllowed() throws Throwable {
 		String[] contentIds = {"ART1", "RAH101", "EVN103"};
 		String[] groupCodes = {"free"};
 		int strutsAction = ApsAdminSystemConstants.ADD;
@@ -71,7 +71,7 @@ class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testEntryCheckApply() throws Throwable {
+    void testEntryCheckApply() throws Throwable {
 		String currentUser = "editorCustomers";
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] groupCodes = new String[] {"administrators", "customers"};
@@ -94,7 +94,7 @@ class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testJoinDisjoin() throws Throwable {
+    void testJoinDisjoin() throws Throwable {
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] groupCodes = new String[] {"administrators", "customers"};
 		String username = "editorCustomers";
@@ -125,7 +125,7 @@ class TestContentGroupBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testApplyAddRemove() throws Throwable {
+    void testApplyAddRemove() throws Throwable {
 		String currentUser = "mainEditor";
 		String[] groupCodes = new String[] {"administrators", "customers"};
 		int size = 8;

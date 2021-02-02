@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testUserNotAllowed() throws Throwable {
+    void testUserNotAllowed() throws Throwable {
 		String[] contentIds = {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = {"cat1"};
 		int strutsAction = ApsAdminSystemConstants.ADD;
@@ -74,7 +74,7 @@ class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testEntryCheckApply() throws Throwable {
+    void testEntryCheckApply() throws Throwable {
 		String currentUser = "editorCustomers";
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = new String[] {"cat1", "evento"};
@@ -94,7 +94,7 @@ class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testJoinDisjoin() throws Throwable {
+    void testJoinDisjoin() throws Throwable {
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = new String[] {"cat1", "evento"};
 		String username = "editorCustomers";
@@ -125,7 +125,7 @@ class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testApplyAddRemove() throws Throwable {
+    void testApplyAddRemove() throws Throwable {
 		String currentUser = "mainEditor";
 		String[] categoryCodes = new String[] {"cat1", "evento"};
 		int size = 8;

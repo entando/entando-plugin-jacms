@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestContentModelDAO extends BaseTestCase {
 	
 	@Test
-    public void testLoadContentModels() throws Throwable {  
+    void testLoadContentModels() throws Throwable {  
     	Map<Long, ContentModel> models = null;
         try {
         	models = this._contentModelDAO.loadContentModels();
@@ -48,7 +48,7 @@ class TestContentModelDAO extends BaseTestCase {
     }
     
     @Test
-    public void testAddUpdateContentModel() throws Throwable {
+    void testAddUpdateContentModel() throws Throwable {
 		ContentModel contentModel = new ContentModel();
 		contentModel.setId(99);
     	contentModel.setContentType("ART");

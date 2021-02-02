@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class TestContentInspectionAction extends AbstractBaseTestContentAction {
 	
 	@Test
-    public void testInspectContent_1() throws Throwable {
+    void testInspectContent_1() throws Throwable {
 		String result = this.executeInspect("ART102", true, "admin");
 		assertEquals(Action.SUCCESS, result);
 		ContentInspectionAction action = (ContentInspectionAction) this.getAction();
@@ -52,7 +52,7 @@ class TestContentInspectionAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testInspectContent_2() throws Throwable {
+    void testInspectContent_2() throws Throwable {
 		String result = this.executeInspect("ART111", false, "admin");
 		assertEquals(Action.SUCCESS, result);
 		ContentInspectionAction action = (ContentInspectionAction) this.getAction();

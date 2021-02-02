@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testList() throws Throwable {
+    void testList() throws Throwable {
 		this.initAction("/do/jacms/ContentModel", "list");
 		this.setUserOnSession("admin");
 		String result = this.executeAction();
@@ -43,7 +43,7 @@ class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testSearch_1() throws Throwable {
+    void testSearch_1() throws Throwable {
 		String result = this.executeSearch("ART");
 		assertEquals(Action.SUCCESS, result);
 		IContentModelFinderAction contentModelFinderAction = (IContentModelFinderAction) this.getAction();
@@ -58,7 +58,7 @@ class TestContentModelFinderAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testSearch_2() throws Throwable {
+    void testSearch_2() throws Throwable {
 		ContentModel contentModel = this.createContentModel(MODEL_ID, "EVN");
 		this._contentModelManager.addContentModel(contentModel);
 

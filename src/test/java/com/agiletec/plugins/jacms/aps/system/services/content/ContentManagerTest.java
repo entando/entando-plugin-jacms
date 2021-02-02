@@ -77,7 +77,7 @@ class ContentManagerTest {
     }
 
     @Test
-    public void testCreateContent() throws EntException {
+    void testCreateContent() throws EntException {
         String typeCode = "ART";
         // @formatter:off
         when(entityTypeFactory.extractEntityType(
@@ -96,7 +96,7 @@ class ContentManagerTest {
     }
 
     @Test
-    public void testGetXML() throws Throwable {
+    void testGetXML() throws Throwable {
         String typeCode = "ART";
         // @formatter:off
         when(entityTypeFactory.extractEntityType(

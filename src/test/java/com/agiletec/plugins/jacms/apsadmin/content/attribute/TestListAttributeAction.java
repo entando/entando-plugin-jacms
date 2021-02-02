@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 class TestListAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testAddListElement() throws Throwable {
+    void testAddListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "addListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");
@@ -49,7 +49,7 @@ class TestListAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testMoveListElement() throws Throwable {
+    void testMoveListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "moveListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");
@@ -79,7 +79,7 @@ class TestListAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testRemoveListElement() throws Throwable {
+    void testRemoveListElement() throws Throwable {
 		String contentOnSessionMarker = this.initEditContent();
 		this.initContentAction("/do/jacms/Content", "removeListElement", contentOnSessionMarker);
 		this.addParameter("attributeName", "Autori");

@@ -49,7 +49,7 @@ class TestContentBulkAction extends AbstractBaseTestContentAction {
     }
     
     @Test
-    public void testBulkContent() throws Throwable {
+    void testBulkContent() throws Throwable {
         EntitySearchFilter typeFilter = new EntitySearchFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "ALL", false);
         EntitySearchFilter[] filters = {typeFilter};
         List<String> userGroups = new ArrayList<>();

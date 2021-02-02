@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 
 	@Test
-    public void testValidate_Single_1() throws Throwable {
+    void testValidate_Single_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -49,7 +49,7 @@ class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_Single_2() throws Throwable {
+    void testValidate_Single_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -89,7 +89,7 @@ class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_MonoListElement() throws Throwable {
+    void testValidate_MonoListElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -131,7 +131,7 @@ class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_ListElement() throws Throwable {
+    void testValidate_ListElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -176,7 +176,7 @@ class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_CompositeElement() throws Throwable {
+    void testValidate_CompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -206,7 +206,7 @@ class TestValidateMonotextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_MonolistCompositeElement() throws Throwable {
+    void testValidate_MonolistCompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);

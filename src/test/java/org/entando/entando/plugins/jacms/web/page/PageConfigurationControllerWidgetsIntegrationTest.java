@@ -44,7 +44,7 @@ class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControll
     private IWidgetTypeManager widgetTypeManager;
 
     @Test
-    public void testConfigureListViewer() throws Exception {
+    void testConfigureListViewer() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -107,7 +107,7 @@ class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControll
     }
 
     @Test
-    public void testContentViewer() throws Exception {
+    void testContentViewer() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -189,7 +189,7 @@ class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControll
     }
 
     @Test
-    public void testConfigurationRestore() throws Exception {
+    void testConfigurationRestore() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode);
@@ -260,7 +260,7 @@ class PageConfigurationControllerWidgetsIntegrationTest extends AbstractControll
     }
 
     @Test
-    public void testConfigurationDelete() throws Exception {
+    void testConfigurationDelete() throws Exception {
         String pageCode = "draft_page_x";
         try {
             Page mockPage = createPage(pageCode);

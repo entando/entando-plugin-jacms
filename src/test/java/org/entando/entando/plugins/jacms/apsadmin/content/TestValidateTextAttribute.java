@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 class TestValidateTextAttribute extends AbstractTestContentAttribute {
 
 	@Test
-    public void testValidate_Single_1() throws Throwable {
+    void testValidate_Single_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -48,7 +48,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_Single_2() throws Throwable {
+    void testValidate_Single_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -89,7 +89,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_Single_3() throws Throwable {
+    void testValidate_Single_3() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -131,7 +131,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_MonoListElement_1() throws Throwable {
+    void testValidate_MonoListElement_1() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -177,7 +177,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_MonoListElement_2() throws Throwable {
+    void testValidate_MonoListElement_2() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -246,7 +246,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_CompositeElement() throws Throwable {
+    void testValidate_CompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -288,7 +288,7 @@ class TestValidateTextAttribute extends AbstractTestContentAttribute {
 	}
 
 	@Test
-    public void testValidate_MonolistCompositeElement() throws Throwable {
+    void testValidate_MonolistCompositeElement() throws Throwable {
 		try {
 			String contentOnSessionMarker = this.executeCreateNewContent();
 			Content content = this.getContentOnEdit(contentOnSessionMarker);

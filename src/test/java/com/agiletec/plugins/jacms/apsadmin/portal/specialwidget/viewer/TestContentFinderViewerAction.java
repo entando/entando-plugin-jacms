@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	
 	@Test
-    public void testFindContent_1() throws Throwable {
+    void testFindContent_1() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "pagina_11", "1", null);//Pagina del gruppo free
 		assertEquals(Action.SUCCESS, result);
 		
@@ -43,7 +43,7 @@ class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testFindContent_2() throws Throwable {
+    void testFindContent_2() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "administrators_page", "1", null);//Pagina del gruppo amministratori
 		assertEquals(Action.SUCCESS, result);
 		
@@ -53,7 +53,7 @@ class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testFindContent_3() throws Throwable {
+    void testFindContent_3() throws Throwable {
 		String result = executeParametrizedSearchContents("admin", "customers_page", "1", null);//Pagina del gruppo customers
 		assertEquals(Action.SUCCESS, result);
 		
@@ -67,7 +67,7 @@ class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testPerformSearch() throws Throwable {
+    void testPerformSearch() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeParametrizedSearchContents("admin", "pagina_11", "1", null);//Pagina Free
 		ContentFinderViewerAction action = (ContentFinderViewerAction) this.getAction();
@@ -95,7 +95,7 @@ class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testExtendedSearch() throws Throwable {
+    void testExtendedSearch() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeParametrizedSearchContents("admin", "pagina_11", "1",  "VN1");//Pagina Free
 		ContentFinderViewerAction action = (ContentFinderViewerAction) this.getAction();
@@ -123,7 +123,7 @@ class TestContentFinderViewerAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testFailureJoinContent_1() throws Throwable {
+    void testFailureJoinContent_1() throws Throwable {
 		String result = this.executeJoinContent("admin", "pagina_11", "1", null);//ID Nullo
 		assertEquals(Action.INPUT, result);
 		

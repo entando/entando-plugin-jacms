@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
 
     @Test
-    public void testSearchImageResource_1() throws Throwable {
+    void testSearchImageResource_1() throws Throwable {
         this.executeEdit("ART1", "admin");//Contenuto FREE
         String contentOnSessionMarker = super.extractSessionMarker("ART1", ApsAdminSystemConstants.EDIT);
 
@@ -58,7 +58,7 @@ class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testSearchImageResource_2() throws Throwable {
+    void testSearchImageResource_2() throws Throwable {
         this.executeEdit("ART102", "admin");//Contenuto customers
         String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
 
@@ -79,7 +79,7 @@ class TestExtendedResourceFinderAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testJoinImageResource() throws Throwable {
+    void testJoinImageResource() throws Throwable {
         this.executeEdit("ART102", "admin");
         String contentOnSessionMarker = super.extractSessionMarker("ART102", ApsAdminSystemConstants.EDIT);
 

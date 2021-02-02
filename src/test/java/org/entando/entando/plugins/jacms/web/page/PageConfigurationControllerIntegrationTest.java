@@ -68,7 +68,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     private ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void testPageConfiguration() throws Exception {
+    void testPageConfiguration() throws Exception {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES)
@@ -94,7 +94,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
      * @throws Exception
      */
     @Test
-    public void testGetPageConfigurationOnLineNotFound() throws Exception {
+    void testGetPageConfigurationOnLineNotFound() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -129,7 +129,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfiguration() throws Exception {
+    void testPutPageConfiguration() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -177,7 +177,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfigurationFilterFormat() throws Exception {
+    void testPutPageConfigurationFilterFormat() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -229,7 +229,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfigurationCategoriesFormat() throws Exception {
+    void testPutPageConfigurationCategoriesFormat() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -281,7 +281,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfigurationContentsFormat() throws Exception {
+    void testPutPageConfigurationContentsFormat() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -336,7 +336,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfigurationInvalidFrame() throws Exception {
+    void testPutPageConfigurationInvalidFrame() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -364,7 +364,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageConfigurationWrongFrame() throws Exception {
+    void testPutPageConfigurationWrongFrame() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -392,7 +392,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutPageDescription() throws Exception {
+    void testPutPageDescription() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);//, "row_content_viewer_list");
@@ -435,7 +435,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testPutDynamicProperties() throws Exception {
+    void testPutDynamicProperties() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);//, "row_content_viewer_list");
@@ -485,7 +485,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testGetWithMultipleFrames() throws Exception {
+    void testGetWithMultipleFrames() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);//, "row_content_viewer_list");
@@ -564,7 +564,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testDeletePageConfigurationWithInvalidFrameId() throws Exception {
+    void testDeletePageConfigurationWithInvalidFrameId() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -602,7 +602,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testDeletePageConfigurationWithWrongFrameId() throws Exception {
+    void testDeletePageConfigurationWithWrongFrameId() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -637,7 +637,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
     }
 
     @Test
-    public void testGetPageWidgetConfiguration() throws Exception {
+    void testGetPageWidgetConfiguration() throws Exception {
         String pageCode = "draft_page_100";
         try {
             Page mockPage = createPage(pageCode, null);
@@ -674,7 +674,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
 
 
     @Test
-    public void testRestoreWithPageChangedShouldUpdatePageStatus() throws EntException {
+    void testRestoreWithPageChangedShouldUpdatePageStatus() throws EntException {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,
@@ -736,7 +736,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
 
 
     @Test
-    public void testRestoreWithPageNotChangedShouldNOTUpdatePageStatus() throws EntException {
+    void testRestoreWithPageNotChangedShouldNOTUpdatePageStatus() throws EntException {
 
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "managePages", Permission.MANAGE_PAGES,
@@ -796,7 +796,7 @@ class PageConfigurationControllerIntegrationTest extends AbstractControllerInteg
      * creates a page without configured frames than applies the default widgets
      */
     @Test
-    public void testApplyDefautWidgets() throws Exception {
+    void testApplyDefautWidgets() throws Exception {
         String pageCode = "draft_page_100";
         try {
             PageModel pageModel = this.pageModelManager.getPageModel("internal");

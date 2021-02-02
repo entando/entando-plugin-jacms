@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class TestPageFinderAction extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testGetLastUpdated() throws Throwable {
+    void testGetLastUpdated() throws Throwable {
 		this.setUserOnSession("admin");
 		this.initAction("/do/rs/Page", "lastUpdated");
 		this.addParameter("lastUpdateResponseSize", 1);

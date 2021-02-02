@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class TestContentFinderAction extends AbstractBaseTestContentAction {
 	
 	@Test
-    public void testGetList() throws Throwable {
+    void testGetList() throws Throwable {
 		String result = this.executeGetList("admin");
 		assertEquals(Action.SUCCESS, result);
 		List<String> contents = (List<String>) ((ContentFinderAction)this.getAction()).getContents();
@@ -59,7 +59,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_1() throws Throwable {
+    void testPerformSearch_1() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeSearch("admin", params);
 		ContentFinderAction action = (ContentFinderAction) this.getAction();
@@ -85,7 +85,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_2() throws Throwable {
+    void testPerformSearch_2() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		this.executeSearch("supervisorCoach", params);
 		ContentFinderAction action = (ContentFinderAction) this.getAction();
@@ -108,7 +108,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_3() throws Throwable {
+    void testPerformSearch_3() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");
@@ -129,7 +129,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	 * Test the newly added search criteria contentId, #1
 	 */
 	@Test
-    public void testPerformSearch_4() throws Throwable {
+    void testPerformSearch_4() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");
@@ -151,7 +151,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	 * Thest the newly added search criteria contentId, #2
 	 */
 	@Test
-    public void testPerformSearch_5() throws Throwable {
+    void testPerformSearch_5() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "DESC");
 		params.put("lastGroupBy", "created");
@@ -173,7 +173,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testPerformSearch_6() throws Throwable {
+    void testPerformSearch_6() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		this.executeSearch("admin", params);
@@ -188,7 +188,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testPerformSearch_7() throws Throwable {
+    void testPerformSearch_7() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		params.put("Data_dateStartFieldName", "12/02/2009");
@@ -210,7 +210,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_8() throws Throwable {
+    void testPerformSearch_8() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "ART");
 		params.put("Data_dateStartFieldName", "12/02/2009");
@@ -226,7 +226,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_9() throws Throwable {
+    void testPerformSearch_9() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("contentType", "EVN");
 		this.executeSearch("editorCoach", params);
@@ -258,7 +258,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testPerformSearch_10() throws Throwable {
+    void testPerformSearch_10() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("categoryCode", "home");
 		params.put("contentType", "EVN");
@@ -285,7 +285,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testPerformSearch_11() throws Throwable {
+    void testPerformSearch_11() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("ownerGroupName", "coach");
 		this.executeSearch("admin", params);
@@ -319,7 +319,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testPerformSearch_12() throws Throwable {
+    void testPerformSearch_12() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("ownerGroupName", "coach");
 		this.executeSearch("editorCoach", params);
@@ -371,7 +371,7 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 	}
 	
 	@Test
-    public void testSearchWithWrongStatus() throws Throwable {
+    void testSearchWithWrongStatus() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("lastOrder", "ASC");
 		params.put("lastGroupBy", "created");

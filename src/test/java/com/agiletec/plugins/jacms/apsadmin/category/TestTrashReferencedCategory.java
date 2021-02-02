@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
 
 	@Test
-    public void testTrashReferencedCategory() throws Throwable {
+    void testTrashReferencedCategory() throws Throwable {
 		String categoryCode = "evento";
 		Category masterCategory = this._categoryManager.getCategory(categoryCode);
 		assertNotNull(masterCategory);

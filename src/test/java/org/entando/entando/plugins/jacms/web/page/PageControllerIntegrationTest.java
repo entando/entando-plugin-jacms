@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
-    public void testPageGet() throws Exception {
+    void testPageGet() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc
@@ -45,7 +45,7 @@ class PageControllerIntegrationTest extends AbstractControllerIntegrationTest {
     }
 
     @Test
-    public void testPageGetReferences() throws Exception {
+    void testPageGetReferences() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
         ResultActions result = mockMvc

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 class TestGroupUtilizer extends BaseTestCase {
     
 	@Test
-    public void testGetGroupsUtilizers() throws Throwable {
+    void testGetGroupsUtilizers() throws Throwable {
     	String[] names = this.getApplicationContext().getBeanNamesForType(GroupUtilizer.class);
     	assertTrue(names.length>=4);
     	for (int i=0; i<names.length; i++) {

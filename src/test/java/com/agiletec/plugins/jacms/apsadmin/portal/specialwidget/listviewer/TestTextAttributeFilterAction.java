@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestTextAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
-    public void testFailureAddTextFilter() throws Throwable {
+    void testFailureAddTextFilter() throws Throwable {
 		Map<String, String> params = this.getBaseParams("NEW");
 		params.put("filterKey", "Title");
 		params.put("attributeFilter", "true");

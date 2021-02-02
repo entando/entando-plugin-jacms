@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 class TestResourceAttributeAction extends AbstractBaseTestContentAction {
 
     @Test
-    public void testChooseImageResource() throws Throwable {
+    void testChooseImageResource() throws Throwable {
         String contentId = "ART1";
         Content content = this.getContentManager().loadContent(contentId, false);
         this.executeEdit(contentId, "admin");
@@ -60,7 +60,7 @@ class TestResourceAttributeAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testRemoveImageResource_1() throws Throwable {
+    void testRemoveImageResource_1() throws Throwable {
         String contentOnSessionMarker = this.initForImageRemovingTest();
 
         this.initContentAction("/do/jacms/Content", "removeResource", contentOnSessionMarker);
@@ -76,7 +76,7 @@ class TestResourceAttributeAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testRemoveImageResource_2() throws Throwable {
+    void testRemoveImageResource_2() throws Throwable {
         String contentOnSessionMarker = this.initForImageRemovingTest();
 
         this.initContentAction("/do/jacms/Content", "removeResource", contentOnSessionMarker);
@@ -111,7 +111,7 @@ class TestResourceAttributeAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testRemoveAttachResource() throws Throwable {
+    void testRemoveAttachResource() throws Throwable {
         String contentId = "RAH1";
         Content content = this.getContentManager().loadContent(contentId, false);
         this.executeEdit(contentId, "admin");
@@ -135,7 +135,7 @@ class TestResourceAttributeAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testUpdateAttachResource() throws Throwable {
+    void testUpdateAttachResource() throws Throwable {
         String[] addedContents = null;
         try {
             addedContents = super.addDraftContentsForTest(new String[]{"ALL4"}, true);

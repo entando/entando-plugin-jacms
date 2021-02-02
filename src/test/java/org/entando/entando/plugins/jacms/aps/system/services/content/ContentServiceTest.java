@@ -218,7 +218,7 @@ class ContentServiceTest {
     }
 
     @Test
-    public void testGetLinkableContentsViaOwnerGroup() throws Exception {
+    void testGetLinkableContentsViaOwnerGroup() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
         RestContentListRequest requestList = prepareGetContentTest(user);
         requestList.setForLinkingWithOwnerGroup("GROUP1");
@@ -237,7 +237,7 @@ class ContentServiceTest {
     }
 
     @Test
-    public void testGetLinkableContentsViaExtraGroup() throws Exception {
+    void testGetLinkableContentsViaExtraGroup() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
         RestContentListRequest requestList = prepareGetContentTest(user);
         requestList.setForLinkingWithOwnerGroup("GROUP1");

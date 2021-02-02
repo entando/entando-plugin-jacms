@@ -28,13 +28,13 @@ import org.junit.jupiter.api.Test;
 class ContentPageMapperManagerIntegrationTest extends BaseTestCase {
 	
     @Test
-    public void testGetContentPageMapper() throws EntException {
+    void testGetContentPageMapper() throws EntException {
 		String codePage = _contentPageMapperManager.getPageCode("ART1");
 		assertEquals(codePage, "homepage");
 	}
 	
     @Test
-    public void testReloadContentPageMapper() throws EntException{   
+    void testReloadContentPageMapper() throws EntException{   
         _contentPageMapperManager.reloadContentPageMapper();
         String codePage = _contentPageMapperManager.getPageCode("ART1");
         assertEquals(codePage, "homepage");

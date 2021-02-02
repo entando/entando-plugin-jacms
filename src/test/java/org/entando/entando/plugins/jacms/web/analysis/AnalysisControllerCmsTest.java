@@ -41,7 +41,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 class AnalysisControllerCmsTest extends AbstractControllerTest {
 
     @Test
-    public void testRunAnalysis() throws Exception {
+    void testRunAnalysis() throws Exception {
         String accessToken = mockAccessToken();
 
         // CONTENTS
@@ -93,7 +93,7 @@ class AnalysisControllerCmsTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testRunAnalysisWrongObjectType() throws Exception {
+    void testRunAnalysisWrongObjectType() throws Exception {
         String accessToken = mockAccessToken();
 
         Map<String, List<String>> request = ImmutableMap.of(

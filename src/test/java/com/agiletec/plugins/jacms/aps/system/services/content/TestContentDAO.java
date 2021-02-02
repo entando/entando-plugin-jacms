@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 class TestContentDAO extends BaseTestCase {
 	
 	@Test
-    public void testDeleteAddContent() throws Throwable {
+    void testDeleteAddContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			this.deleteContent(mockContent);
@@ -70,7 +70,7 @@ class TestContentDAO extends BaseTestCase {
 	}
 	
 	@Test
-    public void testGetAllContentIds() throws Throwable {
+    void testGetAllContentIds() throws Throwable {
 		List<String> contentIds1 = this._contentDao.getAllEntityId();
 		List<String> contentIds2 = this._contentManager.searchId(null);
 		assertEquals(contentIds1.size(), contentIds2.size());
@@ -81,7 +81,7 @@ class TestContentDAO extends BaseTestCase {
 	}
 	
 	@Test
-    public void testInsertRemoveOnlineContent() throws Throwable {
+    void testInsertRemoveOnlineContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			this.insertOnLineContent(mockContent);
@@ -110,7 +110,7 @@ class TestContentDAO extends BaseTestCase {
 	}
 	
 	@Test
-    public void testUpdateContent() throws Throwable {
+    void testUpdateContent() throws Throwable {
     	try {
 			Content mockContent = this.getMockContent();
 			mockContent.setDescription("New Description");
@@ -122,7 +122,7 @@ class TestContentDAO extends BaseTestCase {
     }
 	
 	@Test
-    public void testGetPageUtilizers() throws Throwable {
+    void testGetPageUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getPageUtilizers("pagina_11");
 		assertNotNull(contentIds);
 		assertEquals(2, contentIds.size());
@@ -131,7 +131,7 @@ class TestContentDAO extends BaseTestCase {
     }
 	
 	@Test
-    public void testGetContentUtilizers() throws Throwable {
+    void testGetContentUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getContentUtilizers("ART1");
 		assertNotNull(contentIds);
 		assertEquals(2, contentIds.size());
@@ -142,7 +142,7 @@ class TestContentDAO extends BaseTestCase {
     }
 	
 	@Test
-    public void testGetGroupUtilizers() throws Throwable {
+    void testGetGroupUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getGroupUtilizers("customers");
 		assertNotNull(contentIds);
 		assertEquals(5, contentIds.size());
@@ -154,7 +154,7 @@ class TestContentDAO extends BaseTestCase {
     }
 	
 	@Test
-    public void testGetResourceUtilizers() throws Throwable {
+    void testGetResourceUtilizers() throws Throwable {
 		List<String> contentIds = _contentDao.getResourceUtilizers("44");
 		assertNotNull(contentIds);
 		assertEquals(3, contentIds.size());

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 class TestResourceDOM extends BaseTestCase {
 	
     @Test
-    public void testGetXMLDocument() throws EntException {  
+    void testGetXMLDocument() throws EntException {  
 		ResourceDOM resourceDom = new ResourceDOM();
         resourceDom.addCategory("tempcategory");
         int index = resourceDom.getXMLDocument().indexOf("tempcategory");

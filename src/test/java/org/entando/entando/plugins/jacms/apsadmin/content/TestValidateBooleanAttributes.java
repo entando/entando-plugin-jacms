@@ -30,17 +30,17 @@ import org.junit.jupiter.api.Test;
 class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	
 	@Test
-    public void testValidateSingleBoolean() throws Throwable {
+    void testValidateSingleBoolean() throws Throwable {
 		this.validateSingle("Boolean");
 	}
 	
 	@Test
-    public void testValidateSingleCheckBox() throws Throwable {
+    void testValidateSingleCheckBox() throws Throwable {
 		this.validateSingle("CheckBox");
 	}
 	
 	@Test
-    public void testValidateSingleThreeState() throws Throwable {
+    void testValidateSingleThreeState() throws Throwable {
 		this.validateSingle("ThreeState");
 	}
 	
@@ -73,17 +73,17 @@ class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	}
 	
 	@Test
-    public void testValidateBooleanMonolist() throws Throwable {
+    void testValidateBooleanMonolist() throws Throwable {
 		this.validateMonolistElement("MonoLBool");
 	}
 	
 	@Test
-    public void testValidateCheckBoxMonolist() throws Throwable {
+    void testValidateCheckBoxMonolist() throws Throwable {
 		this.validateMonolistElement("MonoLChec");
 	}
 	
 	@Test
-    public void testValidateThreeStateMonolist() throws Throwable {
+    void testValidateThreeStateMonolist() throws Throwable {
 		this.validateMonolistElement("MonoL3stat");
 	}
 	
@@ -133,17 +133,17 @@ class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	}
 	
 	@Test
-    public void testValidateBooleanList() throws Throwable {
+    void testValidateBooleanList() throws Throwable {
 		this.validateListElement("ListBoolea");
 	}
 	
 	@Test
-    public void testValidateCheckBoxList() throws Throwable {
+    void testValidateCheckBoxList() throws Throwable {
 		this.validateListElement("ListCheck");
 	}
 	
 	@Test
-    public void testValidateThreeStateList() throws Throwable {
+    void testValidateThreeStateList() throws Throwable {
 		this.validateListElement("List3Stat");
 	}
 	
@@ -217,17 +217,17 @@ class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	}
 	
 	@Test
-    public void testValidateBooleanCompositeElement() throws Throwable {
+    void testValidateBooleanCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "Boolean");
 	}
 	
 	@Test
-    public void testValidateCheckBoxCompositeElement() throws Throwable {
+    void testValidateCheckBoxCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "CheckBox");
 	}
 	
 	@Test
-    public void testValidateThreeStateCompositeElement() throws Throwable {
+    void testValidateThreeStateCompositeElement() throws Throwable {
 		this.validateCompositeElement("Composite", "ThreeState");
 	}
 	
@@ -267,17 +267,17 @@ class TestValidateBooleanAttributes extends AbstractTestContentAttribute {
 	}
 	
 	@Test
-    public void testValidateBooleanMonolistCompositeElement() throws Throwable {
+    void testValidateBooleanMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "Boolean");
 	}
 	
 	@Test
-    public void testValidateCheckBoxMonolistCompositeElement() throws Throwable {
+    void testValidateCheckBoxMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "CheckBox");
 	}
 	
 	@Test
-    public void testValidateThreeStateMonolistCompositeElement() throws Throwable {
+    void testValidateThreeStateMonolistCompositeElement() throws Throwable {
 		this.validateMonolistCompositeElement("MonoLCom2", "ThreeState");
 	}
 	

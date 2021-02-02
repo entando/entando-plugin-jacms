@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 class TestContentAuthorization extends BaseTestCase {
 
     @Test
-    public void testCheckAdminUser() throws Throwable {
+    void testCheckAdminUser() throws Throwable {
         UserDetails adminUser = this.getUser("admin");
         assertNotNull(adminUser);
         assertEquals("admin", adminUser.getUsername());
@@ -61,7 +61,7 @@ class TestContentAuthorization extends BaseTestCase {
     }
 
     @Test
-    public void testCheckCustomerUser() throws Throwable {
+    void testCheckCustomerUser() throws Throwable {
         UserDetails extractedUser = this.getUser("pageManagerCustomers");
         assertNotNull(extractedUser);
         assertEquals("pageManagerCustomers", extractedUser.getUsername());
@@ -83,7 +83,7 @@ class TestContentAuthorization extends BaseTestCase {
      * This test is fully inherited from the original TestAuthorizationManager in jAPS2 (2.0.6)
      */
     @Test
-    public void testCheckNewUser() throws Throwable {
+    void testCheckNewUser() throws Throwable {
         String username = "UserForTest";
         String password = "PasswordForTest";
         this.addUserForTest(username, password);

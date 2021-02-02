@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	
 	@Test
-    public void testFailureAddDateValueFilter_1() throws Throwable {
+    void testFailureAddDateValueFilter_1() throws Throwable {
 		String result = this.executeSaveValueDateFilter(IContentListFilterAction.NO_DATE_FILTER, "");//Opzione nessuna Data inserita
 		assertEquals(Action.INPUT, result);
 		
@@ -40,7 +40,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testFailureAddDateValueFilter_2() throws Throwable {
+    void testFailureAddDateValueFilter_2() throws Throwable {
 		String result = this.executeSaveValueDateFilter(IContentListFilterAction.INSERTED_DATE_FILTER, "");//Opzione Data inserita
 		assertEquals(Action.INPUT, result);
 		
@@ -52,7 +52,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testFailureAddDateValueFilter_3() throws Throwable {
+    void testFailureAddDateValueFilter_3() throws Throwable {
 		String result = this.executeSaveValueDateFilter(IContentListFilterAction.INSERTED_DATE_FILTER, "wrongFormat");//Opzione Data inserita
 		assertEquals(Action.INPUT, result);
 		
@@ -64,7 +64,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testSuccessAddDateValueFilter() throws Throwable {
+    void testSuccessAddDateValueFilter() throws Throwable {
 		String result = this.executeSaveValueDateFilter(IContentListFilterAction.CURRENT_DATE_FILTER, "");//Opzione Data corrente
 		assertEquals(Action.SUCCESS, result);
 		
@@ -85,7 +85,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testFailureAddRangeDateFilter_1() throws Throwable {
+    void testFailureAddRangeDateFilter_1() throws Throwable {
 		String result = this.executeSaveRangeDateFilter(IContentListFilterAction.INSERTED_DATE_FILTER, "", //Data Start inserita
 				IContentListFilterAction.INSERTED_DATE_FILTER, "25/09/1972");// Data End Inserita
 		assertEquals(Action.INPUT, result);
@@ -98,7 +98,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testFailureAddRangeDateFilter_2() throws Throwable {
+    void testFailureAddRangeDateFilter_2() throws Throwable {
 		String result = this.executeSaveRangeDateFilter(IContentListFilterAction.INSERTED_DATE_FILTER, "25/09/1972", //Data Start inserita
 				IContentListFilterAction.INSERTED_DATE_FILTER, "21/04/1972");// Data End Inserita
 		assertEquals(Action.INPUT, result);
@@ -111,7 +111,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testFailureAddRangeDateFilter_3() throws Throwable {
+    void testFailureAddRangeDateFilter_3() throws Throwable {
 		String result = this.executeSaveRangeDateFilter(IContentListFilterAction.INSERTED_DATE_FILTER, "25/09/1972", //Data Start inserita
 				IContentListFilterAction.INSERTED_DATE_FILTER, "wrongFormat");// Data End Inserita
 		assertEquals(Action.INPUT, result);
@@ -124,7 +124,7 @@ class TestDateAttributeFilterAction extends TestAbstractAttributeFilterAction {
 	}
 	
 	@Test
-    public void testSuccessAddRangeDateFilter() throws Throwable {
+    void testSuccessAddRangeDateFilter() throws Throwable {
 		String result = this.executeSaveRangeDateFilter(IContentListFilterAction.NO_DATE_FILTER, "", //Nessuna dateStart inserita
 				IContentListFilterAction.INSERTED_DATE_FILTER, "25/09/2002");//Data End Inserita
 		assertEquals(Action.SUCCESS, result);

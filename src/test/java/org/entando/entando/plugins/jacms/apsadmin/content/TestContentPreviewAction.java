@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 class TestContentPreviewAction extends AbstractBaseTestContentAction {
     
     @Test
-    public void testPreviewNewContent() throws Throwable {
+    void testPreviewNewContent() throws Throwable {
         String insertedDescr = "XXX Prova preview XXX";
         String contentTypeCode = "ART";
         Content prototype = this.getContentManager().createContentType(contentTypeCode);
@@ -62,7 +62,7 @@ class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testPreviewContent() throws Throwable {
+    void testPreviewContent() throws Throwable {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
@@ -87,7 +87,7 @@ class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testExecutePreviewContent_1() throws Throwable {
+    void testExecutePreviewContent_1() throws Throwable {
         String contentId = "EVN192";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
@@ -101,7 +101,7 @@ class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testExecutePreviewContent_2() throws Throwable {
+    void testExecutePreviewContent_2() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
@@ -115,7 +115,7 @@ class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testExecutePreviewContent_3() throws Throwable {
+    void testExecutePreviewContent_3() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);
@@ -129,7 +129,7 @@ class TestContentPreviewAction extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testFailureExecutePreviewContent() throws Throwable {
+    void testFailureExecutePreviewContent() throws Throwable {
         String contentId = "ART187";
         Content contentForTest = this.getContentManager().loadContent(contentId, true);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentForTest, ApsAdminSystemConstants.EDIT);

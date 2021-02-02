@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class TestPublicContentSearcherDAO extends BaseTestCase {
 	
 	@Test
-    public void testLoadContentsId_1() throws Throwable {
+    void testLoadContentsId_1() throws Throwable {
     	List<String> list = null;
 		try {
 			list = _contentSearcherDao.loadContentsId("ART", null, false, null, null);
@@ -48,7 +48,7 @@ class TestPublicContentSearcherDAO extends BaseTestCase {
 	}
     
     @Test
-    public void testLoadContentsId_2() throws Throwable {
+    void testLoadContentsId_2() throws Throwable {
 		List<String> list = null;
 		try {
 			List<String> groups = new ArrayList<>();

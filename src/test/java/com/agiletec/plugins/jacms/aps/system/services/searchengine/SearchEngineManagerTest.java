@@ -185,7 +185,7 @@ class SearchEngineManagerTest {
     }
 
     @Test
-    public void testSearchIds() throws Exception {
+    void testSearchIds() throws Exception {
         when(this.searcherDao.searchContentsId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>(Arrays.asList("Art123", "Art456")));
         when(this.factory.checkCurrentSubfolder()).thenReturn(Boolean.TRUE);
         List<String> resources = this.searchEngineManager.searchEntityId("it", "test", Arrays.asList("group1", "group2"));
@@ -193,7 +193,7 @@ class SearchEngineManagerTest {
     }
 
     @Test
-    public void testSearchIds_withErrors() throws Exception {
+    void testSearchIds_withErrors() throws Exception {
         Mockito.doThrow(EntException.class).when(this.searcherDao).searchContentsId(Mockito.any(), Mockito.any(), Mockito.any());
         when(this.factory.checkCurrentSubfolder()).thenReturn(Boolean.TRUE);
         Assertions.assertThrows(EntException.class, () -> {

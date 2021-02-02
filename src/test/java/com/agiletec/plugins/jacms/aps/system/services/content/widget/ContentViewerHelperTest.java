@@ -81,7 +81,7 @@ class ContentViewerHelperTest {
     }
     
     @Test
-    public void testGetRenderedContent() throws Exception {
+    void testGetRenderedContent() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
         Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         ContentModel model = Mockito.mock(ContentModel.class);
@@ -101,7 +101,7 @@ class ContentViewerHelperTest {
     }
 
     @Test
-    public void testGetRenderedContentWithListModel() throws Exception {
+    void testGetRenderedContentWithListModel() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
         Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         ContentModel model = Mockito.mock(ContentModel.class);
@@ -122,7 +122,7 @@ class ContentViewerHelperTest {
     }
     
     @Test
-    public void testGetRenderedContentWithError() throws Exception {
+    void testGetRenderedContentWithError() throws Exception {
         HeadInfoContainer hic = Mockito.mock(HeadInfoContainer.class);
         Mockito.lenient().when(this.reqCtx.getExtraParam(SystemConstants.EXTRAPAR_HEAD_INFO_CONTAINER)).thenReturn(hic);
         Mockito.doThrow(RuntimeException.class).when(this.contentDispenser).resolveLinks(Mockito.any(ContentRenderizationInfo.class), Mockito.any(RequestContext.class));

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
 
     @Test
-    public void testSaveBooleanAttribute() throws Throwable {
+    void testSaveBooleanAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -72,7 +72,7 @@ class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
     }
 
     @Test
-    public void testSaveCheckBoxAttribute() throws Throwable {
+    void testSaveCheckBoxAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);
@@ -111,7 +111,7 @@ class TestSaveBooleanAttributes extends AbstractTestContentAttribute {
     }
 
     @Test
-    public void testSaveThreeStateAttribute() throws Throwable {
+    void testSaveThreeStateAttribute() throws Throwable {
         try {
             String contentOnSessionMarker = this.executeCreateNewContent();
             Content content = this.getContentOnEdit(contentOnSessionMarker);

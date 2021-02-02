@@ -251,7 +251,7 @@ class ContentAdminActionTest {
     }
 
     @Test
-    public void testValidAspectRatioParams() throws Exception {
+    void testValidAspectRatioParams() throws Exception {
         List<String> ratio = Arrays.asList("16:9", "4:3");
         action.setRatio(ratio);
         action.validate();
@@ -259,7 +259,7 @@ class ContentAdminActionTest {
     }
 
     @Test
-    public void testInvalidAspectRatioParams() throws Exception {
+    void testInvalidAspectRatioParams() throws Exception {
         List<String> ratio = Arrays.asList("invalid");
         action.setRatio(ratio);
         action.validate();
@@ -267,7 +267,7 @@ class ContentAdminActionTest {
     }
 
     @Test
-    public void testAspectRatioUpdate() throws Exception {
+    void testAspectRatioUpdate() throws Exception {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(CONFIG_PARAMETER);
         Enumeration mockedEnumerator = Mockito.mock(Enumeration.class);
         when(mockedEnumerator.hasMoreElements()).thenReturn(false);
@@ -280,7 +280,7 @@ class ContentAdminActionTest {
     }
 
     @Test
-    public void testAspectRatioFromParams() throws Throwable {
+    void testAspectRatioFromParams() throws Throwable {
         when(configManager.getConfigItem(ArgumentMatchers.anyString())).thenReturn(ASPECT_RATIO_PARAMS);
         action.initLocalMap();
         Assertions.assertEquals("16:9;2:3", action.getAspectRatio());

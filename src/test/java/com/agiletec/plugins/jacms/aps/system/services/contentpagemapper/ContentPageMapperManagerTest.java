@@ -47,19 +47,19 @@ class ContentPageMapperManagerTest {
 	}
 
 	@Test
-	public void testInit() throws Throwable {
+	void testInit() throws Throwable {
 		pageMapperManager.init();
 		Mockito.verify(cacheWrapper, Mockito.times(1)).initCache(pageManager);
 	}
 
 	@Test
-	public void testReload() throws Throwable {
+	void testReload() throws Throwable {
 		pageMapperManager.reloadContentPageMapper();
 		Mockito.verify(cacheWrapper, Mockito.times(1)).initCache(pageManager);
 	}
 
 	@Test
-	public void testGetPage() throws Throwable {
+	void testGetPage() throws Throwable {
 		Mockito.when(cacheWrapper.getPageCode(Mockito.anyString())).thenReturn("pageCode");
 		String pageCode = this.pageMapperManager.getPageCode("ART1");
 		Assertions.assertNotNull(pageCode);
@@ -67,7 +67,7 @@ class ContentPageMapperManagerTest {
 	}
 
 	@Test
-	public void testUpdate() throws Throwable {
+	void testUpdate() throws Throwable {
 		pageMapperManager.updateFromPageChanged(Mockito.any(PageChangedEvent.class));
 		Mockito.verify(cacheWrapper, Mockito.times(1)).initCache(pageManager);
 	}

@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 class TestApplicationContext extends BaseTestCase {
 
 	@Test
-    public void testGetServices() {
+    void testGetServices() {
 		IResourceManager resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
 		assertNotNull(resourceManager);
 		IContentManager contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);

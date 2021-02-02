@@ -60,7 +60,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testSearchAllContents() throws Throwable {
+    void testSearchAllContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
             thread.join();
@@ -87,7 +87,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testSearchOrderedContents() throws Throwable {
+    void testSearchOrderedContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
             thread.join();
@@ -132,7 +132,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testSearchContents() throws Throwable {
+    void testSearchContents() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
         List<String> allowedGroup = new ArrayList<>();
@@ -203,7 +203,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testSearchContentsByRole_1() throws Throwable {
+    void testSearchContentsByRole_1() throws Throwable {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
         List<String> allowedGroup = new ArrayList<>();
@@ -231,7 +231,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testSearchContentsByRole_2() throws Exception {
+    void testSearchContentsByRole_2() throws Exception {
         Thread thread = this.searchEngineManager.startReloadContentsReferences();
         thread.join();
         Content newContent = this.contentManager.loadContent("EVN25", false);

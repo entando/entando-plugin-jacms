@@ -31,7 +31,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     private String FILE_SIZE = "2000";
 
     @Test
-    public void testUploadNotValidTypeCodeValidation() throws Throwable {
+    void testUploadNotValidTypeCodeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -46,7 +46,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testUploadImageValidation() throws Throwable {
+    void testUploadImageValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -61,7 +61,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testUploadImageNotValidTypeValidation() throws Throwable {
+    void testUploadImageNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -75,7 +75,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testUploadAttachmentValidation() throws Throwable {
+    void testUploadAttachmentValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -87,7 +87,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testUploadAttachmentNotValidTypeValidation() throws Throwable {
+    void testUploadAttachmentNotValidTypeValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -102,7 +102,7 @@ class TestResourceFileChunkUploadAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testUploadNotValidDescriptionValidation() throws Throwable {
+    void testUploadNotValidDescriptionValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "upload");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));

@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class TestValidateContent extends BaseTestCase {
 	
 	@Test
-    public void testValidate_1() throws Throwable {
+    void testValidate_1() throws Throwable {
         String insertedDescr = "XXX Prova Validazione XXX";
         try {
             Content content = this.createNewVoid("ART", insertedDescr, Content.STATUS_DRAFT, Group.FREE_GROUP_NAME, "admin");
@@ -71,7 +71,7 @@ class TestValidateContent extends BaseTestCase {
     }
     
     @Test
-    public void testValidate_2() throws Throwable {
+    void testValidate_2() throws Throwable {
         try {
             Content content = this._contentManager.loadContent("EVN21", true);
             content.setId(null);
@@ -107,7 +107,7 @@ class TestValidateContent extends BaseTestCase {
     }
     
     @Test
-    public void testValidate_3() throws Throwable {
+    void testValidate_3() throws Throwable {
         try {
             Content content = this.createNewVoid("RAH", "descr", Content.STATUS_DRAFT, Group.FREE_GROUP_NAME, "admin");
             ITextAttribute emailAttribute = (ITextAttribute) content.getAttribute("email");
@@ -124,7 +124,7 @@ class TestValidateContent extends BaseTestCase {
     }
     
     @Test
-    public void testValidate_4() throws Throwable {
+    void testValidate_4() throws Throwable {
         String shortTitle = "short";
         String longTitle = "Titolo che supera la lunghezza massima di cento caratteri; "
                 + "Ripeto, Titolo che supera la lunghezza massima di cento caratteri";

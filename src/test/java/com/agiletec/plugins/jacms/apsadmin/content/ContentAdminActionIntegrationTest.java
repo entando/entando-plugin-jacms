@@ -38,7 +38,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     private IResourceManager resourceManager;
 
     @Test
-    public void testOpenIndexProspect() throws Throwable {
+    void testOpenIndexProspect() throws Throwable {
         String result = this.executeOpenIndexProspect("admin");
         assertEquals(BaseAction.SUCCESS, result);
         ContentAdminAction contentAdminAction = (ContentAdminAction) this.getAction();
@@ -54,7 +54,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testReloadContentsIndex() throws Throwable {
+    void testReloadContentsIndex() throws Throwable {
         String result = this.executeReloadContentsIndex("admin");
         assertEquals(BaseAction.SUCCESS, result);
         this.waitReloadThreads();
@@ -65,7 +65,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testReloadContentsReference() throws Throwable {
+    void testReloadContentsReference() throws Throwable {
         String result = this.executeReloadContentsReference("admin");
         assertEquals(BaseAction.SUCCESS, result);
         this.waitReloadThreads();
@@ -75,7 +75,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testUpdateResourceMapping() throws Throwable {
+    void testUpdateResourceMapping() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
             this.initAction("/do/jacms/Content/Admin", "updateSystemParams");
@@ -106,7 +106,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testAddNewMetadata() throws Throwable {
+    void testAddNewMetadata() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
             this.initAction("/do/jacms/Content/Admin", "addMetadata");
@@ -132,7 +132,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testRemoveMetadata() throws Throwable {
+    void testRemoveMetadata() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
             this.initAction("/do/jacms/Content/Admin", "removeMetadata");
@@ -156,7 +156,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testValidateNewMetadata() throws Throwable {
+    void testValidateNewMetadata() throws Throwable {
         this.executeValidateNewMetadata("wrongKey_&&");
         this.executeValidateNewMetadata("wrong key");
         this.executeValidateNewMetadata("tes");
@@ -165,7 +165,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testAddValidAspectRatio() throws Throwable {
+    void testAddValidAspectRatio() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
             this.initAction("/do/jacms/Content/Admin", "updateSystemParams");
@@ -185,7 +185,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     }
 
     @Test
-    public void testAddInvalidAspectRatio() throws Throwable {
+    void testAddInvalidAspectRatio() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
         try {
             this.initAction("/do/jacms/Content/Admin", "updateSystemParams");

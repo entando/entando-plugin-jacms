@@ -71,7 +71,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
             + "Benvenuto Name Surname (admin - Name.Surname)";
 
     @Test
-    public void testGetRenderedContent_1() throws Throwable {
+    void testGetRenderedContent_1() throws Throwable {
         try {
             String contentId = "ART1";
             String modelId = "3";
@@ -83,7 +83,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetRenderedContent_2() throws Throwable {
+    void testGetRenderedContent_2() throws Throwable {
         this.testGetRenderedByModel("ART1", null, ART1_MODEL_1_IT_RENDER);
         this.testGetRenderedByModel("ART1", "", ART1_MODEL_1_IT_RENDER);
         this.testGetRenderedByModel("ART1", "   ", ART1_MODEL_1_IT_RENDER);
@@ -94,7 +94,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetRenderedContent_4() throws Throwable {
+    void testGetRenderedContent_4() throws Throwable {
         this.executeGetRenderedContent_4(true, 3, "ART1", ART1_MODEL_1_IT_RENDER, true);
         this.executeGetRenderedContent_4(false, 3, "ART1", ART1_MODEL_1_IT_RENDER, false);
         this.executeGetRenderedContent_4(true, 4, "ART1", ART1_MODEL_1_IT_RENDER, false);
@@ -117,14 +117,14 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
         assertEquals(nullExtraParam, null != this._requestContext.getExtraParam(SystemConstants.EXTRAPAR_EXTRA_PAGE_TITLES));
     }
     
-    public void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
+    void testGetRenderedByModel(String contentId, String modelId, String expected) throws Throwable {
         this.configureCurrentWidget(contentId, modelId);
         String renderedContent = this._helper.getRenderedContent(null, null, _requestContext);
         assertEquals(replaceNewLine(expected.trim()), replaceNewLine(renderedContent.trim()));
     }
 
     @Test
-    public void testGetRenderedContentWithParams() throws Throwable {
+    void testGetRenderedContentWithParams() throws Throwable {
         try {
             String contentId = "ART1";
             String modelId = "11";
@@ -142,7 +142,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetRenderedContentNotApproved() throws Throwable {
+    void testGetRenderedContentNotApproved() throws Throwable {
         try {
             String contentId = "ART2";
             String modelId = "3";
@@ -155,7 +155,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetRenderedContentNotPresent() throws Throwable {
+    void testGetRenderedContentNotPresent() throws Throwable {
         try {
             String contentId = "ART3";
             String modelId = "3";
@@ -168,7 +168,7 @@ class ContentViewerHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testConvertCspNoncePlaceholder() throws Exception {
+    void testConvertCspNoncePlaceholder() throws Exception {
         String contentId = "ART120";
         String contentShapeModel = "CspNonce Test <script nonce=\"$content.nonce\">my script</script>";
         int modelId = 1948;

@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	
 	@Test
-    public void testValidateAttribute_1() throws Throwable {
+    void testValidateAttribute_1() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -46,7 +46,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_2() throws Throwable {
+    void testValidateAttribute_2() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -66,7 +66,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_3() throws Throwable {
+    void testValidateAttribute_3() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -77,7 +77,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_4() throws Throwable {
+    void testValidateAttribute_4() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -90,7 +90,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_5() throws Throwable {
+    void testValidateAttribute_5() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -107,7 +107,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
-    public void testValidateAttribute_6() throws Throwable {
+    void testValidateAttribute_6() throws Throwable {
 		this.executeEditEntityAttributePrototype("ART", JacmsSystemConstants.CONTENT_MANAGER, "Data");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -123,7 +123,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_7() throws Throwable {
+    void testValidateAttribute_7() throws Throwable {
 		this.executeEditEntityAttributePrototype("EVN", JacmsSystemConstants.CONTENT_MANAGER, "DataInizio");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");
@@ -136,7 +136,7 @@ class TestJacmsEntityAttributeConfigAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testValidateAttribute_8() throws Throwable {
+    void testValidateAttribute_8() throws Throwable {
 		this.executeEditEntityAttributePrototype("EVN", JacmsSystemConstants.CONTENT_MANAGER, "DataInizio");
 		this.initAction("/do/Entity/Attribute", "saveAttribute");
 		this.addParameter("attributeTypeCode", "Date");

@@ -79,7 +79,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetReturnsList() throws Exception {
+    void testGetReturnsList() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypes")
                 .header("Authorization", "Bearer " + accessToken)
@@ -99,7 +99,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateUnauthorizedContentType() throws Exception {
+    void testCreateUnauthorizedContentType() throws Exception {
         String typeCode = "TX0";
         Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
@@ -119,7 +119,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateContentType() throws Exception {
+    void testCreateContentType() throws Exception {
         String typeCode = "TX1";
         try {
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
@@ -156,7 +156,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testUpdateContentType() throws Exception {
+    void testUpdateContentType() throws Exception {
         String typeCode = "TX2";
         try {
             ContentTypeDto createdContentType = createContentType(typeCode);
@@ -187,7 +187,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testUpdateNonExistentContentType() throws Exception {
+    void testUpdateNonExistentContentType() throws Exception {
         String typeCode = "TX2";
         try {
             ContentTypeDto createdContentType = createContentType(typeCode);
@@ -210,7 +210,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testDeleteContentType() throws Exception {
+    void testDeleteContentType() throws Exception {
         String typeCode = "TX3";
         try {
             this.createContentType(typeCode);
@@ -233,7 +233,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetContentType() throws Exception {
+    void testGetContentType() throws Exception {
         this.executeGetContentType("ART", status().isOk());
         this.executeGetContentType("XXX", status().isNotFound());
     }
@@ -255,7 +255,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateAndGetContentType() throws Exception {
+    void testCreateAndGetContentType() throws Exception {
         String typeCode = "TX4";
         mockMvc.perform(
                 get("/plugins/cms/contentTypes/{code}", typeCode)
@@ -285,7 +285,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateExistingContentType() throws Exception {
+    void testCreateExistingContentType() throws Exception {
         String typeCode = "FIR";
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("**MARKER**", typeCode);
@@ -316,7 +316,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetAllAttributes() throws Exception {
+    void testGetAllAttributes() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes")
                 .header("Authorization", "Bearer " + accessToken)
@@ -335,7 +335,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetAttachAttribute() throws Exception {
+    void testGetAttachAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Attach")
                 .header("Authorization", "Bearer " + accessToken)
@@ -351,7 +351,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetBooleanAttribute() throws Exception {
+    void testGetBooleanAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Boolean")
                         .header("Authorization", "Bearer " + accessToken)
@@ -367,7 +367,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetCheckBoxAttribute() throws Exception {
+    void testGetCheckBoxAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "CheckBox")
                         .header("Authorization", "Bearer " + accessToken)
@@ -383,7 +383,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetCompositeAttribute() throws Exception {
+    void testGetCompositeAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Composite")
                         .header("Authorization", "Bearer " + accessToken)
@@ -399,7 +399,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetDateAttribute() throws Exception {
+    void testGetDateAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Date")
                         .header("Authorization", "Bearer " + accessToken)
@@ -415,7 +415,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetEnumeratorAttribute() throws Exception {
+    void testGetEnumeratorAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Enumerator")
                         .header("Authorization", "Bearer " + accessToken)
@@ -431,7 +431,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetEnumeratorMapAttribute() throws Exception {
+    void testGetEnumeratorMapAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "EnumeratorMap")
                         .header("Authorization", "Bearer " + accessToken)
@@ -447,7 +447,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetHypertextAttribute() throws Exception {
+    void testGetHypertextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Hypertext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -463,7 +463,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetImageAttribute() throws Exception {
+    void testGetImageAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Image")
                         .header("Authorization", "Bearer " + accessToken)
@@ -479,7 +479,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetLinkAttribute() throws Exception {
+    void testGetLinkAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Link")
                         .header("Authorization", "Bearer " + accessToken)
@@ -495,7 +495,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetListAttribute() throws Exception {
+    void testGetListAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "List")
                         .header("Authorization", "Bearer " + accessToken)
@@ -511,7 +511,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetLongtextAttribute() throws Exception {
+    void testGetLongtextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Longtext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -527,7 +527,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetMonolistAttribute() throws Exception {
+    void testGetMonolistAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Monolist")
                         .header("Authorization", "Bearer " + accessToken)
@@ -543,7 +543,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetMonotextAttribute() throws Exception {
+    void testGetMonotextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Monotext")
                         .header("Authorization", "Bearer " + accessToken)
@@ -559,7 +559,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetNumberAttribute() throws Exception {
+    void testGetNumberAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Number")
                         .header("Authorization", "Bearer " + accessToken)
@@ -575,7 +575,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetTextAttribute() throws Exception {
+    void testGetTextAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Text")
                         .header("Authorization", "Bearer " + accessToken)
@@ -591,7 +591,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetThreeStateAttribute() throws Exception {
+    void testGetThreeStateAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "ThreeState")
                         .header("Authorization", "Bearer " + accessToken)
@@ -607,7 +607,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetTimestampAttribute() throws Exception {
+    void testGetTimestampAttribute() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypeAttributes/{attributeTypeCode}", "Timestamp")
                         .header("Authorization", "Bearer " + accessToken)
@@ -623,7 +623,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
     
     @Test
-    public void testGetContentAttributeType() throws Exception {
+    void testGetContentAttributeType() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contentTypeAttributes/{contentTypeCode}/attribute/{attributeTypeCode}", new Object[]{"XXX", "Monotext"})
                         .header("Authorization", "Bearer " + accessToken));
@@ -649,7 +649,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
     
     @Test
-    public void testCreateContentTypeAttribute() throws Exception {
+    void testCreateContentTypeAttribute() throws Exception {
         String typeCode = "TX5";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -680,7 +680,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetAttributeFromContentType() throws Exception {
+    void testGetAttributeFromContentType() throws Exception {
         String typeCode = "TX5";
         try {
             EntityTypeAttributeFullDto contentTypeAttribute = this.createContentTypeAttribute(typeCode);
@@ -704,7 +704,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAttributesFromContentType() throws Exception {
+    void testListAttributesFromContentType() throws Exception {
         String typeCode = "TX5";
         try {
             List<EntityTypeAttributeFullDto> contentTypeAttribute = this.createContentTypeAttributes(typeCode);
@@ -730,7 +730,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testUpdateAttributeFromContentType() throws Exception {
+    void testUpdateAttributeFromContentType() throws Exception {
         String typeCode = "TX6";
         try {
             EntityTypeAttributeFullDto contentTypeAttribute = createContentTypeAttribute(typeCode);
@@ -756,7 +756,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testDeleteContentTypeAttribute() throws Exception {
+    void testDeleteContentTypeAttribute() throws Exception {
         String typeCode = "TX7";
         EntityTypeAttributeFullDto attribute = createContentTypeAttribute(typeCode);
         try {
@@ -795,7 +795,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testRefreshContentType() throws Exception {
+    void testRefreshContentType() throws Exception {
         String typeCode = "TX8";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -815,7 +815,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testReloadReferences() throws Exception {
+    void testReloadReferences() throws Exception {
         ContentTypeRefreshRequest bodyRequest = new ContentTypeRefreshRequest();
         mockMvc.perform(
                 post("/plugins/cms/contentTypesStatus")
@@ -829,7 +829,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testExtractStatus() throws Exception {
+    void testExtractStatus() throws Exception {
         mockMvc.perform(
                 get("/plugins/cms/contentTypesStatus")
                 .header("Authorization", "Bearer " + accessToken)
@@ -886,7 +886,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetContentTypeUsage() throws Exception {
+    void testGetContentTypeUsage() throws Exception {
         String code = "ART";
 
         mockMvc.perform(get("/plugins/cms/contentTypes/{code}/usage", code)
@@ -917,7 +917,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateContentTypeAttributeWithMultipleLanguagesName() throws Exception {
+    void testCreateContentTypeAttributeWithMultipleLanguagesName() throws Exception {
         String typeCode = "TX5";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -984,7 +984,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testContentTypeAttributeNamesToNameFallback() throws Exception {
+    void testContentTypeAttributeNamesToNameFallback() throws Exception {
         String typeCode = "TX6";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -1050,7 +1050,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testContentTypeAttributeNameToNamesFallback() throws Exception {
+    void testContentTypeAttributeNameToNamesFallback() throws Exception {
         String typeCode = "TX7";
         try {
             ContentTypeDto contentType = this.createContentType(typeCode);
@@ -1127,7 +1127,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testComponentExistenceAnalysis() throws Exception {
+    void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
         AnalysisControllerDiffAnalysisEngineTestsStubs.testComponentCmsAnalysisResult(
                 AnalysisControllerDiffAnalysisEngineTestsStubs.COMPONENT_CONTENT_TYPES,

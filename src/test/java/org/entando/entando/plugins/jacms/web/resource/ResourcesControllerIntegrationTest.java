@@ -59,14 +59,14 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Test
-    public void testListImagesUnauthorized() throws Exception {
+    void testListImagesUnauthorized() throws Exception {
         performGetResources(null, "image", null)
             .andDo(print())
             .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testListAssetsManageResources() throws Exception {
+    void testListAssetsManageResources() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
                 .build();
@@ -76,7 +76,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAssetsAuthorizedContentSupervisor() throws Exception {
+    void testListAssetsAuthorizedContentSupervisor() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
                 .build();
@@ -86,7 +86,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAssetsAuthorizedContentEditor() throws Exception {
+    void testListAssetsAuthorizedContentEditor() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR)
                 .build();
@@ -96,7 +96,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAssetsFolderManageResource() throws Exception {
+    void testListAssetsFolderManageResource() throws Exception {
         Role role = createRole("manageResources", "descr");
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
@@ -143,15 +143,15 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteFileResourceAuthorizationManageResource() throws Exception {
+    void testCreateEditDeleteFileResourceAuthorizationManageResource() throws Exception {
         testCreateEditDeleteFileResourceAuthorization(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
     }
     @Test
-    public void testCreateEditDeleteFileResourceAuthorizationContentEditor() throws Exception {
+    void testCreateEditDeleteFileResourceAuthorizationContentEditor() throws Exception {
         testCreateEditDeleteFileResourceAuthorization(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
     }
     @Test
-    public void testCreateEditDeleteFileResourceAuthorizationContentSupervisor() throws Exception {
+    void testCreateEditDeleteFileResourceAuthorizationContentSupervisor() throws Exception {
         testCreateEditDeleteFileResourceAuthorization(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
     }
 
@@ -211,17 +211,17 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
 
     @Test
-    public void testCreateCloneAssetAuthorizationManageResource() throws Exception {
+    void testCreateCloneAssetAuthorizationManageResource() throws Exception {
       testCreateCloneAssetAuthorization(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
     }
 
     @Test
-    public void testCreateCloneAssetAuthorizationContentSupervisor() throws Exception {
+    void testCreateCloneAssetAuthorizationContentSupervisor() throws Exception {
         testCreateCloneAssetAuthorization(Permission.CONTENT_EDITOR, Permission.CONTENT_EDITOR);
     }
 
     @Test
-    public void testCreateCloneAssetAuthorizationContentEditor() throws Exception {
+    void testCreateCloneAssetAuthorizationContentEditor() throws Exception {
         testCreateCloneAssetAuthorization(Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR);
     }
 
@@ -277,7 +277,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListImagesWithoutFilter() throws Exception {
+    void testListImagesWithoutFilter() throws Exception {
         UserDetails user = createAccessToken();
 
         performGetResources(user, "image", null)
@@ -290,7 +290,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListFilesWithoutFilter() throws Exception {
+    void testListFilesWithoutFilter() throws Exception {
         UserDetails user = createAccessToken();
 
         performGetResources(user, "file", null)
@@ -300,7 +300,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAllTypesWithoutFilter() throws Exception {
+    void testListAllTypesWithoutFilter() throws Exception {
         UserDetails user = createAccessToken();
 
         performGetResources(user, null, null)
@@ -310,7 +310,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterImagesByPage() throws Exception {
+    void testFilterImagesByPage() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("page", "2");
@@ -324,7 +324,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterFilesByPage() throws Exception {
+    void testFilterFilesByPage() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("page", "2");
@@ -337,7 +337,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterImagesByGroup() throws Exception {
+    void testFilterImagesByGroup() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "group");
@@ -352,7 +352,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterFilesByGroup() throws Exception {
+    void testFilterFilesByGroup() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "group");
@@ -366,7 +366,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testSortByGroupAsc() throws Exception {
+    void testSortByGroupAsc() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("sort", "group");
@@ -380,7 +380,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testSortByGroupDesc() throws Exception {
+    void testSortByGroupDesc() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("sort", "group");
@@ -394,7 +394,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterImagesByCategories() throws Exception {
+    void testFilterImagesByCategories() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "categories");
@@ -410,7 +410,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterFilesByCategories() throws Exception {
+    void testFilterFilesByCategories() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "categories");
@@ -424,7 +424,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterImagesByCategoriesShouldFindNone() throws Exception {
+    void testFilterImagesByCategoriesShouldFindNone() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "categories");
@@ -437,7 +437,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterFilesByCategoriesShouldFindNone() throws Exception {
+    void testFilterFilesByCategoriesShouldFindNone() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "categories");
@@ -450,7 +450,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourcesByGroupAndCategories() throws Exception {
+    void testFilterResourcesByGroupAndCategories() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "group");
@@ -469,7 +469,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByOwner() throws Exception {
+    void testFilterResourceByOwner() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "owner");
@@ -484,7 +484,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByCreatedAt() throws Exception {
+    void testFilterResourceByCreatedAt() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -501,7 +501,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByCreatedAt2() throws Exception {
+    void testFilterResourceByCreatedAt2() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -518,7 +518,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByCreatedAt3() throws Exception {
+    void testFilterResourceByCreatedAt3() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -539,7 +539,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByUpdatedAt() throws Exception {
+    void testFilterResourceByUpdatedAt() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -556,7 +556,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByUpdatedAt2() throws Exception {
+    void testFilterResourceByUpdatedAt2() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -573,7 +573,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourceByUpdatedAt3() throws Exception {
+    void testFilterResourceByUpdatedAt3() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
@@ -594,7 +594,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteImageResource() throws Exception {
+    void testCreateEditDeleteImageResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -649,7 +649,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteImageResourceWithoutCategory() throws Exception {
+    void testCreateEditDeleteImageResourceWithoutCategory() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -692,7 +692,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteFileResourceWithCode() throws Exception {
+    void testCreateEditDeleteFileResourceWithCode() throws Exception {
         UserDetails user = createAccessToken();
         String code = "my_code";
 
@@ -737,7 +737,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteFileResource() throws Exception {
+    void testCreateEditDeleteFileResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -788,7 +788,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditWithoutFileDeleteImageResource() throws Exception {
+    void testCreateEditWithoutFileDeleteImageResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -841,7 +841,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditWithoutFileDeleteFileResource() throws Exception {
+    void testCreateEditWithoutFileDeleteFileResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -892,7 +892,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateImageResourceWithInvalidMimeType() throws Exception {
+    void testCreateImageResourceWithInvalidMimeType() throws Exception {
         UserDetails user = createAccessToken();
         performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1, resCat2"}).collect(Collectors.toList()), "application/pdf")
             .andDo(print())
@@ -908,7 +908,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateFileResourceWithInvalidMimeType() throws Exception {
+    void testCreateFileResourceWithInvalidMimeType() throws Exception {
         UserDetails user = createAccessToken();
         performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1, resCat2"}).collect(Collectors.toList()), "application/jpeg")
             .andDo(print())
@@ -923,7 +923,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateCloneDeleteFileResource() throws Exception {
+    void testCreateCloneDeleteFileResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
         String clonedId = null;
@@ -984,7 +984,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateCloneDeleteImageResource() throws Exception {
+    void testCreateCloneDeleteImageResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
         String clonedId = null;
@@ -1049,7 +1049,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateCloneDeleteClonedImageResource() throws Exception {
+    void testCreateCloneDeleteClonedImageResource() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
         String imagePath = null;
@@ -1149,7 +1149,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testEditResourceNotFound() throws Exception {
+    void testEditResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
 
         performEditResource(user, "file", "999999", "new file description", null, false)
@@ -1162,7 +1162,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testDeleteResourceNotValidGroup() throws Exception {
+    void testDeleteResourceNotValidGroup() throws Exception {
         final UserDetails editor = createEditor();
         final UserDetails admin = createAdmin();
 
@@ -1199,7 +1199,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testDeleteResourceNotFound() throws Exception {
+    void testDeleteResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
 
         performDeleteResource(user, "file", "99999")
@@ -1212,7 +1212,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCloneResourceNotFound() throws Exception {
+    void testCloneResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
         performCloneResource(user, "999999")
                 .andDo(print())
@@ -1220,7 +1220,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testFilterResourcesByCategory() throws Exception {
+    void testFilterResourcesByCategory() throws Exception {
         String createdId1 = null;
         String createdId2 = null;
         String createdId3 = null;
@@ -1426,7 +1426,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateDeleteImageResourceWithPath() throws Exception {
+    void testCreateDeleteImageResourceWithPath() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -1471,7 +1471,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateEditDeleteImageResourceWithPath() throws Exception {
+    void testCreateEditDeleteImageResourceWithPath() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
 
@@ -1531,7 +1531,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testCreateCloneDeleteImageResourceWithPath() throws Exception {
+    void testCreateCloneDeleteImageResourceWithPath() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
         String clonedId = null;
@@ -1620,7 +1620,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testSubfoldersOnListAssetsFolderPath() throws Exception {
+    void testSubfoldersOnListAssetsFolderPath() throws Exception {
         UserDetails user = createAccessToken();
         String createdId = null;
         String createdId2 = null;
@@ -1886,7 +1886,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testGetResourcesWithLinkability() throws Exception {
+    void testGetResourcesWithLinkability() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         String accessToken = mockOAuthInterceptor(user);
 
@@ -1903,7 +1903,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    public void testListAssetUserGroupsPermissions() throws Exception {
+    void testListAssetUserGroupsPermissions() throws Exception {
         UserDetails editor = createEditor();
         UserDetails admin = createAdmin();
 

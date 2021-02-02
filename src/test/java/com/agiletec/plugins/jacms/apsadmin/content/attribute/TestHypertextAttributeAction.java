@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 
 	@Test
-	public void testFindContent_1() throws Throwable {
+	void testFindContent_1() throws Throwable {
 		this.initIntroContentLink("admin", "ART1");//Contenuto del gruppo Free
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -44,7 +44,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFindContent_2() throws Throwable {
+    void testFindContent_2() throws Throwable {
 		this.initIntroContentLink("admin", "ART120");//Contenuto del gruppo degli amministratori
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -52,7 +52,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFindContent_3() throws Throwable {
+    void testFindContent_3() throws Throwable {
 		this.initIntroContentLink("editorCustomers", "ART102");//Contenuto del gruppo customers
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -64,7 +64,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testFindContent_4() throws Throwable {
+    void testFindContent_4() throws Throwable {
 		this.initIntroContentLink("admin", "EVN25");//Contenuto del gruppo coach
 		ContentLinkAttributeAction action = (ContentLinkAttributeAction) this.getAction();
 		List<String> contentIds = action.getContents();
@@ -84,7 +84,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testConfigPageLink_1() throws Throwable {
+    void testConfigPageLink_1() throws Throwable {
 		this.initIntroPageLink("admin", "ART1");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -93,7 +93,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testConfigPageLink_2() throws Throwable {
+    void testConfigPageLink_2() throws Throwable {
 		this.initIntroPageLink("admin", "ART102");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -102,7 +102,7 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testOpenPageTree_1() throws Throwable {
+    void testOpenPageTree_1() throws Throwable {
 		this.openTree("admin", "ART1", "homepage");
 		ITreeNode root = ((PageTreeAction) this.getAction()).getAllowedTreeRootNode();
 		assertNotNull(root);
@@ -114,19 +114,19 @@ class TestHypertextAttributeAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testOpenPageTree_2() throws Throwable {
+    void testOpenPageTree_2() throws Throwable {
 		this.openTree("admin", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}
 
 	@Test
-    public void testOpenPageTree_3() throws Throwable {
+    void testOpenPageTree_3() throws Throwable {
 		this.openTree("editorCustomers", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}
 
 	@Test
-    public void testOpenPageTree_4() throws Throwable {
+    void testOpenPageTree_4() throws Throwable {
 		this.openTreeOnDemand("editorCustomers", "ART102", "homepage");
 		this.checkTestOpenPageTree_ART102();
 	}

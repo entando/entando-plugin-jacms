@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	
 	@Test
-    public void testInitConfigListViewer_1() throws Throwable {
+    void testInitConfigListViewer_1() throws Throwable {
 		String result = this.executeConfigListViewer("admin", "homepage", "1", "content_viewer_list");
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -48,7 +48,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testInitConfigListViewer_2() throws Throwable {
+    void testInitConfigListViewer_2() throws Throwable {
 		String result = this.executeConfigListViewer("admin", "homepage", "0", null);
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -71,7 +71,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testFailureConfigContentType_1() throws Throwable {
+    void testFailureConfigContentType_1() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "");
 		assertEquals(Action.INPUT, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -82,7 +82,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testFailureConfigContentType_2() throws Throwable {
+    void testFailureConfigContentType_2() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "WRO");//Tipo contenuto inesistente
 		assertEquals(Action.INPUT, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -93,7 +93,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testConfigContentType() throws Throwable {
+    void testConfigContentType() throws Throwable {
 		String result = this.executeConfigContentType("admin", "homepage", "1", "content_viewer_list", "ART");
 		assertEquals(Action.SUCCESS, result);
 		ContentListViewerWidgetAction action = (ContentListViewerWidgetAction) this.getAction();
@@ -129,7 +129,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testMoveFilter() throws Throwable {
+    void testMoveFilter() throws Throwable {
 		Map<String, String> paramsUp = new HashMap<String, String>();
 		paramsUp.put("movement","UP");
 		paramsUp.put("filterIndex","1");
@@ -182,7 +182,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testDeleteFilter() throws Throwable {
+    void testDeleteFilter() throws Throwable {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("filterIndex","1");
 		params.put("filters", "(order=DESC;attributeFilter=true;likeOption=false;key=Date)+(order=ASC;attributeFilter=true;likeOption=false;key=Title)");
@@ -199,7 +199,7 @@ class TestContentListViewerWidgetAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testAddFilter() throws Throwable {
+    void testAddFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("pageCode", "homepage");

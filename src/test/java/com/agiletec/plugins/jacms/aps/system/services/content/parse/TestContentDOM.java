@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class TestContentDOM extends BaseTestCase {
 	
 	@Test
-    public void testGetXMLDocument() throws EntException {
+    void testGetXMLDocument() throws EntException {
     	Content contentTest = this._contentManager.createContentType("ART");
     	assertNotNull(contentTest);
     	contentTest.addGroup("tempGroupName");

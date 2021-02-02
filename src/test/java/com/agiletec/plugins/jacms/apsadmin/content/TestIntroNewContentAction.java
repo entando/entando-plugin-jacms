@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 
 	@Test
-    public void testOpenNew() throws Throwable {
+    void testOpenNew() throws Throwable {
 		String result = this.executeOpenNew("admin");
 		assertEquals(Action.SUCCESS, result);
 
@@ -49,7 +49,7 @@ class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testCreateNewVoid() throws Throwable {
+    void testCreateNewVoid() throws Throwable {
 		String contentTypeCode = "ART";
 		Content prototype = this.getContentManager().createContentType(contentTypeCode);
 		String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(prototype, ApsAdminSystemConstants.ADD);
@@ -81,7 +81,7 @@ class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testCreateNewVoid_2() throws Throwable {
+    void testCreateNewVoid_2() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		String result = this.executeAction();
@@ -92,7 +92,7 @@ class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testCreateNewVoid_3() throws Throwable {
+    void testCreateNewVoid_3() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		this.addParameter("contentTypeCode", "ART");
@@ -107,7 +107,7 @@ class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testCreateNewVoid_4() throws Throwable {
+    void testCreateNewVoid_4() throws Throwable {
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.setUserOnSession("admin");
 		this.addParameter("contentTypeCode", "ART");
@@ -122,7 +122,7 @@ class TestIntroNewContentAction extends AbstractBaseTestContentAction {
 	}
 
 	@Test
-    public void testCreateNewVoid_5() throws Throwable {
+    void testCreateNewVoid_5() throws Throwable {
 		this.setUserOnSession("editorCustomers");
 		this.initAction("/do/jacms/Content", "createNewVoid");
 		this.addParameter("contentTypeCode", "ART");

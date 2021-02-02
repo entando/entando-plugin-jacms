@@ -42,13 +42,13 @@ class TestApiContentTypeInterface extends ApiBaseTestCase {
     private final static String CONTENT_VIEW_TEST = "contentviewtest";
     
     @Test
-    public void testGetXmlContent() throws Throwable {
+    void testGetXmlContent() throws Throwable {
         MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
         this.testGetContentType(mediaType, "admin", "ART", CONTENT_VIEW, "it");
     }
 
     @Test
-    public void testCreateNewContentFromXml() throws Throwable {
+    void testCreateNewContentFromXml() throws Throwable {
         MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
         this.testCreateNewContentType(mediaType, "TST");
     }

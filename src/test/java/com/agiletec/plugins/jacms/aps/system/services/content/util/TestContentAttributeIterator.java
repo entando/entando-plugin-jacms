@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 class TestContentAttributeIterator {
 	
     @Test
-    public void testIterator() throws EntException {  
+    void testIterator() throws EntException {  
 		Content content = new Content();
     	AttributeInterface attribute = new MonoTextAttribute();
     	attribute.setName("temp");

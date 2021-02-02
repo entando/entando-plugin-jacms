@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 class TestResourceDAO extends BaseTestCase {
 	
 	@Test
-    public void testAddDeleteResource() throws Throwable {  
+    void testAddDeleteResource() throws Throwable {  
 		DataSource dataSource = (DataSource) this.getApplicationContext().getBean("portDataSource");
     	MockResourcesDAO mockResourcesDao = new MockResourcesDAO();
     	mockResourcesDao.setDataSource(dataSource);

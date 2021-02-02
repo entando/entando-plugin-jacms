@@ -60,7 +60,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     private IContentListWidgetHelper helper;
 
     @Test
-    public void testGetFilters() throws Throwable {
+    void testGetFilters() throws Throwable {
         String filtersShowletParam = "(key=DataInizio;attributeFilter=true;start=21/10/2007;order=DESC)+(key=Titolo;attributeFilter=true;order=ASC)";
         EntitySearchFilter[] filters = this.helper.getFilters("EVN", filtersShowletParam, this.getRequestContext());
         assertEquals(2, filters.length);
@@ -73,7 +73,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetFilters_OneDefinition() {
+    void testGetFilters_OneDefinition() {
         RequestContext reqCtx = this.getRequestContext();
         String contentType = "ART";
         String showletParam = "(key=Titolo;attributeFilter=TRUE;start=START;end=END;like=FALSE;order=ASC)";
@@ -122,7 +122,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetFilters_TwoDefinition() {
+    void testGetFilters_TwoDefinition() {
         RequestContext reqCtx = this.getRequestContext();
         String contentType = "ART";
         String showletParam = "(key=Titolo;attributeFilter=TRUE;start=START;end=END;like=FALSE;order=ASC)+(key=descr;value=VALUE;attributeFilter=FALSE;order=ASC)";
@@ -156,7 +156,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetContents_1() throws Throwable {
+    void testGetContents_1() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;
@@ -195,7 +195,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetContents_2() throws Throwable {
+    void testGetContents_2() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;
@@ -235,7 +235,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetContents_3() throws Throwable {
+    void testGetContents_3() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;
@@ -274,7 +274,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetContents_4() throws Throwable {
+    void testGetContents_4() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;

@@ -44,7 +44,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     private IResourceManager resourceManager = null;
 
     @Test
-    public void testTrashResource() throws Throwable {
+    void testTrashResource() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "trash");
         this.addParameter("resourceId", "7");
@@ -61,7 +61,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testDeleteResourceReferencedFromEditor() throws Throwable {
+    void testDeleteResourceReferencedFromEditor() throws Throwable {
         this.setUserOnSession("mainEditor");
         this.initAction("/do/jacms/Resource", "delete");
         this.addParameter("resourceId", "7");
@@ -70,7 +70,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testDeleteUnknownResource() throws Throwable {
+    void testDeleteUnknownResource() throws Throwable {
         String result = null;
         try {
             this.setUserOnSession("admin");
@@ -84,7 +84,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
 
     //Test the validation defined in the ResourceAction-validation.xml
     @Test
-    public void testSaveNewResourceStrutsValidation() throws Throwable {
+    void testSaveNewResourceStrutsValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "save");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -99,7 +99,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
 
     //Test the validation defined in the MultipleResourceAction.java
     @Test
-    public void testSaveNewResourceMultipleResourceValidation() throws Throwable {
+    void testSaveNewResourceMultipleResourceValidation() throws Throwable {
         this.setUserOnSession("admin");
         this.initAction("/do/jacms/Resource", "save");
         this.addParameter("strutsAction", String.valueOf(ApsAdminSystemConstants.ADD));
@@ -117,7 +117,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSaveNewResource_2() throws Throwable {
+    void testSaveNewResource_2() throws Throwable {
         String insertedDescr = "Description ";
         while (insertedDescr.length() < 300) {
             insertedDescr += insertedDescr;
@@ -137,7 +137,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSaveEditedResource() throws Throwable {
+    void testSaveEditedResource() throws Throwable {
         String resourceId = "44";
         this.setUserOnSession("admin");
         ResourceInterface resource = this.resourceManager.loadResource(resourceId);
@@ -163,7 +163,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testPerformRemoveJoinCategory() throws Throwable {
+    void testPerformRemoveJoinCategory() throws Throwable {
         this.entryEditResource("44", "admin");
 
         MultipleResourceAction action = (MultipleResourceAction) this.getAction();
@@ -214,7 +214,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testJoinCategoryWithInvalidCategory() throws Throwable {
+    void testJoinCategoryWithInvalidCategory() throws Throwable {
         String result = null;
         try {
             this.setUserOnSession("admin");
@@ -228,7 +228,7 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
 
     // * NOTE: we create a fake resource using the manager rather than the most obvious 'save' action.
     @Test
-    public void testDelete() throws Throwable {
+    void testDelete() throws Throwable {
         ResourceInterface resource = this.resourceManager.createResourceType("Image");
         String resourceId = null;
         String result = null;

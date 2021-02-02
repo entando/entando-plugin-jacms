@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestBaseFilterAction extends ApsAdminBaseTestCase {
 	
 	@Test
-    public void testNewFilter() throws Throwable {
+    void testNewFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		this.initAction("/do/jacms/Page/SpecialWidget/ListViewer", "newFilter");
 		this.addParameter("pageCode", "homepage");
@@ -39,7 +39,7 @@ class TestBaseFilterAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testSetFilterType() throws Throwable {
+    void testSetFilterType() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("pageCode", "homepage");
@@ -65,7 +65,7 @@ class TestBaseFilterAction extends ApsAdminBaseTestCase {
 	}
 	
 	@Test
-    public void testSaveFilter() throws Throwable {
+    void testSaveFilter() throws Throwable {
 		this.setUserOnSession("admin");
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("pageCode", "homepage");

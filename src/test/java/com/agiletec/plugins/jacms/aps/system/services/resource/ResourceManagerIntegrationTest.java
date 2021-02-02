@@ -55,7 +55,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     private IGroupManager groupManager;
 
     @Test
-    public void testLoadResource() throws Throwable {
+    void testLoadResource() throws Throwable {
         try {
             ResourceInterface resource = this.resourceManager.loadResource("44");
             assertTrue(resource instanceof ImageResource);
@@ -78,7 +78,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testUpdateResource() throws Throwable {
+    void testUpdateResource() throws Throwable {
         String oldDescr = null;
         List<Category> oldCategories = null;
         try {
@@ -109,7 +109,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testSearchResources_1() throws Throwable {
+    void testSearchResources_1() throws Throwable {
         List<String> resourceIds = this.resourceManager.searchResourcesId("Image", "", null, this.getAllGroupCodes());
         assertEquals(3, resourceIds.size());
 
@@ -123,7 +123,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testSearchResources_2() throws Throwable {
+    void testSearchResources_2() throws Throwable {
         List<String> resourceIds = this.resourceManager.searchResourcesId("Image", "", "jpg", null, this.getAllGroupCodes());
         assertEquals(3, resourceIds.size());
 
@@ -135,7 +135,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testSearchResourcesForCategory() throws Throwable {
+    void testSearchResourcesForCategory() throws Throwable {
         List<String> resourceIds = resourceManager.searchResourcesId("Image", null, "resCat1", this.getAllGroupCodes());
         assertEquals(1, resourceIds.size());
 
@@ -149,7 +149,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testAddRemoveImageResource() throws Throwable {
+    void testAddRemoveImageResource() throws Throwable {
         this.testAddRemoveImageResource(Group.FREE_GROUP_NAME);
         this.testAddRemoveImageResource(Group.ADMINS_GROUP_NAME);
     }
@@ -198,7 +198,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testAddRemoveImageResources() throws Throwable {
+    void testAddRemoveImageResources() throws Throwable {
         this.testAddRemoveImageResources(Group.FREE_GROUP_NAME);
         this.testAddRemoveImageResources("customers");
         this.testAddRemoveImageResources(Group.ADMINS_GROUP_NAME);
@@ -326,7 +326,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testLoadSvg() throws Throwable {
+    void testLoadSvg() throws Throwable {
         List<String> allowedGroups = this.getAllGroupCodes();
         String resDescrToAdd1 = "Svg1";
         String resourceType = "Image";
@@ -424,7 +424,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testAddNullResource() throws Throwable {
+    void testAddNullResource() throws Throwable {
         List<String> allowedGroups = this.getAllGroupCodes();
         String resDescrToAdd = "Null Entando resource";
         String resourceType = "Attach";
@@ -469,7 +469,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetResourceType() {
+    void testGetResourceType() {
         ResourceInterface imageResource = this.resourceManager.createResourceType("Image");
         assertEquals("", imageResource.getDescription());
         assertEquals("", imageResource.getId());
@@ -477,7 +477,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testCreateResourceType() {
+    void testCreateResourceType() {
         ResourceInterface imageResource = this.resourceManager.createResourceType("Image");
         assertNotNull(imageResource);
         assertEquals("", imageResource.getDescription());
@@ -487,7 +487,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testGetGroupUtilizers() throws Throwable {
+    void testGetGroupUtilizers() throws Throwable {
         assertTrue(this.resourceManager instanceof GroupUtilizer);
         List utilizers = ((GroupUtilizer) this.resourceManager).getGroupUtilizers(Group.FREE_GROUP_NAME);
         assertEquals(4, utilizers.size());
@@ -505,7 +505,7 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
-    public void testGetMetadataMapping() throws Exception {
+    void testGetMetadataMapping() throws Exception {
         Map<String, List<String>> mapping = this.resourceManager.getMetadataMapping();
         assertNotNull(mapping);
         assertEquals(4, mapping.size());

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class TestCategoryUtilizer extends BaseTestCase {
 
 	@Test
-    public void testGetCategoryUtilizers_1() throws Throwable {
+    void testGetCategoryUtilizers_1() throws Throwable {
 		String[] names = this.getApplicationContext().getBeanNamesForType(CategoryUtilizer.class);
 		assertTrue(names.length >= 2);
 		for (int i = 0; i < names.length; i++) {
@@ -43,7 +43,7 @@ class TestCategoryUtilizer extends BaseTestCase {
 	}
 
 	@Test
-    public void testGetCategoryUtilizers_2() throws Throwable {
+    void testGetCategoryUtilizers_2() throws Throwable {
 		String[] names = this.getApplicationContext().getBeanNamesForType(CategoryUtilizer.class);
 		assertTrue(names.length >= 2);
 		for (int i = 0; i < names.length; i++) {

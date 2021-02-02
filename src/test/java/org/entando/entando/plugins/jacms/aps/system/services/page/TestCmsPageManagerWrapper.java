@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class TestCmsPageManagerWrapper extends BaseTestCase {
 
 	@Test
-    public void testGetContentUtilizers() throws Throwable {
+    void testGetContentUtilizers() throws Throwable {
 		List<IPage> utilizers = this._pageManagerWrapper.getContentUtilizers("ART187");
 		assertEquals(3, utilizers.size());
 		List<String> codes = new ArrayList<String>();

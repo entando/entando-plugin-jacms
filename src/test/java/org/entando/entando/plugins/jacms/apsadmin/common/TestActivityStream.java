@@ -58,7 +58,7 @@ class TestActivityStream extends ApsAdminBaseTestCase {
     private ActionLoggerTestHelper helper;
 
     @Test
-    public void testSaveNewContent_1() throws Throwable {
+    void testSaveNewContent_1() throws Throwable {
         Content content = this.contentManager.loadContent("ART1", false);
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -108,7 +108,7 @@ class TestActivityStream extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testSaveNewContent_2() throws Throwable {
+    void testSaveNewContent_2() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -146,7 +146,7 @@ class TestActivityStream extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testActivityStreamSearchBean() throws Throwable {
+    void testActivityStreamSearchBean() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
@@ -211,7 +211,7 @@ class TestActivityStream extends ApsAdminBaseTestCase {
     }
 
     @Test
-    public void testLastUpdate() throws Throwable {
+    void testLastUpdate() throws Throwable {
         Content content = this.contentManager.loadContent("EVN41", false);//"coach" group
         String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(content, ApsAdminSystemConstants.ADD);
         content.setId(null);
