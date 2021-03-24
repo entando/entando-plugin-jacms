@@ -341,11 +341,12 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
-
         performReloadReferences(user)
             .andDo(print())
             .andExpect(status().isOk());
-
+		synchronized (this) {
+			this.wait(1000);
+		}
         performGetContentSettings(user)
             .andDo(print())
             .andExpect(status().isOk())
