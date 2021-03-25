@@ -5,6 +5,7 @@
 <%@ taglib prefix="wp" uri="/aps-core" %>
 <%@ taglib prefix="wpsa" uri="/apsadmin-core" %>
 <%@ taglib prefix="wpsf" uri="/apsadmin-form" %>
+<%@ taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" %>
 <!DOCTYPE html>
 <html lang="<s:property value="currentLang.code" />">
 	<head>
@@ -202,10 +203,10 @@
 					</h1>
 					<!-- Default separator -->
 					<div class="form-group-separator"></div>
-						<c:set var="linkTypeVar" value="${param.linkTypeVar}" scope="page"/>
-						<c:set var="prevCode" value="${param.prevCode}" scope="page"/>
-						<c:set var="prevLinkTypeVar" value="${param.prevLinkTypeVar}" scope="page"/>
-						<c:set var="contentOnSessionMarker" value="${param.contentOnSessionMarker}" scope="page"/>
+						<c:set var="linkTypeVar" scope="page"><e:forHtml value="${param.linkTypeVar}" /></c:set>
+						<c:set var="prevCode" scope="page"><e:forHtml value="${param.prevCode}" /></c:set>
+						<c:set var="prevLinkTypeVar" scope="page"><e:forHtml value="${param.prevLinkTypeVar}" /></c:set>
+						<c:set var="contentOnSessionMarker" scope="page"><e:forHtml value="${param.contentOnSessionMarker}" /></c:set>
 						<!-- Tab Menu -->
                         <ul class="nav nav-tabs tab-togglers mt-20" id="tab-togglers">
                             <s:url action="entandoInternalUrlLink" anchor="url-link" var="externalLinkURL">
@@ -232,10 +233,10 @@
                                 <s:param name="prevCode" value="%{#attr.prevCode}" />
                                 <s:param name="prevLinkTypeVar" value="%{#attr.prevLinkTypeVar}" />
                             </s:url>
-							<li ${((param.linkTypeVar eq 1) || (empty param.linkTypeVar))?'class="active"':''}><a href="${externalLinkURL}"><s:text name="note.URLLinkTo" /></a></li>
-							<li ${(param.linkTypeVar eq 2)?'class="active"':''} ><a href="${pageLinkURL}"><s:text name="note.pageLinkTo" /></a></li>
-							<li ${(param.linkTypeVar eq 3)?'class="active"':''} ><a href="${contentLinkURL}"><s:text name="note.contentLinkTo" /></a></li>
-							<li ${(param.linkTypeVar eq 5)?'class="active"':''} ><a href="${resourceLinkURL}"><s:text name="note.resourceLinkTo" /></a></li>
+							<li <c:if test="${empty linkTypeVar || linkTypeVar eq 1}">class="active"</c:if> ><a href="${externalLinkURL}"><s:text name="note.URLLinkTo" /></a></li>
+							<li <c:if test="${linkTypeVar eq 2}">class="active"</c:if> ><a href="${pageLinkURL}"><s:text name="note.pageLinkTo" /></a></li>
+							<li <c:if test="${linkTypeVar eq 3}">class="active"</c:if> ><a href="${contentLinkURL}"><s:text name="note.contentLinkTo" /></a></li>
+							<li <c:if test="${linkTypeVar eq 5}">class="active"</c:if> ><a href="${resourceLinkURL}"><s:text name="note.resourceLinkTo" /></a></li>
 						</ul>
 						<!-- Link types -->
 						<div class="panel panel-default no-top-border" id="tab-container">
