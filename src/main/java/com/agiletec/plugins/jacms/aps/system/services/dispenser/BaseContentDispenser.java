@@ -37,6 +37,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.linkresolver.ILinkResolverManager;
 import com.agiletec.plugins.jacms.aps.system.services.renderer.IContentRenderer;
 import java.util.stream.Collectors;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
@@ -211,10 +212,10 @@ public class BaseContentDispenser extends AbstractService implements IContentDis
             }
             if (!codes.isEmpty()) {
                 Collections.sort(codes);
-                key.append("_AUTHS:").append(codes.stream().collect(Collectors.joining("-")));
+                key.append("_AUTHS_").append(codes.stream().collect(Collectors.joining("-")));
             }
         }
-        return key.toString();
+        return DigestUtils.sha256Hex(key.toString());
     }
 
     public static String getRenderizationInfoCacheGroupsCsv(String contentId, long modelId) {
