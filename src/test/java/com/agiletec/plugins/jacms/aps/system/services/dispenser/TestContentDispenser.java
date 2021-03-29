@@ -31,7 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.agiletec.aps.system.services.user.IUserManager;
+import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -203,7 +206,45 @@ class TestContentDispenser extends BaseTestCase {
             }
         }
     }
-
+    
+    @Test
+    void testGetRenderedContent_5() throws Throwable {
+        Content content = this._contentManager.loadContent("ART1", true);
+        content.setId(null);
+        try {
+            RequestContext reqCtx = this.getRequestContext();
+            this.setUserOnSession("admin");
+            IUserManager userManager = super.getApplicationContext().getBean(IUserManager.class);
+            UserDetails currentUser = (UserDetails) reqCtx.getRequest().getSession().getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER);
+            UserDetails guestUser = userManager.getGuestUser();
+            assertEquals("admin", currentUser.getUsername());
+            this._contentManager.insertOnLineContent(content);
+            String cacheKey = BaseContentDispenser.getRenderizationInfoCacheKey(content.getId(), 2, "it", currentUser);
+            String cacheKeyGuest = BaseContentDispenser.getRenderizationInfoCacheKey(content.getId(), 2, "it", guestUser);
+            assertNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey));
+            assertNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKeyGuest));
+            Assertions.assertNotEquals(cacheKey, cacheKeyGuest);
+            ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo(content.getId(), 2, "it", currentUser, true);
+            ContentRenderizationInfo outputInfoGuest = this._contentDispenser.getRenderizationInfo(content.getId(), 2, "it", guestUser, true);
+            assertNotNull(outputInfo);
+            Assertions.assertEquals(outputInfo.getCachedRenderedContent(), outputInfoGuest.getCachedRenderedContent());
+            this.waitNotifyingThread();
+            assertNotNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey));
+            assertNotNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKeyGuest));
+            
+            this._contentManager.insertOnLineContent(content);
+            this.waitNotifyingThread();
+            assertNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey));
+            assertNull(this._cacheInfoManager.getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKeyGuest));
+        } catch (Throwable t) {
+            throw t;
+        } finally {
+            if (null != content.getId()) {
+                this._contentManager.deleteContent(content);
+            }
+        }
+    }
+    
     public void addNewContentModel(int id, String shape, String contentTypeCode) throws Throwable {
         ContentModel model = new ContentModel();
         model.setContentType(contentTypeCode);
@@ -216,7 +257,7 @@ class TestContentDispenser extends BaseTestCase {
     @Test
     void testGetUnauthorizedContent() throws Throwable {
         RequestContext reqCtx = this.getRequestContext();
-
+        this.setUserOnSession(SystemConstants.GUEST_USER_NAME);
         ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo("ART104", 2, "it", reqCtx);
         assertEquals("Current user 'guest' can't view this content", outputInfo.getCachedRenderedContent().trim());
 
@@ -263,7 +304,7 @@ class TestContentDispenser extends BaseTestCase {
         return input;
     }
     
-    @BeforeAll
+    @BeforeEach
     private void init() throws Exception {
         try {
             this._contentDispenser = (IContentDispenser) this.getService(JacmsSystemConstants.CONTENT_DISPENSER_MANAGER);
