@@ -1,6 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="wp" uri="/aps-core" %>
 <%@ taglib prefix="wpsf" uri="/apsadmin-form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" %>
 
 <!-- Errors -->
 <s:if test="hasFieldErrors()">
@@ -20,9 +22,11 @@
     </div>
 </s:if>
 
+<c:set var="linkTypeVar" scope="page"><e:forHtml value="${param.linkTypeVar}" /></c:set>
+
 <!-- Tab Menu -->
 <ul class="nav nav-tabs tab-togglers mt-20" id="tab-togglers">
-	<li ${(param.linkTypeVar eq 1)?'class="active"':''}>
+	<li <c:if test="${linkTypeVar eq 1}">class="active"</c:if>>
 	   <a href="<s:url action="configLink">
 			<s:param name="linkType" value="1" />
 			<s:param name="contentOnSessionMarker" value="%{#attr.contentOnSessionMarker}" /></s:url>">
@@ -30,7 +34,7 @@
 			<s:text name="note.URLLinkTo" />
 	   </a>
 	</li>
-	<li ${(param.linkTypeVar eq 2)?'class="active"':''}>
+	<li <c:if test="${linkTypeVar eq 2}">class="active"</c:if>>
 	   <a href="<s:url action="configLink">
 			<s:param name="linkType" value="2" />
 			<s:param name="contentOnSessionMarker" value="%{#attr.contentOnSessionMarker}" /></s:url>">
@@ -38,7 +42,7 @@
 			<s:text name="note.pageLinkTo" />
 	   </a>
 	</li>
-	<li ${(param.linkTypeVar eq 3)?'class="active"':''}>
+	<li <c:if test="${linkTypeVar eq 3}">class="active"</c:if>>
 		<a href="<s:url action="configLink">
 			<s:param name="linkType" value="3" />
 			<s:param name="contentOnSessionMarker" value="%{#attr.contentOnSessionMarker}" /></s:url>">
