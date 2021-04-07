@@ -4280,6 +4280,25 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         );
     }
 
+    @Test
+    void testAddContentWithHypertextAttributes() throws Exception {
+        try {
+
+            String accessToken = this.createAccessToken();
+            Assertions.assertNull(this.contentManager.getEntityPrototype("HT1"));
+
+            this.executeContentTypePost("1_POST_type_with_hypertext_attribute.json", accessToken, status().isCreated());
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("HT1"));
+
+            this.executeContentPost("1_POST_valid_with_hypertext_attribute.json", accessToken, status().isBadRequest());
+
+        } finally {
+            if (null != this.contentManager.getEntityPrototype("HT1")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("HT1");
+            }
+        }
+    }
+
     protected Page createPage(String pageCode, boolean addWidget) {
         return createPage(pageCode, addWidget, "free");
     }

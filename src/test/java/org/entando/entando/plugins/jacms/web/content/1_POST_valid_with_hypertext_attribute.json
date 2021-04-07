@@ -1,0 +1,21 @@
+[
+    {
+        "groups":[
+
+        ],
+        "mainGroup":"free",
+        "description":"content-all",
+        "categories":[
+
+        ],
+        "attributes":[
+            {
+                "code":"hypertext",
+                "values":{
+                    "en":" href=\"#!R;page_test!#\""
+                }
+            }
+        ],
+        "typeCode":"HT1"
+    }
+]

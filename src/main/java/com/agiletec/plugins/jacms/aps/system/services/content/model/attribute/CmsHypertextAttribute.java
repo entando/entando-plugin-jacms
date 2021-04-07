@@ -47,6 +47,7 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
     public Object getAttributePrototype() {
         CmsHypertextAttribute prototype = (CmsHypertextAttribute) super.getAttributePrototype();
         prototype.setContentManager(this.getContentManager());
+        prototype.setResourceManager(this.getResourceManager());
         prototype.setPageManager(this.getPageManager());
         return prototype;
     }
