@@ -1,0 +1,12 @@
+{
+    "code": "HT1",
+    "name": "Content Type HT1",
+    "attributes": [
+        {
+            "code": "hypertext",
+            "type": "Hypertext",
+            "name": "Description of hypertext attribute",
+            "mandatory": false
+        }
+    ]
+}
