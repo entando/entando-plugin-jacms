@@ -445,12 +445,11 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     }
 
     private Content toContent(ContentRecordVO contentVo) {
-        ContentTypeDto contentTypeDto = contentTypeService.findOne(contentVo.getTypeCode()).get();
 
         Content result = new Content();
         result.setId(contentVo.getId());
-        result.setTypeCode(contentTypeDto.getCode());
-        result.setTypeDescription(contentTypeDto.getName());
+        result.setTypeCode(contentVo.getTypeCode());
+        result.setTypeDescription(getTypeDescription(contentVo));
         result.setDescription(contentVo.getDescription());
         result.setStatus(contentVo.getStatus());
         result.setCreated(contentVo.getCreate());
@@ -465,6 +464,14 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         result.setRestriction(contentVo.getRestriction());
 
         return result;
+    }
+
+    private String getTypeDescription(ContentRecordVO contentVo) {
+        Optional<ContentTypeDto> contentTypeDtoOptional = contentTypeService.findOne(contentVo.getTypeCode());
+        if (contentTypeDtoOptional.isPresent()) {
+            return contentTypeDtoOptional.get().getName();
+        }
+        return null;
     }
 
     private PagedMetadata<ContentDto> toPagedMetadata(RestContentListRequest request,
