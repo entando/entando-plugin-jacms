@@ -27,26 +27,29 @@ import org.springframework.validation.BindingResult;
  */
 public interface IContentService extends IComponentExistsService {
 
-    public static final String STATUS_ONLINE = "published";
-    public static final String STATUS_DRAFT = "draft";
-    public static final String STATUS_UNPUBLISHED = "unpublished";
+    String STATUS_ONLINE = "published";
+    String STATUS_DRAFT = "draft";
+    String STATUS_UNPUBLISHED = "unpublished";
 
-    public ContentDto getContent(String code, String modelId, String status, String langCode, boolean resolveLinks, UserDetails user);
+    String MODE_LIST = "list";
+    String MODE_FULL = "full";
 
-    public ContentDto addContent(ContentDto request, UserDetails user, BindingResult bindingResult);
+    ContentDto getContent(String code, String modelId, String status, String langCode, boolean resolveLinks, UserDetails user);
 
-    public ContentDto updateContent(ContentDto request, UserDetails user, BindingResult bindingResult);
+    ContentDto addContent(ContentDto request, UserDetails user, BindingResult bindingResult);
 
-    public void deleteContent(String code, UserDetails user);
+    ContentDto updateContent(ContentDto request, UserDetails user, BindingResult bindingResult);
 
-    public ContentDto updateContentStatus(String code, String status, UserDetails user);
+    void deleteContent(String code, UserDetails user);
+
+    ContentDto updateContentStatus(String code, String status, UserDetails user);
     
-    public List<ContentDto> updateContentsStatus(List<String> codes, String status, UserDetails user);
+    List<ContentDto> updateContentsStatus(List<String> codes, String status, UserDetails user);
 
-    public PagedMetadata<?> getContentReferences(String code, String manager, UserDetails user, RestListRequest requestList);
+    PagedMetadata<?> getContentReferences(String code, String manager, UserDetails user, RestListRequest requestList);
 
-    public PagedMetadata<ContentDto> getContents(RestContentListRequest requestList, UserDetails user);
+    PagedMetadata<ContentDto> getContents(RestContentListRequest requestList, UserDetails user);
 
-    public Integer countContentsByType(String contentType);
+    Integer countContentsByType(String contentType);
 
 }

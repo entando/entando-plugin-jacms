@@ -42,10 +42,12 @@ import com.agiletec.plugins.jacms.aps.system.services.content.helper.IContentAut
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.PublicContentAuthorizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AbstractResourceAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentRestriction;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentTypeDto;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispenser;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
@@ -74,6 +76,7 @@ import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.content.ContentController;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
@@ -110,6 +113,9 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     @Autowired
     private ResourcesService resourcesService;
+
+    @Autowired
+    private ContentTypeService contentTypeService;
 
     public ILangManager getLangManager() {
         return langManager;
@@ -333,51 +339,139 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     }
 
     @Override
-    public PagedMetadata<ContentDto> getContents(RestContentListRequest requestList, UserDetails user) {
+    public PagedMetadata<ContentDto> getContents(RestContentListRequest request, UserDetails user) {
         try {
-            BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(requestList, "content");
-            boolean online = (IContentService.STATUS_ONLINE.equalsIgnoreCase(requestList.getStatus()));
-            List<EntitySearchFilter> filters = requestList.buildEntitySearchFilters();
-            EntitySearchFilter[] filtersArr = new EntitySearchFilter[filters.size()];
-            filtersArr = filters.toArray(filtersArr);
-            List<String> userGroupCodes = this.getAllowedGroups(user, online);
-            List<String> result = (online)
-                    ? this.getContentManager()
-                    .loadPublicContentsId(requestList.getCategories(), requestList.isOrClauseCategoryFilter(),
-                            filtersArr, userGroupCodes)
-                    : this.getContentManager()
-                            .loadWorkContentsId(requestList.getCategories(), requestList.isOrClauseCategoryFilter(),
-                                    filtersArr, userGroupCodes);
-            if (!StringUtils.isBlank(requestList.getText()) && online) {
-                String langCode =
-                        (StringUtils.isBlank(requestList.getLang())) ? this.getLangManager().getDefaultLang().getCode()
-                                : requestList.getLang();
-                List<String> fullTextResult = this.getSearchEngineManager()
-                        .searchEntityId(langCode, requestList.getText(), userGroupCodes);
-                result.removeIf(i -> !fullTextResult.contains(i));
-            }
-            List<String> sublist = requestList.getSublist(result);
-            PagedMetadata<ContentDto> pagedMetadata = new PagedMetadata<>(requestList, result.size());
-            List<ContentDto> masterList = new ArrayList<>();
-            for (String contentId : sublist) {
-                ContentDto dto = this.buildContentDto(contentId, online,
-                        requestList.getModel(), requestList.getLang(), requestList.isResolveLink(), user,
-                        bindingResult);
-
-                boolean compatible = isCompatibleWithLinkabilityFilter(dto, requestList);
-
-                if (compatible) {
-                    masterList.add(dto);
-                }
-            }
-            pagedMetadata.setBody(masterList);
-            return pagedMetadata;
+            List<String> contentIds = getContentIds(request, user);
+            List<ContentDto> result = toContentDto(request, user, contentIds);
+            return toPagedMetadata(request, contentIds, result);
         } catch (ResourceNotFoundException | ValidationGenericException e) {
             throw e;
         } catch (Exception t) {
             logger.error("error in search contents", t);
             throw new RestServerError("error in search contents", t);
         }
+    }
+
+    private List<String> getContentIds(RestContentListRequest request, UserDetails user) throws EntException {
+        boolean online = isStatusOnline(request.getStatus());
+        EntitySearchFilter[] filters = getEntitySearchFilters(request);
+        List<String> allowedGroups = this.getAllowedGroups(user, online);
+        List<String> result = online
+                ? this.getContentManager()
+                .loadPublicContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
+                        filters, allowedGroups)
+                : this.getContentManager()
+                        .loadWorkContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
+                                filters, allowedGroups);
+        if (!StringUtils.isBlank(request.getText()) && online) {
+            String langCode =
+                    (StringUtils.isBlank(request.getLang())) ? this.getLangManager().getDefaultLang().getCode()
+                            : request.getLang();
+            List<String> fullTextResult = this.getSearchEngineManager()
+                    .searchEntityId(langCode, request.getText(), allowedGroups);
+            result.removeIf(i -> !fullTextResult.contains(i));
+        }
+        return result;
+    }
+
+    private EntitySearchFilter[] getEntitySearchFilters(RestContentListRequest request) {
+        List<EntitySearchFilter> filters = request.buildEntitySearchFilters();
+        EntitySearchFilter[] filtersArr = new EntitySearchFilter[filters.size()];
+        filtersArr = filters.toArray(filtersArr);
+        return filtersArr;
+    }
+
+    private boolean isStatusOnline(String status) {
+        return IContentService.STATUS_ONLINE.equalsIgnoreCase(status);
+    }
+
+    private boolean isModeFull(String mode) {
+        return IContentService.MODE_FULL.equalsIgnoreCase(mode);
+    }
+
+    private List<ContentDto> toContentDto(RestContentListRequest request, UserDetails user, List<String> contentIds) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(request, "content");
+        boolean full = isModeFull(request.getMode());
+        List<ContentDto> masterList = new ArrayList<>();
+        for (String contentId : request.getSublist(contentIds)) {
+            ContentDto dto = full ? buildFullContentDto(user, bindingResult, contentId,
+                    isStatusOnline(request.getStatus()),
+                    request.getModel(), request.getLang(), request.isResolveLink()) : buildLightContentDto(contentId);
+
+            boolean compatible = isCompatibleWithLinkabilityFilter(dto, request);
+
+            if (compatible) {
+                masterList.add(dto);
+            }
+        }
+        return masterList;
+    }
+
+    private ContentDto buildFullContentDto(UserDetails user, BeanPropertyBindingResult bindingResult, String contentId,
+            boolean online, String modelId, String lang, boolean resolveLink) {
+        ContentDto dto = null;
+        try {
+            Content content = this.getContentManager().loadContent(contentId, online);
+            if (null == content) {
+                throw new ResourceNotFoundException(EntityValidator.ERRCODE_ENTITY_DOES_NOT_EXIST, "Content", contentId);
+            }
+            dto = this.buildEntityDto(content);
+        } catch (ResourceNotFoundException rnf) {
+            throw rnf;
+        } catch (Exception e) {
+            logger.error("Error extracting content", e);
+            throw new RestServerError("error extracting content", e);
+        }
+        dto.setHtml(this.extractRenderedContent(dto, modelId, lang, resolveLink, user, bindingResult));
+        dto.setReferences(this.getReferencesInfo(dto.getId()));
+        return dto;
+    }
+
+    private ContentDto buildLightContentDto(String contentId) {
+        ContentDto dto = null;
+        try {
+            ContentRecordVO contentVo = this.getContentManager().loadContentVO(contentId);
+            if (null == contentVo) {
+                throw new ResourceNotFoundException(EntityValidator.ERRCODE_ENTITY_DOES_NOT_EXIST, "Content", contentId);
+            }
+            dto = new ContentDto(toContent(contentVo));
+        } catch (ResourceNotFoundException rnf) {
+            throw rnf;
+        } catch (Exception e) {
+            logger.error("Error extracting content", e);
+            throw new RestServerError("error extracting content", e);
+        }
+        return dto;
+    }
+
+    private Content toContent(ContentRecordVO contentVo) {
+        ContentTypeDto contentTypeDto = contentTypeService.findOne(contentVo.getTypeCode()).get();
+
+        Content result = new Content();
+        result.setId(contentVo.getId());
+        result.setTypeCode(contentTypeDto.getCode());
+        result.setTypeDescription(contentTypeDto.getName());
+        result.setDescription(contentVo.getDescription());
+        result.setStatus(contentVo.getStatus());
+        result.setCreated(contentVo.getCreate());
+        result.setLastModified(contentVo.getModify());
+        result.setPublished(contentVo.getPublish());
+        result.setOnLine(contentVo.isOnLine());
+        result.setSync(contentVo.isSync());
+        result.setMainGroup(contentVo.getMainGroupCode());
+        result.setVersion(contentVo.getVersion());
+        result.setFirstEditor(contentVo.getFirstEditor());
+        result.setLastEditor(contentVo.getLastEditor());
+        result.setRestriction(contentVo.getRestriction());
+
+        return result;
+    }
+
+    private PagedMetadata<ContentDto> toPagedMetadata(RestContentListRequest request,
+            List<String> contentIds, List<ContentDto> result) {
+        PagedMetadata<ContentDto> pagedMetadata = new PagedMetadata<>(request, contentIds.size());
+        pagedMetadata.setBody(result);
+        return pagedMetadata;
     }
 
     private boolean isCompatibleWithLinkabilityFilter(ContentDto dto, RestContentListRequest requestList) {
@@ -434,29 +528,9 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     public ContentDto getContent(String code, String modelId, String status, String langCode, boolean resolveLink,
             UserDetails user) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(code, "content");
-        boolean online = (IContentService.STATUS_ONLINE.equalsIgnoreCase(status));
+        boolean online = isStatusOnline(status);
         this.checkContentAuthorization(user, code, online, false, bindingResult);
-        ContentDto dto = this.buildContentDto(code, online, modelId, langCode, resolveLink, user, bindingResult);
-        dto.setReferences(this.getReferencesInfo(dto.getId()));
-        return dto;
-    }
-
-    protected ContentDto buildContentDto(String code, boolean onLine,
-            String modelId, String langCode, boolean resolveLink, UserDetails user, BindingResult bindingResult) {
-        ContentDto dto = null;
-        try {
-            Content content = this.getContentManager().loadContent(code, onLine);
-            if (null == content) {
-                throw new ResourceNotFoundException(EntityValidator.ERRCODE_ENTITY_DOES_NOT_EXIST, "Content", code);
-            }
-            dto = this.buildEntityDto(content);
-        } catch (ResourceNotFoundException rnf) {
-            throw rnf;
-        } catch (Exception e) {
-            logger.error("Error extracting content", e);
-            throw new RestServerError("error extracting content", e);
-        }
-        dto.setHtml(this.extractRenderedContent(dto, modelId, langCode, resolveLink, user, bindingResult));
+        ContentDto dto = buildFullContentDto(user, bindingResult, code, online, modelId, langCode, resolveLink);
         dto.setReferences(this.getReferencesInfo(dto.getId()));
         return dto;
     }

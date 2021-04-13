@@ -31,6 +31,8 @@ public class RestContentListRequest extends RestEntityListRequest {
     private String forLinkingWithOwnerGroup;
     private List<String> forLinkingWithExtraGroups;
 
+    private String mode = IContentService.MODE_FULL;
+
     public String getModel() {
         return model;
     }
@@ -101,5 +103,13 @@ public class RestContentListRequest extends RestEntityListRequest {
 
     public void setForLinkingWithExtraGroups(List<String> forLinkingWithExtraGroups) {
         this.forLinkingWithExtraGroups = forLinkingWithExtraGroups;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

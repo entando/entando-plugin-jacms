@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -4297,6 +4298,45 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("HT1");
             }
         }
+    }
+
+    @Test
+    void testGetContentsLight() throws Throwable {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
+        String accessToken = mockOAuthInterceptor(user);
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/contents")
+                        .param("status", IContentService.STATUS_ONLINE)
+                        .param("mode", IContentService.MODE_LIST)
+                        .param("sort", IContentManager.CONTENT_CREATION_DATE_FILTER_KEY)
+                        .param("direction", FieldSearchFilter.DESC_ORDER)
+                        .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
+                        .param("filters[0].operator", "eq")
+                        .param("filters[0].value", "EVN")
+                        .sessionAttr("user", user)
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(9)))
+                .andExpect(jsonPath("$.payload[0].id", is("EVN21")))
+                .andExpect(jsonPath("$.payload[0].typeCode", is("EVN")))
+                .andExpect(jsonPath("$.payload[0].typeDescription", is("Evento")))
+                .andExpect(jsonPath("$.payload[0].description", is("Sagra delle fragole")))
+                .andExpect(jsonPath("$.payload[0].mainGroup", is("free")))
+                .andExpect(jsonPath("$.payload[0].attributes.size()", is(0)))
+                .andExpect(jsonPath("$.payload[0].status", is("DRAFT")))
+                .andExpect(jsonPath("$.payload[0].onLine", is(true)))
+                .andExpect(jsonPath("$.payload[0].viewPage", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.payload[0].listModel", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.payload[0].defaultModel", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.payload[0].created", is("2008-02-09 12:35:47")))
+                .andExpect(jsonPath("$.payload[0].lastModified", is("2008-02-09 12:36:37")))
+                .andExpect(jsonPath("$.payload[0].version", is("1.0")))
+                .andExpect(jsonPath("$.payload[0].firstEditor", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.payload[0].lastEditor", is("admin")))
+                .andExpect(jsonPath("$.payload[0].restriction", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.payload[0].html", isEmptyOrNullString()));
     }
 
     protected Page createPage(String pageCode, boolean addWidget) {
