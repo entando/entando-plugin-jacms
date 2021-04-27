@@ -13,22 +13,6 @@
  */
 package org.entando.entando.plugins.jacms.web.content;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
@@ -36,12 +20,7 @@ import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.services.group.Group;
-import com.agiletec.aps.system.services.page.IPage;
-import com.agiletec.aps.system.services.page.IPageManager;
-import com.agiletec.aps.system.services.page.Page;
-import com.agiletec.aps.system.services.page.PageMetadata;
-import com.agiletec.aps.system.services.page.PageTestUtil;
-import com.agiletec.aps.system.services.page.Widget;
+import com.agiletec.aps.system.services.page.*;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
@@ -55,13 +34,6 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
@@ -82,6 +54,17 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.io.InputStream;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
@@ -660,6 +643,22 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                     .andExpect(jsonPath("$.payload[0].attributes[0].code", is("bool1")))
                     .andExpect(jsonPath("$.payload[0].attributes[0].value", is(false)));
 
+            this.executeContentPut("1_PUT_valid_with_boolean_false_string.json", newContentId, accessToken, status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", is(newContentId)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("bool1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value", is(false)));
+
+            this.executeContentPut("1_PUT_valid_with_boolean_true_string.json", newContentId, accessToken, status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", is(newContentId)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("bool1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value", is(true)));
+
             this.executeContentPut("1_PUT_valid_with_boolean_true.json", newContentId, accessToken, status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
                     .andExpect(jsonPath("$.errors.size()", is(0)))
@@ -675,6 +674,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                     .andExpect(jsonPath("$.payload[0].id", is(newContentId)))
                     .andExpect(jsonPath("$.payload[0].attributes[0].code", is("bool1")))
                     .andExpect(jsonPath("$.payload[0].attributes[0].value", is(false)));
+
 
         } finally {
             if (null != newContentId) {
