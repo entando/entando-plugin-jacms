@@ -122,7 +122,7 @@ public class ContentController {
         this.contentValidator = contentValidator;
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedRestResponse<ContentDto>> getContents(RestContentListRequest requestList) {
         logger.debug("getting contents with request {} - status {}", requestList, requestList.getStatus());
         requestList.setSort(normalizeAttributeNames(requestList.getSort()));
