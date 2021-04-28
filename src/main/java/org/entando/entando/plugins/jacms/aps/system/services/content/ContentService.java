@@ -77,6 +77,7 @@ import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
+import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.content.ContentController;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
@@ -868,8 +869,14 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         return (null != getContentManager().loadContent(code, online));
     }
 
+    @Override
     public boolean exists(String code) throws EntException {
         return exists(code, true) || exists(code, false);
+    }
+
+    @Override
+    public ContentsStatusDto getContentsStatus() {
+        return new ContentsStatusDto(this.getContentManager().getContentsStatus());
     }
 
     @Override
