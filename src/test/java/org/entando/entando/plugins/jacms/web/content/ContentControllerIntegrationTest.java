@@ -4388,7 +4388,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 this.contentManager.insertOnLineContent(content);
             }
             String dateString2 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
-            Assertions.assertFalse(dateString1.equals(dateString2));
+            Assertions.assertNotEquals(dateString1, dateString2);
             this.checkStatus(accessToken, 1, 6, 18+10, 25+10, dateString2);
             
             synchronized (this) {
