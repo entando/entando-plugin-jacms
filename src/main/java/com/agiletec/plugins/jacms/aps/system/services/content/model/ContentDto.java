@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -279,20 +280,37 @@ public class ContentDto extends EntityDto implements Serializable {
         }
     }
 
+    private Map<String, String> getAddionalLinkAttributes (final EntityAttributeDto attributeDto) {
+        final Map<String, String> linkProperties = new HashMap<>();
+        if (((Map) attributeDto.getValue()).get("rel") != null ) {
+            linkProperties.put("rel", (String)((Map) attributeDto.getValue()).get("rel"));
+        }
+        if (((Map) attributeDto.getValue()).get("target") != null ) {
+            linkProperties.put("target", (String)((Map) attributeDto.getValue()).get("target"));
+        }
+        if (((Map) attributeDto.getValue()).get("rel") != null ) {
+            linkProperties.put("hreflang", (String)((Map) attributeDto.getValue()).get("hreflang"));
+        }
+        return linkProperties;
+    }
+
     private void fillLinkAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
             LinkAttribute linkAttribute = (LinkAttribute)attribute;
             SymbolicLink link = new SymbolicLink();
+            Map<String, String> addionalLinkAttributes = new HashMap<>();
             if (attributeDto.getValue() != null) {
                 Object destType = ((Map) attributeDto.getValue()).get("destType");
                 if (destType != null) {
                     switch ((Integer) destType) {
                         case SymbolicLink.URL_TYPE:
                             link.setDestinationToUrl((String) ((Map) attributeDto.getValue()).get("urlDest"));
+                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.PAGE_TYPE:
                             link.setDestinationToPage(
                                     (String) ((Map) attributeDto.getValue()).get("pageDest"));
+                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.RESOURCE_TYPE:
                             link.setDestinationToResource(
@@ -301,6 +319,7 @@ public class ContentDto extends EntityDto implements Serializable {
                         case SymbolicLink.CONTENT_TYPE:
                             link.setDestinationToContent(
                                     (String) ((Map) attributeDto.getValue()).get("contentDest"));
+                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.CONTENT_ON_PAGE_TYPE:
                             link.setDestinationToContentOnPage(
@@ -311,6 +330,9 @@ public class ContentDto extends EntityDto implements Serializable {
                 }
             }
             linkAttribute.setSymbolicLink(link);
+            if (!addionalLinkAttributes.isEmpty()) {
+                linkAttribute.setLinkProperties(addionalLinkAttributes);
+            }
         }
     }
 }
