@@ -386,6 +386,10 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                     .andExpect(jsonPath("$.payload[0].attributes[0].value.destType", is(SymbolicLink.PAGE_TYPE)))
                     .andExpect(jsonPath("$.payload[0].attributes[0].value.pageDest", is("pagina_11")))
                     .andExpect(jsonPath("$.payload[0].attributes[0].value.symbolicDestination", is("#!P;pagina_11!#")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.rel", is("alternate")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.target", is("_blank")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].value.hreflang", is("it")))
+
                     .andExpect(jsonPath("$.payload[0].attributes[0].values.it", is("pagina_11")));
 
             this.executeContentPut("1_PUT_invalid_with_link.json", newContentId, accessToken, status().isBadRequest())

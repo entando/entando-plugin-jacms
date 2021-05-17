@@ -15,9 +15,6 @@ package org.entando.entando.plugins.jacms.aps.system.services.content;
 
 import static org.entando.entando.plugins.jacms.web.content.ContentController.ERRCODE_CONTENT_NOT_FOUND;
 import static org.entando.entando.plugins.jacms.web.content.ContentController.ERRCODE_CONTENT_REFERENCES;
-import static org.reflections.ReflectionUtils.getAllMethods;
-import static org.reflections.ReflectionUtils.withModifier;
-import static org.reflections.ReflectionUtils.withPrefix;
 
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.IEntityManager;
@@ -57,9 +54,6 @@ import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderiza
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.IContentDispenser;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,9 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
@@ -224,63 +216,31 @@ private void fillAttribute(AttributeInterface attribute, EntityAttributeDto attr
 
 private void fillLinkAttributes(final AttributeInterface attribute, final EntityAttributeDto attributeDto) {
     if (attributeDto.getElements() != null && (LinkAttribute.class.isAssignableFrom(attribute.getClass()))) {
-        final SymbolicLink symbolicLink = ((LinkAttribute) attribute).getSymbolicLink();
-        Map<String, String> linkProperties = ((LinkAttribute) attribute).getLinkProperties();
-        Map<String, Object> result = new HashMap<>();
-        final String prefix = "get";
-        Set<Method> getters = getAllMethods(SymbolicLink.class, withModifier(Modifier.PUBLIC), withPrefix(prefix));
-        getters.stream()
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .forEach(f -> {
-                    try {
-                        final String resultFieldName = WordUtils.uncapitalize(f.getName().substring(prefix.length()));
-                        result.put(resultFieldName, f.invoke(symbolicLink));
-                    } catch (IllegalAccessException e) {
-                        logger.error("IllegalAccessException on getters {}", e);
-                    } catch (InvocationTargetException e) {
-                        logger.error("InvocationTargetException on getters {}", e);
-                    }
-                });
-        result.putAll(linkProperties);
-        attributeDto.setValue(result.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        Map.Entry::getValue)));
-    }
-}
-
-private void _fillLinkAttributes(final AttributeInterface attribute, final EntityAttributeDto attributeDto) {
-    if (attributeDto.getElements() != null && (LinkAttribute.class.isAssignableFrom(attribute.getClass()))) {
         ((LinkAttribute) attribute).setSymbolicLink((SymbolicLink) attribute.getValue());
         ((LinkAttribute) attribute).setLinkProperties(((LinkAttribute) attribute).getLinkProperties());
-        final List symbolicLinkWithProperties = new ArrayList();
-        symbolicLinkWithProperties.add(attribute.getValue());
-        symbolicLinkWithProperties.add(((LinkAttribute) attribute).getLinkProperties());
-
         final SymbolicLink symbolicLink = ((LinkAttribute) attribute).getSymbolicLink();
-        Map<String, String> linkPoperties = ((LinkAttribute) attribute).getLinkProperties();
-
-        final String contentDest = symbolicLink.getContentDest();
-        final String pageDest = symbolicLink.getPageDest();
-        final String resourceDest = symbolicLink.getResourceDest();
-        final String symbolicDestination = symbolicLink.getSymbolicDestination();
-        Map<String, Object> result = new HashMap<>();
-        result.put("contentDest", contentDest);
-        result.put("pageDest", pageDest);
-        result.put("resourceDest", resourceDest);
-        result.put("symbolicDestination", symbolicDestination);
-        result.put("destType", symbolicLink.getDestType());
-        result.put("urlDest", symbolicLink.getUrlDest());
-        result.putAll(linkPoperties);
-        result = result.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        Map.Entry::getValue));
-        attributeDto.setValue(result);
+        if (symbolicLink != null) {
+            final Map<String, String> linkPoperties = ((LinkAttribute) attribute).getLinkProperties();
+            final String contentDest = symbolicLink.getContentDest();
+            final String pageDest = symbolicLink.getPageDest();
+            final String resourceDest = symbolicLink.getResourceDest();
+            final String symbolicDestination = symbolicLink.getSymbolicDestination();
+            Map<String, Object> result = new HashMap<>();
+            result.put("contentDest", contentDest);
+            result.put("pageDest", pageDest);
+            result.put("resourceDest", resourceDest);
+            result.put("symbolicDestination", symbolicDestination);
+            result.put("destType", symbolicLink.getDestType());
+            result.put("urlDest", symbolicLink.getUrlDest());
+            result.putAll(linkPoperties);
+            result = result.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue() != null)
+                    .collect(Collectors.toMap(Map.Entry::getKey,
+                            Map.Entry::getValue));
+            attributeDto.setValue(result);
+        }
     }
-
 }
 
 private void fillBooleanAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
