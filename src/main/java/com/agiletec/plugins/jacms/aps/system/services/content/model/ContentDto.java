@@ -15,13 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
-import com.agiletec.aps.system.common.entity.model.attribute.BooleanAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.services.category.ICategoryManager;
-import com.agiletec.aps.util.CheckFormatUtil;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AbstractResourceAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentRestriction;
@@ -31,15 +25,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityDto;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
@@ -282,14 +272,17 @@ public class ContentDto extends EntityDto implements Serializable {
 
     private Map<String, String> getAddionalLinkAttributes (final EntityAttributeDto attributeDto) {
         final Map<String, String> linkProperties = new HashMap<>();
-        if (((Map) attributeDto.getValue()).get("rel") != null ) {
-            linkProperties.put("rel", (String)((Map) attributeDto.getValue()).get("rel"));
+        final String rel = (String)((Map) attributeDto.getValue()).get("rel");
+        if (rel != null ) {
+            linkProperties.put("rel", rel);
         }
-        if (((Map) attributeDto.getValue()).get("target") != null ) {
-            linkProperties.put("target", (String)((Map) attributeDto.getValue()).get("target"));
+        final String target = (String)((Map) attributeDto.getValue()).get("target");
+        if (target != null ) {
+            linkProperties.put("target", target);
         }
-        if (((Map) attributeDto.getValue()).get("rel") != null ) {
-            linkProperties.put("hreflang", (String)((Map) attributeDto.getValue()).get("hreflang"));
+        final String hreflang = (String)((Map) attributeDto.getValue()).get("hreflang");
+        if (hreflang != null ) {
+            linkProperties.put("hreflang", hreflang);
         }
         return linkProperties;
     }
@@ -326,6 +319,7 @@ public class ContentDto extends EntityDto implements Serializable {
                                     (String) ((Map) attributeDto.getValue()).get("contentDest"),
                                     (String) ((Map) attributeDto.getValue()).get("pageDest"));
                             break;
+                        default: break;
                     }
                 }
             }
