@@ -60,6 +60,7 @@ public class ResourcesController {
     public static final String ERRCODE_INVALID_RESOURCE_TYPE = "5";
     public static final String ERRCODE_RESOURCE_FORBIDDEN = "6";
     public static final String ERRCODE_RESOURCE_CONFLICT = "7";
+    public static final String ERRCODE_RESOURCE_FILTER_DATE_INVALID = "8";
     public static final String ID_NAME_OF_CORRELATION_CODE = "cc";
 
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
