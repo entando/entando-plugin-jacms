@@ -489,7 +489,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         Map<String,String> params = new HashMap<>();
 
         params.put("filters[0].attribute", "createdAt");
-        params.put("filters[0].value", "2011-01-01 01:00:00");
+        params.put("filters[0].value", "2011-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
 
         performGetResources(user, "image", params)
@@ -523,11 +523,11 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         Map<String,String> params = new HashMap<>();
 
         params.put("filters[0].attribute", "createdAt");
-        params.put("filters[0].value", "2009-01-01 01:00:00");
+        params.put("filters[0].value", "2009-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
 
         params.put("filters[1].attribute", "createdAt");
-        params.put("filters[1].value", "2011-01-01 01:00:00");
+        params.put("filters[1].value", "2011-01-01-01.00.00");
         params.put("filters[1].operator", "lt");
 
         performGetResources(user, "image", params)
@@ -539,12 +539,30 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
+    void testFilterResourceByCreatedAtInvalidFormat() throws Exception {
+        UserDetails user = createAccessToken();
+        Map<String,String> params = new HashMap<>();
+
+        params.put("filters[0].attribute", "createdAt");
+        params.put("filters[0].value", "2009-01-01-01:00:00");
+        params.put("filters[0].operator", "gt");
+
+        performGetResources(user, "image", params)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.size()", is(1)))
+                .andExpect(jsonPath("$.errors[0].code", is("8")))
+                .andExpect(jsonPath("$.errors[0].message",
+                        is("Invalid resource filter date format. Received '2009-01-01-01:00:00' when expected the pattern 'yyyy-MM-dd-HH.mm.ss'")));
+    }
+
+    @Test
     void testFilterResourceByUpdatedAt() throws Exception {
         UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
 
         params.put("filters[0].attribute", "updatedAt");
-        params.put("filters[0].value", "2015-01-01 01:00:00");
+        params.put("filters[0].value", "2015-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
 
         performGetResources(user, "image", params)
@@ -561,7 +579,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         Map<String,String> params = new HashMap<>();
 
         params.put("filters[0].attribute", "updatedAt");
-        params.put("filters[0].value", "2015-11-25 19:19:00");
+        params.put("filters[0].value", "2015-11-25-19.19.00");
         params.put("filters[0].operator", "lt");
 
         performGetResources(user, "image", params)
@@ -578,11 +596,11 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         Map<String,String> params = new HashMap<>();
 
         params.put("filters[0].attribute", "updatedAt");
-        params.put("filters[0].value", "2013-01-01 01:00:00");
+        params.put("filters[0].value", "2013-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
 
         params.put("filters[1].attribute", "updatedAt");
-        params.put("filters[1].value", "2017-01-01 01:00:00");
+        params.put("filters[1].value", "2017-01-01-01.00.00");
         params.put("filters[1].operator", "lt");
 
         performGetResources(user, "image", params)
