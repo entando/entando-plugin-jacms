@@ -291,19 +291,19 @@ public class ContentDto extends EntityDto implements Serializable {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
             LinkAttribute linkAttribute = (LinkAttribute)attribute;
             SymbolicLink link = new SymbolicLink();
-            Map<String, String> addionalLinkAttributes = new HashMap<>();
+            Map<String, String> additionalLinkAttributes = new HashMap<>();
             if (attributeDto.getValue() != null) {
                 Object destType = ((Map) attributeDto.getValue()).get("destType");
                 if (destType != null) {
                     switch ((Integer) destType) {
                         case SymbolicLink.URL_TYPE:
                             link.setDestinationToUrl((String) ((Map) attributeDto.getValue()).get("urlDest"));
-                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
+                            additionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.PAGE_TYPE:
                             link.setDestinationToPage(
                                     (String) ((Map) attributeDto.getValue()).get("pageDest"));
-                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
+                            additionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.RESOURCE_TYPE:
                             link.setDestinationToResource(
@@ -312,7 +312,7 @@ public class ContentDto extends EntityDto implements Serializable {
                         case SymbolicLink.CONTENT_TYPE:
                             link.setDestinationToContent(
                                     (String) ((Map) attributeDto.getValue()).get("contentDest"));
-                            addionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
+                            additionalLinkAttributes = getAddionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.CONTENT_ON_PAGE_TYPE:
                             link.setDestinationToContentOnPage(
@@ -324,8 +324,8 @@ public class ContentDto extends EntityDto implements Serializable {
                 }
             }
             linkAttribute.setSymbolicLink(link);
-            if (!addionalLinkAttributes.isEmpty()) {
-                linkAttribute.setLinkProperties(addionalLinkAttributes);
+            if (!additionalLinkAttributes.isEmpty()) {
+                linkAttribute.setLinkProperties(additionalLinkAttributes);
             }
         }
     }
