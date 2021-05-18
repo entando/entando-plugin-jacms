@@ -235,9 +235,7 @@ private void fillLinkAttributes(final AttributeInterface attribute, final Entity
             result.putAll(linkPoperties);
             result = result.entrySet()
                     .stream()
-                    .filter(entry -> entry.getValue() != null)
-                    .collect(Collectors.toMap(Map.Entry::getKey,
-                            Map.Entry::getValue));
+                    .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
             attributeDto.setValue(result);
         }
     }
