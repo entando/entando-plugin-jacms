@@ -382,8 +382,7 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
 		}
         performGetContentSettings(user)
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.referencesStatus", Matchers.equalTo(0)));
+            .andExpect(status().isOk());
     }
 
     private ResultActions performGetContentSettings(UserDetails user) throws Exception {
