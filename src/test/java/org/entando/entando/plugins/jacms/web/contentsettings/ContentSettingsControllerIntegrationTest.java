@@ -206,36 +206,39 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
 
-        performCreateCropRatio(user, "4:3")
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(1)))
-            .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
+        try {
+            performCreateCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
 
-        performEditCropRatio(user, "4:3", "8:6")
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(1)))
-                .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("8:6")));
+            performEditCropRatio(user, "4:3", "8:6")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("8:6")));
 
-        performCreateCropRatio(user, "16:9")
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(2)))
-            .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("8:6")))
-            .andExpect(jsonPath("$.payload[1]", Matchers.equalTo("16:9")));
+            performCreateCropRatio(user, "16:9")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("8:6")))
+                    .andExpect(jsonPath("$.payload[1]", Matchers.equalTo("16:9")));
 
-        performRemoveCropRatio(user, "4:3")
-            .andDo(print())
-            .andExpect(status().isNotFound());
+            performRemoveCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
 
-        performRemoveCropRatio(user, "8:6")
-                .andDo(print())
-                .andExpect(status().isOk());
+            performRemoveCropRatio(user, "8:6")
+                    .andDo(print())
+                    .andExpect(status().isOk());
 
-        performRemoveCropRatio(user, "16:9")
-            .andDo(print())
-            .andExpect(status().isOk());
+        } finally {
+            performRemoveCropRatio(user, "16:9")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
 
     }
 
@@ -245,20 +248,22 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
 
-        performCreateCropRatio(user, "4:3")
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(1)))
-            .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
+        try {
+            performCreateCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
 
-        performCreateCropRatio(user, "4:3")
-            .andDo(print())
-            .andExpect(status().isConflict());
-
-        performRemoveCropRatio(user, "4:3")
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(0)));
+            performCreateCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isConflict());
+        } finally {
+            performRemoveCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(0)));
+        }
     }
 
     @Test
@@ -282,23 +287,27 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.SUPERUSER)
                 .build();
 
-        performCreateCropRatio(user, "4:3")
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(1)))
-                .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
+        try {
+            performCreateCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0]", Matchers.equalTo("4:3")));
 
-        performEditCropRatio(user, "4:3", "alfa:6")
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            performEditCropRatio(user, "4:3", "alfa:6")
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
 
-        performEditCropRatio(user, "4:3", "4-6")
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            performEditCropRatio(user, "4:3", "4-6")
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
+        } finally {
+            performRemoveCropRatio(user, "4:3")
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
 
-        performRemoveCropRatio(user, "4:3")
-                .andDo(print())
-                .andExpect(status().isOk());
+
     }
 
     @Test
