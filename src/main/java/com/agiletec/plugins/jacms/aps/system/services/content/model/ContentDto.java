@@ -15,13 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
-import com.agiletec.aps.system.common.entity.model.attribute.BooleanAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
-import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.services.category.ICategoryManager;
-import com.agiletec.aps.util.CheckFormatUtil;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AbstractResourceAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentRestriction;
@@ -31,14 +25,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityDto;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
@@ -279,20 +270,40 @@ public class ContentDto extends EntityDto implements Serializable {
         }
     }
 
+    private Map<String, String> getAdditionalLinkAttributes (final EntityAttributeDto attributeDto) {
+        final Map<String, String> linkProperties = new HashMap<>();
+        final String rel = (String)((Map) attributeDto.getValue()).get("rel");
+        if (rel != null ) {
+            linkProperties.put("rel", rel);
+        }
+        final String target = (String)((Map) attributeDto.getValue()).get("target");
+        if (target != null ) {
+            linkProperties.put("target", target);
+        }
+        final String hreflang = (String)((Map) attributeDto.getValue()).get("hreflang");
+        if (hreflang != null ) {
+            linkProperties.put("hreflang", hreflang);
+        }
+        return linkProperties;
+    }
+
     private void fillLinkAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
             LinkAttribute linkAttribute = (LinkAttribute)attribute;
             SymbolicLink link = new SymbolicLink();
+            Map<String, String> additionalLinkAttributes = new HashMap<>();
             if (attributeDto.getValue() != null) {
                 Object destType = ((Map) attributeDto.getValue()).get("destType");
                 if (destType != null) {
                     switch ((Integer) destType) {
                         case SymbolicLink.URL_TYPE:
                             link.setDestinationToUrl((String) ((Map) attributeDto.getValue()).get("urlDest"));
+                            additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.PAGE_TYPE:
                             link.setDestinationToPage(
                                     (String) ((Map) attributeDto.getValue()).get("pageDest"));
+                            additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.RESOURCE_TYPE:
                             link.setDestinationToResource(
@@ -301,16 +312,21 @@ public class ContentDto extends EntityDto implements Serializable {
                         case SymbolicLink.CONTENT_TYPE:
                             link.setDestinationToContent(
                                     (String) ((Map) attributeDto.getValue()).get("contentDest"));
+                            additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
                             break;
                         case SymbolicLink.CONTENT_ON_PAGE_TYPE:
                             link.setDestinationToContentOnPage(
                                     (String) ((Map) attributeDto.getValue()).get("contentDest"),
                                     (String) ((Map) attributeDto.getValue()).get("pageDest"));
                             break;
+                        default: break;
                     }
                 }
             }
             linkAttribute.setSymbolicLink(link);
+            if (!additionalLinkAttributes.isEmpty()) {
+                linkAttribute.setLinkProperties(additionalLinkAttributes);
+            }
         }
     }
 }

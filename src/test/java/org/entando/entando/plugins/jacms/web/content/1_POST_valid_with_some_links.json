@@ -13,7 +13,10 @@
             "code": "link1",
             "value": {
                 "destType": 1,
-                "urlDest": "https://myurl.com"
+                "urlDest": "https://myurl.com",
+                "rel": "rel",
+                "target": "_blank",
+                "hreflang": "it"
             },
             "values": {
                 "it": "My URL Link"
