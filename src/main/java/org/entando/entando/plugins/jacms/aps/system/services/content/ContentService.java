@@ -233,9 +233,6 @@ private void fillLinkAttributes(final AttributeInterface attribute, final Entity
             result.put("destType", symbolicLink.getDestType());
             result.put("urlDest", symbolicLink.getUrlDest());
             result.putAll(linkPoperties);
-            result = result.entrySet()
-                    .stream()
-                    .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
             attributeDto.setValue(result);
         }
     }
