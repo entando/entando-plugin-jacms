@@ -43,7 +43,9 @@ import com.agiletec.plugins.jacms.aps.system.services.content.helper.PublicConte
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AbstractResourceAttribute;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentRestriction;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
@@ -210,6 +212,31 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         fillListAttribute(attribute, attributeDto);
         fillMonolistAttribute(attribute, attributeDto);
         fillBooleanAttribute(attribute, attributeDto);
+        fillLinkAttributes(attribute, attributeDto);
+    }
+
+    private void fillLinkAttributes(final AttributeInterface attribute, final EntityAttributeDto attributeDto) {
+        if (attributeDto.getElements() != null && (LinkAttribute.class.isAssignableFrom(attribute.getClass()))) {
+            ((LinkAttribute) attribute).setSymbolicLink((SymbolicLink) attribute.getValue());
+            ((LinkAttribute) attribute).setLinkProperties(((LinkAttribute) attribute).getLinkProperties());
+            final SymbolicLink symbolicLink = ((LinkAttribute) attribute).getSymbolicLink();
+            if (symbolicLink != null) {
+                final Map<String, String> linkPoperties = ((LinkAttribute) attribute).getLinkProperties();
+                final String contentDest = symbolicLink.getContentDest();
+                final String pageDest = symbolicLink.getPageDest();
+                final String resourceDest = symbolicLink.getResourceDest();
+                final String symbolicDestination = symbolicLink.getSymbolicDestination();
+                Map<String, Object> result = new HashMap<>();
+                result.put("contentDest", contentDest);
+                result.put("pageDest", pageDest);
+                result.put("resourceDest", resourceDest);
+                result.put("symbolicDestination", symbolicDestination);
+                result.put("destType", symbolicLink.getDestType());
+                result.put("urlDest", symbolicLink.getUrlDest());
+                result.putAll(linkPoperties);
+                attributeDto.setValue(result);
+            }
+        }
     }
 
     private void fillBooleanAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
@@ -359,15 +386,15 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         List<String> allowedGroups = this.getAllowedGroups(user, online);
         List<String> result = online
                 ? this.getContentManager()
-                .loadPublicContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
-                        filters, allowedGroups)
+                        .loadPublicContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
+                                filters, allowedGroups)
                 : this.getContentManager()
                         .loadWorkContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
                                 filters, allowedGroups);
         if (!StringUtils.isBlank(request.getText()) && online) {
-            String langCode =
-                    (StringUtils.isBlank(request.getLang())) ? this.getLangManager().getDefaultLang().getCode()
-                            : request.getLang();
+            String langCode
+                    = (StringUtils.isBlank(request.getLang())) ? this.getLangManager().getDefaultLang().getCode()
+                    : request.getLang();
             List<String> fullTextResult = this.getSearchEngineManager()
                     .searchEntityId(langCode, request.getText(), allowedGroups);
             result.removeIf(i -> !fullTextResult.contains(i));
@@ -500,7 +527,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     public Integer countContentsByType(String contentType) {
         try {
             EntitySearchFilter[] filters = new EntitySearchFilter[]{
-                    new EntitySearchFilter("typeCode", false, contentType, false)
+                new EntitySearchFilter("typeCode", false, contentType, false)
             };
 
             List<String> userGroupCodes = Collections.singletonList("administrators");
@@ -827,8 +854,8 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     protected void checkContentAuthorization(UserDetails userDetails, String contentId, boolean publicVersion,
             boolean edit, BindingResult mainBindingResult) {
         try {
-            PublicContentAuthorizationInfo pcai =
-                    (publicVersion) ? this.getContentAuthorizationHelper().getAuthorizationInfo(contentId) : null;
+            PublicContentAuthorizationInfo pcai
+                    = (publicVersion) ? this.getContentAuthorizationHelper().getAuthorizationInfo(contentId) : null;
             if (publicVersion && null == pcai) {
                 throw new ResourceNotFoundException(ERRCODE_CONTENT_NOT_FOUND, "content", contentId);
             }
@@ -839,8 +866,8 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             userGroupCodes.add(Group.FREE_GROUP_NAME);
             if (!(publicVersion && !edit && null != pcai && pcai.isUserAllowed(userGroupCodes))
                     && !this.getContentAuthorizationHelper().isAuthToEdit(userDetails, contentId, publicVersion)) {
-                BindingResult bindingResult =
-                        (null == mainBindingResult) ? new BeanPropertyBindingResult(contentId, "content")
+                BindingResult bindingResult
+                        = (null == mainBindingResult) ? new BeanPropertyBindingResult(contentId, "content")
                                 : mainBindingResult;
                 bindingResult.reject(ContentController.ERRCODE_UNAUTHORIZED_CONTENT, new String[]{contentId},
                         "plugins.jacms.content.unauthorized.access");

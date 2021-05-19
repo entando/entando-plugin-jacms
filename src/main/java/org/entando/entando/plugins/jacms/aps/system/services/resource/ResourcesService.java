@@ -5,6 +5,7 @@ import static org.entando.entando.plugins.jacms.web.resource.ResourcesController
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_FILE_TYPE;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_INVALID_RESOURCE_TYPE;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_CONFLICT;
+import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_FILTER_DATE_INVALID;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
 
 import com.agiletec.aps.system.common.FieldSearchFilter;
@@ -33,9 +34,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +97,8 @@ public class ResourcesService implements IComponentExistsService {
 
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
 
     public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList, UserDetails user) {
         List<AssetDto> assets = new ArrayList<>();
@@ -541,10 +547,10 @@ public class ResourcesService implements IComponentExistsService {
                     useLikeOption = true;
                     break;
                 case "createdAt":
-                    filters.add(createEntitySearchFilter(IResourceManager.RESOURCE_CREATION_DATE_FILTER_KEY, filter));
+                    filters.add(createEntitySearchFilterWithDate(IResourceManager.RESOURCE_CREATION_DATE_FILTER_KEY, filter));
                     continue;
                 case "updatedAt":
-                    filters.add(createEntitySearchFilter(IResourceManager.RESOURCE_MODIFY_DATE_FILTER_KEY, filter));
+                    filters.add(createEntitySearchFilterWithDate(IResourceManager.RESOURCE_MODIFY_DATE_FILTER_KEY, filter));
                     continue;
                 case "group":
                     groups.add(filter.getValue());
@@ -586,24 +592,31 @@ public class ResourcesService implements IComponentExistsService {
         return filters.stream().toArray(FieldSearchFilter[]::new);
     }
 
-    private EntitySearchFilter createEntitySearchFilter(String attribute, Filter filter) {
+    private EntitySearchFilter createEntitySearchFilterWithDate(String attribute, Filter filter) {
         EntitySearchFilter result = null;
+        try {
+            Date date = dateFormat.parse(filter.getValue());
 
-        if (FilterOperator.GREATER.getValue().equalsIgnoreCase(filter.getOperator())) {
-            result = new EntitySearchFilter(attribute, false, filter.getValue(), null);
-        } else if (FilterOperator.LOWER.getValue().equalsIgnoreCase(filter.getOperator())) {
-            result = new EntitySearchFilter(attribute, false, null, filter.getValue());
-        } else if (FilterOperator.NOT_EQUAL.getValue().equalsIgnoreCase(filter.getOperator())) {
-            result = new EntitySearchFilter(attribute, false, filter.getValue(), false);
-            result.setNotOption(true);
-        } else {
-            result = new EntitySearchFilter(attribute, false, filter.getValue(),
-                    FilterOperator.LIKE.getValue().equalsIgnoreCase(filter.getOperator()),
-                    LikeOptionType.COMPLETE);
+            if (FilterOperator.GREATER.getValue().equalsIgnoreCase(filter.getOperator())) {
+                result = new EntitySearchFilter(attribute, false, date, null);
+            } else if (FilterOperator.LOWER.getValue().equalsIgnoreCase(filter.getOperator())) {
+                result = new EntitySearchFilter(attribute, false, null, date);
+            } else if (FilterOperator.NOT_EQUAL.getValue().equalsIgnoreCase(filter.getOperator())) {
+                result = new EntitySearchFilter(attribute, false, date, false);
+                result.setNotOption(true);
+            } else {
+                result = new EntitySearchFilter(attribute, false, date,
+                        FilterOperator.LIKE.getValue().equalsIgnoreCase(filter.getOperator()),
+                        LikeOptionType.COMPLETE);
+            }
+            result.setOrder(filter.getOrder());
+            return result;
+        } catch (ParseException e) {
+            BeanPropertyBindingResult errors = new BeanPropertyBindingResult(filter, "resources.filter");
+            errors.reject(ERRCODE_RESOURCE_FILTER_DATE_INVALID, new String[]{filter.getValue()},
+                    "plugins.jacms.resources.invalidDateFilterFormat");
+            throw new ValidationGenericException(errors);
         }
-        result.setOrder(filter.getOrder());
-
-        return result;
     }
 
     private EntitySearchFilter createOrderFilter(RestListRequest requestList) {
