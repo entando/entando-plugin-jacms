@@ -23,12 +23,15 @@ import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -55,6 +58,9 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Autowired
     private IRoleManager roleManager;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -715,11 +721,11 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         String code = "my_code";
 
         try {
-            ResultActions result = performCreateResource(user, "file", "my_code", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+            ResultActions result = performCreateResource(user, "file", code, "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.id", Matchers.anything()))
-                .andExpect(jsonPath("$.payload.correlationCode", is("my_code")))
+                .andExpect(jsonPath("$.payload.correlationCode", is(code)))
                 .andExpect(jsonPath("$.payload.categories.size()", is(2)))
                 .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
                 .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
@@ -751,6 +757,47 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(3)));
+        }
+    }
+
+    @Test
+    void testCreateGetResourcesMultipleTimes() throws Exception {
+        UserDetails user = createAccessToken();
+        String code = "my_code2";
+
+        try {
+            performCreateResource(user, "file", code, "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload.correlationCode", is(code)))
+                    .andExpect(jsonPath("$.payload.categories.size()", is(2)))
+                    .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
+                    .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
+                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.description", is("file_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.size", is("2 Kb")))
+                    .andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
+
+            performGetResources(user, "file", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(4)));
+
+            performDeleteResource(user, "file", "cc=" + code)
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            Assertions.assertNotNull(cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME).get(
+                    "jacms_resource_code_" + code));
+
+            performGetResources(user, "file", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(3)));
+
+        } finally {
+            performDeleteResource(user, "file", "cc=" + code);
         }
     }
 

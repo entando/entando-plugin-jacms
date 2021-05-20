@@ -40,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 /**
  * Data Access Object per gli oggetti risorsa.
@@ -401,7 +402,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
      * @return Il record della risorsa.
      */
     @Override
-    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
+    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)",
+            condition = "null != #id", unless = "null == #result")
     public ResourceRecordVO loadResourceVo(String id) {
         Connection conn = null;
         ResourceRecordVO resourceVo = null;
@@ -436,7 +438,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
     }
 
     @Override
-    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
+    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_code_'.concat(#code)",
+            condition = "null != #code", unless = "null == #result")
     public ResourceRecordVO loadResourceVoByCorrelationCode(String code) {
         Connection conn = null;
         ResourceRecordVO resourceVo = null;
