@@ -17,7 +17,6 @@ import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
-import com.agiletec.plugins.jacms.aps.system.services.content.parse.ContentDOM;
 import org.entando.entando.aps.util.HttpSessionHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
@@ -42,6 +41,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
 
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
@@ -122,7 +122,7 @@ public class ContentController {
         this.contentValidator = contentValidator;
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedRestResponse<ContentDto>> getContents(RestContentListRequest requestList) {
         logger.debug("getting contents with request {} - status {}", requestList, requestList.getStatus());
         requestList.setSort(normalizeAttributeNames(requestList.getSort()));
@@ -150,15 +150,23 @@ public class ContentController {
             return null;
         }
     }
-
-    @RequestMapping(value = "/{code}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    
+    @RestAccessControl(permission = Permission.ENTER_BACKEND)
+    @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SimpleRestResponse<ContentsStatusDto>> getContentsStatus() {
+        logger.debug("Requested contents status");
+        ContentsStatusDto dto = this.getContentService().getContentsStatus();
+        return new ResponseEntity<>(new SimpleRestResponse<>(dto), HttpStatus.OK);
+    }
+    
+    @GetMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> getContent(@PathVariable String code,
             @RequestParam(name = "status", required = false, defaultValue = IContentService.STATUS_DRAFT) String status,
             @RequestParam(name = "lang", required = false) String lang) {
         return this.getContent(code, null, status, false, lang);
     }
 
-    @RequestMapping(value = "/{code}/model/{modelId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{code}/model/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> getContent(@PathVariable String code, @PathVariable String modelId,
             @RequestParam(name = "status", required = false, defaultValue = IContentService.STATUS_DRAFT) String status,
             @RequestParam(name = "resolveLinks", required = false, defaultValue = "false") boolean resolveLinks,
@@ -175,7 +183,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<List<ContentDto>>> addContent(@Valid @RequestBody List<ContentDto> bodyRequest, BindingResult bindingResult) {
         logger.debug("Add new content -> {}", bodyRequest);
         if (bindingResult.hasErrors()) {
@@ -200,7 +208,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(value = "/{code}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> updateContent(@PathVariable String code,
                                                                         @Valid @RequestBody ContentDto bodyRequest, BindingResult bindingResult) {
         logger.debug("Update content -> {}", bodyRequest);
@@ -216,7 +224,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<List<ContentDto>>> updateContents(
             @Valid @RequestBody List<ContentDto> bodyRequest, BindingResult bindingResult) {
         logger.debug("Update content -> {}", bodyRequest);
@@ -239,7 +247,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(value = "/{code}/status", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{code}/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestResponse<ContentDto, Map<String, String>>> updateContentStatus(@PathVariable String code,
             @Valid @RequestBody ContentStatusRequest contentStatusRequest, BindingResult bindingResult) {
         logger.debug("changing status for content {} with request {}", code, contentStatusRequest);
@@ -254,7 +262,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(value = "/status", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestResponse<List<ContentDto>, Map<String, String>>> updateContentsStatus(
             @Valid @RequestBody BatchContentStatusRequest batchContentStatusRequest, BindingResult bindingResult) {
         logger.debug("changing status for contents with request {}", batchContentStatusRequest);
@@ -272,7 +280,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(value = "/{code}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<?>> deleteContent(@PathVariable String code) {
         logger.debug("Deleting content -> {}", code);
         DataBinder binder = new DataBinder(code);
@@ -288,7 +296,7 @@ public class ContentController {
     }
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
-    @RequestMapping(method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<?>> deleteContents(@RequestBody List<String> codes) {
         logger.debug("Deleting contents -> {}", codes);
 
