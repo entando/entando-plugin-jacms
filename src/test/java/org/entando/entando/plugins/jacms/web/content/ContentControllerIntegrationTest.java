@@ -66,6 +66,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.agiletec.aps.system.SystemConstants;
+
 class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Autowired
@@ -83,7 +85,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     private ObjectMapper mapper = new ObjectMapper();
 
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
-
+    
     @Test
     void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -4365,4 +4367,76 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         Page pageToAdd = PageTestUtil.createPage(pageCode, parentPage.getCode(), groupName, metadata, widgets);
         return pageToAdd;
     }
+    
+    @Test
+    void testGetContentsStatus() throws Throwable {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
+        String accessToken = mockOAuthInterceptor(user);
+        String lastModified = "2014-03-21 17:10:07";
+        this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
+        List<String> newContentIds = new ArrayList<String>();
+        try {
+            for (int i = 0; i < 10; i++) {
+                Content content = this.contentManager.loadContent("EVN191", false);
+                content.setId(null);
+                this.contentManager.saveContent(content);
+                newContentIds.add(content.getId());
+            }
+            String dateString1 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
+            this.checkStatus(accessToken, 1+10, 6, 18, 25+10, dateString1);
+            
+            synchronized (this) {
+                this.wait(1000);
+            }
+            for (int i = 0; i < newContentIds.size(); i++) {
+                String id = newContentIds.get(i);
+                Content content = this.contentManager.loadContent(id, false);
+                this.contentManager.insertOnLineContent(content);
+            }
+            String dateString2 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
+            Assertions.assertNotEquals(dateString1, dateString2);
+            this.checkStatus(accessToken, 1, 6, 18+10, 25+10, dateString2);
+            
+            synchronized (this) {
+                this.wait(1000);
+            }
+            for (int i = 0; i < newContentIds.size(); i++) {
+                String id = newContentIds.get(i);
+                Content content = this.contentManager.loadContent(id, false);
+                content.setDescription(content.getDescription() + " - modified");
+                this.contentManager.saveContent(content);
+            }
+            String dateString3 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
+            synchronized (this) {
+                this.wait(1000);
+            }
+            this.checkStatus(accessToken, 1, 6+10, 18, 25+10, dateString3);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            for (int i = 0; i < newContentIds.size(); i++) {
+                String id = newContentIds.get(i);
+                Content content = this.contentManager.loadContent(id, false);
+                this.contentManager.removeOnLineContent(content);
+                this.contentManager.deleteContent(id);
+            }
+            this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
+        }
+    }
+    
+    private void checkStatus(String accessToken, int unpublished, int ready, int published, int total, String dateString) throws Exception {
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/contents/status")
+                        .header("Authorization", "Bearer " + accessToken));
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(5)))
+                .andExpect(jsonPath("$.payload.unpublished", is(unpublished)))
+                .andExpect(jsonPath("$.payload.ready", is(ready)))
+                .andExpect(jsonPath("$.payload.published", is(published)))
+                .andExpect(jsonPath("$.payload.total", is(total)))
+                .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
+    }
+    
 }
