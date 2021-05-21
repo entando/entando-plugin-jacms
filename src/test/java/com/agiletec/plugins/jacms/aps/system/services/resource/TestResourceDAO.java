@@ -55,7 +55,7 @@ class TestResourceDAO extends BaseTestCase {
     	_resourceDao.addResource(resource); 
     	resourceRecordVO = _resourceDao.loadResourceVo(resource.getId());
     	assertEquals(resourceRecordVO.getDescr().equals("temp"), true);
-    	_resourceDao.deleteResource(resource.getId()); 
+    	_resourceDao.deleteResource(resource.getId(), null);
     	resourceRecordVO = _resourceDao.loadResourceVo(resource.getId());
     	assertNull(resourceRecordVO);
     }

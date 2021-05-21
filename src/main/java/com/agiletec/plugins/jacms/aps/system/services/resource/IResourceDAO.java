@@ -43,11 +43,13 @@ public interface IResourceDAO {
     public void updateResource(ResourceInterface resource);
 
     /**
-     * Cancella una risorsa dal db.
+     * Delete a resource from the DB.
      *
-     * @param id L'identificativo della risorsa da cancellare.
+     * @param id              The ID of the resource that should be deleted.
+     * @param correlationCode The code of the resource that will be deleted. This is used to evict the correlation code
+     *                        cache.
      */
-    public void deleteResource(String id);
+    public void deleteResource(String id, String correlationCode);
 
     /**
      * Carica una lista di identificativi di risorse in base al tipo, ad una
