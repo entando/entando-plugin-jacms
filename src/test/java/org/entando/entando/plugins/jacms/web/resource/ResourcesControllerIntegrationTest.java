@@ -21,9 +21,11 @@ import com.agiletec.aps.system.services.role.IRoleManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.role.Role;
 import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceRecordVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
+import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.UpdateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
@@ -32,6 +34,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -61,6 +64,9 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Autowired
     private CacheManager cacheManager;
+
+    @Autowired
+    private ResourcesService resourcesService;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -761,7 +767,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    void testCreateGetResourcesMultipleTimes() throws Exception {
+    void testCreateGetResourcesDeleteResourceByCorrelationCode() throws Exception {
         UserDetails user = createAccessToken();
         String code = "my_code2";
 
@@ -784,12 +790,20 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(4)));
 
+            resourcesService.getAsset(null, code);
+            Assertions.assertNotNull(cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME)
+                    .get("jacms_resource_code_" + code));
+            ResourceRecordVO resourceVo =
+                    (ResourceRecordVO) cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME)
+                            .get("jacms_resource_code_" + code).get();
+            Assertions.assertEquals(code, resourceVo.getCorrelationCode());
+
             performDeleteResource(user, "file", "cc=" + code)
                     .andDo(print())
                     .andExpect(status().isOk());
 
-            Assertions.assertNotNull(cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME).get(
-                    "jacms_resource_code_" + code));
+            Assertions.assertNull(
+                    cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME).get("jacms_resource_code_" + code));
 
             performGetResources(user, "file", null)
                     .andDo(print())

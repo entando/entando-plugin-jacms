@@ -38,6 +38,7 @@ import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 /**
  * Data Access Object per gli oggetti risorsa.
@@ -196,8 +197,15 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
      * @param id L'identificativo della risorsa da cancellare.
      */
     @Override
-    @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id")
-    public void deleteResource(String id) {
+    @Caching(evict = {
+            @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
+                    key = "'jacms_resource_'.concat(#id)",
+                    condition = "null != #id"),
+            @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
+                    key = "'jacms_resource_code_'.concat(#code)",
+                    condition = "null != #code")
+    })
+    public void deleteResource(String id, String code) {
         Connection conn = null;
         try {
             conn = this.getConnection();

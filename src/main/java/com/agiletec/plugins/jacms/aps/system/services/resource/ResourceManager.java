@@ -497,7 +497,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     @Override
     public void deleteResource(ResourceInterface resource) throws EntException {
         try {
-            this.getResourceDAO().deleteResource(resource.getId());
+            this.getResourceDAO().deleteResource(resource.getId(), resource.getCorrelationCode());
             resource.deleteResourceInstances();
         } catch (Throwable t) {
             logger.error("Error deleting resource", t);
