@@ -17,6 +17,7 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import java.util.List;
 import org.entando.entando.aps.system.services.IComponentExistsService;
+import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
@@ -51,5 +52,7 @@ public interface IContentService extends IComponentExistsService {
     PagedMetadata<ContentDto> getContents(RestContentListRequest requestList, UserDetails user);
 
     Integer countContentsByType(String contentType);
+
+    ContentsStatusDto getContentsStatus();
 
 }

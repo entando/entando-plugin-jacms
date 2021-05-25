@@ -13,33 +13,32 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.resource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.entando.entando.ent.exception.EntRuntimeException;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
 import com.agiletec.aps.system.common.AbstractSearcherDAO;
 import com.agiletec.aps.system.common.FieldSearchFilter;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceRecordVO;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.exception.EntRuntimeException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 /**
  * Data Access Object per gli oggetti risorsa.
@@ -198,8 +197,15 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
      * @param id L'identificativo della risorsa da cancellare.
      */
     @Override
-    @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id")
-    public void deleteResource(String id) {
+    @Caching(evict = {
+            @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
+                    key = "'jacms_resource_'.concat(#id)",
+                    condition = "null != #id"),
+            @CacheEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
+                    key = "'jacms_resource_code_'.concat(#code)",
+                    condition = "null != #code")
+    })
+    public void deleteResource(String id, String code) {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -401,7 +407,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
      * @return Il record della risorsa.
      */
     @Override
-    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
+    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)",
+            condition = "null != #id", unless = "null == #result")
     public ResourceRecordVO loadResourceVo(String id) {
         Connection conn = null;
         ResourceRecordVO resourceVo = null;
@@ -436,7 +443,8 @@ public class ResourceDAO extends AbstractSearcherDAO implements IResourceDAO {
     }
 
     @Override
-    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_'.concat(#id)", condition = "null != #id and null != #result")
+    @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, key = "'jacms_resource_code_'.concat(#code)",
+            condition = "null != #code", unless = "null == #result")
     public ResourceRecordVO loadResourceVoByCorrelationCode(String code) {
         Connection conn = null;
         ResourceRecordVO resourceVo = null;
