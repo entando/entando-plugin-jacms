@@ -14,7 +14,6 @@
 package org.entando.entando.plugins.jacms.web.resource;
 
 import com.agiletec.aps.system.common.FieldSearchFilter;
-import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.IRoleManager;
@@ -41,11 +40,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.startsWith;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.agiletec.aps.system.services.category.Category;
 import org.junit.jupiter.api.Test;
 
 class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTest {
@@ -57,24 +60,30 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     private IRoleManager roleManager;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-
+    
     @Test
     void testListImagesUnauthorized() throws Exception {
         performGetResources(null, "image", null)
-            .andDo(print())
-            .andExpect(status().isUnauthorized());
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testListAssetsManageResources() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES)
-                .build();
-        performGetResources(user, "image", null)
-                .andDo(print())
-                .andExpect(status().isOk());
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES).build();
+        String accessToken = mockOAuthInterceptor(user);
+        ResultActions result = mockMvc.perform(get("/plugins/cms/assets")
+                .param("type", "image")
+                .param("page", "1")
+                .param("pageSize", "1")
+                .header("Authorization", "Bearer " + accessToken));
+        result.andExpect(jsonPath("$.payload.size()", is(1)))
+                .andExpect(jsonPath("$.metaData.totalItems", is(2)))
+                .andExpect(jsonPath("$.metaData.lastPage", is(2)))
+                .andExpect(jsonPath("$.metaData.page", is(1)));
     }
-
+    
     @Test
     void testListAssetsAuthorizedContentSupervisor() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -208,8 +217,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             }
         }
     }
-
-
+    
     @Test
     void testCreateCloneAssetAuthorizationManageResource() throws Exception {
       testCreateCloneAssetAuthorization(Permission.MANAGE_RESOURCES, Permission.MANAGE_RESOURCES);
@@ -278,7 +286,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testListImagesWithoutFilter() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
 
         performGetResources(user, "image", null)
             .andDo(print())
@@ -291,27 +299,26 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testListFilesWithoutFilter() throws Exception {
-        UserDetails user = createAccessToken();
-
+        UserDetails user = createAdmin();
         performGetResources(user, "file", null)
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(3)));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(3)));
     }
 
     @Test
     void testListAllTypesWithoutFilter() throws Exception {
-        UserDetails user = createAccessToken();
-
-        performGetResources(user, null, null)
-                .andDo(print())
+        performGetResources(this.createAdmin(), null, null)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(6)));
+
+        performGetResources(this.createAccessToken(), null, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(4)));
     }
 
     @Test
     void testFilterImagesByPage() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("page", "2");
         params.put("pageSize", "2");
@@ -322,10 +329,10 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             .andExpect(jsonPath("$.payload.size()", is(1)))
             .andExpect(jsonPath("$.payload[0].versions.size()", is(4)));
     }
-
+    
     @Test
     void testFilterFilesByPage() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("page", "2");
         params.put("pageSize", "2");
@@ -335,10 +342,10 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.payload.size()", is(1)));
     }
-
+    
     @Test
     void testFilterImagesByGroup() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = this.createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "group");
         params.put("filters[0].value", "customers");
@@ -353,7 +360,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testFilterFilesByGroup() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("filters[0].attribute", "group");
         params.put("filters[0].value", "customers");
@@ -367,7 +374,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testSortByGroupAsc() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("sort", "group");
         params.put("direction", FieldSearchFilter.ASC_ORDER);
@@ -381,7 +388,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testSortByGroupDesc() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         Map<String,String> params = new HashMap<>();
         params.put("sort", "group");
         params.put("direction", FieldSearchFilter.DESC_ORDER);
@@ -416,8 +423,11 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         params.put("filters[0].attribute", "categories");
         params.put("filters[0].value", "resCat2");
 
-        performGetResources(user, "file", params)
-            .andDo(print())
+        performGetResources(this.createAccessToken(), "file", params)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.payload.size()", is(0)));
+
+        performGetResources(this.createAdmin(), "file", params)
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.payload.size()", is(1)))
             .andExpect(jsonPath("$.payload[0].id", is("8")));
@@ -467,7 +477,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(jsonPath("$.payload.[0].id", is("44")))
                 .andExpect(jsonPath("$.payload.[0].type", is("image")));
     }
-
+    
     @Test
     void testFilterResourceByOwner() throws Exception {
         UserDetails user = createAccessToken();
@@ -485,15 +495,16 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testFilterResourceByCreatedAt() throws Exception {
-        UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
-
         params.put("filters[0].attribute", "createdAt");
         params.put("filters[0].value", "2011-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
+        
+        performGetResources(this.createAccessToken(), "image", params)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(0)));
 
-        performGetResources(user, "image", params)
-                .andDo(print())
+        performGetResources(this.createAdmin(), "image", params)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(1)))
                 .andExpect(jsonPath("$.payload[0].id", is("82")))
@@ -548,14 +559,13 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         params.put("filters[0].operator", "gt");
 
         performGetResources(user, "image", params)
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.size()", is(1)))
                 .andExpect(jsonPath("$.errors[0].code", is("8")))
                 .andExpect(jsonPath("$.errors[0].message",
                         is("Invalid resource filter date format. Received '2009-01-01-01:00:00' when expected the pattern 'yyyy-MM-dd-HH.mm.ss'")));
     }
-
+    
     @Test
     void testFilterResourceByUpdatedAt() throws Exception {
         UserDetails user = createAccessToken();
@@ -566,7 +576,6 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         params.put("filters[0].operator", "gt");
 
         performGetResources(user, "image", params)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(1)))
                 .andExpect(jsonPath("$.payload[0].id", is("22")))
@@ -575,50 +584,57 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testFilterResourceByUpdatedAt2() throws Exception {
-        UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
-
         params.put("filters[0].attribute", "updatedAt");
         params.put("filters[0].value", "2015-11-25-19.19.00");
         params.put("filters[0].operator", "lt");
 
-        performGetResources(user, "image", params)
-                .andDo(print())
+        performGetResources(this.createAdmin(), "image", params)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(2)))
                 .andExpect(jsonPath("$.payload[0].id", is("82")))
+                .andExpect(jsonPath("$.payload[0].type", is("image")));
+
+        performGetResources(this.createAccessToken(), "image", params)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(1)))
+                .andExpect(jsonPath("$.payload[0].id", is("44")))
                 .andExpect(jsonPath("$.payload[0].type", is("image")));
     }
 
     @Test
     void testFilterResourceByUpdatedAt3() throws Exception {
-        UserDetails user = createAccessToken();
         Map<String,String> params = new HashMap<>();
-
         params.put("filters[0].attribute", "updatedAt");
         params.put("filters[0].value", "2013-01-01-01.00.00");
         params.put("filters[0].operator", "gt");
-
         params.put("filters[1].attribute", "updatedAt");
         params.put("filters[1].value", "2017-01-01-01.00.00");
         params.put("filters[1].operator", "lt");
 
-        performGetResources(user, "image", params)
-                .andDo(print())
+        performGetResources(this.createAdmin(), "image", params)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(2)))
                 .andExpect(jsonPath("$.payload[0].id", is("82")))
                 .andExpect(jsonPath("$.payload[0].type", is("image")));
-    }
 
+        performGetResources(this.createAccessToken(), "image", params)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(1)))
+                .andExpect(jsonPath("$.payload[0].id", is("44")))
+                .andExpect(jsonPath("$.payload[0].type", is("image")));
+    }
+    
     @Test
     void testCreateEditDeleteImageResource() throws Exception {
         UserDetails user = createAccessToken();
-        String createdId = null;
+        performGetResources(user, "image", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(2)));
 
+        String createdId = null;
         try {
             ResultActions result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.id", Matchers.anything()))
                 .andExpect(jsonPath("$.payload.categories.size()", is(2)))
@@ -634,9 +650,8 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
 
             performGetResources(user, "image", null)
-                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(4)));
+                .andExpect(jsonPath("$.payload.size()", is(3)));
 
             List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
 
@@ -655,22 +670,22 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         } finally {
             if (createdId != null) {
                 performDeleteResource(user, "image", createdId)
-                    .andDo(print())
                     .andExpect(status().isOk());
 
                 performGetResources(user, "image", null)
-                    .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(3)));
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
-
+    
     @Test
     void testCreateEditDeleteImageResourceWithoutCategory() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = this.createAdmin();
+        ResultActions result1 = performGetResources(user, "image", null)
+                .andExpect(status().isOk());
+        result1.andExpect(jsonPath("$.payload.size()", is(3)));
         String createdId = null;
-
         try {
             ResultActions result = performCreateResource(user, "image", "free", null, "application/jpeg")
                     .andDo(print())
@@ -684,7 +699,11 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")));
 
             createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
-
+            
+        performGetResources(user, "image", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(4)));
+            
             performEditResource(user, "image", createdId, "new image description", null, true)
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -698,11 +717,9 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         } finally {
             if (createdId != null) {
                 performDeleteResource(user, "image", createdId)
-                        .andDo(print())
                         .andExpect(status().isOk());
 
                 performGetResources(user, "image", null)
-                        .andDo(print())
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.payload.size()", is(3)));
             }
@@ -711,7 +728,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
     @Test
     void testCreateEditDeleteFileResourceWithCode() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = this.createAdmin();
         String code = "my_code";
 
         try {
@@ -753,12 +770,16 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(jsonPath("$.payload.size()", is(3)));
         }
     }
-
+    
     @Test
     void testCreateEditDeleteFileResource() throws Exception {
         UserDetails user = createAccessToken();
+        performGetResources(user, "file", null)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(2)));
+        
         String createdId = null;
-
         try {
             ResultActions result = performCreateResource(user, "file", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                     .andDo(print())
@@ -767,7 +788,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(jsonPath("$.payload.categories.size()", is(2)))
                     .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
                     .andExpect(jsonPath("$.payload.categories[1]", is("resCat2")))
-                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.group", is(Group.FREE_GROUP_NAME)))
                     .andExpect(jsonPath("$.payload.description", is("file_test.jpeg")))
                     .andExpect(jsonPath("$.payload.size", is("2 Kb")))
                     .andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
@@ -777,7 +798,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             performGetResources(user, "file", null)
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(4)));
+                    .andExpect(jsonPath("$.payload.size()", is(3)));
 
             List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
 
@@ -787,7 +808,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(jsonPath("$.payload.id", is(createdId)))
                     .andExpect(jsonPath("$.payload.categories.size()", is(1)))
                     .andExpect(jsonPath("$.payload.categories[0]", is("resCat1")))
-                    .andExpect(jsonPath("$.payload.group", is("free")))
+                    .andExpect(jsonPath("$.payload.group", is(Group.FREE_GROUP_NAME)))
                     .andExpect(jsonPath("$.payload.description", is("new file description")))
                     .andExpect(jsonPath("$.payload.size", is("2 Kb")));
             //.andExpect(jsonPath("$.payload.path", startsWith("/Entando/resources/cms/documents/file_test")));
@@ -800,14 +821,14 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
 
     @Test
     void testCreateEditWithoutFileDeleteImageResource() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         String createdId = null;
 
         try {
@@ -881,7 +902,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             performGetResources(user, "file", null)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(4)));
+                .andExpect(jsonPath("$.payload.size()", is(3)));
 
             List<String> categories = Arrays.stream(new String[]{"resCat1"}).collect(Collectors.toList());
 
@@ -904,7 +925,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "file", null)
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(3)));
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -922,7 +943,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         performGetResources(user, "image", null)
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload.size()", is(3)));
+            .andExpect(jsonPath("$.payload.size()", is(2)));
     }
 
     @Test
@@ -976,28 +997,20 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             clonedId = JsonPath.read(result2.andReturn().getResponse().getContentAsString(), "$.payload.id");
 
         } finally {
-
             if (clonedId != null) {
                 performDeleteResource(user, "file", clonedId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "file", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
             }
-
             if (createdId != null) {
                 performDeleteResource(user, "file", createdId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "file", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
+            performGetResources(user, "file", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
         }
     }
 
@@ -1006,7 +1019,6 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         UserDetails user = createAccessToken();
         String createdId = null;
         String clonedId = null;
-
         try {
             ResultActions result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
                     .andDo(print())
@@ -1021,9 +1033,9 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(jsonPath("$.payload.versions.size()", is(4)))
                     .andExpect(jsonPath("$.payload.versions[0].size", is("2 Kb")))
                     .andExpect(jsonPath("$.payload.versions[0].path", startsWith("/Entando/resources/cms/images/image_test")));
-
+            
             createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
-
+            
             ResultActions result2 = performCloneResource(user, createdId)
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -1041,34 +1053,26 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             clonedId = JsonPath.read(result2.andReturn().getResponse().getContentAsString(), "$.payload.id");
 
         } finally {
-
             if (clonedId != null) {
                 performDeleteResource(user, "image", clonedId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "image", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
             }
-
             if (createdId != null) {
                 performDeleteResource(user, "image", createdId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "image", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
+            performGetResources(user, "image", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
         }
     }
 
     @Test
     void testCreateCloneDeleteClonedImageResource() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         String createdId = null;
         String imagePath = null;
         String createdId2 = null;
@@ -1130,42 +1134,28 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             clonedId = JsonPath.read(result2.andReturn().getResponse().getContentAsString(), "$.payload.id");
 
         } finally {
-
             if (clonedId != null) {
                 performDeleteResource(user, "image", clonedId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "image", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(5)));
             }
-
             if (createdId != null) {
                 performDeleteResource(user, "image", createdId)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "image", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
             }
-
             if (createdId2 != null) {
                 performDeleteResource(user, "image", createdId2)
                         .andDo(print())
                         .andExpect(status().isOk());
-
-                performGetResources(user, "image", null)
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
+            performGetResources(user, "image", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(3)));
         }
     }
-
+    
     @Test
     void testEditResourceNotFound() throws Exception {
         UserDetails user = createAccessToken();
@@ -1179,6 +1169,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(status().isNotFound());
     }
 
+    
     @Test
     void testDeleteResourceNotValidGroup() throws Exception {
         final UserDetails editor = createEditor();
@@ -1249,10 +1240,8 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         String resourceCatCode2 = "resourceCatCode2";
         String resourceCatCode3 = "resourceCatCode3";
 
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         try {
-
-            List<Category> categories = categoryManager.getCategoriesList();
 
             Category resourceCat1 = new Category();
             resourceCat1.setCode(resourceCatCode1);
@@ -1483,14 +1472,14 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
 
     @Test
     void testCreateEditDeleteImageResourceWithPath() throws Exception {
-        UserDetails user = createAccessToken();
+        UserDetails user = createAdmin();
         String createdId = null;
 
         try {
@@ -1621,7 +1610,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
 
             if (createdId != null) {
@@ -1632,7 +1621,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -1854,7 +1843,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(5)));
+                        .andExpect(jsonPath("$.payload.size()", is(4)));
             }
 
             if (createdId4 != null) {
@@ -1865,7 +1854,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
 
             if (createdId3 != null) {
@@ -1876,7 +1865,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "file", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
 
             if (createdId2 != null) {
@@ -1887,7 +1876,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(4)));
+                        .andExpect(jsonPath("$.payload.size()", is(3)));
             }
 
             if (createdId != null) {
@@ -1898,7 +1887,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 performGetResources(user, "image", null)
                         .andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.payload.size()", is(3)));
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
             }
         }
     }
@@ -2028,27 +2017,23 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             }
         }
     }
-
-
+    
     /* Auxiliary methods */
-
+    
     private UserDetails createAccessToken() throws Exception {
         return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR).grantedToRoleAdmin()
-                .build();
+                .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR).build();
     }
+    
     private UserDetails createEditor() throws Exception {
         return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization("editor", "editor", Permission.MANAGE_RESOURCES)
-                .build();
+                .withAuthorization("editor", "editor", Permission.MANAGE_RESOURCES).build();
     }
 
     private UserDetails createAdmin() throws Exception {
-        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.ADMINS_GROUP_NAME, "administrator", Permission.SUPERUSER).grantedToRoleAdmin()
-                .build();
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
     }
-
+    
     private ResultActions performGetResources(UserDetails user, String type, Map<String,String> params) throws Exception {
         String path = "/plugins/cms/assets";
 
@@ -2069,7 +2054,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 get(path)
                     .header("Authorization", "Bearer " + accessToken));
     }
-
+    
     private ResultActions performGetResourcesFolder(UserDetails user, String folderPath) throws Exception {
         String path = "/plugins/cms/assets/folder";
 
@@ -2224,5 +2209,5 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         role.setDescription(descr);
         return role;
     }
-
+    
 }

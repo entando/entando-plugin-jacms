@@ -9,16 +9,14 @@ import static org.entando.entando.plugins.jacms.web.resource.ResourcesController
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
 
 import com.agiletec.aps.system.common.FieldSearchFilter;
-import com.agiletec.aps.system.common.FieldSearchFilter.LikeOptionType;
-import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
+import com.agiletec.aps.system.services.authorization.Authorization;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
-import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractMonoInstanceResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AbstractResource;
@@ -51,10 +49,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.aps.system.services.IComponentExistsService;
-import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.web.resource.model.AssetDto;
 import org.entando.entando.plugins.jacms.web.resource.model.FileAssetDto;
@@ -65,7 +63,6 @@ import org.entando.entando.plugins.jacms.web.resource.request.ListResourceReques
 import org.entando.entando.web.common.exceptions.ValidationConflictException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
-import org.entando.entando.web.common.model.FilterOperator;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,40 +95,39 @@ public class ResourcesService implements IComponentExistsService {
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
-
     public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList, UserDetails user) {
-        List<AssetDto> assets = new ArrayList<>();
+        PagedMetadata<AssetDto> pagedResults = null;
         try {
-            List<String> resourceIds = resourceManager.searchResourcesId(createSearchFilters(requestList),
-                    extractCategoriesFromFilters(requestList));
-
-            for (String id : resourceIds) {
-                AssetDto resource = convertResourceToDto(resourceManager.loadResource(id));
-                final Collection<String> allowedGroupCodes = BaseContentListHelper.getAllowedGroupCodes(user);
-                boolean resourceAccessibleByGroup = allowedGroupCodes.stream().anyMatch(group ->
-                        GenericResourceUtils
-                                .isResourceAccessibleByGroup(group, resource.getGroup(), null)
-                );
-                if ((resourceAccessibleByGroup) && (isCompatibleWithLinkabilityFilter(resource.getGroup(),
-                        requestList))) {
-                    assets.add(resource);
-                }
+            List<AssetDto> assets = new ArrayList<>();
+            FieldSearchFilter[] filters = this.createSearchFilters(requestList);
+            List<String> categoryFilters = this.extractCategoriesFromFilters(requestList);
+            final Collection<String> allowedGroupCodes = this.getAllowedGroupCodes(user);
+            SearcherDaoPaginatedResult<String> result = this.getResourceManager().getPaginatedResourcesId(filters, categoryFilters, allowedGroupCodes);
+            for (String id : result.getList()) {
+                AssetDto resource = convertResourceToDto(this.getResourceManager().loadResource(id));
+                assets.add(resource);
             }
-
+            SearcherDaoPaginatedResult<AssetDto> paginatedResult = new SearcherDaoPaginatedResult<>(result.getCount(), assets);
+            pagedResults = new PagedMetadata<>(requestList, paginatedResult);
+            pagedResults.setBody(assets);
         } catch (EntException e) {
             throw new RestServerError("plugins.jacms.resources.resourceManager.error.list", e);
         }
-
-        SearcherDaoPaginatedResult<AssetDto> paginatedResult = new SearcherDaoPaginatedResult<>(assets.size(), assets);
-        PagedMetadata<AssetDto> pagedResults = new PagedMetadata<>(requestList, paginatedResult);
-        pagedResults.setBody(requestList.getSublist(assets));
-
         return pagedResults;
+    }
+    
+    private Set<String> getAllowedGroupCodes(UserDetails user) {
+        Set<String> codes = new HashSet<>();
+        codes.add(Group.FREE_GROUP_NAME); // to check
+        Optional<List<Authorization>> authorizations = Optional.ofNullable(user.getAuthorizations());
+        authorizations.ifPresent(list -> list.stream().filter(a -> a.getGroup() != null).forEach(a -> codes.add(a.getGroup().getName())));
+        if (codes.contains(Group.ADMINS_GROUP_NAME)) {
+            return new HashSet<>();
+        }
+        return codes;
     }
 
     public ListAssetsFolderResponse listAssetsFolder(String folderPath) {
-
         ListAssetsFolderResponse response = new ListAssetsFolderResponse();
 
         try {
@@ -161,19 +157,6 @@ public class ResourcesService implements IComponentExistsService {
         }
 
         return response;
-    }
-
-    private boolean isCompatibleWithLinkabilityFilter(String resourceMainGroup, ListResourceRequest requestList) {
-        if (requestList.getForLinkingWithOwnerGroup() == null) {
-            return true;
-        }
-        return GenericResourceUtils.isResourceLinkableByContent(
-                resourceMainGroup,
-                null,
-                requestList.getForLinkingWithOwnerGroup(),
-                Optional.ofNullable(requestList.getForLinkingWithExtraGroups())
-                        .orElse(null)
-        );
     }
 
     private boolean shouldAddAsset(String folderPath, String assetFolderPath) {
@@ -525,62 +508,52 @@ public class ResourcesService implements IComponentExistsService {
 
     private FieldSearchFilter[] createSearchFilters(ListResourceRequest requestList) {
         List<FieldSearchFilter> filters = new ArrayList<>();
-
         if (requestList.getType() != null) {
             filters.add(
                     new FieldSearchFilter(IResourceManager.RESOURCE_TYPE_FILTER_KEY,
                             convertResourceType(requestList.getType()), false)
             );
         }
-
-        List<String> groups = new ArrayList<>();
-        for (Filter filter : Optional.ofNullable(requestList.getFilters()).orElse(new Filter[]{})) {
-            String attr;
-            boolean useLikeOption = false;
-            switch (filter.getAttribute()) {
-                case "name":
-                    attr = IResourceManager.RESOURCE_FILENAME_FILTER_KEY;
-                    useLikeOption = true;
-                    break;
-                case "description":
-                    attr = IResourceManager.RESOURCE_DESCR_FILTER_KEY;
-                    useLikeOption = true;
-                    break;
-                case "createdAt":
-                    filters.add(createEntitySearchFilterWithDate(IResourceManager.RESOURCE_CREATION_DATE_FILTER_KEY, filter));
-                    continue;
-                case "updatedAt":
-                    filters.add(createEntitySearchFilterWithDate(IResourceManager.RESOURCE_MODIFY_DATE_FILTER_KEY, filter));
-                    continue;
-                case "group":
-                    groups.add(filter.getValue());
-                    continue;
-                case "owner":
-                    attr = IResourceManager.RESOURCE_OWNER_FILTER_KEY;
-                    break;
-                case "folderPath":
-                    useLikeOption = true;
-                    attr = IResourceManager.RESOURCE_FOLDER_PATH_FILTER_KEY;
-                    break;
-                default:
-                    log.warn("Invalid filter attribute: " + filter.getAttribute());
-                    continue;
+        List<FieldSearchFilter> createdFilters = requestList.buildFieldSearchFilters();
+        for (int i = 0; i < createdFilters.size(); i++) {
+            FieldSearchFilter filter = createdFilters.get(i);
+            String key = filter.getKey();
+            if (StringUtils.isNotBlank(key)) {
+                switch (key) {
+                    case "name":
+                        filter.setKey(IResourceManager.RESOURCE_FILENAME_FILTER_KEY);
+                        break;
+                    case "description":
+                        filter.setKey(IResourceManager.RESOURCE_DESCR_FILTER_KEY);
+                        break;
+                    case "createdAt":
+                        filter = this.checkDateFilter(filter);
+                        filter.setKey(IResourceManager.RESOURCE_CREATION_DATE_FILTER_KEY);
+                        break;
+                    case "updatedAt":
+                        filter = this.checkDateFilter(filter);
+                        filter.setKey(IResourceManager.RESOURCE_MODIFY_DATE_FILTER_KEY);
+                        break;
+                    case "group":
+                        filter.setKey(IResourceManager.RESOURCE_MAIN_GROUP_FILTER_KEY);
+                        break;
+                    case "owner":
+                        filter.setKey(IResourceManager.RESOURCE_OWNER_FILTER_KEY);
+                        break;
+                    case "folderPath":
+                        filter.setKey(IResourceManager.RESOURCE_FOLDER_PATH_FILTER_KEY);
+                        break;
+                    default:
+                        log.warn("Invalid filter key: " + key);
+                        continue;
+                }
+                filters.add(filter);
+            } else if (filter.getOffset() != null && filter.getLimit() != null) {
+                filters.add(filter);
+            } else {
+                log.warn("Invalid filter: key null");
             }
-
-            filters.add(
-                    new FieldSearchFilter(attr, filter.getValue(), useLikeOption)
-            );
-
         }
-
-        if (groups.size() > 0) {
-            filters.add(
-                    new FieldSearchFilter(IResourceManager.RESOURCE_MAIN_GROUP_FILTER_KEY, groups, false)
-            );
-        }
-
-        filters.add(createOrderFilter(requestList));
-
         return filters.stream().toArray(FieldSearchFilter[]::new);
     }
 
@@ -591,62 +564,43 @@ public class ResourcesService implements IComponentExistsService {
         }
         return filters.stream().toArray(FieldSearchFilter[]::new);
     }
-
-    private EntitySearchFilter createEntitySearchFilterWithDate(String attribute, Filter filter) {
-        EntitySearchFilter result = null;
+    
+    private FieldSearchFilter checkDateFilter(FieldSearchFilter original) {
+        FieldSearchFilter dateFilter = null;
+        Object value = original.getValue();
+        Object start = original.getStart();
+        Object end = original.getEnd();
+        if (null != value) {
+            dateFilter = new FieldSearchFilter(original.getKey(), this.checkDate(value, original), false);
+            dateFilter.setValueDateDelay(original.getValueDateDelay());
+        } else if (null != start || null != end) {
+            dateFilter = new FieldSearchFilter(original.getKey(), this.checkDate(start, original), this.checkDate(end, original));
+            dateFilter.setStartDateDelay(original.getStartDateDelay());
+            dateFilter.setEndDateDelay(original.getEndDateDelay());
+        } else {
+            dateFilter = new FieldSearchFilter(original.getKey());
+        }
+        dateFilter.setOrder(original.getOrder());
+        dateFilter.setNotOption(original.isNotOption());
+        dateFilter.setNullOption(original.isNullOption());
+        return dateFilter;
+    }
+    
+    private Date checkDate(Object value, FieldSearchFilter filter) {
+        if (null == value || value instanceof Date) {
+            return (Date) value;
+        }
         try {
-            Date date = dateFormat.parse(filter.getValue());
-
-            if (FilterOperator.GREATER.getValue().equalsIgnoreCase(filter.getOperator())) {
-                result = new EntitySearchFilter(attribute, false, date, null);
-            } else if (FilterOperator.LOWER.getValue().equalsIgnoreCase(filter.getOperator())) {
-                result = new EntitySearchFilter(attribute, false, null, date);
-            } else if (FilterOperator.NOT_EQUAL.getValue().equalsIgnoreCase(filter.getOperator())) {
-                result = new EntitySearchFilter(attribute, false, date, false);
-                result.setNotOption(true);
-            } else {
-                result = new EntitySearchFilter(attribute, false, date,
-                        FilterOperator.LIKE.getValue().equalsIgnoreCase(filter.getOperator()),
-                        LikeOptionType.COMPLETE);
-            }
-            result.setOrder(filter.getOrder());
-            return result;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
+            return dateFormat.parse(value.toString());
         } catch (ParseException e) {
             BeanPropertyBindingResult errors = new BeanPropertyBindingResult(filter, "resources.filter");
-            errors.reject(ERRCODE_RESOURCE_FILTER_DATE_INVALID, new String[]{filter.getValue()},
+            errors.reject(ERRCODE_RESOURCE_FILTER_DATE_INVALID, new String[]{value.toString()},
                     "plugins.jacms.resources.invalidDateFilterFormat");
             throw new ValidationGenericException(errors);
         }
     }
-
-    private EntitySearchFilter createOrderFilter(RestListRequest requestList) {
-        String groupBy = requestList.getSort();
-
-        String key = IResourceManager.RESOURCE_DESCR_FILTER_KEY; //default
-
-        if ("description".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_DESCR_FILTER_KEY;
-        } else if ("updatedAt".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_MODIFY_DATE_FILTER_KEY;
-        } else if ("createdAt".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_CREATION_DATE_FILTER_KEY;
-        } else if ("name".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_FILENAME_FILTER_KEY;
-        } else if ("owner".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_OWNER_FILTER_KEY;
-        } else if ("group".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_MAIN_GROUP_FILTER_KEY;
-        } else if ("folderPath".equals(groupBy)) {
-            key = IResourceManager.RESOURCE_FOLDER_PATH_FILTER_KEY;
-        }
-
-        EntitySearchFilter filter = new EntitySearchFilter(key, true);
-        filter.setOrder(requestList.getDirection().equals(EntitySearchFilter.DESC_ORDER) ?
-                EntitySearchFilter.DESC_ORDER : EntitySearchFilter.ASC_ORDER);
-
-        return filter;
-    }
-
+    
     private List<String> extractCategoriesFromFilters(RestListRequest requestList) {
         List<String> categories = new ArrayList<>();
 
@@ -753,4 +707,5 @@ public class ResourcesService implements IComponentExistsService {
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
+    
 }
