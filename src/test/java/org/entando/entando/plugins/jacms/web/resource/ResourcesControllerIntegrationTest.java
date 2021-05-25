@@ -786,8 +786,10 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     @Test
     void testCreateGetResourcesDeleteResourceByCorrelationCode() throws Exception {
         UserDetails user = createAccessToken();
+        performGetResources(user, "file", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(2)));
         String code = "my_code2";
-
         try {
             performCreateResource(user, "file", code, "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/pdf")
                     .andDo(print())
@@ -805,13 +807,13 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             performGetResources(user, "file", null)
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(4)));
+                    .andExpect(jsonPath("$.payload.size()", is(3)));
 
             resourcesService.getAsset(null, code);
             Assertions.assertNotNull(cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME)
                     .get("jacms_resource_code_" + code));
-            ResourceRecordVO resourceVo =
-                    (ResourceRecordVO) cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME)
+            ResourceRecordVO resourceVo
+                    = (ResourceRecordVO) cacheManager.getCache(ICacheInfoManager.DEFAULT_CACHE_NAME)
                             .get("jacms_resource_code_" + code).get();
             Assertions.assertEquals(code, resourceVo.getCorrelationCode());
 
@@ -825,10 +827,13 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
             performGetResources(user, "file", null)
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.payload.size()", is(3)));
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
 
         } finally {
             performDeleteResource(user, "file", "cc=" + code);
+            performGetResources(user, "file", null)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(2)));
         }
     }
 
