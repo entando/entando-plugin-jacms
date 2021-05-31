@@ -4381,7 +4381,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
-        this.checkStatus(accessToken, 1, 5, 19, 25);
+        String lastModified = "2014-03-21 17:10:07";
+        this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
         List<String> newContentIds = new ArrayList<String>();
         try {
             for (int i = 0; i < 10; i++) {
@@ -4391,7 +4392,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 newContentIds.add(content.getId());
             }
             String dateString1 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
-            this.checkStatus(accessToken, 1+10, 5, 19, 25+10, dateString1);
+            this.checkStatus(accessToken, 1+10, 6, 18, 25+10, dateString1);
             
             synchronized (this) {
                 this.wait(1000);
@@ -4403,7 +4404,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
             String dateString2 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
             Assertions.assertNotEquals(dateString1, dateString2);
-            this.checkStatus(accessToken, 1, 5, 19+10, 25+10, dateString2);
+            this.checkStatus(accessToken, 1, 6, 18+10, 25+10, dateString2);
             
             synchronized (this) {
                 this.wait(1000);
@@ -4418,7 +4419,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             synchronized (this) {
                 this.wait(1000);
             }
-            this.checkStatus(accessToken, 1, 5+10, 19, 25+10, dateString3);
+            this.checkStatus(accessToken, 1, 6+10, 18, 25+10, dateString3);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -4428,7 +4429,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 this.contentManager.removeOnLineContent(content);
                 this.contentManager.deleteContent(id);
             }
-            this.checkStatus(accessToken, 1, 5, 19, 25);
+            this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
         }
     }
 
@@ -4553,10 +4554,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         }
     }
 
-    private void checkStatus(String accessToken, int unpublished, int ready, int published, int total) throws Exception {
-        checkStatus(accessToken, unpublished, ready, published, total, null);
-    }
-
     private void checkStatus(String accessToken, int unpublished, int ready, int published, int total, String dateString) throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents/status")
@@ -4567,10 +4564,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload.unpublished", is(unpublished)))
                 .andExpect(jsonPath("$.payload.ready", is(ready)))
                 .andExpect(jsonPath("$.payload.published", is(published)))
+                .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)))
                 .andExpect(jsonPath("$.payload.total", is(total)));
-        if (dateString != null) {
-            result.andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
-        }
     }
     
 }
