@@ -4564,8 +4564,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload.unpublished", is(unpublished)))
                 .andExpect(jsonPath("$.payload.ready", is(ready)))
                 .andExpect(jsonPath("$.payload.published", is(published)))
-                .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)))
-                .andExpect(jsonPath("$.payload.total", is(total)));
+                .andExpect(jsonPath("$.payload.total", is(total)))
+                .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
     }
     
 }
