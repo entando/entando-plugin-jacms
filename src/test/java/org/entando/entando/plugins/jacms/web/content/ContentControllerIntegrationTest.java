@@ -19,6 +19,8 @@ import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
+import com.agiletec.aps.system.services.category.Category;
+import com.agiletec.aps.system.services.category.CategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.*;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
@@ -27,6 +29,8 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.aps.util.DateConverter;
 import com.agiletec.aps.util.FileTextReader;
+import com.agiletec.plugins.jacms.aps.system.services.content.ContentDAO;
+import com.agiletec.plugins.jacms.aps.system.services.content.ContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
@@ -58,6 +62,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,7 +76,7 @@ import com.agiletec.aps.system.SystemConstants;
 class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Autowired
-    private IContentManager contentManager;
+    private ContentManager contentManager;
 
     @Autowired
     private ICmsSearchEngineManager searchEngineManager;
@@ -81,6 +86,9 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
     @Autowired
     private IWidgetTypeManager widgetTypeManager;
+
+    @Autowired
+    private CategoryManager categoryManager;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -4373,8 +4381,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
         String accessToken = mockOAuthInterceptor(user);
-        String lastModified = "2014-03-21 17:10:07";
-        this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
+        this.checkStatus(accessToken, 1, 5, 19, 25);
         List<String> newContentIds = new ArrayList<String>();
         try {
             for (int i = 0; i < 10; i++) {
@@ -4384,7 +4391,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 newContentIds.add(content.getId());
             }
             String dateString1 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
-            this.checkStatus(accessToken, 1+10, 6, 18, 25+10, dateString1);
+            this.checkStatus(accessToken, 1+10, 5, 19, 25+10, dateString1);
             
             synchronized (this) {
                 this.wait(1000);
@@ -4396,7 +4403,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
             String dateString2 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
             Assertions.assertNotEquals(dateString1, dateString2);
-            this.checkStatus(accessToken, 1, 6, 18+10, 25+10, dateString2);
+            this.checkStatus(accessToken, 1, 5, 19+10, 25+10, dateString2);
             
             synchronized (this) {
                 this.wait(1000);
@@ -4411,7 +4418,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             synchronized (this) {
                 this.wait(1000);
             }
-            this.checkStatus(accessToken, 1, 6+10, 18, 25+10, dateString3);
+            this.checkStatus(accessToken, 1, 5+10, 19, 25+10, dateString3);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -4421,10 +4428,135 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 this.contentManager.removeOnLineContent(content);
                 this.contentManager.deleteContent(id);
             }
-            this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
+            this.checkStatus(accessToken, 1, 5, 19, 25);
         }
     }
-    
+
+    @Test
+    void testDeleteCategoryWithContentReference() throws Exception {
+        String newContentId = null;
+        try {
+
+            Assertions.assertEquals(0, contentManager.getCategoryUtilizers("uniqueCat1").size());
+
+            Assertions.assertNull(this.contentManager.getEntityPrototype("TST"));
+            String accessToken = this.createAccessToken();
+
+            this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("TST"));
+
+            Category uniqueCat1 = new Category();
+            uniqueCat1.setCode("uniqueCat1");
+            uniqueCat1.setParentCode("home");
+            uniqueCat1.getTitles().putAll(Collections.singletonMap("en", "Parent Title"));
+            categoryManager.addCategory(uniqueCat1);
+
+            ResultActions result = executeContentPost("1_POST_valid_with_unique_category.json", accessToken,
+                    status().isOk())
+                    .andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].description", is("New Content for test")))
+                    .andExpect(jsonPath("$.payload[0].attributes.size()", is(13)))
+                    .andExpect(jsonPath("$.payload[0].categories.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].categories[0]", is("uniqueCat1")))
+                    .andExpect(jsonPath("$.payload[0].status", is("NEW")));
+
+            newContentId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload[0].id");
+
+            mockMvc
+                    .perform(delete("/categories/{categoryCode}", new Object[]{"uniqueCat1"})
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors.size()", is(1)))
+                    .andExpect(jsonPath("$.errors[0].code", is("6")))
+                    .andExpect(jsonPath("$.errors[0].message",
+                            is("The Category 'uniqueCat1' cannot be deleted because it is referenced")));
+
+            ContentStatusRequest contentStatusRequest = new ContentStatusRequest();
+            contentStatusRequest.setStatus("published");
+            result = mockMvc
+                    .perform(put("/plugins/cms/contents/{code}/status", newContentId)
+                            .content(mapper.writeValueAsString(contentStatusRequest))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + accessToken));
+            result.andExpect(status().isOk());
+
+            mockMvc
+                    .perform(delete("/categories/{categoryCode}", new Object[]{"uniqueCat1"})
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors.size()", is(1)))
+                    .andExpect(jsonPath("$.errors[0].code", is("6")))
+                    .andExpect(jsonPath("$.errors[0].message",
+                            is("The Category 'uniqueCat1' cannot be deleted because it is referenced")));
+
+            contentStatusRequest = new ContentStatusRequest();
+            contentStatusRequest.setStatus("draft");
+            result = mockMvc
+                    .perform(put("/plugins/cms/contents/{code}/status", newContentId)
+                            .content(mapper.writeValueAsString(contentStatusRequest))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + accessToken));
+            result.andExpect(status().isOk());
+
+            mockMvc
+                    .perform(delete("/categories/{categoryCode}", new Object[]{"uniqueCat1"})
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors.size()", is(1)))
+                    .andExpect(jsonPath("$.errors[0].code", is("6")))
+                    .andExpect(jsonPath("$.errors[0].message",
+                            is("The Category 'uniqueCat1' cannot be deleted because it is referenced")));
+
+            result = mockMvc
+                    .perform(delete("/plugins/cms/contents")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(mapper.writeValueAsString(new String[] { newContentId }))
+                            .header("Authorization", "Bearer " + accessToken));
+            result.andExpect(status().isOk());
+            result.andExpect(jsonPath("$.payload.size()", is(1)));
+            result.andExpect(jsonPath("$.payload[0]", is(newContentId)));
+            Assertions.assertNull(this.contentManager.loadContent(newContentId, false));
+
+            mockMvc
+                    .perform(delete("/categories/{categoryCode}", new Object[]{"uniqueCat1"})
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.errors.size()", is(0)));
+
+            Assertions.assertEquals(0, contentManager.getCategoryUtilizers("uniqueCat1").size());
+
+        } finally {
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype("TST")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
+            }
+            try {
+                categoryManager.deleteCategory("uniqueCat1");
+            } catch (Exception e) {}
+        }
+    }
+
+    private void checkStatus(String accessToken, int unpublished, int ready, int published, int total) throws Exception {
+        checkStatus(accessToken, unpublished, ready, published, total, null);
+    }
+
     private void checkStatus(String accessToken, int unpublished, int ready, int published, int total, String dateString) throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents/status")
@@ -4435,8 +4567,10 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload.unpublished", is(unpublished)))
                 .andExpect(jsonPath("$.payload.ready", is(ready)))
                 .andExpect(jsonPath("$.payload.published", is(published)))
-                .andExpect(jsonPath("$.payload.total", is(total)))
-                .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
+                .andExpect(jsonPath("$.payload.total", is(total)));
+        if (dateString != null) {
+            result.andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
+        }
     }
     
 }

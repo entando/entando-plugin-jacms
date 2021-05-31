@@ -102,6 +102,10 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 
 	private final String LOAD_CONTENT_VO = LOAD_CONTENTS_VO_MAIN_BLOCK + " WHERE contents.contentid = ? ";
 
+	private final String LOAD_REFERENCED_WORK_CONTENTS_FOR_CATEGORY = LOAD_CONTENTS_ID_MAIN_BLOCK
+			+ " RIGHT JOIN workcontentrelations ON contents.contentid = workcontentrelations.contentid WHERE refcategory = ? "
+			+ "ORDER BY contents.contentid";
+
 	private final String ADD_CONTENT = "INSERT INTO contents (contentid, contenttype, descr, status, workxml, "
 			+ "created, lastmodified, sync, maingroup, currentversion, firsteditor, lasteditor, restriction) "
 			+ "VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
@@ -730,14 +734,15 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 
 	@Override
 	public List<String> getCategoryUtilizers(String categoryCode) {
-		List<String> contentIds = null;
+		Set<String> result = new HashSet<>();
 		try {
-			contentIds = this.getUtilizers(categoryCode, LOAD_REFERENCED_CONTENTS_FOR_CATEGORY);
+			result.addAll(this.getUtilizers(categoryCode, LOAD_REFERENCED_CONTENTS_FOR_CATEGORY));
+			result.addAll(this.getUtilizers(categoryCode, LOAD_REFERENCED_WORK_CONTENTS_FOR_CATEGORY));
 		} catch (Throwable t) {
 			_logger.error("Error loading referenced contents for category {}", categoryCode, t);
 			throw new RuntimeException("Error loading referenced contents for category " + categoryCode, t);
 		}
-		return contentIds;
+		return new ArrayList<>(result);
 	}
 
 	protected List<String> getUtilizers(String referencedObjectCode, String query) throws Throwable {
