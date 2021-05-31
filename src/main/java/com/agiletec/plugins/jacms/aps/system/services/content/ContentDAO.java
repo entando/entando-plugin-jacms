@@ -110,11 +110,13 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			+ "created, lastmodified, sync, maingroup, currentversion, firsteditor, lasteditor, restriction) "
 			+ "VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
 
-	private static final String INSERT_ONLINE_CONTENT = "UPDATE contents SET contenttype = ? , descr = ? , status = ? , "
+	private static final String UPDATE_CONTENTS = "UPDATE contents SET contenttype = ? , descr = ? , status = ? , ";
+
+	private static final String INSERT_ONLINE_CONTENT = UPDATE_CONTENTS
 			+ "workxml = ? , lastmodified = ? , onlinexml = ? , published = ? , sync = ? , maingroup = ? , currentversion = ? , lasteditor = ? , "
 			+ "restriction = ? WHERE contentid = ? ";
 
-	private static final String INSERT_ONLINE_CONTENT_WITHOUT_DATE = "UPDATE contents SET contenttype = ? , descr = ? , status = ? , "
+	private static final String INSERT_ONLINE_CONTENT_WITHOUT_DATE = UPDATE_CONTENTS
 			+ "workxml = ? , onlinexml = ? , sync = ? , maingroup = ? , currentversion = ? , lasteditor = ? , restriction = ? WHERE contentid = ? ";
 
 	private static final String REMOVE_ONLINE_CONTENT = "UPDATE contents SET onlinexml = ? , published = ? , sync = ? , "
@@ -123,10 +125,10 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 	private static final String REMOVE_ONLINE_CONTENT_WITHOUT_DATE = "UPDATE contents SET onlinexml = ? , published = ? , sync = ? , "
             + "status = ? , workxml = ? , currentversion = ? , lasteditor = ? , restriction = ? WHERE contentid = ? ";
 
-	private static final String UPDATE_CONTENT = "UPDATE contents SET contenttype = ? , descr = ? , status = ? , "
+	private static final String UPDATE_CONTENT = UPDATE_CONTENTS
 			+ "workxml = ? , sync = ? , lastmodified = ? , maingroup = ? , currentversion = ? , lasteditor = ? , restriction = ? " + "WHERE contentid = ? ";
 
-	private static final String UPDATE_CONTENT_WITHOUT_DATE = "UPDATE contents SET contenttype = ? , descr = ? , status = ? , "
+	private static final String UPDATE_CONTENT_WITHOUT_DATE = UPDATE_CONTENTS
 			+ "workxml = ? , sync = ? , maingroup = ? , currentversion = ? , lasteditor = ? , restriction = ? " + "WHERE contentid = ? ";
 
 	private static final String LOAD_ALL_CONTENTS_ID = "SELECT contentid FROM contents";
