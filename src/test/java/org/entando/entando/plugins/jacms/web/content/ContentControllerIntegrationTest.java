@@ -58,6 +58,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -85,7 +86,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     private ObjectMapper mapper = new ObjectMapper();
 
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
-    
+
     @Test
     void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -4367,7 +4368,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         Page pageToAdd = PageTestUtil.createPage(pageCode, parentPage.getCode(), groupName, metadata, widgets);
         return pageToAdd;
     }
-    
+
     @Test
     void testGetContentsStatus() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -4385,7 +4386,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
             String dateString1 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
             this.checkStatus(accessToken, 1+10, 6, 18, 25+10, dateString1);
-            
+
             synchronized (this) {
                 this.wait(1000);
             }
@@ -4397,7 +4398,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             String dateString2 = DateConverter.getFormattedDate(new Date(), SystemConstants.API_DATE_FORMAT);
             Assertions.assertNotEquals(dateString1, dateString2);
             this.checkStatus(accessToken, 1, 6, 18+10, 25+10, dateString2);
-            
+
             synchronized (this) {
                 this.wait(1000);
             }
@@ -4424,7 +4425,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             this.checkStatus(accessToken, 1, 6, 18, 25, lastModified);
         }
     }
-    
+
     private void checkStatus(String accessToken, int unpublished, int ready, int published, int total, String dateString) throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents/status")
@@ -4438,5 +4439,140 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload.total", is(total)))
                 .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
     }
-    
+
+    @Test
+    void testAddCloneDeleteContent() throws Exception {
+        String newContentId = null;
+        String clonedContentId = null;
+        try {
+
+            String accessToken = this.createAccessToken();
+            Assertions.assertNull(this.contentManager.getEntityPrototype("AL2"));
+
+            this.executeContentTypePost("1_POST_type_with_all_attributes.json", accessToken, status().isCreated());
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("AL2"));
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_all_attributes.json", accessToken, status().isOk());
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].firstEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].lastEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload[0].mainGroup", is("free")))
+                    .andExpect(jsonPath("$.payload[0].restriction", is("OPEN")))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].restriction", is("OPEN")))
+
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("attach")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].code", is("bool")))
+                    .andExpect(jsonPath("$.payload[0].attributes[1].value", is(true)))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].code", is("checkbox")))
+                    .andExpect(jsonPath("$.payload[0].attributes[2].value", is(true)))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].code", is("composite")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].compositeelements[0].code", is("bool-compo")))
+                    .andExpect(jsonPath("$.payload[0].attributes[3].compositeelements[0].value", is(true)))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].code", is("date")))
+                    .andExpect(jsonPath("$.payload[0].attributes[4].value", is("2020-01-29 00:00:00")))
+                    .andExpect(jsonPath("$.payload[0].attributes[5].code", is("enumerator")))
+                    .andExpect(jsonPath("$.payload[0].attributes[5].value", is("lable1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[6].code", is("enumap")))
+                    .andExpect(jsonPath("$.payload[0].attributes[6].value", is("key1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[7].code", is("hypertext")))
+                    .andExpect(jsonPath("$.payload[0].attributes[7].values.en", is("<p>adasdf</p>")))
+                    .andExpect(jsonPath("$.payload[0].attributes[8].code", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[9].code", is("link")))
+                    .andExpect(jsonPath("$.payload[0].attributes[9].values.it", is("a")))
+                    .andExpect(jsonPath("$.payload[0].attributes[10].code", is("longtext")))
+                    .andExpect(jsonPath("$.payload[0].attributes[10].values.en", is("sdfadsfasf")))
+                    .andExpect(jsonPath("$.payload[0].attributes[11].code", is("monolist")))
+                    .andExpect(jsonPath("$.payload[0].attributes[11].elements[0].code", is("monolist")))
+                    .andExpect(jsonPath("$.payload[0].attributes[11].elements[0].values.it", is("a")))
+                    .andExpect(jsonPath("$.payload[0].attributes[12].code", is("monotext")))
+                    .andExpect(jsonPath("$.payload[0].attributes[12].value", is("dfadfa")))
+                    .andExpect(jsonPath("$.payload[0].attributes[13].code", is("number")))
+                    .andExpect(jsonPath("$.payload[0].attributes[13].value", is("1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[14].code", is("text")))
+                    .andExpect(jsonPath("$.payload[0].attributes[14].values.it", is("dfsdfasd")))
+                    .andExpect(jsonPath("$.payload[0].attributes[15].code", is("threestate")))
+                    .andExpect(jsonPath("$.payload[0].attributes[15].value", is(false)))
+                    .andExpect(jsonPath("$.payload[0].attributes[16].code", is("list")))
+                    .andExpect(jsonPath("$.payload[0].attributes[16].listelements.en[0].code", is("list")))
+                    .andExpect(jsonPath("$.payload[0].attributes[16].listelements.en[0].value", is("1")));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+
+            result = mockMvc
+                    .perform(post("/plugins/cms/contents/{code}/clone", newContentId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", not(newContentId)))
+                    .andExpect(jsonPath("$.payload.firstEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload.lastEditor", is("jack_bauer")))
+                    .andExpect(jsonPath("$.payload.mainGroup", is("free")))
+                    .andExpect(jsonPath("$.payload.restriction", is("OPEN")))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload.restriction", is("OPEN")))
+                    .andExpect(jsonPath("$.payload.attributes[0].code", is("attach")))
+                    .andExpect(jsonPath("$.payload.attributes[1].code", is("bool")))
+                    .andExpect(jsonPath("$.payload.attributes[1].value", is(true)))
+                    .andExpect(jsonPath("$.payload.attributes[2].code", is("checkbox")))
+                    .andExpect(jsonPath("$.payload.attributes[2].value", is(true)))
+                    .andExpect(jsonPath("$.payload.attributes[3].code", is("composite")))
+                    .andExpect(jsonPath("$.payload.attributes[3].compositeelements[0].code", is("bool-compo")))
+                    .andExpect(jsonPath("$.payload.attributes[3].compositeelements[0].value", is(true)))
+                    .andExpect(jsonPath("$.payload.attributes[4].code", is("date")))
+                    .andExpect(jsonPath("$.payload.attributes[4].value", is("2020-01-29 00:00:00")))
+                    .andExpect(jsonPath("$.payload.attributes[5].code", is("enumerator")))
+                    .andExpect(jsonPath("$.payload.attributes[5].value", is("lable1")))
+                    .andExpect(jsonPath("$.payload.attributes[6].code", is("enumap")))
+                    .andExpect(jsonPath("$.payload.attributes[6].value", is("key1")))
+                    .andExpect(jsonPath("$.payload.attributes[7].code", is("hypertext")))
+                    .andExpect(jsonPath("$.payload.attributes[7].values.en", is("<p>adasdf</p>")))
+                    .andExpect(jsonPath("$.payload.attributes[8].code", is("image")))
+                    .andExpect(jsonPath("$.payload.attributes[9].code", is("link")))
+                    .andExpect(jsonPath("$.payload.attributes[9].values.it", is("a")))
+                    .andExpect(jsonPath("$.payload.attributes[10].code", is("longtext")))
+                    .andExpect(jsonPath("$.payload.attributes[10].values.en", is("sdfadsfasf")))
+                    .andExpect(jsonPath("$.payload.attributes[11].code", is("monolist")))
+                    .andExpect(jsonPath("$.payload.attributes[11].elements[0].code", is("monolist")))
+                    .andExpect(jsonPath("$.payload.attributes[11].elements[0].values.it", is("a")))
+                    .andExpect(jsonPath("$.payload.attributes[12].code", is("monotext")))
+                    .andExpect(jsonPath("$.payload.attributes[12].value", is("dfadfa")))
+                    .andExpect(jsonPath("$.payload.attributes[13].code", is("number")))
+                    .andExpect(jsonPath("$.payload.attributes[13].value", is("1")))
+                    .andExpect(jsonPath("$.payload.attributes[14].code", is("text")))
+                    .andExpect(jsonPath("$.payload.attributes[14].values.it", is("dfsdfasd")))
+                    .andExpect(jsonPath("$.payload.attributes[15].code", is("threestate")))
+                    .andExpect(jsonPath("$.payload.attributes[15].value", is(false)))
+                    .andExpect(jsonPath("$.payload.attributes[16].code", is("list")))
+                    .andExpect(jsonPath("$.payload.attributes[16].listelements.en[0].code", is("list")))
+                    .andExpect(jsonPath("$.payload.attributes[16].listelements.en[0].value", is("1")));
+
+            bodyResult = result.andReturn().getResponse().getContentAsString();
+            clonedContentId = JsonPath.read(bodyResult, "$.payload.id");
+
+        } finally {
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != clonedContentId) {
+                Content newContent = this.contentManager.loadContent(clonedContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype("AL2")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("AL2");
+            }
+        }
+    }
+
 }

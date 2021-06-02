@@ -55,4 +55,6 @@ public interface IContentService extends IComponentExistsService {
 
     ContentsStatusDto getContentsStatus();
 
+    ContentDto cloneContent(String code, UserDetails user, BindingResult bindingResult);
+
 }
