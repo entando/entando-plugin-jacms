@@ -301,7 +301,7 @@ public class ContentDto extends EntityDto implements Serializable {
 
     private Map<String, String> processLinkAttribute(EntityAttributeDto attributeDto, SymbolicLink link) {
         Map<String, String> result = new HashMap<>();
-        if (attributeDto.getValue() != null && attributeDto.getValue().getClass().isInstance(Map.class)) {
+        if (attributeDto.getValue() != null && Map.class.isAssignableFrom(attributeDto.getValue().getClass())) {
             Object destType = ((Map) attributeDto.getValue()).get("destType");
             if (destType != null) {
                 switch ((Integer) destType) {
