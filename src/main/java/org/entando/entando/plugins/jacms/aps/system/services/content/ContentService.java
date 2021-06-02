@@ -755,6 +755,20 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     }
 
     @Override
+    public ContentDto cloneContent(String code, UserDetails user, BindingResult bindingResult) {
+        try {
+            boolean online = contentManager.loadContentVO(code).isOnLine();
+            Content content = contentManager.loadContent(code, online);
+            ContentDto contentDto = new ContentDto(content);
+            contentDto.setId(null);
+            return addContent(contentDto, user, bindingResult);
+        } catch (EntException e) {
+            throw new RestServerError("Error cloning content: " + code, e);
+        }
+    }
+
+
+    @Override
     public PagedMetadata<?> getContentReferences(String code, String managerName, UserDetails user,
             RestListRequest requestList) {
         try {

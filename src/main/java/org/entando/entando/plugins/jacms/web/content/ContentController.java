@@ -308,4 +308,14 @@ public class ContentController {
         return new ResponseEntity<>(new SimpleRestResponse<>(payload), HttpStatus.OK);
     }
 
+    @RestAccessControl(permission = Permission.CONTENT_EDITOR)
+    @PostMapping(value = "/{code}/clone", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SimpleRestResponse<ContentDto>> cloneContent(@PathVariable String code) {
+        DataBinder binder = new DataBinder(code);
+        BindingResult bindingResult = binder.getBindingResult();
+        UserDetails userDetails = HttpSessionHelper.extractCurrentUser(httpSession);
+        ContentDto response = contentService.cloneContent(code, userDetails, bindingResult);
+        return new ResponseEntity<>(new SimpleRestResponse<>(response), HttpStatus.OK);
+    }
+
 }
