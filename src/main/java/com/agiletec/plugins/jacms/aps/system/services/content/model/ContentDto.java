@@ -291,44 +291,48 @@ public class ContentDto extends EntityDto implements Serializable {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
             LinkAttribute linkAttribute = (LinkAttribute)attribute;
             SymbolicLink link = new SymbolicLink();
-            Map<String, String> additionalLinkAttributes = new HashMap<>();
-            if (attributeDto.getValue() != null) {
-                if (attributeDto.getValue() instanceof Map) {
-                    Object destType = ((Map) attributeDto.getValue()).get("destType");
-                    if (destType != null) {
-                        switch ((Integer) destType) {
-                            case SymbolicLink.URL_TYPE:
-                                link.setDestinationToUrl((String) ((Map) attributeDto.getValue()).get("urlDest"));
-                                additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
-                                break;
-                            case SymbolicLink.PAGE_TYPE:
-                                link.setDestinationToPage(
-                                        (String) ((Map) attributeDto.getValue()).get("pageDest"));
-                                additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
-                                break;
-                            case SymbolicLink.RESOURCE_TYPE:
-                                link.setDestinationToResource(
-                                        (String) ((Map) attributeDto.getValue()).get("resourceDest"));
-                                break;
-                            case SymbolicLink.CONTENT_TYPE:
-                                link.setDestinationToContent(
-                                        (String) ((Map) attributeDto.getValue()).get("contentDest"));
-                                additionalLinkAttributes = getAdditionalLinkAttributes(attributeDto);
-                                break;
-                            case SymbolicLink.CONTENT_ON_PAGE_TYPE:
-                                link.setDestinationToContentOnPage(
-                                        (String) ((Map) attributeDto.getValue()).get("contentDest"),
-                                        (String) ((Map) attributeDto.getValue()).get("pageDest"));
-                                break;
-                            default: break;
-                        }
-                    }
-                }
-            }
+            Map<String, String> additionalLinkAttributes = processLinkAttribute(attributeDto, link);
             linkAttribute.setSymbolicLink(link);
             if (!additionalLinkAttributes.isEmpty()) {
                 linkAttribute.setLinkProperties(additionalLinkAttributes);
             }
         }
+    }
+
+    private Map<String, String> processLinkAttribute(EntityAttributeDto attributeDto, SymbolicLink link) {
+        Map<String, String> result = new HashMap<>();
+        if (attributeDto.getValue() != null && attributeDto.getValue().getClass().isInstance(Map.class)) {
+            Object destType = ((Map) attributeDto.getValue()).get("destType");
+            if (destType != null) {
+                switch ((Integer) destType) {
+                    case SymbolicLink.URL_TYPE:
+                        link.setDestinationToUrl((String) ((Map) attributeDto.getValue()).get("urlDest"));
+                        result = getAdditionalLinkAttributes(attributeDto);
+                        break;
+                    case SymbolicLink.PAGE_TYPE:
+                        link.setDestinationToPage(
+                                (String) ((Map) attributeDto.getValue()).get("pageDest"));
+                        result = getAdditionalLinkAttributes(attributeDto);
+                        break;
+                    case SymbolicLink.RESOURCE_TYPE:
+                        link.setDestinationToResource(
+                                (String) ((Map) attributeDto.getValue()).get("resourceDest"));
+                        break;
+                    case SymbolicLink.CONTENT_TYPE:
+                        link.setDestinationToContent(
+                                (String) ((Map) attributeDto.getValue()).get("contentDest"));
+                        result = getAdditionalLinkAttributes(attributeDto);
+                        break;
+                    case SymbolicLink.CONTENT_ON_PAGE_TYPE:
+                        link.setDestinationToContentOnPage(
+                                (String) ((Map) attributeDto.getValue()).get("contentDest"),
+                                (String) ((Map) attributeDto.getValue()).get("pageDest"));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return result;
     }
 }

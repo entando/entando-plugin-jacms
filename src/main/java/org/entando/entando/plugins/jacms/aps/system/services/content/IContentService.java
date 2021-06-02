@@ -17,7 +17,6 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import java.util.List;
 import org.entando.entando.aps.system.services.IComponentExistsService;
-import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.model.PagedMetadata;
