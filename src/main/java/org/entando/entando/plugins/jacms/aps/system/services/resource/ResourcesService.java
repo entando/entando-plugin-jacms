@@ -118,7 +118,6 @@ public class ResourcesService implements IComponentExistsService {
     
     private Set<String> getAllowedGroupCodes(UserDetails user) {
         Set<String> codes = new HashSet<>();
-        codes.add(Group.FREE_GROUP_NAME); // to check
         Optional<List<Authorization>> authorizations = Optional.ofNullable(user.getAuthorizations());
         authorizations.ifPresent(list -> list.stream().filter(a -> a.getGroup() != null).forEach(a -> codes.add(a.getGroup().getName())));
         if (codes.contains(Group.ADMINS_GROUP_NAME)) {
