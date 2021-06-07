@@ -1978,6 +1978,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     @Test
     void testListAssetUserGroupsPermissions() throws Exception {
         UserDetails editor = createEditor();
+        UserDetails editorWithFreeGroup = createEditorWithFreeGroup();
         UserDetails admin = createAdmin();
 
         String createdId1Admin = null;
@@ -2023,8 +2024,12 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(8)));
 
-
             performGetResources(editor, "image", null)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)));
+
+            performGetResources(editorWithFreeGroup, "image", null)
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.size()", is(4)));
@@ -2094,6 +2099,12 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     private UserDetails createEditor() throws Exception {
         return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization("editor", "editor", Permission.MANAGE_RESOURCES).build();
+    }
+
+    private UserDetails createEditorWithFreeGroup() throws Exception {
+        return new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization("editor", "editor", Permission.MANAGE_RESOURCES)
+                .withAuthorization("free", "free", Permission.MANAGE_RESOURCES).build();
     }
 
     private UserDetails createAdmin() throws Exception {
