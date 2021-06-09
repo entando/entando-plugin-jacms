@@ -771,6 +771,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     @Test
     void testAddContentWithImageAttributeWithAllFields() throws Exception {
         String newContentId = null;
+        String clonedContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
         try {
@@ -809,8 +810,33 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
-
             Assertions.assertNotNull(newContent);
+
+            result = mockMvc
+                    .perform(post("/plugins/cms/contents/{code}/clone", newContentId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", not(newContentId)))
+                    .andExpect(jsonPath("$.payload.attributes[0].code", is("img1")))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.en.id", is(resourceId)))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.en.type", is("image")))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.en.description", is("image_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.it.id", is(resourceId)))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload.attributes[0].values.it.description", is("image_test.jpeg")))
+
+                    .andExpect(jsonPath("$.payload.attributes[1].code", is("img2")))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.en.id", is(resourceId)))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.en.type", is("image")))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.en.description", is("image_test.jpeg")))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.it.id", is(resourceId)))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload.attributes[1].values.it.description", is("image_test.jpeg")));
+
+            bodyResult = result.andReturn().getResponse().getContentAsString();
+            clonedContentId = JsonPath.read(bodyResult, "$.payload.id");
 
         } finally {
             if (null != resourceId) {
@@ -821,6 +847,12 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 Content newContent = this.contentManager.loadContent(newContentId, false);
                 if (null != newContent) {
                     this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != clonedContentId) {
+                Content clonedContent = this.contentManager.loadContent(clonedContentId, false);
+                if (null != clonedContent) {
+                    this.contentManager.deleteContent(clonedContent);
                 }
             }
             if (null != this.contentManager.getEntityPrototype("IMG")) {

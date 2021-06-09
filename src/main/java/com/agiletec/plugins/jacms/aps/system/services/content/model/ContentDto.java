@@ -20,6 +20,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Ab
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentRestriction;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
+import com.agiletec.plugins.jacms.aps.system.services.resource.model.ImageResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -27,14 +28,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityDto;
-import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
 import org.entando.entando.web.common.json.JsonDateDeserializer;
 import org.entando.entando.web.common.json.JsonDateSerializer;
+import org.entando.entando.web.entity.validator.EntityValidator;
 import org.springframework.validation.BindingResult;
 
 public class ContentDto extends EntityDto implements Serializable {
@@ -218,7 +220,7 @@ public class ContentDto extends EntityDto implements Serializable {
 
     @Override
     protected void rejectAttributeNotFound (BindingResult bindingResult, EntityAttributeDto attributeDto) {
-        bindingResult.reject(ContentValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()}, "content.attribute.code.invalid");
+        bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()}, "content.attribute.code.invalid");
     }
 
     private void clearAbstractResourceAttribute(AttributeInterface attribute) {
@@ -242,31 +244,55 @@ public class ContentDto extends EntityDto implements Serializable {
         if (AbstractResourceAttribute.class.isAssignableFrom(attribute.getClass())) {
             AbstractResourceAttribute resourceAttribute = (AbstractResourceAttribute) attribute;
             for (Entry<String, Object> resourceEntry : attributeDto.getValues().entrySet()) {
-
-                String langCode = resourceEntry.getKey();
-                String correlationCode = (String) ((Map<String, Object>) resourceEntry.getValue()).get("correlationCode");
-                String resourceId = (String) ((Map<String, Object>) resourceEntry.getValue()).get("id");
-                String name = (String) ((Map<String, Object>) resourceEntry.getValue()).get("name");
-
-                if (name != null) {
-                    resourceAttribute.setText(name, langCode);
-                }
-
-                ResourceInterface resource = new AttachResource();
-                resource.setId(resourceId);
-                resource.setCorrelationCode(correlationCode);
-
-                resourceAttribute.setResource(resource, langCode);
-
-                Map<String, Object> values = (Map<String, Object>) ((Map<String, Object>) resourceEntry.getValue())
-                        .get("metadata");
-
-                if (values != null) {
-                    Map<String, String> metadata = values.entrySet().stream()
-                            .collect(Collectors.toMap(Entry::getKey, e -> (String) e.getValue()));
-                    resourceAttribute.setMetadataMap(langCode, metadata);
+                if (LinkedHashMap.class.isAssignableFrom(resourceEntry.getValue().getClass())) {
+                    Map<String, Object> resource = (Map<String, Object>) resourceEntry.getValue();
+                    setResourceAttribute(resourceAttribute, resource, resourceEntry.getKey());
+                } else if (ImageResource.class.isAssignableFrom(resourceEntry.getValue().getClass())) {
+                    ImageResource resource = (ImageResource) resourceEntry.getValue();
+                    setResourceAttribute(resourceAttribute, resource, resourceEntry.getKey());
                 }
             }
+        }
+    }
+
+    private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, ImageResource resource, String langCode) {
+        String correlationCode = resource.getCorrelationCode();
+        String resourceId = resource.getId();
+        String name = resource.getDescription();
+
+        if (name != null) {
+            resourceAttribute.setText(name, langCode);
+        }
+
+        ResourceInterface resourceInterface = new AttachResource();
+        resourceInterface.setId(resourceId);
+        resourceInterface.setCorrelationCode(correlationCode);
+
+        resourceAttribute.setResource(resourceInterface, langCode);
+    }
+
+    private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, Map<String, Object> resource,
+            String langCode) {
+        String correlationCode = (String) resource.get("correlationCode");
+        String resourceId = (String) resource.get("id");
+        String name = (String) resource.get("name");
+
+        if (name != null) {
+            resourceAttribute.setText(name, langCode);
+        }
+
+        ResourceInterface resourceInterface = new AttachResource();
+        resourceInterface.setId(resourceId);
+        resourceInterface.setCorrelationCode(correlationCode);
+
+        resourceAttribute.setResource(resourceInterface, langCode);
+
+        Map<String, Object> values = (Map<String, Object>) resource.get("metadata");
+
+        if (values != null) {
+            Map<String, String> metadata = values.entrySet().stream()
+                    .collect(Collectors.toMap(Entry::getKey, e -> (String) e.getValue()));
+            resourceAttribute.setMetadataMap(langCode, metadata);
         }
     }
 
