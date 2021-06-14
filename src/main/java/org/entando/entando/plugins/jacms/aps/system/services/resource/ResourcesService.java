@@ -590,7 +590,7 @@ public class ResourcesService implements IComponentExistsService {
         return dateFilter;
     }
     
-    private LocalDateTime checkDate(Object value, FieldSearchFilter filter) {
+    private LocalDateTime checkDate(Object value, FieldSearchFilter<?> filter) {
         if (null == value || value instanceof LocalDateTime) {
             return (LocalDateTime) value;
         }
