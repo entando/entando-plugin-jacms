@@ -34,6 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,6 +97,8 @@ public class ResourcesService implements IComponentExistsService {
 
     @Value("#{'${jacms.attachResource.allowedExtensions}'.split(',')}")
     private List<String> fileAllowedExtensions;
+
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
 
     public PagedMetadata<AssetDto> listAssets(ListResourceRequest requestList, UserDetails user) {
         PagedMetadata<AssetDto> pagedResults = null;
@@ -585,14 +590,13 @@ public class ResourcesService implements IComponentExistsService {
         return dateFilter;
     }
     
-    private Date checkDate(Object value, FieldSearchFilter filter) {
-        if (null == value || value instanceof Date) {
-            return (Date) value;
+    private LocalDateTime checkDate(Object value, FieldSearchFilter<?> filter) {
+        if (null == value || value instanceof LocalDateTime) {
+            return (LocalDateTime) value;
         }
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
-            return dateFormat.parse(value.toString());
-        } catch (ParseException e) {
+            return LocalDateTime.parse(value.toString(), dateFormatter);
+        } catch (DateTimeParseException e) {
             BeanPropertyBindingResult errors = new BeanPropertyBindingResult(filter, "resources.filter");
             errors.reject(ERRCODE_RESOURCE_FILTER_DATE_INVALID, new String[]{value.toString()},
                     "plugins.jacms.resources.invalidDateFilterFormat");

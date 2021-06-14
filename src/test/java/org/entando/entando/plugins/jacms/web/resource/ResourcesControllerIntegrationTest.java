@@ -23,6 +23,9 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceRecordVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
@@ -72,6 +75,8 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     private ResourcesService resourcesService;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
     
     @Test
     void testListImagesUnauthorized() throws Exception {
@@ -576,6 +581,53 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(jsonPath("$.errors[0].code", is("8")))
                 .andExpect(jsonPath("$.errors[0].message",
                         is("Invalid resource filter date format. Received '2009-01-01-01:00:00' when expected the pattern 'yyyy-MM-dd-HH.mm.ss'")));
+    }
+
+    @Test
+    void addAndFilterByCreatedAt() throws Exception {
+        String createdId = null;
+        UserDetails user = createAccessToken();
+        performGetResources(user, "image", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(2)));
+
+        try {
+
+            ResultActions result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()));
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            Map<String,String> params = new HashMap<>();
+
+            LocalDateTime begin = LocalDate.now().atTime(0, 0, 0);
+            LocalDateTime end = LocalDate.now().atTime(23, 59, 59);
+
+            params.put("filters[0].attribute", "createdAt");
+            params.put("filters[0].value", begin.format(dateFormatter));
+            params.put("filters[0].operator", "gt");
+
+            params.put("filters[1].attribute", "createdAt");
+            params.put("filters[1].value", end.format(dateFormatter));
+            params.put("filters[1].operator", "lt");
+
+            performGetResources(user, "image", params)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].id", is(createdId)))
+                    .andExpect(jsonPath("$.payload[0].type", is("image")));
+        } finally {
+            if (createdId != null) {
+                performDeleteResource(user, "image", createdId)
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
+            }
+        }
     }
     
     @Test
