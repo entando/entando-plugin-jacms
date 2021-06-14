@@ -577,6 +577,50 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(jsonPath("$.errors[0].message",
                         is("Invalid resource filter date format. Received '2009-01-01-01:00:00' when expected the pattern 'yyyy-MM-dd-HH.mm.ss'")));
     }
+
+    @Test
+    void addAndFilterByCreatedAt() throws Exception {
+        String createdId = null;
+        UserDetails user = createAccessToken();
+        performGetResources(user, "image", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.size()", is(2)));
+
+        try {
+
+            ResultActions result = performCreateResource(user, "image", "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(Collectors.toList()), "application/jpeg")
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.id", Matchers.anything()));
+
+            createdId = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            Map<String,String> params = new HashMap<>();
+
+            params.put("filters[0].attribute", "createdAt");
+            params.put("filters[0].value", "2021-06-09-00.00.00");
+            params.put("filters[0].operator", "gt");
+
+            params.put("filters[1].attribute", "createdAt");
+            params.put("filters[1].value", "2021-06-09-23.59.59");
+            params.put("filters[1].operator", "lt");
+
+            performGetResources(user, "image", params)
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].id", is(createdId)))
+                    .andExpect(jsonPath("$.payload[0].type", is("image")));
+        } finally {
+            if (createdId != null) {
+                performDeleteResource(user, "image", createdId)
+                        .andExpect(status().isOk());
+
+                performGetResources(user, "image", null)
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.payload.size()", is(2)));
+            }
+        }
+    }
     
     @Test
     void testFilterResourceByUpdatedAt() throws Exception {
