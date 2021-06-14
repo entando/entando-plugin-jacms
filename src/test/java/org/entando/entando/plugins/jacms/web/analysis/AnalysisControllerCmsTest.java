@@ -85,7 +85,7 @@ class AnalysisControllerCmsTest extends AbstractControllerTest {
 
         result.andExpect(status().isOk());
         result.andDo(MockMvcResultHandlers.print());
-        result.andExpect(content().contentType("application/json;charset=UTF-8"));
+        result.andExpect(content().contentType("application/json"));
         checkByComponentType(result, "contents");
         checkByComponentType(result, "contentTypes");
         checkByComponentType(result, "contentTemplates");

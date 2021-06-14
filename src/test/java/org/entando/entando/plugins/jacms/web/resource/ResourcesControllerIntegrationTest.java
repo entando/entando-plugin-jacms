@@ -23,6 +23,9 @@ import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceRecordVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.plugins.jacms.aps.system.services.resource.ResourcesService;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
@@ -72,6 +75,8 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     private ResourcesService resourcesService;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
     
     @Test
     void testListImagesUnauthorized() throws Exception {
@@ -596,12 +601,15 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
 
             Map<String,String> params = new HashMap<>();
 
+            LocalDateTime begin = LocalDate.now().atTime(0, 0, 0);
+            LocalDateTime end = LocalDate.now().atTime(23, 59, 59);
+
             params.put("filters[0].attribute", "createdAt");
-            params.put("filters[0].value", "2021-06-09-00.00.00");
+            params.put("filters[0].value", begin.format(dateFormatter));
             params.put("filters[0].operator", "gt");
 
             params.put("filters[1].attribute", "createdAt");
-            params.put("filters[1].value", "2021-06-09-23.59.59");
+            params.put("filters[1].value", end.format(dateFormatter));
             params.put("filters[1].operator", "lt");
 
             performGetResources(user, "image", params)
