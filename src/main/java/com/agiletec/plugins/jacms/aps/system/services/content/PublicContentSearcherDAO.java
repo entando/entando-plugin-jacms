@@ -41,7 +41,6 @@ public class PublicContentSearcherDAO extends AbstractContentSearcherDAO impleme
 		if (null != userGroupCodes) {
 			groupCodes.addAll(userGroupCodes);
 		}
-		groupCodes.add(Group.FREE_GROUP_NAME);
 		EntitySearchFilter onLineFilter = new EntitySearchFilter(IContentManager.CONTENT_ONLINE_FILTER_KEY, false);
 		filters = this.addFilter(filters, onLineFilter);
 		List<String> contentsId = new ArrayList<String>();
