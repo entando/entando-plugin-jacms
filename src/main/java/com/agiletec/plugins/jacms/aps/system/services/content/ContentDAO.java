@@ -57,6 +57,8 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 
 	private final String DELETE_CONTENT_REL_RECORD = "DELETE FROM contentrelations WHERE contentid = ? ";
 
+	private final String DELETE_CONTENT_REL_RECORD_NULL_GROUP = "DELETE FROM contentrelations WHERE contentid = ? and refgroup is null";
+
 	private final String DELETE_WORK_CONTENT_REL_RECORD = "DELETE FROM workcontentrelations WHERE contentid = ? ";
 
 	private final String ADD_CONTENT_SEARCH_RECORD = "INSERT INTO contentsearch (contentid, attrname, textvalue, datevalue, numvalue, langcode) "
@@ -181,6 +183,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 	protected void executeAddEntity(IApsEntity entity, Connection conn) throws Throwable {
 		super.executeAddEntity(entity, conn);
 		this.addWorkContentRelationsRecord((Content) entity, conn);
+		this.addGroupRelationsRecord((Content) entity, conn);
 	}
 
 	@Override
@@ -494,7 +497,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 	 */
 	protected void executeRemoveOnLineContent(Content content, boolean updateDate, Connection conn) {
 		super.deleteRecordsByEntityId(content.getId(), DELETE_CONTENT_SEARCH_RECORD, conn);
-		super.deleteRecordsByEntityId(content.getId(), DELETE_CONTENT_REL_RECORD, conn);
+		super.deleteRecordsByEntityId(content.getId(), DELETE_CONTENT_REL_RECORD_NULL_GROUP, conn);
 		super.deleteRecordsByEntityId(content.getId(), DELETE_ATTRIBUTE_ROLE_RECORD, conn);
 		PreparedStatement stat = null;
 		try {
@@ -638,6 +641,23 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 					}
 				}
 			}
+			stat.executeBatch();
+		} catch (BatchUpdateException e) {
+			_logger.error("Error saving record into contentrelations {}", content.getId(), e.getNextException());
+			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), e.getNextException());
+		} catch (Throwable t) {
+			_logger.error("Error saving record into contentrelations {}", content.getId(), t);
+			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), t);
+		} finally {
+			closeDaoResources(null, stat);
+		}
+	}
+
+	protected void addGroupRelationsRecord(Content content, Connection conn) {
+		PreparedStatement stat = null;
+		try {
+			stat = conn.prepareStatement(ADD_CONTENT_REL_RECORD);
+			this.addGroupRelationsRecord(content, stat);
 			stat.executeBatch();
 		} catch (BatchUpdateException e) {
 			_logger.error("Error saving record into contentrelations {}", content.getId(), e.getNextException());
