@@ -1,3 +1,16 @@
+/*
+ * Copyright 2021-Present Entando Inc. (http://www.entando.com) All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary;
 
 import java.util.List;
@@ -20,10 +33,9 @@ import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
-
 public class ContentModelDictionary implements IEntityModelDictionary {
 
-    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
+    private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentModelDictionary.class);
 
     private static final String KEY_ROOT = "$content";
     
@@ -55,15 +67,15 @@ public class ContentModelDictionary implements IEntityModelDictionary {
 
     protected void addAttributes(IApsEntity prototype, Properties publicAttributeMethods) {
         for (AttributeInterface attribute : prototype.getAttributeList()) {
-            List<String> attibuteMethodList = this.getAllowedAttributeMethods(attribute, publicAttributeMethods);
+            List<String> attibuteMethodList = getAllowedAttributeMethods(attribute, publicAttributeMethods);
             this.putAsMap(attribute.getName(), attibuteMethodList);
         }
     }
 
-    protected List<String> getAllowedAttributeMethods(AttributeInterface attribute, Properties publicAttributeMethods) {
+    public static List<String> getAllowedAttributeMethods(AttributeInterface attribute, Properties publicAttributeMethods) {
         List<String> methods = new ArrayList<>();
         try {
-            String methodsString = publicAttributeMethods.getProperty(attribute.getType());
+            String methodsString = (null != publicAttributeMethods) ? publicAttributeMethods.getProperty(attribute.getType()) : null;
             if (null != methodsString) {
                 String[] methodsArray = methodsString.split(";");
                 methods = Arrays.asList(methodsArray);
@@ -83,6 +95,7 @@ public class ContentModelDictionary implements IEntityModelDictionary {
         }
         return methods;
     }
+    
 
     protected void putAsMap(String key, List<String> list) {
         Map<String, String> result = list.stream().collect(HashMap::new, (m, v) -> m.put(v, null), HashMap::putAll);
