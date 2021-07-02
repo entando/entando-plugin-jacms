@@ -13,9 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary;
 
-import static com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.IEntityModelDictionary.KEY_I18N;
-import static com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.IEntityModelDictionary.KEY_INFO;
-
 import java.util.List;
 import java.util.Properties;
 
@@ -32,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
@@ -42,14 +40,14 @@ public class ContentModelDictionary implements IEntityModelDictionary {
 
     private static final String KEY_ROOT = "$content";
     
-    private LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+    private Map<String, Object> data = new LinkedHashMap<>();
 
     @JsonValue
-    public LinkedHashMap<String, Object> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(LinkedHashMap<String, Object> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 
@@ -76,7 +74,7 @@ public class ContentModelDictionary implements IEntityModelDictionary {
     }
 
     protected List<String> getAllowedAttributeMethods(AttributeInterface attribute, Properties publicAttributeMethods) {
-        List<String> methods = new ArrayList<String>();
+        List<String> methods = new ArrayList<>();
         try {
             String methodsString = publicAttributeMethods.getProperty(attribute.getType());
             if (null != methodsString) {
@@ -94,7 +92,7 @@ public class ContentModelDictionary implements IEntityModelDictionary {
             }
         } catch (Throwable t) {
             logger.error("error loading allowed attribute methods for typeCode {} and attribute {}", attribute.getParentEntity().getTypeCode(), attribute.getName(), t);
-            throw new RuntimeException("error loading allowed attribute methods for dictionary", t);
+            throw new EntRuntimeException("error loading allowed attribute methods for dictionary", t);
         }
         return methods;
     }
