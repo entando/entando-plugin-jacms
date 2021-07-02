@@ -15,6 +15,7 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModel
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionaryProvider;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.IEntityModelDictionary;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import java.util.Optional;
 import java.util.Properties;
 import org.assertj.core.api.Condition;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
-import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentModelServiceImpl;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.plugins.jacms.web.contentmodel.validator.ContentModelValidator;
