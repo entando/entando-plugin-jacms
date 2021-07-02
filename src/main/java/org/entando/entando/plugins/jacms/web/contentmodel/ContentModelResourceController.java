@@ -15,10 +15,10 @@ package org.entando.entando.plugins.jacms.web.contentmodel;
 
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.IEntityModelDictionary;
 import java.util.Collections;
 import java.util.Map;
 import javax.validation.Valid;
-import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.plugins.jacms.aps.system.services.ContentModelService;

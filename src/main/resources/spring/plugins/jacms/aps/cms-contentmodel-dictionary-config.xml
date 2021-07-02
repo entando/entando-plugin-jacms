@@ -16,7 +16,6 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-
     <bean id="ContentModelDictionaryProvider" class="com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionaryProvider" >
         <property name="contentMap" ref="contentModelDictionaryContentMap" />
         <property name="i18nMap" ref="contentModelDictionaryI18NMap" />
@@ -43,7 +42,7 @@
         </property>
     </bean>
     
-    <bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean" class="org.springframework.beans.factory.config.ListFactoryBean">
+    <bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
                 <value><![CDATA[getLabel("<LABEL_CODE>")]]></value>
@@ -52,7 +51,7 @@
         </property>
     </bean>
 
-    <bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean" class="org.springframework.beans.factory.config.ListFactoryBean">
+    <bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
                 <value><![CDATA[getConfigParameter("<PARAM_NAME>")]]></value>
@@ -63,7 +62,7 @@
         </property>
     </bean>
 
-    <bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean" class="org.springframework.beans.factory.config.ListFactoryBean">
+    <bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
                 <value><![CDATA[#foreach ($item in $<LIST>) $item #end]]></value>
