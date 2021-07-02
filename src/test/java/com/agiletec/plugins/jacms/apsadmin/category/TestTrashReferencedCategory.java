@@ -48,7 +48,7 @@ class TestTrashReferencedCategory extends ApsAdminBaseTestCase {
 
 			CategoryAction action = (CategoryAction) this.getAction();
 			Map<String, List> references = action.getReferences();
-			assertEquals(2, references.size());
+			assertEquals(1, references.size());
 
 			List contentReferences = references.get(JacmsSystemConstants.CONTENT_MANAGER + "Utilizers");
 			assertEquals(2, contentReferences.size());
