@@ -16,7 +16,6 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-
     <bean id="ContentModelDictionaryProvider" class="com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionaryProvider" >
         <property name="contentMap" ref="contentModelDictionaryContentMap" />
         <property name="i18nMap" ref="contentModelDictionaryI18NMap" />
@@ -25,37 +24,164 @@
         <property name="allowedPublicAttributeMethods" ref="contentModelDictionaryAllowedPublicAttributeMethods" />
     </bean>
     
-    <bean id="contentModelDictionaryContentMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryRootMap">
+    <bean id="contentModelDictionaryContentMap" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
-            <list merge="true">
+            <list>
+                <value><![CDATA[getId()]]></value>
+                <value><![CDATA[getCategories()]]></value>
+                <value><![CDATA[getContentLink()]]></value>
+                <value><![CDATA[getContentOnPageLink("<PAGE_CODE>")]]></value>
+                <value><![CDATA[getCreated("<DATE_PATTERN>")]]></value>
+                <value><![CDATA[getLastModified("<DATE_PATTERN>")]]></value>
+                <value><![CDATA[getVersion()]]></value>
+                <value><![CDATA[getLastEditor()]]></value>
+                <value><![CDATA[isUserAllowed("<PERMISSION_NAME>")]]></value>
+                <value><![CDATA[getLangCode()]]></value>
                 <value><![CDATA[getNonce()]]></value>
             </list>
         </property>
     </bean>
     
-    <bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryI18NMap" />
+    <bean id="contentModelDictionaryI18NMap" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value><![CDATA[getLabel("<LABEL_CODE>")]]></value>
+                <value><![CDATA[getLabelWithParams("<LABEL_CODE>").addParam("<PARAM_KEY>", "<PARAM_VALUE>")]]></value>
+            </list>
+        </property>
+    </bean>
 
-    <bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryInfoMap" />
+    <bean id="contentModelDictionaryInfoMap" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value><![CDATA[getConfigParameter("<PARAM_NAME>")]]></value>
+                <value><![CDATA[getCurrentPage()]]></value>
+                <value><![CDATA[getCurrentLang()]]></value>
+                <value><![CDATA[getCurrentWidget()]]></value>
+            </list>
+        </property>
+    </bean>
 
-    <bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean" parent="dataModelDictionaryCommonMap" />
+    <bean id="contentModelDictionaryCommonMap" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value><![CDATA[#foreach ($item in $<LIST>) $item #end]]></value>
+                <value><![CDATA[#if (<TRUE>) <DO> #else <DOANOTHER> #end]]></value>
+                <value><![CDATA[#if (<TRUE>) <DO> #end]]></value>
+                <value><![CDATA[#set ($<VAR> = <VALUE>)]]></value>
+            </list>
+        </property>
+    </bean>
 
-    <bean id="contentModelDictionaryAllowedPublicAttributeMethods"  class="org.springframework.beans.factory.config.MapFactoryBean" parent="dataModelDictionaryAllowedPublicAttributeMethods">
+    <bean id="contentModelDictionaryAllowedPublicAttributeMethods"  class="org.springframework.beans.factory.config.MapFactoryBean" >
         <property name="sourceMap" >
             <map>
                 <entry>
-                    <key><value>Link</value></key>
+                    <key>
+                        <value>Date</value>
+                    </key>
+                    <value><![CDATA[fullDate;longDate;mediumDate;shortDate;getFormattedDate("<DATE_PATTERN>")]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Timestamp</value>
+                    </key>
+                    <value><![CDATA[fullDate;longDate;mediumDate;shortDate;getFormattedDate("<DATE_PATTERN>")]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Number</value>
+                    </key>
+                    <value><![CDATA[number;value]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Monotext</value>
+                    </key>
+                    <value><![CDATA[text]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Enumerator</value>
+                    </key>
+                    <value><![CDATA[text]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>EnumeratorMap</value>
+                    </key>
+                    <value><![CDATA[mapKey;mapValue]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Text</value>
+                    </key>
+                    <value><![CDATA[text;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Longtext</value>
+                    </key>
+                    <value><![CDATA[text;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Boolean</value>
+                    </key>
+                    <value><![CDATA[value;booleanValue]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>ThreeState</value>
+                    </key>
+                    <value><![CDATA[value;booleanValue]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>CheckBox</value>
+                    </key>
+                    <value><![CDATA[value;booleanValue]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Composite</value>
+                    </key>
+                    <value><![CDATA[get("<ATTRIBUTE_NAME>");size()]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>List</value>
+                    </key>
+                    <value><![CDATA[get(<INDEX>);size()]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Monolist</value>
+                    </key>
+                    <value><![CDATA[get(<INDEX>);size()]]></value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Link</value>
+                    </key>
                     <value><![CDATA[text;destination;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];symbolicLink]]></value>
                 </entry>
                 <entry>
-                    <key><value>Image</value></key>
+                    <key>
+                        <value>Image</value>
+                    </key>
                     <value><![CDATA[text;getImagePath(<SIZE_ID>);getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
                 </entry>
                 <entry>
-                    <key><value>Attach</value></key>
+                    <key>
+                        <value>Attach</value>
+                    </key>
                     <value><![CDATA[text;attachPath;getResource("<LANG_CODE>");resource;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"]]]></value>
                 </entry>
                 <entry>
-                    <key><value>Hypertext</value></key>
+                    <key>
+                        <value>Hypertext</value>
+                    </key>
                     <value><![CDATA[text;getTextForLang("<LANG_CODE>");textMap["<LANG_CODE>"];getTextBeforeImage(<PERCENT_VALUE>);getTextByRange(<START_PERCENT_VALUE>,<END_PERCENT_VALUE>);getTextAfterImage(<PERCENT_VALUE>);getHead(<VALUE>);getHeadEscaped(VALUE)]]></value>
                 </entry>
             </map>

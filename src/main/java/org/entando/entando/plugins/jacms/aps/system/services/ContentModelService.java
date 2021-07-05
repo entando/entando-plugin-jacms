@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-Present Entando Inc. (http://www.entando.com) All rights reserved.
+ * Copyright 2021-Present Entando Inc. (http://www.entando.com) All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,9 @@
 package org.entando.entando.plugins.jacms.aps.system.services;
 
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelDto;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.IEntityModelDictionary;
 import java.util.Optional;
 import org.entando.entando.aps.system.services.IComponentExistsService;
-import org.entando.entando.aps.system.services.dataobjectmodel.model.IEntityModelDictionary;
 import org.entando.entando.plugins.jacms.web.contentmodel.model.ContentModelReferenceDTO;
 import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
