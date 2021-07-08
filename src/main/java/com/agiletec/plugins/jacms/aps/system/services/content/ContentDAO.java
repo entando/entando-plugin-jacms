@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
@@ -53,11 +54,13 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 
 	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentDAO.class);
 
+	private static final String ERROR_CONTENTRELATIONS = "Error saving record into contentrelations ";
+
 	private final String DELETE_CONTENT = "DELETE FROM contents WHERE contentid = ? ";
 
 	private final String DELETE_CONTENT_REL_RECORD = "DELETE FROM contentrelations WHERE contentid = ? ";
 
-	private final String DELETE_CONTENT_REL_RECORD_NULL_GROUP = "DELETE FROM contentrelations WHERE contentid = ? and refgroup is null";
+	private static final String DELETE_CONTENT_REL_RECORD_NULL_GROUP = "DELETE FROM contentrelations WHERE contentid = ? and refgroup is null";
 
 	private final String DELETE_WORK_CONTENT_REL_RECORD = "DELETE FROM workcontentrelations WHERE contentid = ? ";
 
@@ -643,11 +646,11 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			}
 			stat.executeBatch();
 		} catch (BatchUpdateException e) {
-			_logger.error("Error saving record into contentrelations {}", content.getId(), e.getNextException());
-			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), e.getNextException());
+			_logger.error(ERROR_CONTENTRELATIONS + "{}", content.getId(), e.getNextException());
+			throw new EntRuntimeException(ERROR_CONTENTRELATIONS + content.getId(), e.getNextException());
 		} catch (Throwable t) {
-			_logger.error("Error saving record into contentrelations {}", content.getId(), t);
-			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), t);
+			_logger.error(ERROR_CONTENTRELATIONS + "{}", content.getId(), t);
+			throw new EntRuntimeException(ERROR_CONTENTRELATIONS + content.getId(), t);
 		} finally {
 			closeDaoResources(null, stat);
 		}
@@ -660,11 +663,11 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			this.addGroupRelationsRecord(content, stat);
 			stat.executeBatch();
 		} catch (BatchUpdateException e) {
-			_logger.error("Error saving record into contentrelations {}", content.getId(), e.getNextException());
-			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), e.getNextException());
+			_logger.error(ERROR_CONTENTRELATIONS + "{}", content.getId(), e.getNextException());
+			throw new EntRuntimeException(ERROR_CONTENTRELATIONS + content.getId(), e.getNextException());
 		} catch (Throwable t) {
-			_logger.error("Error saving record into contentrelations {}", content.getId(), t);
-			throw new RuntimeException("Error saving record into contentrelations " + content.getId(), t);
+			_logger.error(ERROR_CONTENTRELATIONS + "{}", content.getId(), t);
+			throw new EntRuntimeException(ERROR_CONTENTRELATIONS + content.getId(), t);
 		} finally {
 			closeDaoResources(null, stat);
 		}
