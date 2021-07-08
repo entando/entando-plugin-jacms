@@ -17,7 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.agiletec.aps.system.services.group.Group;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -35,7 +37,7 @@ class TestPublicContentSearcherDAO extends BaseTestCase {
     void testLoadContentsId_1() throws Throwable {
     	List<String> list = null;
 		try {
-			list = _contentSearcherDao.loadContentsId("ART", null, false, null, null);
+			list = _contentSearcherDao.loadContentsId("ART", null, false, null, Arrays.asList("free"));
 		} catch (Throwable t) {
 			throw t;
 		}
@@ -53,6 +55,7 @@ class TestPublicContentSearcherDAO extends BaseTestCase {
 		try {
 			List<String> groups = new ArrayList<>();
 			groups.add("customers");
+			groups.add("free");
 			list = _contentSearcherDao.loadContentsId("ART", null, false, null, groups);
 		} catch (Throwable t) {
 			throw t;
