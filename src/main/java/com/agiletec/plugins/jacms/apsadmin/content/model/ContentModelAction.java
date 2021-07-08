@@ -13,7 +13,6 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.model;
 
-import com.agiletec.aps.system.common.entity.model.attribute.AbstractAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
@@ -27,12 +26,9 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecor
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
+import com.agiletec.plugins.jacms.aps.system.services.contentmodel.dictionary.ContentModelDictionary;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.model.ContentModelReference;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +84,6 @@ public class ContentModelAction extends BaseAction implements IContentModelActio
             this.setFormValues(model);
         } catch (Throwable t) {
             _logger.error("error in edit", t);
-            //ApsSystemUtils.logThrowable(t, this, "edit");
             return FAILURE;
         }
         return SUCCESS;
@@ -279,34 +274,23 @@ public class ContentModelAction extends BaseAction implements IContentModelActio
     }
 
     public List<String> getAllowedAttributeMethods(Content prototype, String attributeName) {
-        List<String> methods = new ArrayList<String>();
+        List<String> methods = new ArrayList<>();
         try {
             AttributeInterface attribute = (AttributeInterface) prototype.getAttribute(attributeName);
             if (null == attribute) {
                 throw new EntException("Null Attribute '" + attributeName + "' for Content Type '"
                         + prototype.getTypeCode() + "' - '" + prototype.getTypeDescr());
             }
-            String methodsString = this.getAllowedPublicAttributeMethods().getProperty(attribute.getType());
-            if (null != methodsString) {
-                String[] methodsArray = methodsString.split(";");
-                methods = Arrays.asList(methodsArray);
-            } else {
-                BeanInfo beanInfo = Introspector.getBeanInfo(attribute.getClass(), AbstractAttribute.class);
-                PropertyDescriptor[] prDescrs = beanInfo.getPropertyDescriptors();
-                for (int i = 0; i < prDescrs.length; i++) {
-                    PropertyDescriptor propertyDescriptor = prDescrs[i];
-                    if (null != propertyDescriptor.getReadMethod()) {
-                        methods.add(propertyDescriptor.getDisplayName());
-                    }
-                }
+            List<String> attributeMethods = ContentModelDictionary.getAllowedAttributeMethods(attribute, this.getAllowedPublicAttributeMethods());
+            if (null != attributeMethods) {
+                methods.addAll(attributeMethods);
             }
         } catch (Throwable t) {
             _logger.error("error in getAllowedAttributeMethods", t);
-            //ApsSystemUtils.logThrowable(t, this, "getAllowedAttributeMethods");
         }
         return methods;
     }
-
+    
     public int getStrutsAction() {
         return _strutsAction;
     }
