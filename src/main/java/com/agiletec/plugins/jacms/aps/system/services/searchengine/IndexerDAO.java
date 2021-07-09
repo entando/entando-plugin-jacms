@@ -135,7 +135,7 @@ public class IndexerDAO implements IIndexerDAO {
                 this.indexAttribute(document, currentAttribute, currentLang);
             }
         }
-        List<Category> categories = entity.getCategories();
+        List<Category> categories = ((Content) entity).getCategories();
         if (null != categories && !categories.isEmpty()) {
             for (int i = 0; i < categories.size(); i++) {
                 ITreeNode category = categories.get(i);
