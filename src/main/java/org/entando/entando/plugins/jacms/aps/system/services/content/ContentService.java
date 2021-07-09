@@ -107,7 +107,6 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
-    @Autowired
     private ICategoryManager categoryManager;
     private ILangManager langManager;
     private IContentManager contentManager;
