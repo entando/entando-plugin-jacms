@@ -35,7 +35,7 @@ public class ContentHandler extends EntityHandler {
 
 	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentHandler.class);
 
-	private ICategoryManager _categoryManager;
+	private ICategoryManager categoryManager;
 
 	@Override
 	public EntityHandler getHandlerPrototype() {
@@ -103,7 +103,7 @@ public class ContentHandler extends EntityHandler {
 		}
 	}
 
-	private void startCategories(Attributes attributes, String qName) throws SAXException {
+	private void startCategories(Attributes attributes, String qName) {
 		// nothing to do
 	}
 
@@ -205,11 +205,11 @@ public class ContentHandler extends EntityHandler {
 	}
 
 	protected ICategoryManager getCategoryManager() {
-		return _categoryManager;
+		return categoryManager;
 	}
 	@Autowired
 	public void setCategoryManager(ICategoryManager categoryManager) {
-		this._categoryManager = categoryManager;
+		this.categoryManager = categoryManager;
 	}
 
 }

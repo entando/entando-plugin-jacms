@@ -86,13 +86,13 @@ public class ContentDOM extends ApsEntityDOM {
 		_root.getChild(TAG_CATEGORIES).addContent(tag);
 	}
 
-	private final static String TAG_STATUS = "status";
-	private final static String TAG_VERSION = "version";
-	private final static String TAG_CREATED = "created";
-	private final static String TAG_LAST_MODIFIED = "lastModified";
-	private final static String TAG_FIRST_EDITOR = "firstEditor";
-	private final static String TAG_LAST_EDITOR = "lastEditor";
-	private final static String TAG_RESTRICTION = "restriction";
-	private final static String TAG_CATEGORIES = "categories";
+	private static final String TAG_STATUS = "status";
+	private static final String TAG_VERSION = "version";
+	private static final String TAG_CREATED = "created";
+	private static final String TAG_LAST_MODIFIED = "lastModified";
+	private static final String TAG_FIRST_EDITOR = "firstEditor";
+	private static final String TAG_LAST_EDITOR = "lastEditor";
+	private static final String TAG_RESTRICTION = "restriction";
+	private static final String TAG_CATEGORIES = "categories";
 
 }
