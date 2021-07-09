@@ -88,7 +88,7 @@ public class ContentDto extends EntityDto implements Serializable {
         this.setLastEditor(src.getLastEditor());
         this.setRestriction(src.getRestriction());
         if (null != src.getCategories()) {
-            this.setCategories(src.getCategories().stream().map(i -> i.getCode()).collect(Collectors.toList()));
+            this.setCategories(src.getCategories().stream().map(Category::getCode).collect(Collectors.toList()));
         }
     }
 
