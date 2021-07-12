@@ -112,12 +112,10 @@ public class ContentHandler extends EntityHandler {
 	}
 
 	private void startCategory(Attributes attributes, String qName) throws SAXException {
-		if (this.getCategoryManager() != null) {
-			String categoryCode = extractXmlAttribute(attributes, "id", qName, true);
-			Category category = this.getCategoryManager().getCategory(categoryCode);
-			if (null != category) {
-				((Content) this.getCurrentEntity()).addCategory(category);
-			}
+		String categoryCode = extractXmlAttribute(attributes, "id", qName, true);
+		Category category = this.getCategoryManager().getCategory(categoryCode);
+		if (null != category) {
+			((Content) this.getCurrentEntity()).addCategory(category);
 		}
 	}
 

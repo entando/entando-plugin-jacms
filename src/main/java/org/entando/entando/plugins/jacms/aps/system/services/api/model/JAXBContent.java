@@ -72,14 +72,9 @@ public class JAXBContent extends JAXBEntity implements Serializable {
     public IApsEntity buildEntity(Content prototype, ICategoryManager categoryManager, String langCode) {
         Content filledEntity = (Content) super.buildEntity(prototype, langCode);
         if (null != this.getCategories() && !this.getCategories().isEmpty()) {
-            Iterator<String> iter = this.getCategories().iterator();
-            while (iter.hasNext()) {
-                String categoryCode = iter.next();
-                Category category = categoryManager.getCategory(categoryCode);
-                if (null != category) {
-                    filledEntity.addCategory(category);
-                }
-            }
+            this.getCategories().stream()
+                    .filter(code -> null != categoryManager.getCategory(code))
+                    .forEach(code -> filledEntity.addCategory(categoryManager.getCategory(code)));
         }
         return filledEntity;
     }
