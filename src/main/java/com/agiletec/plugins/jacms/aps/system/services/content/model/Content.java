@@ -15,9 +15,13 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model;
 
 import com.agiletec.aps.system.common.entity.model.*;
 import com.agiletec.aps.system.common.entity.parse.IApsEntityDOM;
+import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.plugins.jacms.aps.system.services.content.parse.ContentDOM;
+import java.util.ArrayList;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.*;
 
 /**
@@ -29,22 +33,6 @@ import java.util.regex.*;
  * precedentemente costruito.
  */
 public class Content extends ApsEntity {
-
-    private String status;
-    private boolean onLine;
-    private boolean sync;
-    private String viewPage;
-    private String listModel;
-    private String defaultModel;
-
-    private Date created;
-    private Date lastModified;
-    private Date published;
-
-    private String version;
-    private String firstEditor;
-    private String lastEditor;
-    private String restriction;
 
     /**
      * La descrizione dello stato del nuovo contenuto.
@@ -83,6 +71,24 @@ public class Content extends ApsEntity {
     public static final String[] AVAILABLE_STATUS = {STATUS_DRAFT, STATUS_READY};
 
     public static final String INIT_VERSION = "0.0";
+
+    private String status;
+    private boolean onLine;
+    private boolean sync;
+    private String viewPage;
+    private String listModel;
+    private String defaultModel;
+
+    private Date created;
+    private Date lastModified;
+    private Date published;
+
+    private String version;
+    private String firstEditor;
+    private String lastEditor;
+    private String restriction;
+
+    private List<Category> categories = new ArrayList<>();
 
     /**
      * Restituisce lo stato del contenuto.
@@ -190,6 +196,11 @@ public class Content extends ApsEntity {
         contentDOM.setCreationDate(created);
         contentDOM.setModifyDate(lastModified);
         contentDOM.setRestriction(restriction);
+        Iterator<Category> iterCategory = this.categories.iterator();
+        while (iterCategory.hasNext()) {
+            Category category = iterCategory.next();
+            contentDOM.addCategory(category.getCode());
+        }
         return contentDOM;
     }
 
@@ -315,4 +326,17 @@ public class Content extends ApsEntity {
     public void setRestriction(String restriction) {
         this.restriction = restriction;
     }
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
+
+    public List<Category> getCategories() {
+        return this.categories;
+    }
+
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
+    }
+
 }

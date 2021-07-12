@@ -13,31 +13,45 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.parse;
 
-import java.util.Date;
-
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-
 import com.agiletec.aps.system.common.entity.parse.EntityHandler;
+import com.agiletec.aps.system.services.category.Category;
+import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import java.util.Date;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
- * Classe "handler" di supporto all'interpretazione 
+ * Classe "handler" di supporto all'interpretazione
  * dell'XML che rappresenta un contenuto.
  * @author M.Diana - E.Santoboni
  */
 public class ContentHandler extends EntityHandler {
 
 	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentHandler.class);
-	
+
+	private ICategoryManager categoryManager;
+
+	@Override
+	public EntityHandler getHandlerPrototype() {
+		ContentHandler handler = (ContentHandler) super.getHandlerPrototype();
+		handler.setCategoryManager(this.getCategoryManager());
+		return handler;
+	}
+
 	@Override
 	protected void startEntityElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		try {
-			if (qName.equals("status")) {
+			if (qName.equals("categories")) {
+				this.startCategories(attributes, qName);
+			} else if (qName.equals("category")) {
+				this.startCategory(attributes, qName);
+			} else if (qName.equals("status")) {
 				this.startStatus(attributes, qName);
 			} else if (qName.equals("version")) {
 				this.startVersion(attributes, qName);
@@ -60,11 +74,15 @@ public class ContentHandler extends EntityHandler {
 			throw new SAXException(new Exception(t));
 		}
 	}
-	
+
 	@Override
 	protected void endEntityElement(String uri, String localName, String qName) throws SAXException {
 		try {
-			if (qName.equals("status")) {
+			if (qName.equals("categories")) {
+				this.endCategories();
+			} else if (qName.equals("category")) {
+				this.endCategory();
+			} else if (qName.equals("status")) {
 				this.endStatus();
 			} else if (qName.equals("version")) {
 				this.endVersion();
@@ -84,27 +102,47 @@ public class ContentHandler extends EntityHandler {
 			throw new SAXException(new Exception(t));
 		}
 	}
-	
+
+	private void startCategories(Attributes attributes, String qName) {
+		// nothing to do
+	}
+
+	private void endCategories() {
+		// nothing to do
+	}
+
+	private void startCategory(Attributes attributes, String qName) throws SAXException {
+		String categoryCode = extractXmlAttribute(attributes, "id", qName, true);
+		Category category = this.getCategoryManager().getCategory(categoryCode);
+		if (null != category) {
+			((Content) this.getCurrentEntity()).addCategory(category);
+		}
+	}
+
+	private void endCategory() {
+		// nothing to do
+	}
+
 	private void startStatus(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void startVersion(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void startLastEditor(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void startFirstEditor(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void startCreated(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void startLastModified(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
@@ -112,35 +150,35 @@ public class ContentHandler extends EntityHandler {
 	private void startRestriction(Attributes attributes, String qName) throws SAXException {
 		return; // nothing to do
 	}
-	
+
 	private void endStatus() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
 			((Content) this.getCurrentEntity()).setStatus(textBuffer.toString());
 		}
 	}
-	
+
 	private void endVersion() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
 			((Content) this.getCurrentEntity()).setVersion(textBuffer.toString());
 		}
 	}
-	
+
 	private void endFirstEditor() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
 			((Content) this.getCurrentEntity()).setFirstEditor(textBuffer.toString());
 		}
 	}
-	
+
 	private void endLastEditor() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
 			((Content) this.getCurrentEntity()).setLastEditor(textBuffer.toString());
 		}
 	}
-	
+
 	private void endCreated() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
@@ -148,7 +186,7 @@ public class ContentHandler extends EntityHandler {
 			((Content) this.getCurrentEntity()).setCreated(date);
 		}
 	}
-	
+
 	private void endLastModified() {
 		StringBuffer textBuffer = this.getTextBuffer();
 		if (null != textBuffer) {
@@ -163,5 +201,13 @@ public class ContentHandler extends EntityHandler {
 			((Content) this.getCurrentEntity()).setRestriction(textBuffer.toString());
 		}
 	}
-	
+
+	protected ICategoryManager getCategoryManager() {
+		return categoryManager;
+	}
+	@Autowired
+	public void setCategoryManager(ICategoryManager categoryManager) {
+		this.categoryManager = categoryManager;
+	}
+
 }

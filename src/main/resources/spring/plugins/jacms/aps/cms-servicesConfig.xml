@@ -44,6 +44,7 @@
         <property name="contentModelManager" ref="jacmsContentModelManager" />
         <property name="searchEngineManager" ref="jacmsSearchEngineManager" />
         <property name="langManager" ref="LangManager" />
+        <property name="categoryManager" ref="CategoryManager" />
     </bean>
 
     <bean id="jacmPageServiceWrapper"
