@@ -26,7 +26,7 @@ import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
  * @author M.Morini - S.Didaci - E.Santoboni
  */
 public class ContentDOM extends ApsEntityDOM {
-	
+
 	/**
 	 * Setta lo stato del contenuto.
 	 * @param status Lo stato del contenuto.
@@ -34,15 +34,15 @@ public class ContentDOM extends ApsEntityDOM {
 	public void setStatus(String status) {
 		this.setAttribute(TAG_STATUS, status);
 	}
-	
+
 	public void setVersion(String version) {
 		this.setAttribute(TAG_VERSION, version);
 	}
-	
+
 	public void setFirstEditor(String firstEditor) {
 		this.setAttribute(TAG_FIRST_EDITOR, firstEditor);
 	}
-	
+
 	public void setLastEditor(String lastEditor) {
 		this.setAttribute(TAG_LAST_EDITOR, lastEditor);
 	}
@@ -50,19 +50,19 @@ public class ContentDOM extends ApsEntityDOM {
 	public void setRestriction(String restriction) {
 		this.setAttribute(TAG_RESTRICTION, restriction);
 	}
-	
+
 	public void setCreationDate(Date created) {
 		if (null == created) return;
 		String date = DateConverter.getFormattedDate(created, JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 		this.setAttribute(TAG_CREATED, date);
 	}
-	
+
 	public void setModifyDate(Date lastModified) {
 		if (null == lastModified) return;
 		String date = DateConverter.getFormattedDate(lastModified, JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 		this.setAttribute(TAG_LAST_MODIFIED, date);
 	}
-	
+
 	private void setAttribute(String name, String value) {
 		if (null == value) return;
 		if (this._root.getChild(name) == null) {
@@ -71,13 +71,28 @@ public class ContentDOM extends ApsEntityDOM {
 		}
 		this._root.getChild(name).setText(value);
 	}
-	
-	private final static String TAG_STATUS = "status";
-	private final static String TAG_VERSION = "version";
-	private final static String TAG_CREATED = "created";
-	private final static String TAG_LAST_MODIFIED = "lastModified";
-	private final static String TAG_FIRST_EDITOR = "firstEditor";
-	private final static String TAG_LAST_EDITOR = "lastEditor";
-	private final static String TAG_RESTRICTION = "restriction";
-	
+
+	/**
+	 * Add, setting its value, a new element to the categories tag.
+	 * @param categoryCode The value of the category tag.
+	 */
+	public void addCategory(String categoryCode) {
+		Element tag = new Element("category");
+		tag.setAttribute("id", categoryCode);
+		if (this._root.getChild(TAG_CATEGORIES) == null) {
+			Element categoriesTag = new Element(TAG_CATEGORIES);
+			this._root.addContent(categoriesTag);
+		}
+		_root.getChild(TAG_CATEGORIES).addContent(tag);
+	}
+
+	private static final String TAG_STATUS = "status";
+	private static final String TAG_VERSION = "version";
+	private static final String TAG_CREATED = "created";
+	private static final String TAG_LAST_MODIFIED = "lastModified";
+	private static final String TAG_FIRST_EDITOR = "firstEditor";
+	private static final String TAG_LAST_EDITOR = "lastEditor";
+	private static final String TAG_RESTRICTION = "restriction";
+	private static final String TAG_CATEGORIES = "categories";
+
 }

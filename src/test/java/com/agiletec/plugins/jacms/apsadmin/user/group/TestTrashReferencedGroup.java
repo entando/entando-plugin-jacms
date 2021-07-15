@@ -32,7 +32,7 @@ class TestTrashReferencedGroup extends ApsAdminBaseTestCase {
 		GroupAction groupAction = (GroupAction) this.getAction();
 		Map<String, List<Object>> references = groupAction.getReferences();
 		assertNotNull(references);
-		assertEquals(5, references.size());
+		assertEquals(4, references.size());
 		List contents = references.get("jacmsContentManagerUtilizers");
 		assertNotNull(contents);
 		assertEquals(5, contents.size());
