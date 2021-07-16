@@ -79,6 +79,7 @@ public class SearchEngineManager extends AbstractService
     public void refresh() throws Throwable {
         this.release();
         this.lastReloadInfo = null;
+        this.setStatus(STATUS_READY);
         this.getFactory().init();
         this.init();
     }

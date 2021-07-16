@@ -35,7 +35,7 @@ public class ContentHandler extends EntityHandler {
 
 	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentHandler.class);
 
-	private ICategoryManager _categoryManager;
+	private ICategoryManager categoryManager;
 
 	@Override
 	public EntityHandler getHandlerPrototype() {
@@ -103,7 +103,7 @@ public class ContentHandler extends EntityHandler {
 		}
 	}
 
-	private void startCategories(Attributes attributes, String qName) throws SAXException {
+	private void startCategories(Attributes attributes, String qName) {
 		// nothing to do
 	}
 
@@ -112,12 +112,10 @@ public class ContentHandler extends EntityHandler {
 	}
 
 	private void startCategory(Attributes attributes, String qName) throws SAXException {
-		if (this.getCategoryManager() != null) {
-			String categoryCode = extractXmlAttribute(attributes, "id", qName, true);
-			Category category = this.getCategoryManager().getCategory(categoryCode);
-			if (null != category) {
-				((Content) this.getCurrentEntity()).addCategory(category);
-			}
+		String categoryCode = extractXmlAttribute(attributes, "id", qName, true);
+		Category category = this.getCategoryManager().getCategory(categoryCode);
+		if (null != category) {
+			((Content) this.getCurrentEntity()).addCategory(category);
 		}
 	}
 
@@ -205,11 +203,11 @@ public class ContentHandler extends EntityHandler {
 	}
 
 	protected ICategoryManager getCategoryManager() {
-		return _categoryManager;
+		return categoryManager;
 	}
 	@Autowired
 	public void setCategoryManager(ICategoryManager categoryManager) {
-		this._categoryManager = categoryManager;
+		this.categoryManager = categoryManager;
 	}
 
 }

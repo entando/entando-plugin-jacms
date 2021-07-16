@@ -28,6 +28,7 @@ import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
+import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.lang.ILangManager;
@@ -72,6 +73,7 @@ import org.entando.entando.aps.system.services.IDtoBuilder;
 import org.entando.entando.aps.system.services.category.CategoryServiceUtilizer;
 import org.entando.entando.aps.system.services.entity.AbstractEntityService;
 import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
+import org.entando.entando.aps.system.services.entity.model.EntityDto;
 import org.entando.entando.aps.system.services.group.GroupServiceUtilizer;
 import org.entando.entando.aps.system.services.page.PageServiceUtilizer;
 import org.entando.entando.aps.util.GenericResourceUtils;
@@ -105,6 +107,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
+    private ICategoryManager categoryManager;
     private ILangManager langManager;
     private IContentManager contentManager;
     private IContentModelManager contentModelManager;
@@ -119,6 +122,14 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     @Autowired
     private ContentTypeService contentTypeService;
+
+    public ICategoryManager getCategoryManager() {
+        return categoryManager;
+    }
+
+    public void setCategoryManager(ICategoryManager categoryManager) {
+        this.categoryManager = categoryManager;
+    }
 
     public ILangManager getLangManager() {
         return langManager;
@@ -301,6 +312,11 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     @Override
     public String getManagerName() {
         return ((IManager) this.getContentManager()).getName();
+    }
+
+    @Override
+    protected void fillEntity(EntityDto request, Content entity, BindingResult bindingResult) {
+        ((ContentDto)request).fillEntity(entity, this.getCategoryManager(), bindingResult);
     }
 
     @Override

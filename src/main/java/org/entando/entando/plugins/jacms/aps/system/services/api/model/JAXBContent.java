@@ -36,10 +36,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -72,48 +71,43 @@ public class JAXBContent extends JAXBEntity implements Serializable {
     public IApsEntity buildEntity(Content prototype, ICategoryManager categoryManager, String langCode) {
         Content filledEntity = (Content) super.buildEntity(prototype, langCode);
         if (null != this.getCategories() && !this.getCategories().isEmpty()) {
-            Iterator<String> iter = this.getCategories().iterator();
-            while (iter.hasNext()) {
-                String categoryCode = iter.next();
-                Category category = categoryManager.getCategory(categoryCode);
-                if (null != category) {
-                    filledEntity.addCategory(category);
-                }
-            }
+            this.getCategories().stream()
+                    .filter(code -> null != categoryManager.getCategory(code))
+                    .forEach(code -> filledEntity.addCategory(categoryManager.getCategory(code)));
         }
         return filledEntity;
     }
     
     @XmlElement(name = "created", required = true)
     public Date getCreated() {
-        return _created;
+        return created;
     }
     public void setCreated(Date created) {
-        this._created = created;
+        this.created = created;
     }
 
     @XmlElement(name = "lastModified", required = true)
     public Date getLastModified() {
-        return _lastModified;
+        return lastModified;
     }
     public void setLastModified(Date lastModified) {
-        this._lastModified = lastModified;
+        this.lastModified = lastModified;
     }
 
     @XmlElement(name = "version", required = true)
     public String getVersion() {
-        return _version;
+        return version;
     }
     public void setVersion(String version) {
-        this._version = version;
+        this.version = version;
     }
 
     @XmlElement(name = "lastEditor", required = true)
     public String getLastEditor() {
-        return _lastEditor;
+        return lastEditor;
     }
     public void setLastEditor(String lastEditor) {
-        this._lastEditor = lastEditor;
+        this.lastEditor = lastEditor;
     }
 
     /*
@@ -124,30 +118,25 @@ public class JAXBContent extends JAXBEntity implements Serializable {
     @XmlElement(name = "category", required = true)
     @XmlElementWrapper(name = "categories")
     public Set<String> getCategories() {
-        return _categories;
+        return categories;
     }
 
     protected void setCategories(Set<String> categories) {
-        this._categories = categories;
+        this.categories = categories;
     }
 
     protected void setCategories(List<Category> categories) {
-        if (null != categories && categories.size() > 0) {
-            this.setCategories(new HashSet<>());
-            for (int i = 0; i < categories.size(); i++) {
-                Category category = categories.get(i);
-                if (null != category) {
-                    this.getCategories().add(category.getCode());
-                }
-            }
+        if (null != categories && !categories.isEmpty()) {
+            Set<String> codes = categories.stream().filter(c -> null != c).map(Category::getCode).collect(Collectors.toSet());
+            this.setCategories(codes);
         }
     }
     
-    private Date _created;
-    private Date _lastModified;
-    private String _version;
-    private String _lastEditor;
+    private Date created;
+    private Date lastModified;
+    private String version;
+    private String lastEditor;
 
-    private Set<String> _categories;
+    private Set<String> categories;
     
 }
