@@ -20,7 +20,6 @@ jobs:
   ga-publish:
     env:
       ENTANDO_OPT_MAVEN_REPO_GA: ${{ secrets.ENTANDO_OPT_MAVEN_REPO_GA }}
-      ENTANDO_BOT_TOKEN: ${{ secrets.ENTANDO_BOT_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - name: "PR PIPELINE START"

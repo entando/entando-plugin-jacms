@@ -19,14 +19,6 @@ jobs:
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # TAG
   add-release-tag:
-    env:
-      PPL_CONTEXT: ${{ toJson(github) }}
-      ENTANDO_OPT_USE_PPL_TAG: ${{ secrets.ENTANDO_OPT_USE_PPL_TAG }}
-      ENTANDO_OPT_REPO_BOM_URL: ${{ secrets.ENTANDO_OPT_REPO_BOM_URL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      REPO_FOLDER: "local-checkout"
-      ENTANDO_OPT_LOG_LEVEL: TRACE
     runs-on: ubuntu-latest
     steps:
       - name: "ADD RELEASE TAG"
