@@ -56,12 +56,14 @@ class TestApiContentInterface extends ApiBaseTestCase {
     void testGetXmlContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "it");
+		this.testGetContent(mediaType, "admin", "ART111", "it");
 	}
 
 	@Test
     void testGetJsonContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "en");
+		this.testGetContent(mediaType, "admin", "ART111", "en");
 	}
 
 	@Test
@@ -74,6 +76,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
     void testCreateNewContentFromJson() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
+		this.testCreateNewContent(mediaType, "ART111");
 	}
 
 	protected void testCreateNewContent(MediaType mediaType, String contentId) throws Throwable {
