@@ -88,7 +88,7 @@ public class ContentDto extends EntityDto implements Serializable {
         this.setLastEditor(src.getLastEditor());
         this.setRestriction(src.getRestriction());
         if (null != src.getCategories()) {
-            this.setCategories(src.getCategories().stream().map(i -> i.getCode()).collect(Collectors.toList()));
+            this.setCategories(src.getCategories().stream().map(Category::getCode).collect(Collectors.toList()));
         }
     }
 
@@ -208,10 +208,9 @@ public class ContentDto extends EntityDto implements Serializable {
         this.categories = categories;
     }
 
-    @Override
     public void fillEntity(IApsEntity prototype, ICategoryManager categoryManager, BindingResult bindingResult) {
         Content content = (Content) prototype;
-        super.fillEntity(prototype, categoryManager, bindingResult);
+        super.fillEntity(prototype, bindingResult);
         if (null != this.getCategories()) {
             content.getCategories().clear();
             this.getCategories().stream().forEach(i -> {

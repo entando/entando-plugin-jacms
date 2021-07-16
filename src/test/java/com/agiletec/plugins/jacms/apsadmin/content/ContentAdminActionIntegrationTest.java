@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.ApsEntityManager;
 import com.agiletec.apsadmin.system.BaseAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
@@ -39,6 +40,8 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
 
     @Test
     void testOpenIndexProspect() throws Throwable {
+        ICmsSearchEngineManager searchEngineManager = getApplicationContext().getBean(ICmsSearchEngineManager.class);
+        ((IManager)searchEngineManager).refresh();
         String result = this.executeOpenIndexProspect("admin");
         assertEquals(BaseAction.SUCCESS, result);
         ContentAdminAction contentAdminAction = (ContentAdminAction) this.getAction();
