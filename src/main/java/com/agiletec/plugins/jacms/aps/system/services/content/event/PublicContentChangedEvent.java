@@ -25,6 +25,8 @@ import java.util.Map;
  */
 public class PublicContentChangedEvent extends ApsEvent {
 
+    public PublicContentChangedEvent() {}
+    
     public PublicContentChangedEvent(String channel, Map<String, String> properties) {
         super(channel, properties);
     }
