@@ -308,8 +308,8 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resource.setCorrelationCode(bean.getCorrelationCode());
         return resource;
     }
-
-    protected void notifyResourceChanging(ResourceInterface resource, int operationCode) throws EntException {
+    
+    protected void notifyResourceChanging(ResourceInterface resource, int operationCode) {
         Map<String, String> properties = new HashMap<>();
         if (null != resource) {
             properties.put("resourceId", resource.getId());

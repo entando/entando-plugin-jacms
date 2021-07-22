@@ -61,6 +61,6 @@ public class ResourceChangedEvent extends ApsEvent {
 	
 	private int operationCode;
 	
-	private ResourceInterface resource;
+	private transient ResourceInterface resource;
 	
 }
