@@ -167,6 +167,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                     newResource.getId() : newResource.getCorrelationCode());
             newResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()), instancesAlreadySaved);
             this.getResourceDAO().addResource(newResource);
+            this.notifyResourceChanging(newResource, ResourceChangedEvent.INSERT_OPERATION_CODE);
         } catch (Throwable t) {
             newResource.deleteResourceInstances();
             logger.error("Error adding resource", t);
@@ -191,15 +192,17 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     @Override
     public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws EntException {
-        List<ResourceInterface> newResource = new ArrayList<>();
+        List<ResourceInterface> newResources = new ArrayList<>();
         beans.forEach(b -> {
             try {
-                newResource.add(this.addResource(b));
+                ResourceInterface resource = this.addResource(b);
+                newResources.add(resource);
+                this.notifyResourceChanging(resource, ResourceChangedEvent.INSERT_OPERATION_CODE);
             } catch (EntException ex) {
                 logger.error("Error adding resources", ex);
             }
         });
-        return newResource;
+        return newResources;
     }
 
     /**
@@ -213,6 +216,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resources.forEach(resourceDelete -> {
             try {
                 deleteResource(resourceDelete);
+                this.notifyResourceChanging(resourceDelete, ResourceChangedEvent.REMOVE_OPERATION_CODE);
             } catch (EntException ex) {
                 logger.error("Error deleting resources", ex);
             }
@@ -230,6 +234,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         try {
             this.generateAndSetResourceId(resource, resource.getId());
             this.getResourceDAO().addResource(resource);
+            this.notifyResourceChanging(resource, ResourceChangedEvent.INSERT_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error adding resource", t);
             throw new EntException("Error adding resource", t);
@@ -256,7 +261,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                 oldResource.setMainGroup(bean.getMainGroup());
                 oldResource.setFolderPath(bean.getFolderPath());
                 this.getResourceDAO().updateResource(oldResource);
-                this.notifyResourceChanging(oldResource);
+                this.notifyResourceChanging(oldResource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
             } else {
                 ResourceInterface updatedResource = this.createResource(bean);
                 updatedResource
@@ -265,7 +270,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                 if (!updatedResource.getMasterFileName().equals(oldResource.getMasterFileName())) {
                     oldResource.deleteResourceInstances();
                 }
-                this.notifyResourceChanging(updatedResource);
+                this.notifyResourceChanging(updatedResource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
             }
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
@@ -283,7 +288,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     public void updateResource(ResourceInterface resource) throws EntException {
         try {
             this.getResourceDAO().updateResource(resource);
-            this.notifyResourceChanging(resource);
+            this.notifyResourceChanging(resource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
             throw new EntException("Error updating resource", t);
@@ -304,9 +309,15 @@ public class ResourceManager extends AbstractService implements IResourceManager
         return resource;
     }
 
-    protected void notifyResourceChanging(ResourceInterface resource) throws EntException {
-        ResourceChangedEvent event = new ResourceChangedEvent();
+    protected void notifyResourceChanging(ResourceInterface resource, int operationCode) throws EntException {
+        Map<String, String> properties = new HashMap<>();
+        if (null != resource) {
+            properties.put("resourceId", resource.getId());
+        }
+        properties.put("operationCode", String.valueOf(operationCode));
+        ResourceChangedEvent event = new ResourceChangedEvent(JacmsSystemConstants.RESOURCE_EVENT_CHANNEL, properties);
         event.setResource(resource);
+        event.setOperationCode(operationCode);
         this.notifyEvent(event);
     }
 

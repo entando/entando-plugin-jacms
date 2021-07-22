@@ -19,6 +19,7 @@ import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.Widget;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
@@ -148,7 +149,12 @@ public class ContentModelManager extends AbstractService implements IContentMode
     }
 
     private void notifyContentModelChanging(ContentModel contentModel, int operationCode) throws EntException {
-        ContentModelChangedEvent event = new ContentModelChangedEvent();
+        Map<String, String> properties = new HashMap<>();
+        if (null != contentModel) {
+            properties.put("contentModelId", String.valueOf(contentModel.getId()));
+        }
+        properties.put("operationCode", String.valueOf(operationCode));
+        ContentModelChangedEvent event = new ContentModelChangedEvent(JacmsSystemConstants.CONTENT_MODEL_EVENT_CHANNEL, properties);
         event.setContentModel(contentModel);
         event.setOperationCode(operationCode);
         this.notifyEvent(event);
