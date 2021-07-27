@@ -388,8 +388,10 @@ class TestContentManager extends BaseTestCase {
 
         Content newContent = this._contentManager.loadContent("EVN193", false);
         newContent.setId(null);
+        String newId = null;
         try {
-            this._contentManager.saveContent(newContent);
+            newId = this._contentManager.saveContent(newContent);
+            assertNotNull(newId);
             contents = this._contentManager.loadWorkContentsId(categories_1, filters, groupCodes);
             String[] order_c = {newContent.getId(), "ART120", "EVN25", "ART112", "ART111", "EVN193", "ART179"};
             assertEquals(order_c.length, contents.size());
@@ -399,14 +401,14 @@ class TestContentManager extends BaseTestCase {
             newContent.addCategory(categoryManager.getCategory("general_cat1"));
             this._contentManager.saveContent(newContent);
             contents = this._contentManager.loadWorkContentsId(categories_2, filters, groupCodes);
-            String[] order_d = {newContent.getId(), "EVN25", "ART111", "ART179"};
+            String[] order_d = {newId, "EVN25", "ART111", "ART179"};
             assertEquals(order_d.length, contents.size());
             this.verifyOrder(contents, order_d);
         } catch (Throwable t) {
             throw t;
         } finally {
-            this._contentManager.deleteContent(newContent);
-            assertNull(this._contentManager.loadContent(newContent.getId(), false));
+            this._contentManager.deleteContent(newId);
+            assertNull(this._contentManager.loadContent(newId, false));
         }
     }
     
@@ -1050,9 +1052,12 @@ class TestContentManager extends BaseTestCase {
         masterContent.setId(null);
         DateAttribute dateAttribute = (DateAttribute) masterContent.getAttribute("DataInizio");
         dateAttribute.setDate(DateConverter.parseDate("17/06/2019", "dd/MM/yyyy"));
+        String newId = null;
         try {
-            this._contentManager.saveContent(masterContent);
-            this._contentManager.insertOnLineContent(masterContent);
+            newId = this._contentManager.saveContent(masterContent);
+            assertNotNull(newId);
+            String checkId = this._contentManager.insertOnLineContent(masterContent);
+            assertEquals(newId, checkId);
             this.waitNotifyingThread();
 
             EntitySearchFilter filterForDate = new EntitySearchFilter("DataInizio", true);
@@ -1060,7 +1065,7 @@ class TestContentManager extends BaseTestCase {
             EntitySearchFilter[] filters = {filterForDate};
 
             List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
-            String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(), "EVN193", "EVN24",
+            String[] expectedFreeOrderedContentsId = {"EVN194", newId, "EVN193", "EVN24",
                 "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
             assertEquals(expectedFreeOrderedContentsId.length, contents.size());
             for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
@@ -1069,9 +1074,10 @@ class TestContentManager extends BaseTestCase {
         } catch (Throwable t) {
             throw t;
         } finally {
-            if (null != masterContent.getId() && !"EVN193".equals(masterContent.getId())) {
-                this._contentManager.removeOnLineContent(masterContent);
-                this._contentManager.deleteContent(masterContent);
+            if (null != newId && !"EVN193".equals(newId)) {
+                Content content = this._contentManager.loadContent(newId, false);
+                this._contentManager.removeOnLineContent(content);
+                this._contentManager.deleteContent(newId);
             }
         }
     }
@@ -1650,8 +1656,7 @@ class TestContentManager extends BaseTestCase {
             attributeToModify.getLinkProperties().put("key2", "value2");
 
             content.setId(null);
-            this._contentManager.saveContent(content);
-            String id = content.getId();
+            String id = this._contentManager.saveContent(content);
 
             Content extractedContent = this._contentManager.loadContent(id, false);
             attributes = extractedContent.getAttributeMap();
@@ -1702,8 +1707,7 @@ class TestContentManager extends BaseTestCase {
             attributeToModify.setMetadata(IResourceManager.TITLE_METADATA_KEY, "en", "Title en");
 
             content.setId(null);
-            this._contentManager.saveContent(content);
-            String id = content.getId();
+            String id = this._contentManager.saveContent(content);
 
             Content extractedContent = this._contentManager.loadContent(id, false);
             attributes = extractedContent.getAttributeMap();
@@ -1737,10 +1741,10 @@ class TestContentManager extends BaseTestCase {
         for (int i = 0; i < masterContentIds.length; i++) {
             Content content = this._contentManager.loadContent(masterContentIds[i], false);
             content.setId(null);
-            this._contentManager.saveContent(content);
-            newContentIds[i] = content.getId();
+            newContentIds[i] = this._contentManager.saveContent(content);
             if (publish) {
-                this._contentManager.insertOnLineContent(content);
+                String check = this._contentManager.insertOnLineContent(content);
+                assertEquals(newContentIds[i], check);
             }
         }
         for (int i = 0; i < newContentIds.length; i++) {

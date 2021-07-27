@@ -807,6 +807,7 @@ INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refca
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN21', NULL, NULL, NULL, NULL, 'free');
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN24', NULL, NULL, NULL, NULL, 'free');
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN23', NULL, NULL, NULL, NULL, 'free');
+INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN23', NULL, NULL, NULL, 'general', NULL);
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN23', NULL, NULL, NULL, 'general_cat1', NULL);
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN192', NULL, NULL, NULL, 'evento', NULL);
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('EVN192', NULL, NULL, NULL, NULL, 'free');
@@ -933,8 +934,10 @@ INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN193', 'gen
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN192', 'evento');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN192', 'general');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN192', 'general_cat1');
+INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN25', 'general');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN25', 'general_cat1');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN25', 'general_cat2');
+INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN23', 'general');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('EVN23', 'general_cat1');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('ART111', 'general');
 INSERT INTO workcontentrelations (contentid, refcategory) VALUES ('ART111', 'general_cat1');

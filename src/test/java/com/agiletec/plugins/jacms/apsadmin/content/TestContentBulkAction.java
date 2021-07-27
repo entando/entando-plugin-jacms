@@ -63,17 +63,16 @@ class TestContentBulkAction extends AbstractBaseTestContentAction {
                 Content content = this.getContentManager().loadContent("ALL4", false);
                 content.setId(null);
                 content.setDescription("__DESCR_TEST__ " + i);
-                this.getContentManager().addContent(content);
+                addedContents.add(this.getContentManager().addContent(content));
                 List<FieldError> errors = content.validate(this.groupManager, this.langManager);
                 assertEquals(0, errors.size());
-                addedContents.add(content.getId());
             }
             contentIds = this.getContentManager().loadWorkContentsId(filters, userGroups);
             Assertions.assertEquals(5, contentIds.size());
             
             this.initAction("/do/jacms/Content/Bulk", "applyOnline");
             this.setUserOnSession("admin");
-            this.addParameter("selectedIds", contentIds.toArray(new String[contentIds.size()]));
+            this.addParameter("selectedIds", addedContents.toArray(new String[addedContents.size()]));
             String result = this.executeAction();
             assertEquals(Action.SUCCESS, result);
             contentIds = this.getContentManager().loadPublicContentsId(null, filters, userGroups);
