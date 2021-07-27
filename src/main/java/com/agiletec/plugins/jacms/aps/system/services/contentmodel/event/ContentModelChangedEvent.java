@@ -16,6 +16,7 @@ package com.agiletec.plugins.jacms.aps.system.services.contentmodel.event;
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.notify.ApsEvent;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
+import java.util.Map;
 
 /**
  * Evento specifico da rilanciare in corrispondenza 
@@ -23,6 +24,10 @@ import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
  * @author E.Santoboni - C.Siddi
  */
 public class ContentModelChangedEvent extends ApsEvent {
+
+    public ContentModelChangedEvent(String channel, Map<String, String> properties) {
+        super(channel, properties);
+    }
 	
 	@Override
 	public void notify(IManager srv) {

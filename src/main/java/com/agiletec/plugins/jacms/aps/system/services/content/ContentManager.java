@@ -407,7 +407,12 @@ public class ContentManager extends ApsEntityManager
      * @param operationCode the operation code to notify.
      */
     private void notifyPublicContentChanging(Content content, int operationCode) {
-        PublicContentChangedEvent event = new PublicContentChangedEvent();
+        Map<String, String> properties = new HashMap<>();
+        if (null != content) {
+            properties.put("contentId", content.getId());
+        }
+        properties.put("operationCode", String.valueOf(operationCode));
+        PublicContentChangedEvent event = new PublicContentChangedEvent(JacmsSystemConstants.CONTENT_EVENT_CHANNEL, properties);
         event.setContent(content);
         event.setOperationCode(operationCode);
         this.notifyEvent(event);

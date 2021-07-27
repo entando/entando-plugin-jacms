@@ -16,6 +16,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.event;
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.notify.ApsEvent;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import java.util.Map;
 
 /**
  * Evento specifico da rilanciare in corrispondenza 
@@ -23,12 +24,19 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
  * @author E.Santoboni - M.Diana
  */
 public class PublicContentChangedEvent extends ApsEvent {
+
+    public PublicContentChangedEvent() {}
+    
+    public PublicContentChangedEvent(String channel, Map<String, String> properties) {
+        super(channel, properties);
+    }
 	
 	@Override
 	public void notify(IManager srv) {
 		((PublicContentChangedObserver) srv).updateFromPublicContentChanged(this);
 	}
 	
+    @Override
 	public Class getObserverInterface() {
 		return PublicContentChangedObserver.class;
 	}
