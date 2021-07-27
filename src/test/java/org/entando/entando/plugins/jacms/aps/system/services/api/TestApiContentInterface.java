@@ -14,6 +14,7 @@
 package org.entando.entando.plugins.jacms.aps.system.services.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -98,6 +99,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
 			ids = this._contentManager.searchId(filters);
 			assertEquals(1, ids.size());
 			String newContentId = ids.get(0);
+			assertFalse(newContentId.equals(contentId));
 			Content newContent = this._contentManager.loadContent(newContentId, false);
 			Content masterContent = this._contentManager.loadContent(contentId, true);
 			List<AttributeInterface> attributes = masterContent.getAttributeList();

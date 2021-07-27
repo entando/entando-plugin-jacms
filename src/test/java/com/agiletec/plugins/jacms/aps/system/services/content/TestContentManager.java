@@ -1075,7 +1075,8 @@ class TestContentManager extends BaseTestCase {
             throw t;
         } finally {
             if (null != newId && !"EVN193".equals(newId)) {
-                this._contentManager.removeOnLineContent(masterContent);
+                Content content = this._contentManager.loadContent(newId, false);
+                this._contentManager.removeOnLineContent(content);
                 this._contentManager.deleteContent(newId);
             }
         }
@@ -1655,8 +1656,7 @@ class TestContentManager extends BaseTestCase {
             attributeToModify.getLinkProperties().put("key2", "value2");
 
             content.setId(null);
-            this._contentManager.saveContent(content);
-            String id = content.getId();
+            String id = this._contentManager.saveContent(content);
 
             Content extractedContent = this._contentManager.loadContent(id, false);
             attributes = extractedContent.getAttributeMap();
@@ -1707,8 +1707,7 @@ class TestContentManager extends BaseTestCase {
             attributeToModify.setMetadata(IResourceManager.TITLE_METADATA_KEY, "en", "Title en");
 
             content.setId(null);
-            this._contentManager.saveContent(content);
-            String id = content.getId();
+            String id = this._contentManager.saveContent(content);
 
             Content extractedContent = this._contentManager.loadContent(id, false);
             attributes = extractedContent.getAttributeMap();
