@@ -86,7 +86,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
-    @Test
+    /*@Test
     void testSearchOrderedContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -98,7 +98,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         } catch (Throwable t) {
             throw t;
         }
-    }
+    }*/
 
     private void executeSearchOrderedContents(List<String> allowedGroup) throws Exception {
         try {
