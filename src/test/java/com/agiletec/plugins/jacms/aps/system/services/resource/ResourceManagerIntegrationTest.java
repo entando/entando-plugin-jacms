@@ -42,7 +42,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.entando.entando.ent.exception.EntException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,6 +106,15 @@ class ResourceManagerIntegrationTest extends BaseTestCase {
                 this.resourceManager.updateResource(resource);
             }
         }
+    }
+
+    @Test
+    void testGetResourceText() throws Throwable {
+        String text = this.resourceManager.getResourceText("6");
+        assertNotNull(text);
+        assertTrue(text.contains("accelerated development"));
+        text = this.resourceManager.getResourceText("XX");
+        Assertions.assertNull(text);
     }
 
     @Test
