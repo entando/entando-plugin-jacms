@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
  */
 class AdvContentSearchTest extends BaseTestCase {
 
-    private IContentManager contentManager = null;
+    /*private IContentManager contentManager = null;
     private ICmsSearchEngineManager searchEngineManager = null;
     private ICategoryManager categoryManager;
     
@@ -525,6 +525,6 @@ class AdvContentSearchTest extends BaseTestCase {
             categoryFilterArray = categoryFilters.toArray(new SearchEngineFilter[categoryFilters.size()]);
         }
         return categoryFilterArray;
-    }
+    }*/
     
 }
