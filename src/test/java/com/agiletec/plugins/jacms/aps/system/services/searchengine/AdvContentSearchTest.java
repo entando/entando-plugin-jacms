@@ -225,11 +225,11 @@ class AdvContentSearchTest extends BaseTestCase {
         }
     }
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_7() throws EntException {
         this.testLoadPublicEvents_7(true);
         this.testLoadPublicEvents_7(false);
-    }
+    }*/
     
     protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
