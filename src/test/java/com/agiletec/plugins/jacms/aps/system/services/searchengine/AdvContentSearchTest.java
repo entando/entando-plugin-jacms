@@ -215,6 +215,9 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, this.allowedGroup);
         List<String> contentIds = result.getContentsId();
         String[] expectedContentsIds = {"EVN25", "EVN41", "EVN23"};
+        for (String content : contentIds) {
+            logger.error("<><><><> testLoadPublicEvents_2: " + content);
+        }
         assertEquals(expectedContentsIds.length, contentIds.size());
         this.verifyOrder(contentIds, expectedContentsIds);
         

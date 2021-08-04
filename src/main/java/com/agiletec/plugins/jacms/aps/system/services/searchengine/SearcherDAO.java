@@ -88,7 +88,7 @@ public class SearcherDAO implements ISearcherDAO {
     protected FacetedContentsResult searchContents(SearchEngineFilter[] filters,
             SearchEngineFilter[] categories, Collection<String> allowedGroups, boolean faceted) throws EntException {
         FacetedContentsResult result = new FacetedContentsResult();
-        List<String> contentsId = new ArrayList<>();
+        Set<String> contentsId = new HashSet<>();
         IndexSearcher searcher = null;
         try {
             searcher = this.getSearcher();
@@ -147,7 +147,7 @@ public class SearcherDAO implements ISearcherDAO {
                 }
             }
             result.setOccurrences(occurrences);
-            result.setContentsId(contentsId);
+            result.setContentsId(new ArrayList<>(contentsId));
         } catch (IndexNotFoundException inf) {
             logger.error("no index was found in the Directory", inf);
         } catch (Throwable t) {
