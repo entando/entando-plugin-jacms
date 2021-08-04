@@ -15,6 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
+import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 
@@ -52,12 +53,12 @@ public class AttachAttribute extends AbstractResourceAttribute {
 	public String getIndexeableFieldValue() {
 		StringBuilder buffer = new StringBuilder();
 		String parentText = super.getIndexeableFieldValue();
-		if (null != parentText) {
+		if (!StringUtils.isBlank(parentText)) {
 			buffer.append(parentText);
 		}
 		ResourceInterface resource = this.getResource();
 		String extraValue = this.getResourceManager().getResourceText(resource);
-		if (null != extraValue) {
+		if (!StringUtils.isBlank(extraValue)) {
 			buffer.append(" ").append(extraValue);
 		}
 		return buffer.toString();
