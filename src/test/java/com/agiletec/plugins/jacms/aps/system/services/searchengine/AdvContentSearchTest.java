@@ -152,7 +152,7 @@ class AdvContentSearchTest extends BaseTestCase {
         this.verifyOrder(contentIds, expected);
     }
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_1() throws EntException {
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
         SearchEngineFilter[] filters = {typeFilter};
@@ -217,7 +217,7 @@ class AdvContentSearchTest extends BaseTestCase {
         String[] expectedContentsIds = {"EVN191", "EVN192", "EVN103"};
         assertEquals(expectedContentsIds.length, contentIds.size());
         this.verifyOrder(contentIds, expectedContentsIds);
-    }
+    }*/
     
     private void verifyOrder(List<String> contents, String[] order) {
         for (int i = 0; i < contents.size(); i++) {
@@ -225,11 +225,11 @@ class AdvContentSearchTest extends BaseTestCase {
         }
     }
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_7() throws EntException {
         this.testLoadPublicEvents_7(true);
         this.testLoadPublicEvents_7(false);
-    }
+    }*/
     
     protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
@@ -365,7 +365,7 @@ class AdvContentSearchTest extends BaseTestCase {
         }
     }
     
-    /*@Test
+    @Test
     void testLoadFutureEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
@@ -438,7 +438,7 @@ class AdvContentSearchTest extends BaseTestCase {
         }
     }
 
-    @Test
+    /*@Test
     void testLoadPastEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
