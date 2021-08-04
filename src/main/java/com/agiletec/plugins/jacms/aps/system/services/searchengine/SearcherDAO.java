@@ -125,7 +125,10 @@ public class SearcherDAO implements ISearcherDAO {
             if (scoreDocs.length > 0) {
                 for (int index = 0; index < scoreDocs.length; index++) {
                     Document doc = searcher.doc(scoreDocs[index].doc);
-                    contentsId.add(doc.get(IIndexerDAO.CONTENT_ID_FIELD_NAME));
+                    String contentId = doc.get(IIndexerDAO.CONTENT_ID_FIELD_NAME);
+                    if (!contentsId.contains(contentId)) {
+                        contentsId.add(contentId);
+                    }
                     if (faceted) {
                         Set<String> codes = new HashSet<>();
                         String[] categoryPaths = doc.getValues(IIndexerDAO.CONTENT_CATEGORY_FIELD_NAME);
