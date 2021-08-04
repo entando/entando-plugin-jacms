@@ -55,12 +55,15 @@ class AdvContentSearchTest extends BaseTestCase {
     @BeforeEach
     protected void init() throws Exception {
         try {
-            this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
-            this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
-            this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
-            allowedGroup.add(Group.ADMINS_GROUP_NAME);
+            synchronized (AdvContentSearchTest.class) {
+                this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
+                this.searchEngineManager = (ICmsSearchEngineManager) this
+                        .getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
+                this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
+                Thread thread = this.searchEngineManager.startReloadContentsReferences();
+                thread.join();
+                allowedGroup.add(Group.ADMINS_GROUP_NAME);
+            }
         } catch (Exception e) {
             throw e;
         }
