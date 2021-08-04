@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +49,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     private IContentManager contentManager = null;
     private ICmsSearchEngineManager searchEngineManager = null;
     private ICategoryManager categoryManager;
+    private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     @BeforeEach
     protected void init() throws Exception {
@@ -86,7 +89,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         }
     }
     
-    /*@Test
+    @Test
     void testSearchOrderedContents() throws Throwable {
         try {
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
@@ -98,7 +101,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
         } catch (Throwable t) {
             throw t;
         }
-    }*/
+    }
 
     private void executeSearchOrderedContents(List<String> allowedGroup) throws Exception {
         try {
@@ -112,6 +115,10 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             FacetedContentsResult freeResult1 = this.searchEngineManager.searchFacetedEntities(filters1, categoriesFilters, allowedGroup);
             assertNotNull(freeResult1);
             List<String> contentsId1 = freeResult1.getContentsId();
+            for (String content : contentsId1) {
+                System.out.println("<><><> content: " + content);
+                logger.error("<><><><> content: " + content);
+            }
             if (allowedGroup.contains(Group.ADMINS_GROUP_NAME)) {
                 assertEquals(10, contentsId1.size());
             } else {
