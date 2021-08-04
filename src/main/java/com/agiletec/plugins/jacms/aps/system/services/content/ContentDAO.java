@@ -13,7 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
-import com.agiletec.aps.system.SystemConstants;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,6 +38,7 @@ import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.aps.util.DateConverter;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.CmsAttributeReference;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
@@ -166,9 +166,9 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		contentVo.setDescription(res.getString("descr"));
 		contentVo.setStatus(res.getString("status"));
 		String xmlWork = res.getString("workxml");
-		contentVo.setCreate(DateConverter.parseDate(res.getString("created"), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT));
-		contentVo.setModify(DateConverter.parseDate(res.getString("lastmodified"), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT));
-		contentVo.setPublish(DateConverter.parseDate(res.getString("published"), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT));
+		contentVo.setCreate(DateConverter.parseDate(res.getString("created"), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT));
+		contentVo.setModify(DateConverter.parseDate(res.getString("lastmodified"), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT));
+		contentVo.setPublish(DateConverter.parseDate(res.getString("published"), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT));
 		String xmlOnLine = res.getString("onlinexml");
 		contentVo.setOnLine(!StringUtils.isBlank(xmlOnLine));
 		contentVo.setSync(res.getInt("sync") == 1);
@@ -202,7 +202,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		stat.setString(3, content.getDescription());
 		stat.setString(4, content.getStatus());
 		stat.setString(5, content.getXML());
-		String currentDate = DateConverter.getFormattedDate(new Date(), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT);
+		String currentDate = DateConverter.getFormattedDate(new Date(), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 		stat.setString(6, currentDate);
 		stat.setString(7, currentDate);
 		stat.setInt(8, 0);
@@ -283,7 +283,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		stat.setString(index++, content.getXML());
 		stat.setInt(index++, 0);
 		if (updateDate) {
-			stat.setString(index++, DateConverter.getFormattedDate(new Date(), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT));
+			stat.setString(index++, DateConverter.getFormattedDate(new Date(), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT));
 		}
 		stat.setString(index++, content.getMainGroup());
 		stat.setString(index++, content.getVersion());
@@ -371,7 +371,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			stat.setString(index++, content.getStatus());
 			String xml = content.getXML();
 			stat.setString(index++, xml);
-            String cuttentDateString = DateConverter.getFormattedDate(new Date(), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT);
+            String cuttentDateString = DateConverter.getFormattedDate(new Date(), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 			if (updateDate) {
 				stat.setString(index++, cuttentDateString);
 			}
@@ -515,7 +515,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			stat.setInt(index++, 0);
 			stat.setString(index++, content.getStatus());
 			stat.setString(index++, content.getXML());
-            String cuttentDateString = DateConverter.getFormattedDate(new Date(), SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT);
+            String cuttentDateString = DateConverter.getFormattedDate(new Date(), JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 			if (updateDate) {
 				stat.setString(index++, cuttentDateString);
 			}
@@ -839,7 +839,7 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 			res = stat.executeQuery();
 			if (res.next()) {
 				String lastMod = res.getString(1);
-				lastModified = DateConverter.parseDate(lastMod, SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT);
+				lastModified = DateConverter.parseDate(lastMod, JacmsSystemConstants.CONTENT_METADATA_DATE_FORMAT);
 			}
 		} catch (Throwable t) {
 			_logger.error("Error loading contents status last modified date", t);
