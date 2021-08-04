@@ -115,10 +115,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             FacetedContentsResult freeResult1 = this.searchEngineManager.searchFacetedEntities(filters1, categoriesFilters, allowedGroup);
             assertNotNull(freeResult1);
             List<String> contentsId1 = freeResult1.getContentsId();
-            for (String content : contentsId1) {
-                System.out.println("<><><> content: " + content);
-                logger.error("<><><><> content: " + content);
-            }
             if (allowedGroup.contains(Group.ADMINS_GROUP_NAME)) {
                 assertEquals(10, contentsId1.size());
             } else {
