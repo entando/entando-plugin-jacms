@@ -178,9 +178,9 @@ class AdvContentSearchTest extends BaseTestCase {
         }
         assertTrue(contentIds.contains("EVN103"));
         assertTrue(contentIds.contains("EVN41"));
-    }
+    }*/
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_2() throws Exception {
         SearchEngineFilter[] categoriesFilters = {};
         Date start = DateConverter.parseDate("2007-01-10", "yyyy-MM-dd");
@@ -203,9 +203,9 @@ class AdvContentSearchTest extends BaseTestCase {
         for (int i = 0; i < contentIds.size(); i++) {
             assertEquals(expectedContentsIds[expectedContentsIds.length-i-1], contentIds.get(i));
         }
-    }
+    }*/
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_3() throws Exception {
         SearchEngineFilter[] categoriesFilters = {};
         Date end = DateConverter.parseDate("2000-01-01", "yyyy-MM-dd");
@@ -365,7 +365,7 @@ class AdvContentSearchTest extends BaseTestCase {
         }
     }*/
     
-    /*@Test
+    @Test
     void testLoadFutureEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
@@ -475,9 +475,9 @@ class AdvContentSearchTest extends BaseTestCase {
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
         }
-    }*/
+    }
 
-    /*@Test
+    @Test
     void testLoadPublicContentsForCategory() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
@@ -493,9 +493,9 @@ class AdvContentSearchTest extends BaseTestCase {
         contents = result.getContentsId();
         assertEquals(1, contents.size());
         assertTrue(contents.contains("ART180"));
-    }*/
+    }
     
-    /*@Test
+    @Test
     void testLoadPublicEventsForCategory_1() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
@@ -515,7 +515,7 @@ class AdvContentSearchTest extends BaseTestCase {
         contents = result.getContentsId();
         assertEquals(1, contents.size());
         assertTrue(contents.contains("EVN192"));
-    }*/
+    }
     
     private SearchEngineFilter[] extractCategoryFilters(Collection<Category> categories) {
         SearchEngineFilter[] categoryFilterArray = null;
