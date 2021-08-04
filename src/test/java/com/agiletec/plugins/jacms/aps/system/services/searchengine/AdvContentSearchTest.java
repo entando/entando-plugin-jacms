@@ -152,7 +152,7 @@ class AdvContentSearchTest extends BaseTestCase {
         this.verifyOrder(contentIds, expected);
     }
     
-    /*@Test
+    @Test
     void testLoadPublicEvents_1() throws EntException {
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
         SearchEngineFilter[] filters = {typeFilter};
@@ -180,7 +180,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertTrue(contentIds.contains("EVN41"));
     }
     
-    @Test
+    /*@Test
     void testLoadPublicEvents_2() throws Exception {
         SearchEngineFilter[] categoriesFilters = {};
         Date start = DateConverter.parseDate("2007-01-10", "yyyy-MM-dd");
