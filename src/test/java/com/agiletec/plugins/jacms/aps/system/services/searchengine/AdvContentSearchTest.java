@@ -88,10 +88,7 @@ class AdvContentSearchTest extends BaseTestCase {
         String[] expected = {"EVN41"};
         assertEquals(expected.length, contentIds.size());
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> executeSearchContents_main: " + content);
         }
         for (int i = 0; i < expected.length; i++) {
             String contentId = expected[i];
@@ -108,10 +105,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testSearchContents_1: " + content);
         }
         String[] expected = {"EVN103", "ART104", "ART111", "ART112", "EVN25", "EVN41"};
         assertEquals(expected.length, contentIds.size());
@@ -130,10 +124,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testSearchContents_2: " + content);
         }
         String[] expected = {"EVN41"};
         assertEquals(expected.length, contentIds.size());
@@ -153,10 +144,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testSearchContents_3: " + content);
         }
         String[] expected = {"EVN41"};
         assertEquals(expected.length, contentIds.size());
@@ -177,10 +165,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testSearchContents_4: " + content);
         }
         String[] expected = {"EVN103", "ART104", "ART111", "ART112", "EVN25", "EVN41"};
         assertEquals(expected.length, contentIds.size());
@@ -196,10 +181,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicEvents_1: " + content);
         }
         String[] expectedFreeContentsId = {"EVN194", "EVN193",
             "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
@@ -241,10 +223,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters2, categoriesFilters, this.allowedGroup);
         contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicEvents_2: " + content);
         }
         assertEquals(expectedContentsIds.length, contentIds.size());
         for (int i = 0; i < contentIds.size(); i++) {
@@ -262,10 +241,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, this.allowedGroup);
         List<String> contentIds = result.getContentsId();
         for (String content : contentIds) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicEvents_3: " + content);
         }
         String[] expectedContentsIds = {"EVN191", "EVN192", "EVN103"};
         assertEquals(expectedContentsIds.length, contentIds.size());
@@ -300,10 +276,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, this.allowedGroup);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicEvents_7: " + content);
         }
         System.out.println("contents -> " + contents);
         String[] expectedOrderedContentsId2 = {"EVN20", "EVN24"};
@@ -332,10 +305,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadOrderedPublicEvents_1: " + content);
         }
         assertEquals(expectedFreeContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
@@ -362,10 +332,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadOrderedPublicEvents_2: " + content);
         }
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
@@ -385,10 +352,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadOrderedPublicEvents_3: " + content);
         }
         String[] expectedFreeOrderedContentsId = {"EVN21", "EVN25", "EVN24", "EVN23",
             "EVN20", "EVN194", "EVN193", "EVN192", "EVN191"};
@@ -401,10 +365,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result2 = this.searchEngineManager.searchFacetedEntities(filters2, categoriesFilters, null);
         List<String> contents2 = result2.getContentsId();
         for (String content : contents2) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadOrderedPublicEvents_3: " + content);
         }
         String[] expectedFreeOrderedContentsId2 = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
@@ -433,10 +394,7 @@ class AdvContentSearchTest extends BaseTestCase {
             FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
             List<String> contents = result.getContentsId();
             for (String content : contents) {
-                System.out.println("<><><> content: " + content);
-                System.err.println("AdvContentSearchTest: " + content);
-                logger.error("<><><><> content: " + content);
-                logger.error("AdvContentSearchTest: " + content);
+                logger.error("<><><><> testLoadOrderedPublicEvents_4: " + content);
             }
             String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(), "EVN193", "EVN24",
                 "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
@@ -465,10 +423,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadFutureEvents_1: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN21", "EVN20", "EVN25", "EVN23", "EVN24", "EVN193", "EVN194"};
         assertEquals(expectedOrderedContentsId.length, contents.size());
@@ -488,10 +443,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadFutureEvents_2: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21"};
@@ -514,10 +466,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, groups);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadFutureEvents_3: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN41", "EVN25", "EVN20", "EVN21"};
@@ -538,10 +487,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPastEvents_1: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN191", "EVN192",
             "EVN21", "EVN20", "EVN25", "EVN23"};
@@ -562,10 +508,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPastEvents_2: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN23", "EVN25",
             "EVN20", "EVN21", "EVN192", "EVN191"};
@@ -589,10 +532,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, groups);
         List<String> contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPastEvents_3: " + content);
         }
         String[] expectedOrderedContentsId = {"EVN191", "EVN192", "EVN103",
             "EVN21", "EVN20", "EVN25", "EVN41", "EVN23"};
@@ -617,10 +557,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(null, this.extractCategoryFilters(categories2), null);
         contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicContentsForCategory: " + content);
         }
         assertEquals(1, contents.size());
         assertTrue(contents.contains("ART180"));
@@ -645,10 +582,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters2, this.extractCategoryFilters(categories1), null);
         contents = result.getContentsId();
         for (String content : contents) {
-            System.out.println("<><><> content: " + content);
-            System.err.println("AdvContentSearchTest: " + content);
-            logger.error("<><><><> content: " + content);
-            logger.error("AdvContentSearchTest: " + content);
+            logger.error("<><><><> testLoadPublicEventsForCategory_1: " + content);
         }
         assertEquals(1, contents.size());
         assertTrue(contents.contains("EVN192"));
