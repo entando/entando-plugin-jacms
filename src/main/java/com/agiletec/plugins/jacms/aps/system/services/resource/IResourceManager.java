@@ -234,6 +234,10 @@ public interface IResourceManager {
 
     public void updateMetadataMapping(Map<String, List<String>> mapping) throws EntException;
 
+    public String getResourceText(String resourceId) throws EntException;
+
+    public String getResourceText(ResourceInterface resource);
+
     /**
      * Return the service status id.
      *
