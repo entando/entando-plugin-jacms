@@ -17,6 +17,11 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.AbstractService;
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
+import java.io.IOException;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
@@ -46,6 +51,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.xml.sax.SAXException;
 
 /**
  * Servizio gestore tipi di risorse (immagini, audio, video, etc..).
@@ -657,8 +663,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
             jaxbMapping.getFields().stream().forEach(m -> {
                 String key = m.getKey();
                 String csv = m.getValue();
-                List<String> metadatas =
-                        (!StringUtils.isBlank(csv)) ? Arrays.asList(csv.split(",")) : new ArrayList<>();
+                List<String> metadatas = new ArrayList<>();
+                if (!StringUtils.isBlank(csv)) {
+                    metadatas.addAll(Arrays.asList(csv.split(",")));
+                }
                 mapping.put(key, metadatas);
             });
             this.getCacheWrapper().updateMetadataMapping(mapping);
@@ -685,6 +693,42 @@ public class ResourceManager extends AbstractService implements IResourceManager
             logger.error("Error Updating resource metadata mapping", e);
             throw new EntException("Error Updating resource metadata mapping", e);
         }
+    }
+
+    @Override
+    public String getResourceText(String resourceId) throws EntException {
+        ResourceInterface resource = this.loadResource(resourceId);
+        if (null == resource) {
+            return null;
+        }
+        return this.getResourceText(resource);
+    }
+
+    @Override
+    public String getResourceText(ResourceInterface resource) {
+        if (null == resource) {
+            return null;
+        }
+        String extraValue = null;
+        InputStream is = resource.getResourceStream();
+        if (null != is) {
+            AutoDetectParser parser = new AutoDetectParser();
+            BodyContentHandler handler = new BodyContentHandler(-1);
+            Metadata metadata = new Metadata();
+            try {
+                parser.parse(is, handler, metadata);
+                extraValue = handler.toString();
+            } catch (IOException | SAXException | TikaException ex) {
+                logger.error("Error while processing the parsing of resource '{}'", resource.getId(), ex);
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.error("Error closing stream", ex);
+                }
+            }
+        }
+        return extraValue;
     }
 
 }
