@@ -13,9 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system;
 
-import com.agiletec.aps.system.SystemConstants;
-
-public class JacmsSystemConstants {
+public interface JacmsSystemConstants {
 
     public static final String CONFIG_PARAM_ASPECT_RATIO = "aspect_ratio";
 
@@ -124,9 +122,8 @@ public class JacmsSystemConstants {
     public static final String PERMISSION_EDIT_CONTENTS = "editContents";
 
     public static final String PERMISSION_CONTENT_SUPERVISION = "validateContents";
-
-    @Deprecated
-    public static final String CONTENT_METADATA_DATE_FORMAT = SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT;
+    
+    public static final String CONTENT_METADATA_DATE_FORMAT = "yyyyMMddHHmmss";
 
     public static final String RESOURE_ATTACH_CODE = "Attach";
 

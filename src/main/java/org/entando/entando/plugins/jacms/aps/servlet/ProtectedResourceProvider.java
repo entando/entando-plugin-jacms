@@ -31,7 +31,6 @@ import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import com.agiletec.aps.system.SystemConstants;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
-import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.lang.Lang;
@@ -63,7 +62,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     private IURLManager urlManager;
     private IPageManager pageManager;
     private ILangManager langManager;
-    private ConfigInterface configManager;
     private IResourceManager resourceManager;
     private IContentAuthorizationHelper contentAuthorizationHelper;
 
@@ -79,14 +77,11 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 // LA Sintassi /<RES_ID>/<SIZE>/<LANG_CODE>/<REFERENCED_RESOURCE_INDICATOR>/<CONTENT_ID>
                 indexGuardian = 2;
             }
-            String resId = uriSegments[segments - 3 - indexGuardian];
-            if (!StringUtils.isNumeric(resId)) {
-                return false;
-            }
             UserDetails currentUser = (UserDetails) request.getSession().getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER);
             if (currentUser == null) {
                 currentUser = this.getUserManager().getGuestUser();
             }
+            String resId = uriSegments[segments - 3 - indexGuardian];
             boolean isAuthForProtectedRes = false;
             if (indexGuardian != 0) {
                 if (this.isAuthOnProtectedRes(currentUser, resId, uriSegments[segments - 1])) {
@@ -128,10 +123,10 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
 
     protected boolean isAuthOnProtectedRes(UserDetails currentUser, String resourceId, String contentId) {
         PublicContentAuthorizationInfo authInfo = this.getContentAuthorizationHelper().getAuthorizationInfo(contentId);
-        IAuthorizationManager authManager = this.getAuthorizationManager();
         if (null == authInfo) {
             return false;
         }
+        IAuthorizationManager authManager = this.getAuthorizationManager();
         return (authInfo.isProtectedResourceReference(resourceId) && authInfo.isUserAllowed(authManager.getUserGroups(currentUser)));
     }
 
@@ -165,7 +160,7 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
             StringBuilder targetUrl = new StringBuilder(request.getRequestURL());
             Map<String, String> params = new HashMap<>();
             params.put("returnUrl", targetUrl.toString());
-            String loginPageCode = this.getConfigManager().getParam(SystemConstants.CONFIG_PARAM_LOGIN_PAGE_CODE);
+            String loginPageCode = this.getPageManager().getConfig(IPageManager.CONFIG_PARAM_LOGIN_PAGE_CODE);
             IPage page = this.getPageManager().getOnlinePage(loginPageCode);
             Lang defaultLang = this.getLangManager().getDefaultLang();
             String url = this.getUrlManager().createURL(page, defaultLang, params);
@@ -234,14 +229,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
 
     public void setLangManager(ILangManager langManager) {
         this.langManager = langManager;
-    }
-
-    protected ConfigInterface getConfigManager() {
-        return configManager;
-    }
-
-    public void setConfigManager(ConfigInterface configManager) {
-        this.configManager = configManager;
     }
 
 }
