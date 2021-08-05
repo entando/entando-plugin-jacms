@@ -15,11 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.AttachResource;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
-import java.io.IOException;
-import java.io.InputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 
@@ -56,32 +52,13 @@ public class AttachAttribute extends AbstractResourceAttribute {
 	@Override
 	public String getIndexeableFieldValue() {
 		StringBuilder buffer = new StringBuilder();
-		if (null != super.getIndexeableFieldValue()) {
-			buffer.append(super.getIndexeableFieldValue());
+		String parentText = super.getIndexeableFieldValue();
+		if (!StringUtils.isBlank(parentText)) {
+			buffer.append(parentText);
 		}
-		String extraValue = null;
 		ResourceInterface resource = this.getResource();
-		if (resource != null) {
-			InputStream is = ((AttachResource) resource).getResourceStream();
-			if (null != is) {
-				AutoDetectParser parser = new AutoDetectParser();
-				BodyContentHandler handler = new BodyContentHandler(-1);
-				Metadata metadata = new Metadata();
-				try {
-					parser.parse(is, handler, metadata);
-					extraValue = handler.toString();
-				} catch (Throwable t) {
-					_logger.error("Error while processing the parsing", t);
-				} finally {
-					try {
-						is.close();
-					} catch (IOException ex) {
-						_logger.error("Error closing stream", ex);
-					}
-				}
-			}
-		}
-		if (null != extraValue) {
+		String extraValue = this.getResourceManager().getResourceText(resource);
+		if (!StringUtils.isBlank(extraValue)) {
 			buffer.append(" ").append(extraValue);
 		}
 		return buffer.toString();
