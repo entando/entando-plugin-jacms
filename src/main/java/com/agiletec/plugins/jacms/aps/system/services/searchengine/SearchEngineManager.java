@@ -22,8 +22,8 @@ import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.notify.ApsEvent;
 import com.agiletec.aps.system.common.searchengine.IndexableAttributeInterface;
 import com.agiletec.aps.system.common.tree.ITreeNode;
+import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import org.entando.entando.ent.exception.EntException;
-import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.event.PublicContentChangedEvent;
@@ -33,7 +33,9 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -145,6 +147,19 @@ public class SearchEngineManager extends AbstractService
             } catch (Throwable t) {
                 throw new EntException("Error reloading Contents References", t);
             }
+            Map<String, String> properties = new HashMap<>();
+            properties.put("eventType", "reload");
+            ApsEvent event = new ApsEvent(JacmsSystemConstants.SEARCH_ENGINE_EVENT_CHANNEL, properties) {
+                @Override
+                public void notify(IManager im) {
+                    return;
+                }
+                @Override
+                public Class<?> getObserverInterface() {
+                    return null;
+                }
+            };
+            this.notifyEvent(event);
         } else {
             logger.info("Reload Contents References job suspended: current status: {}", this.getStatus());
         }

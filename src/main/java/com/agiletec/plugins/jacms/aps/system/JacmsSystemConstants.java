@@ -132,8 +132,10 @@ public interface JacmsSystemConstants {
     public static final String CSP_NONCE_PLACEHOLDER = "{{PLACEHOLDER-9e424db1-ae72-4cca-866a-47397c56d71e}}";
     
     public static final String CONTENT_EVENT_CHANNEL = "cms-content";
-    
+
     public static final String CONTENT_MODEL_EVENT_CHANNEL = "cms-content-model";
+
+    public static final String SEARCH_ENGINE_EVENT_CHANNEL = "cms-searchengine";
     
     public static final String RESOURCE_EVENT_CHANNEL = "cms-resource";
 
