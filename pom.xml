@@ -94,7 +94,7 @@
             <dependency>
                 <groupId>org.entando</groupId>
                 <artifactId>entando-core-bom</artifactId>
-                <version>6.4.77</version>
+                <version>6.4.85</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
