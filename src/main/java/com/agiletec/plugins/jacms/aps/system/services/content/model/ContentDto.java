@@ -15,6 +15,7 @@ package com.agiletec.plugins.jacms.aps.system.services.content.model;
 
 import com.agiletec.aps.system.common.entity.model.IApsEntity;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
+import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.category.ICategoryManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.AbstractResourceAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
@@ -29,6 +30,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -56,6 +58,9 @@ public class ContentDto extends EntityDto implements Serializable {
     private String restriction;
     private String html;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<String> categories;
+
     /**
      * The references grouped by service name.
      * <p>
@@ -82,6 +87,9 @@ public class ContentDto extends EntityDto implements Serializable {
         this.setFirstEditor(src.getFirstEditor());
         this.setLastEditor(src.getLastEditor());
         this.setRestriction(src.getRestriction());
+        if (null != src.getCategories()) {
+            this.setCategories(src.getCategories().stream().map(Category::getCode).collect(Collectors.toList()));
+        }
     }
 
     public String getStatus() {
@@ -192,12 +200,26 @@ public class ContentDto extends EntityDto implements Serializable {
         this.references = references;
     }
 
-    @Override
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
     public void fillEntity(IApsEntity prototype, ICategoryManager categoryManager, BindingResult bindingResult) {
         Content content = (Content) prototype;
-
-        super.fillEntity(prototype, categoryManager, bindingResult);
-
+        super.fillEntity(prototype, bindingResult);
+        if (null != this.getCategories()) {
+            content.getCategories().clear();
+            this.getCategories().stream().forEach(i -> {
+                Category category = categoryManager.getCategory(i);
+                if (null != category) {
+                    content.addCategory(category);
+                }
+            });
+        }
         content.setFirstEditor(getFirstEditor() == null ? content.getFirstEditor() : getFirstEditor());
         content.setLastEditor(getLastEditor());
         content.setRestriction(ContentRestriction.getRestrictionValue(getMainGroup()));
@@ -212,15 +234,17 @@ public class ContentDto extends EntityDto implements Serializable {
     }
 
     @Override
-    protected void fillAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto, BindingResult bindingResult) {
+    protected void fillAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto,
+            BindingResult bindingResult) {
         super.fillAttribute(attribute, attributeDto, bindingResult);
         fillAbstractResourceAttribute(attribute, attributeDto);
         fillLinkAttribute(attribute, attributeDto);
     }
 
     @Override
-    protected void rejectAttributeNotFound (BindingResult bindingResult, EntityAttributeDto attributeDto) {
-        bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()}, "content.attribute.code.invalid");
+    protected void rejectAttributeNotFound(BindingResult bindingResult, EntityAttributeDto attributeDto) {
+        bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID, new String[]{attributeDto.getCode()},
+                "content.attribute.code.invalid");
     }
 
     private void clearAbstractResourceAttribute(AttributeInterface attribute) {
@@ -255,7 +279,8 @@ public class ContentDto extends EntityDto implements Serializable {
         }
     }
 
-    private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, ImageResource resource, String langCode) {
+    private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, ImageResource resource,
+            String langCode) {
         String correlationCode = resource.getCorrelationCode();
         String resourceId = resource.getId();
         String name = resource.getDescription();
@@ -296,18 +321,18 @@ public class ContentDto extends EntityDto implements Serializable {
         }
     }
 
-    private Map<String, String> getAdditionalLinkAttributes (final EntityAttributeDto attributeDto) {
+    private Map<String, String> getAdditionalLinkAttributes(final EntityAttributeDto attributeDto) {
         final Map<String, String> linkProperties = new HashMap<>();
-        final String rel = (String)((Map) attributeDto.getValue()).get("rel");
-        if (rel != null ) {
+        final String rel = (String) ((Map) attributeDto.getValue()).get("rel");
+        if (rel != null) {
             linkProperties.put("rel", rel);
         }
-        final String target = (String)((Map) attributeDto.getValue()).get("target");
-        if (target != null ) {
+        final String target = (String) ((Map) attributeDto.getValue()).get("target");
+        if (target != null) {
             linkProperties.put("target", target);
         }
-        final String hreflang = (String)((Map) attributeDto.getValue()).get("hreflang");
-        if (hreflang != null ) {
+        final String hreflang = (String) ((Map) attributeDto.getValue()).get("hreflang");
+        if (hreflang != null) {
             linkProperties.put("hreflang", hreflang);
         }
         return linkProperties;
@@ -315,7 +340,7 @@ public class ContentDto extends EntityDto implements Serializable {
 
     private void fillLinkAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
-            LinkAttribute linkAttribute = (LinkAttribute)attribute;
+            LinkAttribute linkAttribute = (LinkAttribute) attribute;
             SymbolicLink link = new SymbolicLink();
             Map<String, String> additionalLinkAttributes = processLinkAttribute(attributeDto, link);
             linkAttribute.setSymbolicLink(link);
@@ -361,4 +386,5 @@ public class ContentDto extends EntityDto implements Serializable {
         }
         return result;
     }
+
 }

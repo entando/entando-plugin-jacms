@@ -20,6 +20,7 @@ import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.page.*;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
 import com.agiletec.aps.system.services.role.Permission;
@@ -4675,6 +4676,55 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[0].id", is("EVN103")))
                 .andExpect(jsonPath("$.payload[1].id", is("EVN25")))
                 .andExpect(jsonPath("$.payload[2].id", is("EVN41")));
+    }
+
+    void testContentRelationForGroup() throws Exception {
+        String newContentId = null;
+        try {
+            // should create group relation
+            String accessToken = this.createAccessToken();
+            this.executeContentTypePost("1_POST_type_valid.json", accessToken, status().isCreated());
+
+            ResultActions result = this.executeContentPost("1_POST_valid.json", accessToken, status().isOk());
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+
+            List groupUtilizers = ((GroupUtilizer) contentManager).getGroupUtilizers("group1");
+            Assertions.assertTrue(groupUtilizers.contains(newContentId));
+
+            // should keep relation when publishing
+            ContentStatusRequest contentStatusRequest = new ContentStatusRequest();
+            contentStatusRequest.setStatus("published");
+            mockMvc
+                    .perform(put("/plugins/cms/contents/{code}/status", newContentId)
+                            .content(mapper.writeValueAsString(contentStatusRequest))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + accessToken));
+            groupUtilizers = ((GroupUtilizer) contentManager).getGroupUtilizers("group1");
+            Assertions.assertTrue(groupUtilizers.contains(newContentId));
+
+            // should not remove relation when unpublishing
+            contentStatusRequest = new ContentStatusRequest();
+            contentStatusRequest.setStatus("draft");
+            mockMvc
+                    .perform(put("/plugins/cms/contents/{code}/status", newContentId)
+                            .content(mapper.writeValueAsString(contentStatusRequest))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + accessToken));
+            groupUtilizers = ((GroupUtilizer) contentManager).getGroupUtilizers("group1");
+            Assertions.assertTrue(groupUtilizers.contains(newContentId));
+        } finally {
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype("TST")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
+            }
+        }
     }
 
 }
