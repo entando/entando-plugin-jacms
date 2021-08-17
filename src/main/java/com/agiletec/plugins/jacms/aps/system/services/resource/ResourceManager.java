@@ -17,6 +17,11 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.AbstractService;
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
+import java.io.IOException;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
@@ -46,6 +51,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.xml.sax.SAXException;
 
 /**
  * Servizio gestore tipi di risorse (immagini, audio, video, etc..).
@@ -167,6 +173,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                     newResource.getId() : newResource.getCorrelationCode());
             newResource.saveResourceInstances(bean, getIgnoreMetadataKeysForResourceType(bean.getResourceType()), instancesAlreadySaved);
             this.getResourceDAO().addResource(newResource);
+            this.notifyResourceChanging(newResource, ResourceChangedEvent.INSERT_OPERATION_CODE);
         } catch (Throwable t) {
             newResource.deleteResourceInstances();
             logger.error("Error adding resource", t);
@@ -191,15 +198,17 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     @Override
     public List<ResourceInterface> addResources(List<BaseResourceDataBean> beans) throws EntException {
-        List<ResourceInterface> newResource = new ArrayList<>();
+        List<ResourceInterface> newResources = new ArrayList<>();
         beans.forEach(b -> {
             try {
-                newResource.add(this.addResource(b));
+                ResourceInterface resource = this.addResource(b);
+                newResources.add(resource);
+                this.notifyResourceChanging(resource, ResourceChangedEvent.INSERT_OPERATION_CODE);
             } catch (EntException ex) {
                 logger.error("Error adding resources", ex);
             }
         });
-        return newResource;
+        return newResources;
     }
 
     /**
@@ -213,6 +222,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resources.forEach(resourceDelete -> {
             try {
                 deleteResource(resourceDelete);
+                this.notifyResourceChanging(resourceDelete, ResourceChangedEvent.REMOVE_OPERATION_CODE);
             } catch (EntException ex) {
                 logger.error("Error deleting resources", ex);
             }
@@ -230,6 +240,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         try {
             this.generateAndSetResourceId(resource, resource.getId());
             this.getResourceDAO().addResource(resource);
+            this.notifyResourceChanging(resource, ResourceChangedEvent.INSERT_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error adding resource", t);
             throw new EntException("Error adding resource", t);
@@ -256,7 +267,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                 oldResource.setMainGroup(bean.getMainGroup());
                 oldResource.setFolderPath(bean.getFolderPath());
                 this.getResourceDAO().updateResource(oldResource);
-                this.notifyResourceChanging(oldResource);
+                this.notifyResourceChanging(oldResource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
             } else {
                 ResourceInterface updatedResource = this.createResource(bean);
                 updatedResource
@@ -265,7 +276,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
                 if (!updatedResource.getMasterFileName().equals(oldResource.getMasterFileName())) {
                     oldResource.deleteResourceInstances();
                 }
-                this.notifyResourceChanging(updatedResource);
+                this.notifyResourceChanging(updatedResource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
             }
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
@@ -283,7 +294,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
     public void updateResource(ResourceInterface resource) throws EntException {
         try {
             this.getResourceDAO().updateResource(resource);
-            this.notifyResourceChanging(resource);
+            this.notifyResourceChanging(resource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
         } catch (Throwable t) {
             logger.error("Error updating resource", t);
             throw new EntException("Error updating resource", t);
@@ -303,10 +314,16 @@ public class ResourceManager extends AbstractService implements IResourceManager
         resource.setCorrelationCode(bean.getCorrelationCode());
         return resource;
     }
-
-    protected void notifyResourceChanging(ResourceInterface resource) throws EntException {
-        ResourceChangedEvent event = new ResourceChangedEvent();
+    
+    protected void notifyResourceChanging(ResourceInterface resource, int operationCode) {
+        Map<String, String> properties = new HashMap<>();
+        if (null != resource) {
+            properties.put("resourceId", resource.getId());
+        }
+        properties.put("operationCode", String.valueOf(operationCode));
+        ResourceChangedEvent event = new ResourceChangedEvent(JacmsSystemConstants.RESOURCE_EVENT_CHANNEL, properties);
         event.setResource(resource);
+        event.setOperationCode(operationCode);
         this.notifyEvent(event);
     }
 
@@ -646,8 +663,10 @@ public class ResourceManager extends AbstractService implements IResourceManager
             jaxbMapping.getFields().stream().forEach(m -> {
                 String key = m.getKey();
                 String csv = m.getValue();
-                List<String> metadatas =
-                        (!StringUtils.isBlank(csv)) ? Arrays.asList(csv.split(",")) : new ArrayList<>();
+                List<String> metadatas = new ArrayList<>();
+                if (!StringUtils.isBlank(csv)) {
+                    metadatas.addAll(Arrays.asList(csv.split(",")));
+                }
                 mapping.put(key, metadatas);
             });
             this.getCacheWrapper().updateMetadataMapping(mapping);
@@ -674,6 +693,42 @@ public class ResourceManager extends AbstractService implements IResourceManager
             logger.error("Error Updating resource metadata mapping", e);
             throw new EntException("Error Updating resource metadata mapping", e);
         }
+    }
+
+    @Override
+    public String getResourceText(String resourceId) throws EntException {
+        ResourceInterface resource = this.loadResource(resourceId);
+        if (null == resource) {
+            return null;
+        }
+        return this.getResourceText(resource);
+    }
+
+    @Override
+    public String getResourceText(ResourceInterface resource) {
+        if (null == resource) {
+            return null;
+        }
+        String extraValue = null;
+        InputStream is = resource.getResourceStream();
+        if (null != is) {
+            AutoDetectParser parser = new AutoDetectParser();
+            BodyContentHandler handler = new BodyContentHandler(-1);
+            Metadata metadata = new Metadata();
+            try {
+                parser.parse(is, handler, metadata);
+                extraValue = handler.toString();
+            } catch (IOException | SAXException | TikaException ex) {
+                logger.error("Error while processing the parsing of resource '{}'", resource.getId(), ex);
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.error("Error closing stream", ex);
+                }
+            }
+        }
+        return extraValue;
     }
 
 }

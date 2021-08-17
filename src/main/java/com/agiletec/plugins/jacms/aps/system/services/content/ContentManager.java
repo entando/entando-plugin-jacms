@@ -251,28 +251,33 @@ public class ContentManager extends ApsEntityManager
      * Save a content in the DB.
      *
      * @param content The content to add.
+     * @return Id of the added content
      * @throws EntException in case of error.
      */
     @Override
-    public void saveContent(Content content) throws EntException {
-        this.addContent(content);
+    public String saveContent(Content content) throws EntException {
+        return this.addContent(content);
     }
 
     @Override
-    public void saveContentAndContinue(Content content) throws EntException {
-        this.addUpdateContent(content, false);
+    public String saveContentAndContinue(Content content) throws EntException {
+        return this.addUpdateContent(content, false);
     }
 
     /**
      * Save a content in the DB. Hopefully this method has no annotation
      * attached
+     * @param content The content to add.
+     * @return Id of the added content
+     * @throws EntException in case of error.
      */
     @Override
-    public void addContent(Content content) throws EntException {
-        this.addUpdateContent(content, true);
+    public String addContent(Content content) throws EntException {
+        return this.addUpdateContent(content, true);
     }
 
-    private void addUpdateContent(Content content, boolean updateDate) throws EntException {
+    private String addUpdateContent(Content content, boolean updateDate) throws EntException {
+        String id = null;
         try {
             content.setLastModified(new Date());
             if (updateDate) {
@@ -285,12 +290,12 @@ public class ContentManager extends ApsEntityManager
             } else {
                 content.setStatus(status);
             }
-
-            if (null == content.getId()) {
+            id = content.getId();
+            if (null == id) {
                 IKeyGeneratorManager keyGenerator = (IKeyGeneratorManager) this
                         .getService(SystemConstants.KEY_GENERATOR_MANAGER);
                 int key = keyGenerator.getUniqueKeyCurrentValue();
-                String id = content.getTypeCode() + key;
+                id = content.getTypeCode() + key;
                 content.setId(id);
             }
 
@@ -304,6 +309,7 @@ public class ContentManager extends ApsEntityManager
             logger.error("Error while saving content", t);
             throw new EntException("Error while saving content", t);
         }
+        return id;
     }
 
     /**
@@ -311,6 +317,7 @@ public class ContentManager extends ApsEntityManager
      *
      * @param content The ID associated to the content to be displayed in the
      * portal.
+     * @return Id of the published content
      * @throws EntException in case of error.
      */
     @Override
@@ -318,7 +325,8 @@ public class ContentManager extends ApsEntityManager
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id, #content.typeCode)")
-    public void insertOnLineContent(Content content) throws EntException {
+    public String insertOnLineContent(Content content) throws EntException {
+        String id = null;
         try {
             content.setLastModified(new Date());
             if (null == content.getId()) {
@@ -334,11 +342,13 @@ public class ContentManager extends ApsEntityManager
             } else {
                 operationEventCode = PublicContentChangedEvent.INSERT_OPERATION_CODE;
             }
+            id = content.getId();
             this.notifyPublicContentChanging(content, operationEventCode);
         } catch (Throwable t) {
             logger.error("Error while inserting content on line", t);
             throw new EntException("Error while inserting content on line", t);
         }
+        return id;
     }
 
     /**
@@ -378,6 +388,7 @@ public class ContentManager extends ApsEntityManager
      * Obviously the content itself is not deleted.
      *
      * @param content the content to unpublish.
+     * @return Id of unpublished content
      * @throws EntException in case of error
      */
     @Override
@@ -385,7 +396,7 @@ public class ContentManager extends ApsEntityManager
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id, #content.typeCode)")
-    public void removeOnLineContent(Content content) throws EntException {
+    public String removeOnLineContent(Content content) throws EntException {
         try {
             content.setLastModified(new Date());
             content.incrementVersion(false);
@@ -394,6 +405,7 @@ public class ContentManager extends ApsEntityManager
             }
             this.getContentDAO().removeOnLineContent(content);
             this.notifyPublicContentChanging(content, PublicContentChangedEvent.REMOVE_OPERATION_CODE);
+            return content.getId();
         } catch (Throwable t) {
             logger.error("Error while removing onLine content", t);
             throw new EntException("Error while removing onLine content", t);
@@ -407,7 +419,12 @@ public class ContentManager extends ApsEntityManager
      * @param operationCode the operation code to notify.
      */
     private void notifyPublicContentChanging(Content content, int operationCode) {
-        PublicContentChangedEvent event = new PublicContentChangedEvent();
+        Map<String, String> properties = new HashMap<>();
+        if (null != content) {
+            properties.put("contentId", content.getId());
+        }
+        properties.put("operationCode", String.valueOf(operationCode));
+        PublicContentChangedEvent event = new PublicContentChangedEvent(JacmsSystemConstants.CONTENT_EVENT_CHANNEL, properties);
         event.setContent(content);
         event.setOperationCode(operationCode);
         this.notifyEvent(event);
@@ -430,6 +447,7 @@ public class ContentManager extends ApsEntityManager
      * Deletes a content from the DB.
      *
      * @param content The content to delete.
+     * @return Id of deleted content
      * @throws EntException in case of error.
      */
     @Override
@@ -437,8 +455,8 @@ public class ContentManager extends ApsEntityManager
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#content.id)", condition = "#content.id != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#content.id)")
-    public void deleteContent(Content content) throws EntException {
-        this.deleteContent(content.getId());
+    public String deleteContent(Content content) throws EntException {
+        return this.deleteContent(content.getId());
     }
 
     @Override
@@ -446,9 +464,10 @@ public class ContentManager extends ApsEntityManager
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_CACHE_PREFIX.concat(#contentId)", condition = "#contentId != null")
     @CacheInfoEvict(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsToEvictCsv(#contentId)")
-    public void deleteContent(String contentId) throws EntException {
+    public String deleteContent(String contentId) throws EntException {
         try {
             this.getContentDAO().deleteEntity(contentId);
+            return contentId;
         } catch (Throwable t) {
             logger.error("Error while deleting content {}", contentId, t);
             throw new EntException("Error while deleting content " + contentId, t);

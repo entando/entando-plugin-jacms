@@ -117,27 +117,30 @@ public interface IContentManager extends IEntityManager {
      * sarà nullo) o di aggiornamento di contenuto già esistente (id non nullo).
      *
      * @param content Il contenuto da aggiungere o modificare.
+     * @return L'id del contenuto salvato
      * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void saveContent(Content content) throws EntException;
+    public String saveContent(Content content) throws EntException;
 
-    public void saveContentAndContinue(Content content) throws EntException;
+    public String saveContentAndContinue(Content content) throws EntException;
 
     /**
      * Save a content in the DB.
      *
      * @param content The content to add.
+     * @return Id of the added content
      * @throws EntException in case of error.
      */
-    public void addContent(Content content) throws EntException;
+    public String addContent(Content content) throws EntException;
 
     /**
      * Inserisce il contenuto OnLine.
      *
      * @param content Il contenuto da rendere visibile online.
+     * @return L'id del contenuto inserito online
      * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void insertOnLineContent(Content content) throws EntException;
+    public String insertOnLineContent(Content content) throws EntException;
 
     /**
      * Rimuove un contenuto OnLine. L'operazione non cancella il contenuto ma ne
@@ -145,19 +148,20 @@ public interface IContentManager extends IEntityManager {
      * ancora presente verrà messo in stato cancellato.
      *
      * @param content Il contenuto da rimuovere.
+     * @return L'id del contenuto rimosso
      * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void removeOnLineContent(Content content) throws EntException;
+    public String removeOnLineContent(Content content) throws EntException;
 
     /**
      * Cancella un contenuto dal db.
-     *
      * @param content Il contenuto da cancellare.
+     * @return L'id del contenuto rimosso
      * @throws EntException in caso di errore nell'accesso al db.
      */
-    public void deleteContent(Content content) throws EntException;
+    public String deleteContent(Content content) throws EntException;
 
-    public void deleteContent(String contentId) throws EntException;
+    public String deleteContent(String contentId) throws EntException;
 
     /**
      * Carica una lista di identificativi di contenuti publici in base ai

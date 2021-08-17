@@ -13,9 +13,7 @@
  */
 package com.agiletec.plugins.jacms.aps.system;
 
-import com.agiletec.aps.system.SystemConstants;
-
-public class JacmsSystemConstants {
+public interface JacmsSystemConstants {
 
     public static final String CONFIG_PARAM_ASPECT_RATIO = "aspect_ratio";
 
@@ -124,14 +122,21 @@ public class JacmsSystemConstants {
     public static final String PERMISSION_EDIT_CONTENTS = "editContents";
 
     public static final String PERMISSION_CONTENT_SUPERVISION = "validateContents";
-
-    @Deprecated
-    public static final String CONTENT_METADATA_DATE_FORMAT = SystemConstants.DATA_TYPE_METADATA_DATE_FORMAT;
+    
+    public static final String CONTENT_METADATA_DATE_FORMAT = "yyyyMMddHHmmss";
 
     public static final String RESOURE_ATTACH_CODE = "Attach";
 
     public static final String RESOURE_IMAGE_CODE = "Image";
     
     public static final String CSP_NONCE_PLACEHOLDER = "{{PLACEHOLDER-9e424db1-ae72-4cca-866a-47397c56d71e}}";
+    
+    public static final String CONTENT_EVENT_CHANNEL = "cms-content";
+
+    public static final String CONTENT_MODEL_EVENT_CHANNEL = "cms-content-model";
+
+    public static final String SEARCH_ENGINE_EVENT_CHANNEL = "cms-searchengine";
+    
+    public static final String RESOURCE_EVENT_CHANNEL = "cms-resource";
 
 }

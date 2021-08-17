@@ -13,11 +13,6 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractComplexAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractListAttribute;
@@ -44,6 +39,7 @@ import org.entando.entando.aps.system.services.api.model.ApiResource;
 import org.entando.entando.aps.system.services.api.server.IResponseBuilder;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.CmsApiResponse;
 import org.entando.entando.plugins.jacms.aps.system.services.api.model.JAXBContent;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,12 +52,14 @@ class TestApiContentInterface extends ApiBaseTestCase {
     void testGetXmlContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_XML_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "it");
+		this.testGetContent(mediaType, "admin", "ART111", "it");
 	}
 
 	@Test
     void testGetJsonContent() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testGetContent(mediaType, "admin", "ALL4", "en");
+		this.testGetContent(mediaType, "admin", "ART111", "en");
 	}
 
 	@Test
@@ -74,6 +72,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
     void testCreateNewContentFromJson() throws Throwable {
 		MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
 		this.testCreateNewContent(mediaType, "ALL4");
+		this.testCreateNewContent(mediaType, "ART111");
 	}
 
 	protected void testCreateNewContent(MediaType mediaType, String contentId) throws Throwable {
@@ -81,7 +80,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
 		EntitySearchFilter filter = new EntitySearchFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false, dateNow, null);
 		EntitySearchFilter[] filters = {filter};
 		List<String> ids = this._contentManager.searchId(filters);
-		assertTrue(ids.isEmpty());
+		Assertions.assertTrue(ids.isEmpty());
 		JAXBContent jaxbContent = this.testGetContent(mediaType, "admin", contentId, "it");
 		ApiResource contentResource = this.getApiCatalogManager().getResource("jacms", "content");
 		ApiMethod postMethod = contentResource.getPostMethod();
@@ -89,12 +88,13 @@ class TestApiContentInterface extends ApiBaseTestCase {
 		try {
 			jaxbContent.setId(null);
 			Object response = this.getResponseBuilder().createResponse(postMethod, jaxbContent, properties);
-			assertNotNull(response);
-			assertTrue(response instanceof CmsApiResponse);
-			assertEquals(IResponseBuilder.SUCCESS, ((CmsApiResponse) response).getResult().getStatus());
+			Assertions.assertNotNull(response);
+			Assertions.assertTrue(response instanceof CmsApiResponse);
+			Assertions.assertEquals(IResponseBuilder.SUCCESS, ((CmsApiResponse) response).getResult().getStatus());
 			ids = this._contentManager.searchId(filters);
-			assertEquals(1, ids.size());
+			Assertions.assertEquals(1, ids.size());
 			String newContentId = ids.get(0);
+			Assertions.assertNotEquals(newContentId, contentId);
 			Content newContent = this._contentManager.loadContent(newContentId, false);
 			Content masterContent = this._contentManager.loadContent(contentId, true);
 			List<AttributeInterface> attributes = masterContent.getAttributeList();
@@ -119,15 +119,15 @@ class TestApiContentInterface extends ApiBaseTestCase {
 
 	private void checkAttributes(AttributeInterface oldAttribute, AttributeInterface newAttribute) {
 		if (null == newAttribute) {
-			fail();
+			Assertions.fail();
 		}
-		assertEquals(oldAttribute.getName(), newAttribute.getName());
-		assertEquals(oldAttribute.getType(), newAttribute.getType());
+		Assertions.assertEquals(oldAttribute.getName(), newAttribute.getName());
+		Assertions.assertEquals(oldAttribute.getType(), newAttribute.getType());
 		if (!oldAttribute.isSimple()) {
 			if (oldAttribute instanceof AbstractListAttribute) {
 				List<AttributeInterface> oldListAttributes = ((AbstractComplexAttribute) oldAttribute).getAttributes();
 				List<AttributeInterface> newListAttributes = ((AbstractComplexAttribute) newAttribute).getAttributes();
-				assertEquals(oldListAttributes.size(), newListAttributes.size());
+				Assertions.assertEquals(oldListAttributes.size(), newListAttributes.size());
 				for (int i = 0; i < oldListAttributes.size(); i++) {
 					AttributeInterface oldElement = oldListAttributes.get(i);
 					AttributeInterface newElement = newListAttributes.get(i);
@@ -136,7 +136,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
 			} else if (oldAttribute instanceof CompositeAttribute) {
 				Map<String, AttributeInterface> oldAttributeMap = ((CompositeAttribute) oldAttribute).getAttributeMap();
 				Map<String, AttributeInterface> newAttributeMap = ((CompositeAttribute) newAttribute).getAttributeMap();
-				assertEquals(oldAttributeMap.size(), newAttributeMap.size());
+				Assertions.assertEquals(oldAttributeMap.size(), newAttributeMap.size());
 				Iterator<String> iterator = oldAttributeMap.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
@@ -149,7 +149,7 @@ class TestApiContentInterface extends ApiBaseTestCase {
 			if (oldAttribute instanceof AbstractResourceAttribute || oldAttribute instanceof LinkAttribute) {
 				return;
 			}
-			assertEquals(oldAttribute.getValue(), newAttribute.getValue());
+			Assertions.assertEquals(oldAttribute.getValue(), newAttribute.getValue());
 		}
 	}
 
@@ -160,14 +160,14 @@ class TestApiContentInterface extends ApiBaseTestCase {
 		Properties properties = super.createApiProperties(username, langCode, mediaType);
 		properties.put("id", contentId);
 		Object result = this.getResponseBuilder().createResponse(getMethod, properties);
-		assertNotNull(result);
+		Assertions.assertNotNull(result);
 		ApiContentInterface apiContentInterface = (ApiContentInterface) this.getApplicationContext().getBean("jacmsApiContentInterface");
 		Object singleResult = apiContentInterface.getContent(properties);
-		assertNotNull(singleResult);
+		Assertions.assertNotNull(singleResult);
 		String toString = this.marshall(singleResult, mediaType);
 		InputStream stream = new ByteArrayInputStream(toString.getBytes());
 		JAXBContent jaxbContent = (JAXBContent) UnmarshalUtils.unmarshal(super.getApplicationContext(), JAXBContent.class, stream, mediaType);
-		assertNotNull(jaxbContent);
+		Assertions.assertNotNull(jaxbContent);
 		return jaxbContent;
 	}
 

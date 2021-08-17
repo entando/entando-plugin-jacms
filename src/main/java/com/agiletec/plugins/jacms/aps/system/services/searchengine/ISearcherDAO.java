@@ -13,7 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.searchengine;
 
-import com.agiletec.aps.system.common.tree.ITreeNode;
 import com.agiletec.aps.system.common.tree.ITreeNodeManager;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.lang.ILangManager;
