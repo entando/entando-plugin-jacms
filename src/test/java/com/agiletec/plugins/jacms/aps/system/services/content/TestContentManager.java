@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -69,6 +70,8 @@ import org.junit.jupiter.api.Test;
  * @author M. Morini - E.Santoboni
  */
 class TestContentManager extends BaseTestCase {
+
+    private List<String> freeGroup = Arrays.asList("free");
 
     @Test
     void testSearchContents_1_1() throws Throwable {
@@ -637,13 +640,13 @@ class TestContentManager extends BaseTestCase {
 
     @Test
     void testLoadPublicContents() throws EntException {
-        List<String> contents = _contentManager.loadPublicContentsId(null, null, null);
+        List<String> contents = _contentManager.loadPublicContentsId(null, null, freeGroup);
         assertEquals(15, contents.size());
     }
     
     @Test
     void testLoadPublicEvents_1() throws EntException {
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, freeGroup);
         String[] expectedFreeContentsId = {"EVN194", "EVN193",
             "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
         assertEquals(expectedFreeContentsId.length, contents.size());
@@ -654,6 +657,7 @@ class TestContentManager extends BaseTestCase {
 
         List<String> groups = new ArrayList<>();
         groups.add("coach");
+        groups.add("free");
         contents = _contentManager.loadPublicContentsId("EVN", null, null, groups);
         assertEquals(expectedFreeContentsId.length + 2, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
@@ -713,7 +717,7 @@ class TestContentManager extends BaseTestCase {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
         }
 
-        contents = _contentManager.loadPublicContentsId("EVN", null, filters2, null);
+        contents = _contentManager.loadPublicContentsId("EVN", null, filters2, freeGroup);
         String[] expectedFreeOrderedContentsId = {"EVN25", "EVN21", "EVN20", "EVN193",
             "EVN192", "EVN23", "EVN24"};
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
@@ -979,7 +983,7 @@ class TestContentManager extends BaseTestCase {
         EntitySearchFilter filterForDescr = new EntitySearchFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
         filterForDescr.setOrder(EntitySearchFilter.ASC_ORDER);
         EntitySearchFilter[] filters = {filterForDescr};
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
 
         String[] expectedFreeContentsId = {"EVN24", "EVN23", "EVN191",
             "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
@@ -989,7 +993,7 @@ class TestContentManager extends BaseTestCase {
         }
 
         filterForDescr.setOrder(EntitySearchFilter.DESC_ORDER);
-        contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
 
         assertEquals(expectedFreeContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
@@ -1003,7 +1007,7 @@ class TestContentManager extends BaseTestCase {
         filterForCreation.setOrder(EntitySearchFilter.ASC_ORDER);
         EntitySearchFilter[] filters = {filterForCreation};
 
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedFreeOrderedContentsId = {"EVN191", "EVN192", "EVN193", "EVN194",
             "EVN20", "EVN23", "EVN24", "EVN25", "EVN21"};
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
@@ -1012,7 +1016,7 @@ class TestContentManager extends BaseTestCase {
         }
 
         filterForCreation.setOrder(EntitySearchFilter.DESC_ORDER);
-        contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
             assertEquals(expectedFreeOrderedContentsId[expectedFreeOrderedContentsId.length - i - 1], contents.get(i));
@@ -1027,7 +1031,7 @@ class TestContentManager extends BaseTestCase {
         filterForDate.setOrder(EntitySearchFilter.DESC_ORDER);
         EntitySearchFilter[] filters = {filterForCreation, filterForDate};
 
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedFreeOrderedContentsId = {"EVN21", "EVN25", "EVN24", "EVN23",
             "EVN20", "EVN194", "EVN193", "EVN192", "EVN191"};
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
@@ -1037,7 +1041,7 @@ class TestContentManager extends BaseTestCase {
 
         EntitySearchFilter[] filters2 = {filterForDate, filterForCreation};
 
-        List<String> contents2 = _contentManager.loadPublicContentsId("EVN", null, filters2, null);
+        List<String> contents2 = _contentManager.loadPublicContentsId("EVN", null, filters2, freeGroup);
         String[] expectedFreeOrderedContentsId2 = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
         assertEquals(expectedFreeOrderedContentsId2.length, contents2.size());
@@ -1064,7 +1068,7 @@ class TestContentManager extends BaseTestCase {
             filterForDate.setOrder(EntitySearchFilter.DESC_ORDER);
             EntitySearchFilter[] filters = {filterForDate};
 
-            List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+            List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
             String[] expectedFreeOrderedContentsId = {"EVN194", newId, "EVN193", "EVN24",
                 "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
             assertEquals(expectedFreeOrderedContentsId.length, contents.size());
@@ -1088,7 +1092,7 @@ class TestContentManager extends BaseTestCase {
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
         filter.setOrder(EntitySearchFilter.ASC_ORDER);
         EntitySearchFilter[] filters = {filter};
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedOrderedContentsId = {"EVN21", "EVN20", "EVN25", "EVN23",
             "EVN24", "EVN193", "EVN194"};
         assertEquals(expectedOrderedContentsId.length, contents.size());
@@ -1103,7 +1107,7 @@ class TestContentManager extends BaseTestCase {
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
         filter.setOrder(EntitySearchFilter.DESC_ORDER);
         EntitySearchFilter[] filters = {filter};
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedOrderedContentsId = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21"};
         assertEquals(expectedOrderedContentsId.length, contents.size());
@@ -1117,6 +1121,7 @@ class TestContentManager extends BaseTestCase {
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         List<String> groups = new ArrayList<>();
         groups.add("coach");
+        groups.add("free");
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, today, null);
         filter.setOrder(EntitySearchFilter.DESC_ORDER);
         EntitySearchFilter[] filters = {filter};
@@ -1137,7 +1142,7 @@ class TestContentManager extends BaseTestCase {
         filter.setOrder(EntitySearchFilter.ASC_ORDER);
         EntitySearchFilter[] filters = {filter};
 
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedOrderedContentsId = {"EVN191", "EVN192",
             "EVN21", "EVN20", "EVN25", "EVN23"};
         assertEquals(expectedOrderedContentsId.length, contents.size());
@@ -1154,7 +1159,7 @@ class TestContentManager extends BaseTestCase {
         filter.setOrder(EntitySearchFilter.DESC_ORDER);
         EntitySearchFilter[] filters = {filter};
 
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, freeGroup);
         String[] expectedOrderedContentsId = {"EVN23", "EVN25",
             "EVN20", "EVN21", "EVN192", "EVN191"};
         assertEquals(expectedOrderedContentsId.length, contents.size());
@@ -1172,6 +1177,7 @@ class TestContentManager extends BaseTestCase {
 
         List<String> groups = new ArrayList<>();
         groups.add("coach");
+        groups.add("free");
         List<String> contents = _contentManager.loadPublicContentsId("EVN", null, filters, groups);
         String[] expectedOrderedContentsId = {"EVN191", "EVN192", "EVN103",
             "EVN21", "EVN20", "EVN25", "EVN41", "EVN23"};
@@ -1364,7 +1370,7 @@ class TestContentManager extends BaseTestCase {
 
     @Test
     void testLoadEventsForGroup() throws EntException {
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", null, null, freeGroup);
         String[] expectedFreeContentsId = {"EVN191", "EVN192", "EVN193", "EVN194",
             "EVN20", "EVN23", "EVN21", "EVN24", "EVN25"};
         assertEquals(expectedFreeContentsId.length, contents.size());
@@ -1376,6 +1382,7 @@ class TestContentManager extends BaseTestCase {
         Collection<String> allowedGroup = new HashSet<>();
         allowedGroup.add(Group.FREE_GROUP_NAME);
         allowedGroup.add("customers");
+        allowedGroup.add("free");
 
         contents = _contentManager.loadPublicContentsId("EVN", null, null, allowedGroup);
         assertEquals(expectedFreeContentsId.length, contents.size());
