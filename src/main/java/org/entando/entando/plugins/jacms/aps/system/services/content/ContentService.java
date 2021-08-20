@@ -558,15 +558,11 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     protected List<String> getAllowedGroups(UserDetails currentUser, boolean requiredOnlineContents) {
         List<String> groupCodes = new ArrayList<>();
         if (null == currentUser) {
-            if (requiredOnlineContents) {
-                groupCodes.add(Group.FREE_GROUP_NAME);
-            }
             return groupCodes;
         }
         if (requiredOnlineContents) {
             List<Group> groups = this.getAuthorizationManager().getUserGroups(currentUser);
             groupCodes.addAll(groups.stream().map(Group::getName).collect(Collectors.toList()));
-            groupCodes.add(Group.FREE_GROUP_NAME);
         } else {
             List<Group> groupsByPermission = this.getAuthorizationManager()
                     .getGroupsByPermission(currentUser, Permission.CONTENT_EDITOR);
