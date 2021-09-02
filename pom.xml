@@ -119,6 +119,10 @@
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-compress</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- fixes for tike-parser vulnerabilities -->
