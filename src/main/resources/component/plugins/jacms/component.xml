@@ -24,7 +24,6 @@
 		</tableMapping>
 		<liquibase>
 			<changeSet datasource="portDataSource" changeLogFile="classpath:liquibase/jacms/changeSetPort.xml" />
-			<changeSet datasource="servDataSource" changeLogFile="classpath:liquibase/jacms/changeSetServ.xml" />
 		</liquibase>
 	</installation>
 </component>
