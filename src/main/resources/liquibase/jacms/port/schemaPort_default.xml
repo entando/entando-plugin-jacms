@@ -1,0 +1,308 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+           http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="jacms_contentmodels" author="entando">
+        <createTable tableName="contentmodels" >
+            <column name="modelid" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contenttype" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+            <column name="descr" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="model" type="clob" />
+            <column name="stylesheet" type="varchar(50)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="jacms_contents" author="entando">
+        <createTable tableName="contents" >
+            <column name="contentid" type="varchar(16)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contenttype" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+            <column name="descr" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(12)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workxml" type="clob">
+                <constraints nullable="false" />
+            </column>
+            <column name="created" type="varchar(20)"/>
+            <column name="lastmodified" type="varchar(20)"/>
+            <column name="onlinexml" type="clob"/>
+            <column name="published" type="varchar(20)"/>
+            <column name="sync" type="smallint"/>
+            <column name="maingroup" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="currentversion" type="varchar(7)">
+                <constraints nullable="false" />
+            </column>
+            <column name="lasteditor" type="varchar(40)" />
+            <column name="firsteditor" type="varchar(40)" />
+            <column name="restriction" type="varchar(40)" />
+        </createTable>
+        <createIndex tableName="contents" indexName="contents_contenttype_idx">
+            <column name="contenttype" />
+        </createIndex>
+        <createIndex tableName="contents" indexName="contents_lastmodified_idx">
+            <column name="lastmodified" />
+        </createIndex>
+        <createIndex tableName="contents" indexName="contents_maingroup_idx">
+            <column name="maingroup" />
+        </createIndex>
+        <createIndex tableName="contents" indexName="contents_published_idx">
+            <column name="published" />
+        </createIndex>
+        <createIndex tableName="contents" indexName="contents_status_idx">
+            <column name="status" />
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="jacms_resources" author="entando">
+        <createTable tableName="resources" >
+            <column name="resid" type="varchar(16)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="restype" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+            <column name="descr" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="maingroup" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="resourcexml" type="clob">
+                <constraints nullable="false" />
+            </column>
+            <column name="masterfilename" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="creationdate" type="timestamp" />
+            <column name="lastmodified" type="timestamp" />
+            <column name="owner" type="varchar(128)" />
+            <column name="folderpath" type="varchar(256)" />
+            <column name="correlationcode" type="varchar(256)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="jacms_resourcerelations" author="entando">
+        <createTable tableName="resourcerelations" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="resid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="refcategory" type="varchar(30)" />
+        </createTable>
+        <createIndex tableName="resourcerelations" indexName="resourcerelations_resid_idx">
+            <column name="resid" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="resourcerelations_resid_fkey"
+                baseColumnNames="resid"
+                baseTableName="resourcerelations"
+                referencedColumnNames="resid"
+                referencedTableName="resources"/>
+        <addForeignKeyConstraint constraintName="resourcerelations_refcat_fkey"
+                baseColumnNames="refcategory"
+                baseTableName="resourcerelations"
+                referencedColumnNames="catcode"
+                referencedTableName="categories"/>
+    </changeSet>
+
+    <changeSet id="jacms_contentrelations" author="entando">
+        <createTable tableName="contentrelations" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="refpage" type="varchar(30)" />
+            <column name="refcontent" type="varchar(16)" />
+            <column name="refresource" type="varchar(16)" />
+            <column name="refcategory" type="varchar(30)" />
+            <column name="refgroup" type="varchar(20)" />
+        </createTable>
+        <createIndex tableName="contentrelations" indexName="contentrelations_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="contentrelations" indexName="contentrelations_refcategory_idx">
+            <column name="refcategory" />
+        </createIndex>
+        <createIndex tableName="contentrelations" indexName="contentrelations_refgroup_idx">
+            <column name="refgroup" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="contentrelations_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="contentrelations"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+        <addForeignKeyConstraint constraintName="contentrelations_refcat_fkey"
+                baseColumnNames="refcategory"
+                baseTableName="contentrelations"
+                referencedColumnNames="catcode"
+                referencedTableName="categories"/>
+        <addForeignKeyConstraint constraintName="contentrelations_refcont_fkey"
+                baseColumnNames="refcontent"
+                baseTableName="contentrelations"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+        <addForeignKeyConstraint constraintName="contentrelations_refpage_fkey"
+                baseColumnNames="refpage"
+                baseTableName="contentrelations"
+                referencedColumnNames="code"
+                referencedTableName="pages"/>
+        <addForeignKeyConstraint constraintName="contentrelations_refres_fkey"
+                baseColumnNames="refresource"
+                baseTableName="contentrelations"
+                referencedColumnNames="resid"
+                referencedTableName="resources"/>
+    </changeSet>
+
+    <changeSet id="jacms_contentsearch" author="entando">
+        <createTable tableName="contentsearch" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attrname" type="varchar(30)" />
+            <column name="textvalue" type="varchar(255)" />
+            <column name="datevalue" type="timestamp" />
+            <column name="numvalue" type="int" />
+            <column name="langcode" type="varchar(3)" />
+        </createTable>
+        <createIndex tableName="contentsearch" indexName="contentsearch_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="contentsearch" indexName="contentsearch_attrname_idx">
+            <column name="attrname" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="contentsearch_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="contentsearch"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+    </changeSet>
+
+    <changeSet id="jacms_contentattributeroles" author="entando">
+        <createTable tableName="contentattributeroles" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attrname" type="varchar(30)" />
+            <column name="rolename" type="varchar(30)" />
+        </createTable>
+        <createIndex tableName="contentattributeroles" indexName="contentattributeroles_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="contentattributeroles" indexName="contentattributeroles_attrname_idx">
+            <column name="attrname" />
+        </createIndex>
+        <createIndex tableName="contentattributeroles" indexName="contentattributeroles_rolename_idx">
+            <column name="rolename" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="contentattributeroles_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="contentattributeroles"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+    </changeSet>
+
+    <changeSet id="jacms_workcontentrelations" author="entando">
+        <createTable tableName="workcontentrelations" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="refcategory" type="varchar(30)" />
+        </createTable>
+        <createIndex tableName="workcontentrelations" indexName="workcontentrelations_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="workcontentrelations" indexName="workcontentrelations_refcategory_idx">
+            <column name="refcategory" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="workcontentrelations_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="workcontentrelations"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+    </changeSet>
+
+    <changeSet id="jacms_workcontentsearch" author="entando">
+        <createTable tableName="workcontentsearch" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attrname" type="varchar(30)" />
+            <column name="textvalue" type="varchar(255)" />
+            <column name="datevalue" type="timestamp" />
+            <column name="numvalue" type="int" />
+            <column name="langcode" type="varchar(3)" />
+        </createTable>
+        <createIndex tableName="workcontentsearch" indexName="workcontentsearch_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="workcontentsearch" indexName="workcontentsearch_attrname_idx">
+            <column name="attrname" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="workcontentsearch_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="workcontentsearch"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+    </changeSet>
+
+    <changeSet id="jacms_workcontentattributeroles" author="entando">
+        <createTable tableName="workcontentattributeroles" >
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contentid" type="varchar(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="attrname" type="varchar(30)" />
+            <column name="rolename" type="varchar(30)" />
+        </createTable>
+        <createIndex tableName="workcontentattributeroles" indexName="workcontentattributeroles_contentid_idx">
+            <column name="contentid" />
+        </createIndex>
+        <createIndex tableName="workcontentattributeroles" indexName="workcontentattributeroles_attrname_idx">
+            <column name="attrname" />
+        </createIndex>
+        <createIndex tableName="workcontentattributeroles" indexName="workcontentattributeroles_rolename_idx">
+            <column name="rolename" />
+        </createIndex>
+        <addForeignKeyConstraint constraintName="workcontentattributeroles_contid_fkey"
+                baseColumnNames="contentid"
+                baseTableName="workcontentattributeroles"
+                referencedColumnNames="contentid"
+                referencedTableName="contents"/>
+    </changeSet>
+
+</databaseChangeLog>

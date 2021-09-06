@@ -273,17 +273,6 @@ INSERT INTO resources (resid, correlationcode, restype, descr, maingroup, resour
 
 
 
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resource_root');
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'Image');
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resCat1');
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resCat3');
-
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'resource_root');
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'Attach');
-INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'resCat2');
-
-
-
 
 INSERT INTO widgetcatalog (code, titles, parameters, plugincode, parenttypecode, defaultconfig, locked, maingroup, readonlypagewidgetconfig) VALUES ('90_events', '<?xml version="1.0" encoding="UTF-8"?>
 <properties>
@@ -765,6 +754,17 @@ INSERT INTO sysconfig (version, item, descr, config) VALUES ('test', 'subIndexDi
 
 
 
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resource_root');
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'Image');
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resCat1');
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('44', 'resCat3');
+
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'resource_root');
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'Attach');
+INSERT INTO resourcerelations (resid, refcategory) VALUES ('8', 'resCat2');
+
+
+
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('ART122', NULL, NULL, NULL, 'general_cat3', NULL);
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('ART122', NULL, NULL, NULL, 'general', NULL);
 INSERT INTO contentrelations (contentid, refpage, refcontent, refresource, refcategory, refgroup) VALUES ('ART122', NULL, NULL, NULL, NULL, 'administrators');
@@ -1035,5 +1035,3 @@ INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('E
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('EVN192', 'Titolo', 'jacms:title');
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('EVN20', 'Titolo', 'jacms:title');
 INSERT INTO workcontentattributeroles (contentid, attrname, rolename) VALUES ('ALL4', 'Text', 'jacms:title');
-
-

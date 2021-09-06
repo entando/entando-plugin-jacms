@@ -20,6 +20,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * @author E.Santoboni
  */
+@Deprecated
 @DatabaseTable(tableName = Content.TABLE_NAME)
 public class Content {
 	

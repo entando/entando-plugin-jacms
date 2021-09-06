@@ -23,6 +23,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * @author E.Santoboni
  */
+@Deprecated
 @DatabaseTable(tableName = WorkContentAttributeRole.TABLE_NAME)
 public class WorkContentAttributeRole implements ExtendedColumnDefinition {
 

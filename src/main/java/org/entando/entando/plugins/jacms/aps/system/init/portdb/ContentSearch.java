@@ -25,6 +25,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * @author E.Santoboni
  */
+@Deprecated
 @DatabaseTable(tableName = ContentSearch.TABLE_NAME)
 public class ContentSearch implements ExtendedColumnDefinition {
 

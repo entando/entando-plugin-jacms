@@ -25,6 +25,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * @author E.Santoboni
  */
+@Deprecated
 @DatabaseTable(tableName = WorkContentSearch.TABLE_NAME)
 public class WorkContentSearch implements ExtendedColumnDefinition {
 

@@ -2,6 +2,7 @@ package org.entando.entando.plugins.jacms.aps.system.init.portdb.enums;
 
 import com.fasterxml.jackson.annotation.*;
 
+@Deprecated
 public enum AttributeType {
     ATTACH("Attach"),
 
