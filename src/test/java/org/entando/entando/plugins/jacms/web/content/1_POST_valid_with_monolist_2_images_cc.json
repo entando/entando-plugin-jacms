@@ -1,0 +1,43 @@
+[
+    {
+        "mainGroup":"free",
+        "description":"monolistofimages",
+        "attributes":[
+            {
+                "code":"MonolistOfImag",
+                "elements":[
+                    {
+                        "code":"MonolistOfImag",
+                        "values":{
+                            "it":{
+                                "correlationCode":"resourceIdPlaceHolder",
+                                "metadata": {
+                                    "description":"desc it1",
+                                    "title": "title it1",
+                                    "legend": "legend it1",
+                                    "alt": "alt it1"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "code":"MonolistOfImag",
+                        "values":{
+                            "it":{
+                                "correlationCode":"resourceIdPlaceHolder",
+                                "metadata": {
+                                    "description":"desc it2",
+                                    "title": "title it2",
+                                    "legend": "legend it2",
+                                    "alt": "alt it2"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "name":"MonolistOfImages"
+            }
+        ],
+        "typeCode":"MON"
+    }
+]
