@@ -35,6 +35,7 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
@@ -1482,6 +1483,69 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     }
 
     @Test
+    void testAddContentWithMonolistAttribute2ImagesWithCorrelationCode() throws Exception {
+        String code = "my_code";
+
+        String newContentId = null;
+        String accessToken = this.createAccessToken();
+        try {
+            Assertions.assertNull(this.contentManager.getEntityPrototype("MON"));
+
+            this.executeContentTypePost("1_POST_type_with_monolist_image.json", accessToken, status().isCreated());
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype("MON"));
+
+            performCreateResource(accessToken, "image", code, "free", Arrays.stream(new String[]{"resCat1", "resCat2"}).collect(
+                    Collectors.toList()), "application/jpeg");
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_monolist_2_images_cc.json", accessToken,
+                    status().isOk(), code);
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is("MON")))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Content Type MON")))
+                    .andExpect(jsonPath("$.payload[0].description", is("monolistofimages")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.alt", is("alt it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.description", is("desc it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.legend", is("legend it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].values.it.metadata.title", is("title it1")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].code", is("MonolistOfImag")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.type", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.size()", is(4)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.alt", is("alt it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.description", is("desc it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.legend", is("legend it2")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[1].values.it.metadata.title", is("title it2")));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+            Content newContent = this.contentManager.loadContent(newContentId, false);
+
+            Assertions.assertNotNull(newContent);
+
+        } finally {
+            performDeleteResource(accessToken, "image", "cc=" + code).andDo(print()).andExpect(status().isOk());
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype("MON")) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("MON");
+            }
+        }
+    }
+
+    @Test
     void testAddAndUpdateContentWithMonolistAttributeFile() throws Exception {
         String newContentId = null;
         String resourceId = null;
@@ -2498,11 +2562,35 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         return mockMvc.perform(request);
     }
 
-    private ResultActions performDeleteResource(String accessToken, String type, String resourceId) throws Exception {
-        String path = String.format("/plugins/cms/assets/%s", resourceId);
-        return mockMvc.perform(
-                delete(path)
-                        .header("Authorization", "Bearer " + accessToken));
+    private ResultActions performCreateResource(String accessToken, String type, String correlationCode, String group, List<String> categories, String mimeType) throws Exception {
+        return performCreateResource(accessToken, type, correlationCode, group, categories, null, mimeType);
+    }
+
+    private ResultActions performCreateResource(String accessToken, String type, String code, String group, List<String> categories, String folderPath, String mimeType) throws Exception {
+        String urlPath = String.format("/plugins/cms/assets", type);
+
+        CreateResourceRequest resourceRequest = new CreateResourceRequest();
+        resourceRequest.setType(type);
+        resourceRequest.setCorrelationCode(code);
+        resourceRequest.setCategories(categories);
+        resourceRequest.setGroup(group);
+        resourceRequest.setFolderPath(folderPath);
+
+        String contents = "some text";
+
+        MockMultipartFile file;
+        if ("image".equals(type)) {
+            file = new MockMultipartFile("file", "image_test.jpeg", mimeType, contents.getBytes());
+        } else {
+            file = new MockMultipartFile("file", "file_test.jpeg", mimeType, contents.getBytes());
+        }
+
+        MockHttpServletRequestBuilder request = multipart(urlPath)
+                .file(file)
+                .param("metadata", mapper.writeValueAsString(resourceRequest))
+                .header("Authorization", "Bearer " + accessToken);
+
+        return mockMvc.perform(request);
     }
 
     @Test
@@ -2521,6 +2609,13 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         result.andExpect(status().isOk());
         System.out.println(result.andReturn().getResponse().getContentAsString());
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
+    }
+
+    private ResultActions performDeleteResource(String accessToken, String type, String resourceId) throws Exception {
+        String path = String.format("/plugins/cms/assets/%s", resourceId);
+        return mockMvc.perform(
+                delete(path)
+                        .header("Authorization", "Bearer " + accessToken));
     }
 
     @Test
