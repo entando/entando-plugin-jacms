@@ -210,7 +210,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="attrname" type="varchar(30)" />
-            <column name="rolename" type="varchar(30)" />
+            <column name="rolename" type="varchar(50)" />
         </createTable>
         <createIndex tableName="contentattributeroles" indexName="contentattributeroles_contentid_idx">
             <column name="contentid" />
