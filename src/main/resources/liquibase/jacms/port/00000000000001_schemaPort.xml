@@ -5,7 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
            http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="jacms_contentmodels" author="entando">
+    <changeSet id="00000000000001_jacms_schemaPort" author="entando">
+        
         <createTable tableName="contentmodels" >
             <column name="modelid" type="int">
                 <constraints primaryKey="true" nullable="false"/>
@@ -19,9 +20,7 @@
             <column name="model" type="clob" />
             <column name="stylesheet" type="varchar(50)" />
         </createTable>
-    </changeSet>
-
-    <changeSet id="jacms_contents" author="entando">
+        
         <createTable tableName="contents" >
             <column name="contentid" type="varchar(16)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -68,10 +67,7 @@
         <createIndex tableName="contents" indexName="contents_status_idx">
             <column name="status" />
         </createIndex>
-    </changeSet>
-
-
-    <changeSet id="jacms_resources" author="entando">
+        
         <createTable tableName="resources" >
             <column name="resid" type="varchar(16)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -97,9 +93,7 @@
             <column name="folderpath" type="varchar(256)" />
             <column name="correlationcode" type="varchar(256)" />
         </createTable>
-    </changeSet>
-
-    <changeSet id="jacms_resourcerelations" author="entando">
+        
         <createTable tableName="resourcerelations" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -122,9 +116,7 @@
                 baseTableName="resourcerelations"
                 referencedColumnNames="catcode"
                 referencedTableName="categories"/>
-    </changeSet>
-
-    <changeSet id="jacms_contentrelations" author="entando">
+        
         <createTable tableName="contentrelations" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -172,9 +164,7 @@
                 baseTableName="contentrelations"
                 referencedColumnNames="resid"
                 referencedTableName="resources"/>
-    </changeSet>
-
-    <changeSet id="jacms_contentsearch" author="entando">
+        
         <createTable tableName="contentsearch" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -199,9 +189,7 @@
                 baseTableName="contentsearch"
                 referencedColumnNames="contentid"
                 referencedTableName="contents"/>
-    </changeSet>
-
-    <changeSet id="jacms_contentattributeroles" author="entando">
+        
         <createTable tableName="contentattributeroles" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -226,9 +214,7 @@
                 baseTableName="contentattributeroles"
                 referencedColumnNames="contentid"
                 referencedTableName="contents"/>
-    </changeSet>
-
-    <changeSet id="jacms_workcontentrelations" author="entando">
+        
         <createTable tableName="workcontentrelations" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -249,9 +235,7 @@
                 baseTableName="workcontentrelations"
                 referencedColumnNames="contentid"
                 referencedTableName="contents"/>
-    </changeSet>
-
-    <changeSet id="jacms_workcontentsearch" author="entando">
+        
         <createTable tableName="workcontentsearch" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -276,9 +260,7 @@
                 baseTableName="workcontentsearch"
                 referencedColumnNames="contentid"
                 referencedTableName="contents"/>
-    </changeSet>
-
-    <changeSet id="jacms_workcontentattributeroles" author="entando">
+        
         <createTable tableName="workcontentattributeroles" >
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -303,6 +285,7 @@
                 baseTableName="workcontentattributeroles"
                 referencedColumnNames="contentid"
                 referencedTableName="contents"/>
+        
     </changeSet>
 
 </databaseChangeLog>
