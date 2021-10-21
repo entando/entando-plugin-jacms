@@ -87,8 +87,8 @@
             <column name="masterfilename" type="varchar(100)">
                 <constraints nullable="false" />
             </column>
-            <column name="creationdate" type="timestamp" />
-            <column name="lastmodified" type="timestamp" />
+            <column name="creationdate" type="datetime" />
+            <column name="lastmodified" type="datetime" />
             <column name="owner" type="varchar(128)" />
             <column name="folderpath" type="varchar(256)" />
             <column name="correlationcode" type="varchar(256)" />
@@ -174,7 +174,7 @@
             </column>
             <column name="attrname" type="varchar(30)" />
             <column name="textvalue" type="varchar(255)" />
-            <column name="datevalue" type="timestamp" />
+            <column name="datevalue" type="datetime" />
             <column name="numvalue" type="int" />
             <column name="langcode" type="varchar(3)" />
         </createTable>
@@ -245,7 +245,7 @@
             </column>
             <column name="attrname" type="varchar(30)" />
             <column name="textvalue" type="varchar(255)" />
-            <column name="datevalue" type="timestamp" />
+            <column name="datevalue" type="datetime" />
             <column name="numvalue" type="int" />
             <column name="langcode" type="varchar(3)" />
         </createTable>
