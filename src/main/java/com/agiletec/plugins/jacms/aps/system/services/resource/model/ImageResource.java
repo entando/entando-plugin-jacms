@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -202,10 +203,13 @@ public class ImageResource extends AbstractMultiInstanceResource {
     private void saveResizedInstances(ResourceDataBean bean, String masterFilePath, boolean instancesAlreadySaved) throws EntException {
         try {
             Map<Integer, ImageResourceDimension> dimensions = this.getImageDimensionReader().getImageDimensions();
+            ImageIcon imageIcon = null;
+            if (!this.isImageMagickEnabled()) {
+                imageIcon = new ImageIcon(ImageIO.read(new File(masterFilePath)));
+            }
             for (ImageResourceDimension dimension : dimensions.values()) {
                 //Is the system use ImageMagick?
                 if (!this.isImageMagickEnabled()) {
-                    ImageIcon imageIcon = new ImageIcon(masterFilePath);
                     this.saveResizedImage(bean, imageIcon, dimension, instancesAlreadySaved);
                 } else {
                     this.saveResizedImage(bean, dimension);
