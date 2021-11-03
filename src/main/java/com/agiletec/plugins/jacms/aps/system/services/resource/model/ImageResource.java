@@ -20,6 +20,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -205,7 +207,12 @@ public class ImageResource extends AbstractMultiInstanceResource {
             Map<Integer, ImageResourceDimension> dimensions = this.getImageDimensionReader().getImageDimensions();
             ImageIcon imageIcon = null;
             if (!this.isImageMagickEnabled()) {
-                imageIcon = new ImageIcon(ImageIO.read(new File(masterFilePath)));
+                BufferedImage image = ImageIO.read(new File(masterFilePath));
+                if (image == null) {
+                    imageIcon = new ImageIcon(masterFilePath);
+                } else {
+                    imageIcon = new ImageIcon(image);
+                }
             }
             for (ImageResourceDimension dimension : dimensions.values()) {
                 //Is the system use ImageMagick?
