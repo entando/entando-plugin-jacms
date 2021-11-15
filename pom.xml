@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.0.1</version>
+        <version>7.0.3</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -87,6 +87,26 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>${argLine} -Dliquibase.supportPropertyEscaping=true</argLine>
+                        <forkCount>1</forkCount>
+                        <shutdown>exit</shutdown>
+                        <parallel>methods</parallel>
+                        <threadCount>8</threadCount>
+                        <excludes>
+                            <exclude>**/*BaseTestCase*</exclude>
+                            <exclude>**/Abstract*</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <dependencyManagement>
         <dependencies>
@@ -94,7 +114,7 @@
             <dependency>
                 <groupId>org.entando</groupId>
                 <artifactId>entando-core-bom</artifactId>
-                <version>7.0.0-ENG-2829</version>
+                <version>7.0.0-ENG-2188</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -276,8 +296,7 @@
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
         </dependency>
-
-
+        
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.entando.entando</groupId>
