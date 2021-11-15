@@ -86,6 +86,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         String[] expected = {"EVN41"};
+        logContents("executeSearchContents_main "+text,contentIds,expected);
         assertEquals(expected.length, contentIds.size());
         for (int i = 0; i < expected.length; i++) {
             String contentId = expected[i];
@@ -104,6 +105,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         String[] expected = {"EVN103", "ART104", "ART111", "ART112", "EVN25", "EVN41"};
+        logContents("testSearchContents_1",contentIds,expected);
         assertEquals(expected.length, contentIds.size());
         for (int i = 0; i < expected.length; i++) {
             String contentId = expected[i];
@@ -122,6 +124,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         String[] expected = {"EVN41"};
+        logContents("testSearchContents_2",contentIds,expected);
         assertEquals(expected.length, contentIds.size());
         for (int i = 0; i < expected.length; i++) {
             String contentId = expected[i];
@@ -141,6 +144,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         String[] expected = {"EVN41"};
+        logContents("testSearchContents_3",contentIds,expected);
         assertEquals(expected.length, contentIds.size());
         for (int i = 0; i < expected.length; i++) {
             String contentId = expected[i];
@@ -161,6 +165,7 @@ class AdvContentSearchTest extends BaseTestCase {
         assertNotNull(result);
         List<String> contentIds = result.getContentsId();
         String[] expected = {"EVN103", "ART104", "ART111", "ART112", "EVN25", "EVN41"};
+        logContents("testSearchContents_4",contentIds,expected);
         assertEquals(expected.length, contentIds.size());
         this.verifyOrder(contentIds, expected);
     }
