@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>6.4.24</version>
+        <version>7.0.3</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -94,7 +94,7 @@
             <dependency>
                 <groupId>org.entando</groupId>
                 <artifactId>entando-core-bom</artifactId>
-                <version>6.4.0-SNAPSHOT</version>
+                <version>7.0.0-ENG-2188</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -276,14 +276,7 @@
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>4.4.3</version>
-        </dependency>
-
-
+        
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.entando.entando</groupId>
