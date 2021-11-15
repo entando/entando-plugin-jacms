@@ -61,8 +61,6 @@ class AdvContentSearchTest extends BaseTestCase {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
         } catch (Exception e) {
             throw e;
@@ -71,11 +69,15 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_main() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         this.executeSearchContents_main("ciliegia");
         this.executeSearchContents_main("Sagra della ciliegia");
     }
     
     protected void executeSearchContents_main(String text) throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter descrFilter = new SearchEngineFilter("it", text, SearchEngineFilter.TextSearchOption.EXACT);
         descrFilter.setFullTextSearch(true);
         SearchEngineFilter[] filters = {descrFilter};
@@ -93,6 +95,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_1() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter groupFilter = new SearchEngineFilter(IContentManager.CONTENT_MAIN_GROUP_FILTER_KEY, false, "coach", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {groupFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -109,6 +113,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_2() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter descrFilter = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false, "Mostra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {descrFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -125,6 +131,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_3() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter attributeFilter = new SearchEngineFilter("Titolo", true, "Sagra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         attributeFilter.setLangCode("it");
         SearchEngineFilter[] filters = {attributeFilter};
@@ -142,6 +150,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_4() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter creationOrder = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
         SearchEngineFilter groupFilter = new SearchEngineFilter(IContentManager.CONTENT_MAIN_GROUP_FILTER_KEY, false, "coach");
@@ -156,7 +166,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEvents_1() throws EntException {
+    void testLoadPublicEvents_1() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
         SearchEngineFilter[] filters = {typeFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -166,6 +178,7 @@ class AdvContentSearchTest extends BaseTestCase {
         String[] expectedFreeContentsId = {"EVN194", "EVN193",
             "EVN24", "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
         assertEquals(expectedFreeContentsId.length, contentIds.size());
+        logContents("testLoadPublicEvents_1",contentIds,expectedFreeContentsId);
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             assertTrue(contentIds.contains(expectedFreeContentsId[i]));
         }
@@ -176,6 +189,7 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, groups);
         contentIds = result.getContentsId();
         assertEquals(expectedFreeContentsId.length + 2, contentIds.size());
+
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             assertTrue(contentIds.contains(expectedFreeContentsId[i]));
         }
@@ -185,6 +199,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testLoadPublicEvents_2() throws Exception {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date start = DateConverter.parseDate("2007-01-10", "yyyy-MM-dd");
         Date end = DateConverter.parseDate("2008-12-19", "yyyy-MM-dd");
@@ -203,13 +219,17 @@ class AdvContentSearchTest extends BaseTestCase {
         result = this.searchEngineManager.searchFacetedEntities(filters2, categoriesFilters, this.allowedGroup);
         contentIds = result.getContentsId();
         assertEquals(expectedContentsIds.length, contentIds.size());
+        logContents("testLoadPublicEvents_2",contentIds,expectedContentsIds);
         for (int i = 0; i < contentIds.size(); i++) {
             assertEquals(expectedContentsIds[expectedContentsIds.length-i-1], contentIds.get(i));
         }
+
     }
     
     @Test
     void testLoadPublicEvents_3() throws Exception {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date end = DateConverter.parseDate("2000-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, end);
@@ -218,6 +238,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, this.allowedGroup);
         List<String> contentIds = result.getContentsId();
         String[] expectedContentsIds = {"EVN191", "EVN192", "EVN103"};
+        logContents("testLoadPublicEvents_3",contentIds,expectedContentsIds);
         assertEquals(expectedContentsIds.length, contentIds.size());
         this.verifyOrder(contentIds, expectedContentsIds);
     }
@@ -229,12 +250,18 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEvents_7() throws EntException {
+    void testLoadPublicEvents_7_true() throws EntException, InterruptedException {
         this.testLoadPublicEvents_7(true);
+    }
+
+    @Test
+    void testLoadPublicEvents_7_false() throws EntException, InterruptedException {
         this.testLoadPublicEvents_7(false);
     }
-    
-    protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException {
+
+    protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         List<String> allowedDescription = new ArrayList<>();
         allowedDescription.add("Castello dei bambini");//EVN24
@@ -252,13 +279,16 @@ class AdvContentSearchTest extends BaseTestCase {
         System.out.println("contents -> " + contents);
         String[] expectedOrderedContentsId2 = {"EVN20", "EVN24"};
         assertEquals(expectedOrderedContentsId2.length, contents.size());
+        logContents("testLoadPublicEvents_3",contents,expectedOrderedContentsId2);
         for (int i = 0; i < expectedOrderedContentsId2.length; i++) {
             assertEquals(expectedOrderedContentsId2[i], contents.get(i));
         }
     }
     
     @Test
-    void testLoadOrderedPublicEvents_1() throws EntException {
+    void testLoadOrderedPublicEvents_1() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForDescr = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
         filterForDescr.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -268,12 +298,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedFreeContentsId = {"EVN24", "EVN23", "EVN191",
             "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
-        logger.warn("-------------------------------------------------------");
-        logger.warn("testLoadOrderedPublicEvents_1");
-        contents.forEach(c-> logger.warn("contents: "+c));
-        Arrays.asList(expectedFreeContentsId).forEach(e-> logger.warn("expected contents: "+e));
-        logger.info("-------------------------------------------------------");
-
+        logContents("testLoadOrderedPublicEvents_1",contents,expectedFreeContentsId);
         assertEquals(expectedFreeContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             assertEquals(expectedFreeContentsId[i], contents.get(i));
@@ -281,6 +306,7 @@ class AdvContentSearchTest extends BaseTestCase {
         filterForDescr.setOrder(EntitySearchFilter.DESC_ORDER);
         result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         contents = result.getContentsId();
+        logContents("testLoadOrderedPublicEvents_1",contents,expectedFreeContentsId);
         assertEquals(expectedFreeContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             assertEquals(expectedFreeContentsId[expectedFreeContentsId.length - i - 1], contents.get(i));
@@ -288,7 +314,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadOrderedPublicEvents_2() throws EntException {
+    void testLoadOrderedPublicEvents_2() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -298,6 +326,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedFreeOrderedContentsId = {"EVN191", "EVN192", "EVN193", "EVN194",
             "EVN20", "EVN23", "EVN24", "EVN25", "EVN21"};
+        logContents("testLoadOrderedPublicEvents_2",contents,expectedFreeOrderedContentsId);
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
             assertEquals(expectedFreeOrderedContentsId[i], contents.get(i));
@@ -305,6 +334,7 @@ class AdvContentSearchTest extends BaseTestCase {
         filterForCreation.setOrder(EntitySearchFilter.DESC_ORDER);
         result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         contents = result.getContentsId();
+        logContents("testLoadOrderedPublicEvents_2",contents,expectedFreeOrderedContentsId);
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
             assertEquals(expectedFreeOrderedContentsId[expectedFreeOrderedContentsId.length - i - 1], contents.get(i));
@@ -312,7 +342,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadOrderedPublicEvents_3() throws EntException {
+    void testLoadOrderedPublicEvents_3() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.DESC_ORDER);
@@ -324,6 +356,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedFreeOrderedContentsId = {"EVN21", "EVN25", "EVN24", "EVN23",
             "EVN20", "EVN194", "EVN193", "EVN192", "EVN191"};
+        logContents("testLoadOrderedPublicEvents_3",contents,expectedFreeOrderedContentsId);
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
             assertEquals(expectedFreeOrderedContentsId[i], contents.get(i));
@@ -334,6 +367,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents2 = result2.getContentsId();
         String[] expectedFreeOrderedContentsId2 = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
+        logContents("testLoadOrderedPublicEvents_3",contents2,expectedFreeOrderedContentsId2);
         assertEquals(expectedFreeOrderedContentsId2.length, contents2.size());
         for (int i = 0; i < expectedFreeOrderedContentsId2.length; i++) {
             assertEquals(expectedFreeOrderedContentsId2[i], contents2.get(i));
@@ -342,6 +376,8 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testLoadOrderedPublicEvents_4() throws Throwable {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Content masterContent = this.contentManager.loadContent("EVN193", true);
         masterContent.setId(null);
@@ -360,6 +396,7 @@ class AdvContentSearchTest extends BaseTestCase {
             List<String> contents = result.getContentsId();
             String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(), "EVN193", "EVN24",
                 "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
+            logContents("testLoadOrderedPublicEvents_4",contents,expectedFreeOrderedContentsId);
             assertEquals(expectedFreeOrderedContentsId.length, contents.size());
             for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
                 assertEquals(expectedFreeOrderedContentsId[i], contents.get(i));
@@ -375,7 +412,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadFutureEvents_1() throws EntException {
+    void testLoadFutureEvents_1() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, today, null);
@@ -385,6 +424,7 @@ class AdvContentSearchTest extends BaseTestCase {
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN21", "EVN20", "EVN25", "EVN23", "EVN24", "EVN193", "EVN194"};
+        logContents("testLoadFutureEvents_1",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -392,7 +432,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadFutureEvents_2() throws EntException {
+    void testLoadFutureEvents_2() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, today, null);
@@ -403,6 +445,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21"};
+        logContents("testLoadFutureEvents_2",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -410,7 +453,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadFutureEvents_3() throws EntException {
+    void testLoadFutureEvents_3() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         List<String> groups = new ArrayList<String>();
@@ -423,6 +468,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN41", "EVN25", "EVN20", "EVN21"};
+        logContents("testLoadFutureEvents_3",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -430,7 +476,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_1() throws EntException {
+    void testLoadPastEvents_1() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, today);
@@ -441,6 +489,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN191", "EVN192",
             "EVN21", "EVN20", "EVN25", "EVN23"};
+        logContents("testLoadPastEvents_1",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -448,7 +497,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_2() throws EntException {
+    void testLoadPastEvents_2() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, today);
@@ -459,6 +510,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN23", "EVN25",
             "EVN20", "EVN21", "EVN192", "EVN191"};
+        logContents("testLoadPastEvents_2",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -466,7 +518,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_3() throws EntException {
+    void testLoadPastEvents_3() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date start = null;
         Date today = DateConverter.parseDate("2008-02-13", "yyyy-MM-dd");
@@ -480,6 +534,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedOrderedContentsId = {"EVN191", "EVN192", "EVN103",
             "EVN21", "EVN20", "EVN25", "EVN41", "EVN23"};
+        logContents("testLoadPastEvents_3",contents,expectedOrderedContentsId);
         assertEquals(expectedOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedOrderedContentsId.length; i++) {
             assertEquals(expectedOrderedContentsId[i], contents.get(i));
@@ -487,7 +542,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPublicContentsForCategory() throws EntException {
+    void testLoadPublicContentsForCategory() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(null, this.extractCategoryFilters(categories1), null);
@@ -505,7 +562,9 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEventsForCategory_1() throws EntException {
+    void testLoadPublicEventsForCategory_1() throws EntException, InterruptedException {
+        Thread thread = this.searchEngineManager.startReloadContentsReferences();
+        thread.join();
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
@@ -535,5 +594,12 @@ class AdvContentSearchTest extends BaseTestCase {
         }
         return categoryFilterArray;
     }
-    
+
+        private void logContents(String testName, List contents,String [] expectedContents){
+        logger.info("-------------------------------------------------------");
+        logger.warn("--> "+testName+" <--");
+        contents.forEach(c-> logger.warn("contents: "+c));
+        Arrays.asList(expectedContents).forEach(e-> logger.warn("expected contents: "+e));
+        logger.info("-------------------------------------------------------");
+        }
 }
