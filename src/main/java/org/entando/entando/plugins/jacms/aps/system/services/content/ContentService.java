@@ -837,33 +837,45 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
         //Validate Resources Main Group
         for (AttributeInterface attr : currentEntity.getAttributeList()) {
-            if (AbstractResourceAttribute.class.isAssignableFrom(attr.getClass())) {
-                AbstractResourceAttribute resAttr = (AbstractResourceAttribute) attr;
-
-                for (ResourceInterface res : resAttr.getResources().values()) {
-                    String idOrCode = res.getId() == null ? res.getCorrelationCode() : res.getId();
-                    AssetDto resource;
-                    try {
-                        resource = resourcesService.getAsset(res.getId(), res.getCorrelationCode());
-                        res.setId(resource.getId());
-                    } catch (ResourceNotFoundException e) {
-                        logger.error("Resource not found: " + idOrCode);
-                        bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID,
-                                "Resource not found - " + idOrCode);
-                        return;
-                    }
-
-                    String resourceMainGroup = resource.getGroup();
-
-                    if (!resourceMainGroup.equals(Group.FREE_GROUP_NAME)
-                            && !resourceMainGroup.equals(currentEntity.getMainGroup())
-                            && !currentEntity.getGroups().contains(resourceMainGroup)) {
-                        bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID,
-                                "Invalid resource group - " + resourceMainGroup);
-                    }
+            if (scanAbstractResourceAttribute(currentEntity, bindingResult, attr)) {
+                return;
+            } else if (MonoListAttribute.class.isAssignableFrom(attr.getClass())) {
+                MonoListAttribute monoListAttribute = (MonoListAttribute) attr;
+                for (AttributeInterface element : monoListAttribute.getAttributes()) {
+                    scanAbstractResourceAttribute(currentEntity, bindingResult, element);
                 }
             }
         }
+    }
+
+    private boolean scanAbstractResourceAttribute(Content currentEntity, BindingResult bindingResult, AttributeInterface attr) {
+        if (AbstractResourceAttribute.class.isAssignableFrom(attr.getClass())) {
+            AbstractResourceAttribute resAttr = (AbstractResourceAttribute) attr;
+
+            for (ResourceInterface res : resAttr.getResources().values()) {
+                String idOrCode = res.getId() == null ? res.getCorrelationCode() : res.getId();
+                AssetDto resource;
+                try {
+                    resource = resourcesService.getAsset(res.getId(), res.getCorrelationCode());
+                    res.setId(resource.getId());
+                } catch (ResourceNotFoundException e) {
+                    logger.error("Resource not found: " + idOrCode);
+                    bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID,
+                            "Resource not found - " + idOrCode);
+                    return true;
+                }
+
+                String resourceMainGroup = resource.getGroup();
+
+                if (!resourceMainGroup.equals(Group.FREE_GROUP_NAME)
+                        && !resourceMainGroup.equals(currentEntity.getMainGroup())
+                        && !currentEntity.getGroups().contains(resourceMainGroup)) {
+                    bindingResult.reject(EntityValidator.ERRCODE_ATTRIBUTE_INVALID,
+                            "Invalid resource group - " + resourceMainGroup);
+                }
+            }
+        }
+        return false;
     }
 
     private Map<String, Boolean> getReferencesInfo(String contentId) {

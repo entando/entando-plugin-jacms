@@ -20,6 +20,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -202,10 +205,18 @@ public class ImageResource extends AbstractMultiInstanceResource {
     private void saveResizedInstances(ResourceDataBean bean, String masterFilePath, boolean instancesAlreadySaved) throws EntException {
         try {
             Map<Integer, ImageResourceDimension> dimensions = this.getImageDimensionReader().getImageDimensions();
+            ImageIcon imageIcon = null;
+            if (!this.isImageMagickEnabled()) {
+                BufferedImage image = ImageIO.read(new File(masterFilePath));
+                if (image == null) {
+                    imageIcon = new ImageIcon(masterFilePath);
+                } else {
+                    imageIcon = new ImageIcon(image);
+                }
+            }
             for (ImageResourceDimension dimension : dimensions.values()) {
                 //Is the system use ImageMagick?
                 if (!this.isImageMagickEnabled()) {
-                    ImageIcon imageIcon = new ImageIcon(masterFilePath);
                     this.saveResizedImage(bean, imageIcon, dimension, instancesAlreadySaved);
                 } else {
                     this.saveResizedImage(bean, dimension);
