@@ -355,12 +355,13 @@ class AdvContentSearchTest extends BaseTestCase {
         SearchEngineFilter filterForDate = new SearchEngineFilter("DataInizio", true);
         filterForDate.setOrder(EntitySearchFilter.DESC_ORDER);
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
+
         SearchEngineFilter[] filters = {filterForCreation, filterForDate, typeFilter};
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
         List<String> contents = result.getContentsId();
         String[] expectedFreeOrderedContentsId = {"EVN21", "EVN25", "EVN24", "EVN23",
             "EVN20", "EVN194", "EVN193", "EVN192", "EVN191"};
-        logContents("testLoadOrderedPublicEvents_3",contents,expectedFreeOrderedContentsId);
+        logContents("testLoadOrderedPublicEvents_3 -> 1",contents,expectedFreeOrderedContentsId);
         assertEquals(expectedFreeOrderedContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
             assertEquals(expectedFreeOrderedContentsId[i], contents.get(i));
@@ -371,7 +372,7 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents2 = result2.getContentsId();
         String[] expectedFreeOrderedContentsId2 = {"EVN194", "EVN193", "EVN24",
             "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
-        logContents("testLoadOrderedPublicEvents_3",contents2,expectedFreeOrderedContentsId2);
+        logContents("testLoadOrderedPublicEvents_3 -> 2 ",contents2,expectedFreeOrderedContentsId2);
         assertEquals(expectedFreeOrderedContentsId2.length, contents2.size());
         for (int i = 0; i < expectedFreeOrderedContentsId2.length; i++) {
             assertEquals(expectedFreeOrderedContentsId2[i], contents2.get(i));
