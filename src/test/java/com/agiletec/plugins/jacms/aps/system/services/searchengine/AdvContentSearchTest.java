@@ -276,10 +276,9 @@ class AdvContentSearchTest extends BaseTestCase {
         SearchEngineFilter[] filters = {filter1 , filter2, typeFilter};
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, this.allowedGroup);
         List<String> contents = result.getContentsId();
-        System.out.println("contents -> " + contents);
         String[] expectedOrderedContentsId2 = {"EVN20", "EVN24"};
+        logContents("testLoadPublicEvents_7_"+useRoleFilter,contents,expectedOrderedContentsId2);
         assertEquals(expectedOrderedContentsId2.length, contents.size());
-        logContents("testLoadPublicEvents_3",contents,expectedOrderedContentsId2);
         for (int i = 0; i < expectedOrderedContentsId2.length; i++) {
             assertEquals(expectedOrderedContentsId2[i], contents.get(i));
         }
