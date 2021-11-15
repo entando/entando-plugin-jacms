@@ -19,8 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.agiletec.aps.BaseTestCase;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
+
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
@@ -32,11 +33,11 @@ import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
-import java.util.Collection;
-import java.util.Date;
+
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
+import org.entando.entando.ent.util.EntLogging;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +52,8 @@ class AdvContentSearchTest extends BaseTestCase {
     private ICategoryManager categoryManager;
     
     private List<String> allowedGroup = new ArrayList<>();
+
+    private static final EntLogging.EntLogger logger = EntLogging.EntLogFactory.getSanitizedLogger(AdvContentSearchTest.class);
 
     @BeforeEach
     protected void init() throws Exception {
@@ -265,6 +268,12 @@ class AdvContentSearchTest extends BaseTestCase {
         List<String> contents = result.getContentsId();
         String[] expectedFreeContentsId = {"EVN24", "EVN23", "EVN191",
             "EVN192", "EVN193", "EVN194", "EVN20", "EVN21", "EVN25"};
+        logger.warn("-------------------------------------------------------");
+        logger.warn("testLoadOrderedPublicEvents_1");
+        contents.forEach(c-> logger.warn("contents: "+c));
+        Arrays.asList(expectedFreeContentsId).forEach(e-> logger.warn("expected contents: "+e));
+        logger.info("-------------------------------------------------------");
+
         assertEquals(expectedFreeContentsId.length, contents.size());
         for (int i = 0; i < expectedFreeContentsId.length; i++) {
             assertEquals(expectedFreeContentsId[i], contents.get(i));
