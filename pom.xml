@@ -87,6 +87,26 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>${argLine} -Dliquibase.supportPropertyEscaping=true</argLine>
+                        <forkCount>1</forkCount>
+                        <shutdown>exit</shutdown>
+                        <parallel>methods</parallel>
+                        <threadCount>8</threadCount>
+                        <excludes>
+                            <exclude>**/*BaseTestCase*</exclude>
+                            <exclude>**/Abstract*</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <dependencyManagement>
         <dependencies>
