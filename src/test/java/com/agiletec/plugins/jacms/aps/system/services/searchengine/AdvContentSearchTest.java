@@ -596,10 +596,10 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
         private void logContents(String testName, List contents,String [] expectedContents){
-        logger.info("-------------------------------------------------------");
+        logger.warn("-------------------------------------------------------");
         logger.warn("--> "+testName+" <--");
         contents.forEach(c-> logger.warn("contents: "+c));
         Arrays.asList(expectedContents).forEach(e-> logger.warn("expected contents: "+e));
-        logger.info("-------------------------------------------------------");
+        logger.warn("-------------------------------------------------------");
         }
 }
