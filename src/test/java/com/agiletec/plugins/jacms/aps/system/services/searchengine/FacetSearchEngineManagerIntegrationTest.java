@@ -57,8 +57,8 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
+            // Thread thread = this.searchEngineManager.startReloadContentsReferences();
+            // thread.join();
         } catch (Exception e) {
             throw e;
         }
