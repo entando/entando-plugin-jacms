@@ -61,6 +61,8 @@ class AdvContentSearchTest extends BaseTestCase {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
+            Thread thread = this.searchEngineManager.startReloadContentsReferences();
+            thread.join(5000);
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
         } catch (Exception e) {
             throw e;
@@ -69,15 +71,11 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_main() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         this.executeSearchContents_main("ciliegia");
         this.executeSearchContents_main("Sagra della ciliegia");
     }
     
     protected void executeSearchContents_main(String text) throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter descrFilter = new SearchEngineFilter("it", text, SearchEngineFilter.TextSearchOption.EXACT);
         descrFilter.setFullTextSearch(true);
         SearchEngineFilter[] filters = {descrFilter};
@@ -96,8 +94,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_1() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter groupFilter = new SearchEngineFilter(IContentManager.CONTENT_MAIN_GROUP_FILTER_KEY, false, "coach", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {groupFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -115,8 +111,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_2() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter descrFilter = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false, "Mostra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {descrFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -134,8 +128,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_3() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter attributeFilter = new SearchEngineFilter("Titolo", true, "Sagra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         attributeFilter.setLangCode("it");
         SearchEngineFilter[] filters = {attributeFilter};
@@ -154,8 +146,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testSearchContents_4() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter creationOrder = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
         SearchEngineFilter groupFilter = new SearchEngineFilter(IContentManager.CONTENT_MAIN_GROUP_FILTER_KEY, false, "coach");
@@ -171,9 +161,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEvents_1() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPublicEvents_1() throws EntException {
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
         SearchEngineFilter[] filters = {typeFilter};
         SearchEngineFilter[] categoriesFilters = {};
@@ -204,8 +192,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testLoadPublicEvents_2() throws Exception {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date start = DateConverter.parseDate("2007-01-10", "yyyy-MM-dd");
         Date end = DateConverter.parseDate("2008-12-19", "yyyy-MM-dd");
@@ -233,8 +219,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testLoadPublicEvents_3() throws Exception {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Date end = DateConverter.parseDate("2000-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, end);
@@ -255,18 +239,16 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEvents_7_true() throws EntException, InterruptedException {
+    void testLoadPublicEvents_7_true() throws EntException {
         this.testLoadPublicEvents_7(true);
     }
 
     @Test
-    void testLoadPublicEvents_7_false() throws EntException, InterruptedException {
+    void testLoadPublicEvents_7_false() throws EntException {
         this.testLoadPublicEvents_7(false);
     }
 
-    protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    protected void testLoadPublicEvents_7(boolean useRoleFilter) throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         List<String> allowedDescription = new ArrayList<>();
         allowedDescription.add("Castello dei bambini");//EVN24
@@ -290,9 +272,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadOrderedPublicEvents_1() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadOrderedPublicEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForDescr = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
         filterForDescr.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -318,9 +298,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadOrderedPublicEvents_2() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadOrderedPublicEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -346,9 +324,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadOrderedPublicEvents_3() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadOrderedPublicEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         filterForCreation.setOrder(EntitySearchFilter.DESC_ORDER);
@@ -381,8 +357,6 @@ class AdvContentSearchTest extends BaseTestCase {
     
     @Test
     void testLoadOrderedPublicEvents_4() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         SearchEngineFilter[] categoriesFilters = {};
         Content masterContent = this.contentManager.loadContent("EVN193", true);
         masterContent.setId(null);
@@ -417,9 +391,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadFutureEvents_1() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadFutureEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, today, null);
@@ -437,9 +409,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadFutureEvents_2() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadFutureEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, today, null);
@@ -458,9 +428,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadFutureEvents_3() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadFutureEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
         List<String> groups = new ArrayList<String>();
@@ -481,9 +449,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_1() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPastEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, today);
@@ -502,9 +468,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_2() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPastEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
         SearchEngineFilter filter = SearchEngineFilter.createRangeFilter("DataInizio", true, null, today);
@@ -523,9 +487,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPastEvents_3() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPastEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date start = null;
         Date today = DateConverter.parseDate("2008-02-13", "yyyy-MM-dd");
@@ -547,9 +509,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    void testLoadPublicContentsForCategory() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPublicContentsForCategory() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
         FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(null, this.extractCategoryFilters(categories1), null);
@@ -567,9 +527,7 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    void testLoadPublicEventsForCategory_1() throws EntException, InterruptedException {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
+    void testLoadPublicEventsForCategory_1() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
