@@ -36,8 +36,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -45,8 +44,7 @@ import org.junit.jupiter.api.parallel.Isolated;
 /**
  * @author eu
  */
-@Execution(ExecutionMode.SAME_THREAD)
-@Isolated
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
 
     private IContentManager contentManager = null;
@@ -60,13 +58,14 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
             Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join(5000);
+            thread.join();
         } catch (Exception e) {
             throw e;
         }
     }
 
     @Test
+    @Order(1)
     void testSearchAllContents() throws Throwable {
         try {
             List<String> allowedGroup = new ArrayList<>();
@@ -92,6 +91,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
+    @Order(2)
     void testSearchOrderedContents() throws Throwable {
         try {
             List<String> allowedGroup = new ArrayList<>();
@@ -135,6 +135,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
+    @Order(3)
     void testSearchContents() throws Throwable {
         List<String> allowedGroup = new ArrayList<>();
         allowedGroup.add(Group.ADMINS_GROUP_NAME);
@@ -204,6 +205,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
     
     @Test
+    @Order(4)
     void testSearchContentsByRole_1() throws Throwable {
         List<String> allowedGroup = new ArrayList<>();
         allowedGroup.add(Group.ADMINS_GROUP_NAME);
@@ -230,6 +232,7 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(5)
     void testSearchContentsByRole_2() throws Exception {
         Content newContent = this.contentManager.loadContent("EVN25", false);
         newContent.setId(null);
