@@ -54,6 +54,8 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
+            Thread thread = this.searchEngineManager.startReloadContentsReferences();
+            thread.join(5000);
         } catch (Exception e) {
             throw e;
         }
@@ -62,8 +64,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     @Test
     void testSearchAllContents() throws Throwable {
         try {
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
             List<String> allowedGroup = new ArrayList<>();
             SearchEngineFilter[] filters = {};
             FacetedContentsResult freeResult = this.searchEngineManager.searchFacetedEntities(filters, filters, allowedGroup);
@@ -89,8 +89,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     @Test
     void testSearchOrderedContents() throws Throwable {
         try {
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
             List<String> allowedGroup = new ArrayList<>();
             this.executeSearchOrderedContents(allowedGroup);
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
@@ -133,8 +131,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     
     @Test
     void testSearchContents() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         List<String> allowedGroup = new ArrayList<>();
         allowedGroup.add(Group.ADMINS_GROUP_NAME);
         SearchEngineFilter filterWithOrder
@@ -204,8 +200,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
     
     @Test
     void testSearchContentsByRole_1() throws Throwable {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         List<String> allowedGroup = new ArrayList<>();
         allowedGroup.add(Group.ADMINS_GROUP_NAME);
         SearchEngineFilter[] categoriesFilters = {};
@@ -232,8 +226,6 @@ class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
 
     @Test
     void testSearchContentsByRole_2() throws Exception {
-        Thread thread = this.searchEngineManager.startReloadContentsReferences();
-        thread.join();
         Content newContent = this.contentManager.loadContent("EVN25", false);
         newContent.setId(null);
         try {
