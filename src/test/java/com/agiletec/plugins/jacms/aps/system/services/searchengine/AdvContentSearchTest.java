@@ -40,11 +40,16 @@ import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
 import org.entando.entando.ent.util.EntLogging;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Rewriting of some default test for content manager
  * @author E.Santoboni
  */
+@Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 class AdvContentSearchTest extends BaseTestCase {
 
     private IContentManager contentManager = null;

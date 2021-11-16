@@ -38,10 +38,15 @@ import org.entando.entando.aps.system.services.searchengine.FacetedContentsResul
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author eu
  */
+@Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 class FacetSearchEngineManagerIntegrationTest extends BaseTestCase {
 
     private IContentManager contentManager = null;
