@@ -47,7 +47,7 @@ import org.junit.jupiter.api.parallel.Isolated;
  * Rewriting of some default test for content manager
  * @author E.Santoboni
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 class AdvContentSearchTest extends BaseTestCase {
 
     private IContentManager contentManager = null;
@@ -62,10 +62,11 @@ class AdvContentSearchTest extends BaseTestCase {
     protected void init() throws Exception {
         try {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
-            this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
+            this.searchEngineManager = (ICmsSearchEngineManager) this.getService(
+                    JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-           // Thread thread = this.searchEngineManager.startReloadContentsReferences();
-           // thread.join();
+            Thread thread = this.searchEngineManager.startReloadContentsReferences();
+            thread.join();
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
         } catch (Exception e) {
             throw e;
@@ -73,7 +74,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(1)
     void testSearchContents_main() throws Throwable {
         this.executeSearchContents_main("ciliegia");
         this.executeSearchContents_main("Sagra della ciliegia");
@@ -97,7 +97,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(1)
     void testSearchContents_1() throws Throwable {
         SearchEngineFilter groupFilter = new SearchEngineFilter(IContentManager.CONTENT_MAIN_GROUP_FILTER_KEY, false, "coach", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {groupFilter};
@@ -115,7 +114,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(2)
     void testSearchContents_2() throws Throwable {
         SearchEngineFilter descrFilter = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false, "Mostra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         SearchEngineFilter[] filters = {descrFilter};
@@ -133,7 +131,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(3)
     void testSearchContents_3() throws Throwable {
         SearchEngineFilter attributeFilter = new SearchEngineFilter("Titolo", true, "Sagra della ciliegia", SearchEngineFilter.TextSearchOption.EXACT);
         attributeFilter.setLangCode("it");
@@ -152,7 +149,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(4)
     void testSearchContents_4() throws Throwable {
         SearchEngineFilter creationOrder = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
         creationOrder.setOrder(EntitySearchFilter.ASC_ORDER);
@@ -169,7 +165,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(5)
     void testLoadPublicEvents_1() throws EntException {
         SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
         SearchEngineFilter[] filters = {typeFilter};
@@ -200,7 +195,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(6)
     void testLoadPublicEvents_2() throws Exception {
         SearchEngineFilter[] categoriesFilters = {};
         Date start = DateConverter.parseDate("2007-01-10", "yyyy-MM-dd");
@@ -228,7 +222,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(7)
     void testLoadPublicEvents_3() throws Exception {
         SearchEngineFilter[] categoriesFilters = {};
         Date end = DateConverter.parseDate("2000-01-01", "yyyy-MM-dd");
@@ -250,13 +243,11 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(8)
     void testLoadPublicEvents_7_true() throws EntException {
         this.testLoadPublicEvents_7(true);
     }
 
     @Test
-    @Order(9)
     void testLoadPublicEvents_7_false() throws EntException {
         this.testLoadPublicEvents_7(false);
     }
@@ -285,7 +276,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(10)
     void testLoadOrderedPublicEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForDescr = new SearchEngineFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false);
@@ -312,7 +302,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(11)
     void testLoadOrderedPublicEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
@@ -339,7 +328,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(12)
     void testLoadOrderedPublicEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         SearchEngineFilter filterForCreation = new SearchEngineFilter(IContentManager.CONTENT_CREATION_DATE_FILTER_KEY, false);
@@ -372,7 +360,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(13)
     void testLoadOrderedPublicEvents_4() throws Throwable {
         SearchEngineFilter[] categoriesFilters = {};
         Content masterContent = this.contentManager.loadContent("EVN193", true);
@@ -408,7 +395,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(14)
     void testLoadFutureEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
@@ -427,7 +413,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(15)
     void testLoadFutureEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
@@ -447,7 +432,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    @Order(16)
     void testLoadFutureEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2005-01-01", "yyyy-MM-dd");
@@ -469,7 +453,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    @Order(17)
     void testLoadPastEvents_1() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
@@ -489,7 +472,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    @Order(18)
     void testLoadPastEvents_2() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date today = DateConverter.parseDate("2008-10-01", "yyyy-MM-dd");
@@ -509,7 +491,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    @Order(19)
     void testLoadPastEvents_3() throws EntException {
         SearchEngineFilter[] categoriesFilters = {};
         Date start = null;
@@ -532,7 +513,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
 
     @Test
-    @Order(20)
     void testLoadPublicContentsForCategory() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
@@ -551,7 +531,6 @@ class AdvContentSearchTest extends BaseTestCase {
     }
     
     @Test
-    @Order(21)
     void testLoadPublicEventsForCategory_1() throws EntException {
         List<Category> categories1 = new ArrayList<>();
         categories1.add(this.categoryManager.getCategory("evento"));
