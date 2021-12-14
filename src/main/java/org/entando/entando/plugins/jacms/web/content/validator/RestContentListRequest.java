@@ -14,6 +14,8 @@
 package org.entando.entando.plugins.jacms.web.content.validator;
 
 import java.util.List;
+
+import io.swagger.annotations.ApiParam;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.web.common.model.RestEntityListRequest;
 
@@ -31,6 +33,8 @@ public class RestContentListRequest extends RestEntityListRequest {
     private String forLinkingWithOwnerGroup;
     private List<String> forLinkingWithExtraGroups;
 
+    @ApiParam(name = "mode", defaultValue = IContentService.MODE_FULL,
+            value = "list -> light version, full -> brings extra data in the content.", allowableValues = "list, full")
     private String mode = IContentService.MODE_FULL;
 
     public String getModel() {
