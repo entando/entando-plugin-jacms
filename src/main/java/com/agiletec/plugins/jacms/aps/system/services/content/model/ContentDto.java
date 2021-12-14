@@ -341,11 +341,15 @@ public class ContentDto extends EntityDto implements Serializable {
     private void fillLinkAttribute(AttributeInterface attribute, EntityAttributeDto attributeDto) {
         if (LinkAttribute.class.isAssignableFrom(attribute.getClass())) {
             LinkAttribute linkAttribute = (LinkAttribute) attribute;
-            SymbolicLink link = new SymbolicLink();
-            Map<String, String> additionalLinkAttributes = processLinkAttribute(attributeDto, link);
-            linkAttribute.setSymbolicLink(link);
-            if (!additionalLinkAttributes.isEmpty()) {
-                linkAttribute.setLinkProperties(additionalLinkAttributes);
+            if (attributeDto.getValue() != null && attributeDto.getValue() instanceof SymbolicLink) {
+                linkAttribute.setSymbolicLink((SymbolicLink) attributeDto.getValue());
+            } else {
+                SymbolicLink link = new SymbolicLink();
+                Map<String, String> additionalLinkAttributes = processLinkAttribute(attributeDto, link);
+                linkAttribute.setSymbolicLink(link);
+                if (!additionalLinkAttributes.isEmpty()) {
+                    linkAttribute.setLinkProperties(additionalLinkAttributes);
+                }
             }
         }
     }
