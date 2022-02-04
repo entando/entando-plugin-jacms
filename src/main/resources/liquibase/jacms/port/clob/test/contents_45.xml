@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="ART121" typecode="ART" typedescr="Articolo rassegna stampa">
+    <descr>Contenuto degli amministratori 2</descr>
+    <groups mainGroup="administrators">
+        <group name="free" />
+    </groups>
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo Contenuto degli "Amministratori" 2</text>
+            <text lang="en">Title of Administrator's Content &lt;2&gt;</text>
+        </attribute>
+        <list attributetype="Monolist" name="Autori" nestedtype="Monotext" />
+        <attribute name="VediAnche" attributetype="Link">
+            <link type="external">
+                <urldest>http://www.w3.org/</urldest>
+            </link>
+            <text lang="it">Pagina Iniziale W3C</text>
+            <text lang="en">World Wide Web Consortium - Web Standards</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>
+	Testo secondo contenuto del gruppo degli Amministratori</p>
+<p>
+	Questo contenuto appartiene al Gruppo degli Amministratori ma dichiarato visibile agli utenti del gruppo del gruppo free.</p>
+]]></hypertext>
+            <hypertext lang="en"><![CDATA[<p>
+	Text of second Administrators Group&#39;s Content</p>
+<p>
+	This content belongs to the Administrators Group was declared visible to guest users.</p>
+]]></hypertext>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <attribute name="Data" attributetype="Date">
+            <date>20090330</date>
+        </attribute>
+        <attribute name="Numero" attributetype="Number">
+            <number>78</number>
+        </attribute>
+    </attributes>
+    <status>PUBLIC</status>
+    <version>2.0</version>
+    <lastEditor>admin</lastEditor>
+    <created>20080721143834</created>
+    <lastModified>20120803222859</lastModified>
+</content>

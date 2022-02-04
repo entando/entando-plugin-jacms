@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="ART120" typecode="ART" typedescr="Articolo rassegna stampa">
+    <descr>Contenuto degli amministratori 1</descr>
+    <groups mainGroup="administrators" />
+    <categories>
+        <category id="general_cat2" />
+        <category id="general_cat3" />
+    </categories>
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo Contenuto degli "Amministratori"</text>
+            <text lang="en">Title of Administrator's Content</text>
+        </attribute>
+        <list attributetype="Monolist" name="Autori" nestedtype="Monotext" />
+        <attribute name="VediAnche" attributetype="Link">
+            <link type="external">
+                <urldest>http://www.japsportal.org</urldest>
+            </link>
+            <text lang="it">Pagina Iniziale jAPSPortal</text>
+            <text lang="en">jAPSPortal HomePage</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>
+	Testo primo contenuto del gruppo degli Amministratori</p>
+]]></hypertext>
+            <hypertext lang="en"><![CDATA[<p>
+	Text of first Administrators Group&#39;s Content</p>
+]]></hypertext>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <attribute name="Data" attributetype="Date">
+            <date>20090328</date>
+        </attribute>
+        <attribute name="Numero" attributetype="Number">
+            <number>7</number>
+        </attribute>
+    </attributes>
+    <status>PUBLIC</status>
+    <version>1.0</version>
+    <lastEditor>admin</lastEditor>
+    <created>20080721125725</created>
+    <lastModified>20120803222703</lastModified>
+</content>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource typecode="Attach" id="8">
+    <descr>Text resource</descr>
+    <groups mainGroup="customers" />
+    <categories>
+        <category id="resCat2" />
+    </categories>
+    <masterfile>text_resource.txt</masterfile>
+    <instance>
+        <size>1</size>
+        <filename>text_resource.txt</filename>
+        <mimetype>application/txt</mimetype>
+        <weight>55 Kb</weight>
+    </instance>
+</resource>

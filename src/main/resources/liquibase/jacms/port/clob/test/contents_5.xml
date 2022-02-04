@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="EVN192" typecode="EVN" typedescr="Evento">
+    <descr>Evento 2</descr>
+    <groups mainGroup="free" />
+    <categories>
+        <category id="evento" />
+        <category id="general_cat1" />
+    </categories>
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo B - Evento 2</text>
+            <text lang="en">Title B - Event 2</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>CorpoTesto evento 2</p>]]></hypertext>
+        </attribute>
+        <attribute name="DataInizio" attributetype="Date">
+            <date>19990414</date>
+        </attribute>
+        <attribute name="DataFine" attributetype="Date">
+            <date>19990614</date>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <list attributetype="Monolist" name="LinkCorrelati" nestedtype="Link" />
+    </attributes>
+    <status>DRAFT</status>
+</content>

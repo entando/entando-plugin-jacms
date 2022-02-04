@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="EVN41" typecode="EVN" typedescr="Evento">
+    <descr>Mostra della ciliegia</descr>
+    <groups mainGroup="coach" />
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Sagra della ciliegia</text>
+            <text lang="en">Cherry festival</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>Sagra della ciliegia</p>]]></hypertext>
+        </attribute>
+        <attribute name="DataInizio" attributetype="Date">
+            <date>20080106</date>
+        </attribute>
+        <attribute name="DataFine" attributetype="Date">
+            <date>20080124</date>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <list attributetype="Monolist" name="LinkCorrelati" nestedtype="Link" />
+    </attributes>
+    <status>DRAFT</status>
+</content>

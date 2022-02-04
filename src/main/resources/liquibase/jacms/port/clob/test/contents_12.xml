@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="EVN103" typecode="EVN" typedescr="Evento">
+    <descr>Contenuto 1 Coach</descr>
+    <groups mainGroup="coach" />
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo Contenuto 1 Coach</text>
+            <text lang="en">Coach's content 1 - title</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[Corpo Testo Contenuto 1 Coach]]></hypertext>
+        </attribute>
+        <attribute name="DataInizio" attributetype="Date">
+            <date>19990415</date>
+        </attribute>
+        <attribute name="DataFine" attributetype="Date">
+            <date>20000414</date>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <list attributetype="Monolist" name="LinkCorrelati" nestedtype="Link" />
+    </attributes>
+    <status>DRAFT</status>
+</content>

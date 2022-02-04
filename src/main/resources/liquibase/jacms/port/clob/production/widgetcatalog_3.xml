@@ -1,0 +1,5 @@
+<config>
+	<parameter name="contentId">Content ID</parameter>
+	<parameter name="modelId">Content Model ID</parameter>
+	<action name="viewerConfig"/>
+</config>

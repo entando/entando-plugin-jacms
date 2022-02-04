@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource typecode="Attach" id="7">
+    <descr>configurazione</descr>
+    <groups mainGroup="free" />
+    <categories />
+    <masterfile>configurazione.txt</masterfile>
+    <instance>
+        <size>0</size>
+        <filename>configurazione.txt</filename>
+        <mimetype>application/msword</mimetype>
+        <weight>55 Kb</weight>
+    </instance>
+</resource>

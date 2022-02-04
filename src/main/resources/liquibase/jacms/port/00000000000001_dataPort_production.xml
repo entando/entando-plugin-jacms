@@ -1,0 +1,389 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+           http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="00000000000001_jacms_dataPort_production" author="entando" context="production">
+
+        <preConditions onFail="MARK_RAN">
+            <!-- Use uppercase table name to avoid MySQL issue -->
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM DATABASECHANGELOG WHERE id = '00000000000001_jacms_dataPort_restore'</sqlCheck>
+            <!-- This changeSet contains the same logic (in XML) of the old 00000000000001_dataPort_production.sql file, that was included by changeSetPort.xml
+                 Execution of this changeSet must be skipped if tables had already been filled using that file -->
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM DATABASECHANGELOG WHERE id = '00000000000001_jacms_dataPort_production' AND filename = 'liquibase/jacms/changeSetPort.xml'</sqlCheck>
+        </preConditions>
+
+        <insert tableName="sysconfig">
+            <column name="version" value="production" />
+            <column name="item" value="contentTypes" />
+            <column name="descr" value="Definition of the Content Types" />
+            <column name="config" valueClobFile="clob/production/sysconfig_1.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="production" />
+            <column name="item" value="imageDimensions" />
+            <column name="descr" value="Definition of the resized image dimensions" />
+            <column name="config" valueClobFile="clob/production/sysconfig_2.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="production" />
+            <column name="item" value="jacms_resourceMetadataMapping" />
+            <column name="descr" value="Mapping between resource Metadata and resource attribute fields" />
+            <column name="config" valueClobFile="clob/production/sysconfig_3.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="production" />
+            <column name="item" value="subIndexDir" />
+            <column name="descr" value="Name of the sub-directory containing content indexing files" />
+            <column name="config" value="index" />
+        </insert>
+
+
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_BACK_TO_EDIT_CONTENT" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Back to edit content" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_BACK_TO_EDIT_CONTENT" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Torna alla modifica dei contenuti" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_CONTENT_PREVIEW" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Content preview" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_CONTENT_PREVIEW" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Anteprima contenuto" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="ESSF_SEARCH" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Search" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="ESSF_SEARCH" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Cerca" />
+        </insert>
+
+
+        <insert tableName="widgetcatalog">
+            <column name="code" value="search_form" />
+            <column name="titles" valueClobFile="clob/production/widgetcatalog_1.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="0" />
+            <column name="maingroup" value="free" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+            <column name="widgetcategory" value="cms" />
+            <column name="icon" value="font-awesome:fa-search" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="content_viewer" />
+            <column name="titles" valueClobFile="clob/production/widgetcatalog_2.xml" />
+            <column name="parameters" valueClobFile="clob/production/widgetcatalog_3.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+            <column name="widgetcategory" value="cms" />
+            <column name="icon" value="asset:ent-content-viewer" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="search_result" />
+            <column name="titles" valueClobFile="clob/production/widgetcatalog_4.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+            <column name="widgetcategory" value="cms" />
+            <column name="icon" value="font-awesome:fa-list" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="content_viewer_list" />
+            <column name="titles" valueClobFile="clob/production/widgetcatalog_5.xml" />
+            <column name="parameters" valueClobFile="clob/production/widgetcatalog_6.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+            <column name="widgetcategory" value="cms" />
+            <column name="icon" value="font-awesome:fa-filter" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="row_content_viewer_list" />
+            <column name="titles" valueClobFile="clob/production/widgetcatalog_7.xml" />
+            <column name="parameters" valueClobFile="clob/production/widgetcatalog_8.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="maingroup" value="free" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+            <column name="widgetcategory" value="cms" />
+            <column name="icon" value="font-awesome:fa-list-alt" />
+        </insert>
+
+
+        <insert tableName="guifragment">
+            <column name="code" value="search_form" />
+            <column name="widgettypecode" value="search_form" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_1.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Enumer" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_2.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_EnumerMap" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_3.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Number" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_4.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilters" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_5.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_met_fulltext" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_6.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_met_category" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_7.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Text" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_8.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer" />
+            <column name="widgettypecode" value="content_viewer" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_9.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list" />
+            <column name="widgettypecode" value="content_viewer_list" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_10.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Date" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_11.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Boolean" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_12.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_Bool_io" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_13.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_CheckBox" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_14.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_content_viewer_list_userfilter_ent_ThreeSt" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_15.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="search_result" />
+            <column name="widgettypecode" value="search_result" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_16.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+        <insert tableName="guifragment">
+            <column name="code" value="jacms_row_content_viewer_list" />
+            <column name="widgettypecode" value="row_content_viewer_list" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/production/guifragment_17.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+
+
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Search" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Cerca" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_FILTERS_BUTTON" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Narrow your search" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_FILTERS_BUTTON" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Filtra ulteriormente" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="LIST_VIEWER_EMPTY" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="No result found. Broaden your search and try again!" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="LIST_VIEWER_EMPTY" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Nessun risultato trovato. Imposta dei parametri meno stringenti e prova ancora!" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_FIELD" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="The value for field" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_FIELD" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Il valore del campo" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_INVALID_FORMAT" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="is invalid" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_INVALID_FORMAT" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="non è corretto" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_INVALID_RANGE" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="generates an invalid range" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_LIST_VIEWER_INVALID_RANGE" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="genera un range non valido" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="EDIT_THIS_CONTENT" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Edit" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="EDIT_THIS_CONTENT" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Modifica" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Search Result" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Risultati della Ricerca" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCHED_FOR" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="You searched for" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCHED_FOR" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Hai cercato" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_NOTHING_FOUND" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="No result found. Try another search term!" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_NOTHING_FOUND" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Nessun risultato trovato. Prova a cercare un altro termine!" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS_INTRO" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Found" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS_INTRO" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Sono stati trovati" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS_OUTRO" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="results. Showing:" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="SEARCH_RESULTS_OUTRO" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="risultati. Mostrati:" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_ALL_WORDS" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Tutte le parole" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_ALL_WORDS" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="All words" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_AT_LEAST_ONE_WORD" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Almeno una parola" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_AT_LEAST_ONE_WORD" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="At least one word" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_EXACT" />
+            <column name="langcode" value="it" />
+            <column name="stringvalue" value="Frase esatta" />
+        </insert>
+        <insert tableName="localstrings">
+            <column name="keycode" value="jacms_SEARCH_TEXT_EXACT" />
+            <column name="langcode" value="en" />
+            <column name="stringvalue" value="Exact" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+<property key="maxElemForItem">5</property>
+<property key="modelId">11</property>
+<property key="contentType">NEW</property>
+<property key="filters">(order=DESC;attributeFilter=true;likeOption=false;key=Date)+(order=ASC;attributeFilter=true;likeOption=false;key=Title)</property>
+</properties>
