@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.0.10</version>
+        <version>7.0.11</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -135,7 +135,7 @@
         <!-- OWASP -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>
-            <artifactId>encoder</artifactId>
+            <artifactId>encoder-jsp</artifactId>
         </dependency>
         <!-- -->
         <dependency>
@@ -230,10 +230,6 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
