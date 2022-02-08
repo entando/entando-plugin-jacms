@@ -135,7 +135,7 @@
         <!-- OWASP -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>
-            <artifactId>encoder</artifactId>
+            <artifactId>encoder-jsp</artifactId>
         </dependency>
         <!-- -->
         <dependency>
