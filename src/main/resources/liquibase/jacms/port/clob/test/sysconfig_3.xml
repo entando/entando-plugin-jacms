@@ -1,0 +1,6 @@
+<mapping>
+    <field key="alt">metadataKey1,metadataKey2,metadatakey3,xxx,yyy</field>
+    <field key="description">metadataKeyA,metadataKeyB,JPEG Comment</field>
+    <field key="legend">metadataKeyX,metadataKeyY,metadatakeyX,YYYY,Detected File Type Long Name,WWWWW</field>
+    <field key="title">metadataKeyG,metadataKeyK,metadatakeyF</field>
+</mapping>

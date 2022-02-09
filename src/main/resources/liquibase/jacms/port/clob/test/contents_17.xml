@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="ART104" typecode="ART" typedescr="Articolo rassegna stampa">
+    <descr>Contenuto 2 Coach</descr>
+    <groups mainGroup="coach" />
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo Contenuto 2 Coach</text>
+        </attribute>
+        <list attributetype="Monolist" name="Autori" nestedtype="Monotext">
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Walter</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Marco</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Eugenio</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>William</monotext>
+            </attribute>
+        </list>
+        <attribute name="VediAnche" attributetype="Link">
+            <link type="external">
+                <urldest>http://www.japsportal.org</urldest>
+            </link>
+            <text lang="it">Home jAPS</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[Corpo Testo Contenuto&nbsp;2 Coach]]></hypertext>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <attribute name="Data" attributetype="Date">
+            <date>20070104</date>
+        </attribute>
+        <attribute name="Numero" attributetype="Number" />
+    </attributes>
+    <status>DRAFT</status>
+</content>

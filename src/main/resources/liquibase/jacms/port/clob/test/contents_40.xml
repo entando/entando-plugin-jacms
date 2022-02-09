@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="ART111" typecode="ART" typedescr="Articolo rassegna stampa">
+    <descr>Contenuto 3 Coach</descr>
+    <groups mainGroup="coach">
+        <group name="customers" />
+        <group name="helpdesk" />
+    </groups>
+    <categories>
+        <category id="general_cat1" />
+        <category id="general_cat2" />
+    </categories>
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Titolo Contenuto 3 Coach</text>
+        </attribute>
+        <list attributetype="Monolist" name="Autori" nestedtype="Monotext">
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Walter</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Marco</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>Eugenio</monotext>
+            </attribute>
+            <attribute name="Autori" attributetype="Monotext">
+                <monotext>William</monotext>
+            </attribute>
+        </list>
+        <attribute name="VediAnche" attributetype="Link" />
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>Corpo Testo Contenuto 3 Coach</p>
+]]></hypertext>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <attribute name="Data" attributetype="Date">
+            <date>20061213</date>
+        </attribute>
+        <attribute name="Numero" attributetype="Number" />
+    </attributes>
+    <status>PUBLIC</status>
+    <version>4.0</version>
+    <lastEditor>admin</lastEditor>
+    <created>20071215174627</created>
+    <lastModified>20120803222621</lastModified>
+</content>

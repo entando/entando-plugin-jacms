@@ -1,0 +1,1931 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+           http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="00000000000001_jacms_dataPort_test" author="entando" context="test">
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="2" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="per test rendering" />
+            <column name="model" valueClobFile="clob/test/contentmodels_1.ftl" />
+        </insert>
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="3" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="scheda di un articolo" />
+            <column name="model" valueClobFile="clob/test/contentmodels_2.ftl" />
+        </insert>
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="1" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Main Model" />
+            <column name="model" valueClobFile="clob/test/contentmodels_3.ftl" />
+        </insert>
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="11" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="List Model" />
+            <column name="model" valueClobFile="clob/test/contentmodels_4.ftl" />
+        </insert>
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="12" />
+            <column name="contenttype" value="TST" />
+            <column name="descr" value="Main Model" />
+            <column name="model" valueClobFile="clob/test/contentmodels_5.ftl" />
+        </insert>
+        <insert tableName="contentmodels">
+            <column name="modelid" valueNumeric="13" />
+            <column name="contenttype" value="TST" />
+            <column name="descr" value="List Model" />
+            <column name="model" valueClobFile="clob/test/contentmodels_6.ftl" />
+        </insert>
+
+
+        <insert tableName="contents">
+            <column name="contentid" value="ART187" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="una descrizione particolare" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_1.xml" />
+            <column name="created" value="20051012164415" />
+            <column name="lastmodified" value="20060622194219" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_2.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN20" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Mostra zootecnica" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_3.xml" />
+            <column name="created" value="20080209100217" />
+            <column name="lastmodified" value="20080209123357" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_4.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+            <column name="restriction" value="OPEN" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN192" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Evento 2" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_5.xml" />
+            <column name="created" value="20060418142303" />
+            <column name="lastmodified" value="20061221161202" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_6.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="0" />
+            <column name="restriction" value="OPEN" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART179" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="una descrizione ON LINE" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_7.xml" />
+            <column name="created" value="20051012105533" />
+            <column name="lastmodified" value="20080210180714" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="0.1" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="RAH1" />
+            <column name="contenttype" value="RAH" />
+            <column name="descr" value="Articolo" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_8.xml" />
+            <column name="created" value="20050503181212" />
+            <column name="lastmodified" value="20061221161143" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_9.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART1" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Articolo" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_10.xml" />
+            <column name="created" value="20050503181212" />
+            <column name="lastmodified" value="20060622202051" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_11.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN103" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Contenuto 1 Coach" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_12.xml" />
+            <column name="created" value="20061221165150" />
+            <column name="lastmodified" value="20061223125859" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_13.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="RAH101" />
+            <column name="contenttype" value="RAH" />
+            <column name="descr" value="Contenuto 1 Customers" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_14.xml" />
+            <column name="created" value="20061221164536" />
+            <column name="lastmodified" value="20061221165755" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_15.xml" />
+            <column name="maingroup" value="customers" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART104" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto 2 Coach" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_16.xml" />
+            <column name="created" value="20061221165750" />
+            <column name="lastmodified" value="20070103143539" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_17.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN23" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Collezione Ingrao" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_18.xml" />
+            <column name="created" value="20080209100541" />
+            <column name="lastmodified" value="20080209100546" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_19.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN24" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Castello dei bambini" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_20.xml" />
+            <column name="created" value="20080209100714" />
+            <column name="lastmodified" value="20080209100719" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_21.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN41" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Mostra della ciliegia" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_22.xml" />
+            <column name="created" value="20080209102901" />
+            <column name="lastmodified" value="20080209102903" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_23.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN21" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Sagra delle fragole" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_24.xml" />
+            <column name="created" value="20080209123547" />
+            <column name="lastmodified" value="20080209123637" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_25.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN25" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="TEATRO DELLE MERAVIGLIE" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_26.xml" />
+            <column name="created" value="20080209100902" />
+            <column name="lastmodified" value="20080209100915" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_27.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="firsteditor" value="editor2" />
+            <column name="sync" valueNumeric="1" />
+            <column name="restriction" value="RESTRICTED" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN191" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Evento 1" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_28.xml" />
+            <column name="created" value="20060418142200" />
+            <column name="lastmodified" value="20061221161157" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_29.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="firsteditor" value="editor1" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN194" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Evento 4" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_30.xml" />
+            <column name="created" value="20060418142507" />
+            <column name="lastmodified" value="20061221161128" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_31.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="firsteditor" value="editor1" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART112" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto 4 Coach" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_32.xml" />
+            <column name="created" value="20071216174627" />
+            <column name="lastmodified" value="20120803224723" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_33.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="2.2" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20120803222829" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART180" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="una descrizione" />
+            <column name="status" value="READY" />
+            <column name="workxml" valueClobFile="clob/test/contents_34.xml" />
+            <column name="created" value="20051012105757" />
+            <column name="lastmodified" value="20061221161136" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_35.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART102" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto 2 Customers" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_36.xml" />
+            <column name="created" value="20061221164629" />
+            <column name="lastmodified" value="20071215174925" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_37.xml" />
+            <column name="maingroup" value="customers" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="EVN193" />
+            <column name="contenttype" value="EVN" />
+            <column name="descr" value="Evento 3" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_38.xml" />
+            <column name="created" value="20060418142409" />
+            <column name="lastmodified" value="20061221161125" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_39.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART111" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto 3 Coach" />
+            <column name="status" value="PUBLIC" />
+            <column name="workxml" valueClobFile="clob/test/contents_40.xml" />
+            <column name="created" value="20071215174627" />
+            <column name="lastmodified" value="20120803222621" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_41.xml" />
+            <column name="maingroup" value="coach" />
+            <column name="currentversion" value="4.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20120803222621" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART120" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto degli amministratori 1" />
+            <column name="status" value="PUBLIC" />
+            <column name="workxml" valueClobFile="clob/test/contents_42.xml" />
+            <column name="created" value="20080721125725" />
+            <column name="lastmodified" value="20120803222703" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_43.xml" />
+            <column name="maingroup" value="administrators" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20120803222703" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART121" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto degli amministratori 2" />
+            <column name="status" value="DRAFT" />
+            <column name="workxml" valueClobFile="clob/test/contents_44.xml" />
+            <column name="created" value="20080721143834" />
+            <column name="lastmodified" value="20120803222911" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_45.xml" />
+            <column name="maingroup" value="administrators" />
+            <column name="currentversion" value="2.1" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20120803222859" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ART122" />
+            <column name="contenttype" value="ART" />
+            <column name="descr" value="Contenuto degli amministratori 3" />
+            <column name="status" value="PUBLIC" />
+            <column name="workxml" valueClobFile="clob/test/contents_46.xml" />
+            <column name="created" value="20080721143945" />
+            <column name="lastmodified" value="20120803222932" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_47.xml" />
+            <column name="maingroup" value="administrators" />
+            <column name="currentversion" value="1.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20120803222932" />
+            <column name="sync" valueNumeric="1" />
+        </insert>
+        <insert tableName="contents">
+            <column name="contentid" value="ALL4" />
+            <column name="contenttype" value="ALL" />
+            <column name="descr" value="Description" />
+            <column name="status" value="PUBLIC" />
+            <column name="workxml" valueClobFile="clob/test/contents_48.xml" />
+            <column name="created" value="20140321165042" />
+            <column name="lastmodified" value="20140321171007" />
+            <column name="onlinexml" valueClobFile="clob/test/contents_49.xml" />
+            <column name="maingroup" value="free" />
+            <column name="currentversion" value="6.0" />
+            <column name="lasteditor" value="admin" />
+            <column name="published" value="20150321171007" />
+            <column name="sync" valueNumeric="0" />
+        </insert>
+
+
+        <insert tableName="resources">
+            <column name="resid" value="6" />
+            <column name="restype" value="Attach" />
+            <column name="descr" value="Text resource" />
+            <column name="maingroup" value="free" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_1.xml" />
+            <column name="masterfilename" value="text_resource.txt" />
+            <column name="creationdate" valueDate="2008-09-25T00:00:00" />
+            <column name="lastmodified" valueDate="2013-09-10T00:00:00" />
+            <column name="owner" value="admin" />
+        </insert>
+        <insert tableName="resources">
+            <column name="resid" value="7" />
+            <column name="restype" value="Attach" />
+            <column name="descr" value="configurazione" />
+            <column name="maingroup" value="free" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_2.xml" />
+            <column name="masterfilename" value="configurazione.txt" />
+            <column name="creationdate" valueDate="2010-08-25T10:12:00" />
+            <column name="lastmodified" valueDate="2012-07-25T00:10:00" />
+            <column name="owner" value="admin" />
+        </insert>
+        <insert tableName="resources">
+            <column name="resid" value="8" />
+            <column name="restype" value="Attach" />
+            <column name="descr" value="Text resource" />
+            <column name="maingroup" value="customers" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_3.xml" />
+            <column name="masterfilename" value="text_resource.txt" />
+            <column name="creationdate" valueDate="2008-09-25T00:00:00" />
+            <column name="lastmodified" valueDate="2013-09-10T00:00:00" />
+            <column name="owner" value="admin" />
+        </insert>
+        <insert tableName="resources">
+            <column name="resid" value="82" />
+            <column name="restype" value="Image" />
+            <column name="descr" value="Entando" />
+            <column name="maingroup" value="customers" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_4.xml" />
+            <column name="masterfilename" value="entando.jpg" />
+            <column name="creationdate" valueDate="2011-04-25T00:10:00" />
+            <column name="lastmodified" valueDate="2014-11-25T19:20:00" />
+            <column name="owner" value="admin" />
+        </insert>
+        <insert tableName="resources">
+            <column name="resid" value="22" />
+            <column name="correlationcode" value="another_code" />
+            <column name="restype" value="Image" />
+            <column name="descr" value="Entando Team" />
+            <column name="maingroup" value="free" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_5.xml" />
+            <column name="masterfilename" value="entandoTeam.jpg" />
+            <column name="creationdate" valueDate="2008-12-25T00:00:00" />
+            <column name="lastmodified" valueDate="2018-12-25T09:00:00" />
+            <column name="owner" value="rocky" />
+        </insert>
+        <insert tableName="resources">
+            <column name="resid" value="44" />
+            <column name="correlationcode" value="a_code" />
+            <column name="restype" value="Image" />
+            <column name="descr" value="logo" />
+            <column name="maingroup" value="free" />
+            <column name="resourcexml" valueClobFile="clob/test/resources_6.xml" />
+            <column name="masterfilename" value="lvback.jpg" />
+            <column name="creationdate" valueDate="2010-05-25T00:00:00" />
+            <column name="lastmodified" valueDate="2014-11-25T18:40:00" />
+            <column name="owner" value="admin" />
+        </insert>
+
+
+        <insert tableName="widgetcatalog">
+            <column name="code" value="90_events" />
+            <column name="titles" valueClobFile="clob/test/widgetcatalog_1.xml" />
+            <column name="parenttypecode" value="content_viewer_list" />
+            <column name="defaultconfig" valueClobFile="clob/test/widgetcatalog_2.xml" />
+            <column name="locked" valueNumeric="0" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="search_result" />
+            <column name="titles" valueClobFile="clob/test/widgetcatalog_3.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="content_viewer" />
+            <column name="titles" valueClobFile="clob/test/widgetcatalog_4.xml" />
+            <column name="parameters" valueClobFile="clob/test/widgetcatalog_5.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="content_viewer_list" />
+            <column name="titles" valueClobFile="clob/test/widgetcatalog_6.xml" />
+            <column name="parameters" valueClobFile="clob/test/widgetcatalog_7.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+        </insert>
+        <insert tableName="widgetcatalog">
+            <column name="code" value="row_content_viewer_list" />
+            <column name="titles" valueClobFile="clob/test/widgetcatalog_8.xml" />
+            <column name="parameters" valueClobFile="clob/test/widgetcatalog_9.xml" />
+            <column name="plugincode" value="jacms" />
+            <column name="locked" valueNumeric="1" />
+            <column name="readonlypagewidgetconfig" valueNumeric="0" />
+        </insert>
+
+
+        <insert tableName="guifragment">
+            <column name="code" value="content_viewer" />
+            <column name="widgettypecode" value="content_viewer" />
+            <column name="plugincode" value="jacms" />
+            <column name="defaultgui" valueClobFile="clob/test/guifragment_1.ftl" />
+            <column name="locked" valueNumeric="1" />
+        </insert>
+
+
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="pagina_11" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_1.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="homepage" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_2.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="coach_page" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_3.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="customers_page" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_4.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="homepage" />
+            <column name="framepos" valueNumeric="0" />
+            <column name="widgetcode" value="content_viewer_list" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_5.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="customer_subpage_2" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_6.xml" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="contentview" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+        </insert>
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="pagina_2" />
+            <column name="framepos" valueNumeric="1" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_7.xml" />
+        </insert>
+
+
+        <insert tableName="pages">
+            <column name="code" value="contentviewtest" />
+            <column name="parentcode" value="service" />
+            <column name="pos" valueNumeric="4" />
+        </insert>
+
+
+        <insert tableName="pages_metadata_online">
+            <column name="code" value="contentviewtest" />
+            <column name="groupcode" value="free" />
+            <column name="titles" valueClobFile="clob/test/pages_metadata_online_1.xml" />
+            <column name="modelcode" value="home" />
+            <column name="showinmenu" valueNumeric="1" />
+            <column name="extraconfig" valueClobFile="clob/test/pages_metadata_online_2.xml" />
+            <column name="updatedat" valueDate="2017-02-17T13:06:24" />
+        </insert>
+
+
+        <insert tableName="pages_metadata_draft">
+            <column name="code" value="contentviewtest" />
+            <column name="groupcode" value="free" />
+            <column name="titles" valueClobFile="clob/test/pages_metadata_draft_1.xml" />
+            <column name="modelcode" value="home" />
+            <column name="showinmenu" valueNumeric="1" />
+            <column name="extraconfig" valueClobFile="clob/test/pages_metadata_draft_2.xml" />
+            <column name="updatedat" valueDate="2017-02-17T13:06:24" />
+        </insert>
+
+
+        <insert tableName="widgetconfig">
+            <column name="pagecode" value="contentviewtest" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+        </insert>
+
+
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="contentviewtest" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="pagina_11" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_1.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="homepage" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_2.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="coach_page" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_3.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="customers_page" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_4.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="homepage" />
+            <column name="framepos" valueNumeric="0" />
+            <column name="widgetcode" value="content_viewer_list" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_5.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="customer_subpage_2" />
+            <column name="framepos" valueNumeric="2" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_6.xml" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="contentview" />
+            <column name="framepos" valueNumeric="3" />
+            <column name="widgetcode" value="content_viewer" />
+        </insert>
+        <insert tableName="widgetconfig_draft">
+            <column name="pagecode" value="pagina_2" />
+            <column name="framepos" valueNumeric="1" />
+            <column name="widgetcode" value="content_viewer" />
+            <column name="config" valueClobFile="clob/test/widgetconfig_draft_7.xml" />
+        </insert>
+
+
+        <insert tableName="sysconfig">
+            <column name="version" value="test" />
+            <column name="item" value="contentTypes" />
+            <column name="descr" value="Definition of the Content Types" />
+            <column name="config" valueClobFile="clob/test/sysconfig_1.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="test" />
+            <column name="item" value="imageDimensions" />
+            <column name="descr" value="Definition of the resized image dimensions" />
+            <column name="config" valueClobFile="clob/test/sysconfig_2.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="test" />
+            <column name="item" value="jacms_resourceMetadataMapping" />
+            <column name="descr" value="Mapping between resource Metadata and resource attribute fields" />
+            <column name="config" valueClobFile="clob/test/sysconfig_3.xml" />
+        </insert>
+        <insert tableName="sysconfig">
+            <column name="version" value="test" />
+            <column name="item" value="subIndexDir" />
+            <column name="descr" value="Name of the sub-directory containing content indexing files" />
+            <column name="config" value="index" />
+        </insert>
+
+
+        <insert tableName="resourcerelations">
+            <column name="resid" value="44" />
+            <column name="refcategory" value="resource_root" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="44" />
+            <column name="refcategory" value="Image" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="44" />
+            <column name="refcategory" value="resCat1" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="44" />
+            <column name="refcategory" value="resCat3" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="8" />
+            <column name="refcategory" value="resource_root" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="8" />
+            <column name="refcategory" value="Attach" />
+        </insert>
+        <insert tableName="resourcerelations">
+            <column name="resid" value="8" />
+            <column name="refcategory" value="resCat2" />
+        </insert>
+
+
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refcategory" value="general_cat3" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refgroup" value="administrators" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refgroup" value="customers" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="RAH101" />
+            <column name="refgroup" value="customers" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="RAH1" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="RAH1" />
+            <column name="refresource" value="7" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART104" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refgroup" value="customers" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refcontent" value="ART111" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refcategory" value="cat1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refresource" value="44" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART1" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART1" />
+            <column name="refresource" value="44" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART187" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refgroup" value="group1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refgroup" value="group2" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refgroup" value="group3" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN41" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN103" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refcategory" value="evento" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refgroup" value="group1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refgroup" value="group2" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refcontent" value="ART1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refpage" value="pagina_11" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN194" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN194" />
+            <column name="refcontent" value="ART1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN194" />
+            <column name="refpage" value="pagina_11" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN191" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN191" />
+            <column name="refgroup" value="group1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN21" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN24" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN23" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN23" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN23" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN192" />
+            <column name="refcategory" value="evento" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN192" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="EVN20" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refgroup" value="customers" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refgroup" value="helpdesk" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general_cat3" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refgroup" value="administrators" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART112" />
+            <column name="refgroup" value="coach" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART112" />
+            <column name="refgroup" value="customers" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART112" />
+            <column name="refgroup" value="helpdesk" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART121" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ART121" />
+            <column name="refgroup" value="administrators" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refgroup" value="free" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="7" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="44" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="7" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="44" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="7" />
+        </insert>
+        <insert tableName="contentrelations">
+            <column name="contentid" value="ALL4" />
+            <column name="refresource" value="44" />
+        </insert>
+
+
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART112" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2006-02-13T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2009-03-30T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Numero" />
+            <column name="numvalue" valueNumeric="78" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART104" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2007-01-04T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART1" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2004-03-10T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="TEATRO DELLE MERAVIGLIE" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Wonder's theater" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2007-12-12T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2007-12-22T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Sagra della ciliegia" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Cherry festival" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2008-01-06T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2008-01-24T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo Contenuto 1 Coach" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Coach's content 1 - title" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1999-04-15T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2000-04-14T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo C - Evento 3" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title D - Evento 3" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2017-04-12T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2017-09-12T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo D - Evento 4" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title A - Event 4" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2022-02-19T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2022-04-19T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo A - Evento 1" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title C - Event 1" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1996-04-17T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="1996-06-17T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Mostra Delle Fragole" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Strawberries Festival" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2006-01-13T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2006-03-04T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Castello dei bambini" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Children's castle" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2009-03-18T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2009-03-26T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Collezione Ingri" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Ingri Collection" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2008-02-13T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2008-02-22T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo B - Evento 2" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title B - Event 2" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1999-04-14T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="1999-06-14T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Mostra Zootecnica" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Zootechnical exposure" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2006-02-14T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2006-02-20T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART111" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2006-12-13T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2009-03-28T00:00:00" />
+        </insert>
+        <insert tableName="contentsearch">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Numero" />
+            <column name="numvalue" valueNumeric="7" />
+        </insert>
+
+
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART122" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART111" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART102" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART180" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART112" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART104" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART1" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ART187" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="contentattributeroles">
+            <column name="contentid" value="ALL4" />
+            <column name="attrname" value="Text" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+
+
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART102" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refcategory" value="cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART180" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART179" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART179" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART179" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refcategory" value="evento" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN193" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN192" />
+            <column name="refcategory" value="evento" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN192" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN192" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN25" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN23" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="EVN23" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general_cat1" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART111" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general_cat3" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART120" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART121" />
+            <column name="refcategory" value="general_cat3" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART121" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refcategory" value="general_cat3" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART122" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART112" />
+            <column name="refcategory" value="general" />
+        </insert>
+        <insert tableName="workcontentrelations">
+            <column name="contentid" value="ART112" />
+            <column name="refcategory" value="general_cat2" />
+        </insert>
+
+
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART111" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2006-12-13T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2009-03-28T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Numero" />
+            <column name="numvalue" valueNumeric="7" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2009-03-30T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Numero" />
+            <column name="numvalue" valueNumeric="78" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART112" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2006-02-13T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART104" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2007-01-04T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART1" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2004-03-10T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="ART179" />
+            <column name="attrname" value="Data" />
+            <column name="datevalue" valueDate="2009-07-16T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="TEATRO DELLE MERAVIGLIE" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Wonder's theater" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2007-12-12T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2007-12-22T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Sagra della ciliegia" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Cherry festival" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2008-01-06T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2008-01-24T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo Contenuto 1 Coach" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Coach's content 1 - title" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1999-04-15T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2000-04-14T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo C - Evento 3" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title D - Evento 3" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2017-04-12T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2017-09-12T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo D - Evento 4" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title A - Event 4" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2022-02-19T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2022-04-19T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo A - Evento 1" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title C - Event 1" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1996-04-17T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="1996-06-17T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Mostra Delle Fragole" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Strawberries Festival" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2006-01-13T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2006-03-04T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Castello dei bambini" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Children's castle" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2009-03-18T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2009-03-26T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Collezione Ingri" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Ingri Collection" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2008-02-13T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2008-02-22T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Titolo B - Evento 2" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Title B - Event 2" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="1999-04-14T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="1999-06-14T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Mostra Zootecnica" />
+            <column name="langcode" value="it" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="textvalue" value="Zootechnical exposure" />
+            <column name="langcode" value="en" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="DataInizio" />
+            <column name="datevalue" valueDate="2006-02-14T00:00:00" />
+        </insert>
+        <insert tableName="workcontentsearch">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="DataFine" />
+            <column name="datevalue" valueDate="2006-02-20T00:00:00" />
+        </insert>
+
+
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART122" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART121" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART120" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART111" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART102" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART180" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART112" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART104" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART1" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART179" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ART187" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN193" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN194" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN191" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN25" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN21" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN41" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN24" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN23" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN103" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN192" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="EVN20" />
+            <column name="attrname" value="Titolo" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+        <insert tableName="workcontentattributeroles">
+            <column name="contentid" value="ALL4" />
+            <column name="attrname" value="Text" />
+            <column name="rolename" value="jacms:title" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

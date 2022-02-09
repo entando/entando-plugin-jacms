@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+<property key="maxElemForItem">10</property>
+<property key="filters">(order=ASC;attributeFilter=true;end=31/12/1999;key=DataInizio;start=01/01/1990)</property>
+<property key="contentType">EVN</property>
+</properties>

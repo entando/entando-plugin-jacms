@@ -1,0 +1,9 @@
+<config>
+	<parameter name="contentId">
+		Identificativo del Contenuto
+	</parameter>
+	<parameter name="modelId">
+		Identificativo del Modello di Contenuto
+	</parameter>
+	<action name="viewerConfig"/>
+</config>

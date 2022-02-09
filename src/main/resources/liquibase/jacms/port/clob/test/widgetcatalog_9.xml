@@ -1,0 +1,8 @@
+<config>
+	<parameter name="contents">Contents to Publish (mandatory)</parameter>
+	<parameter name="maxElemForItem">Contents for each page</parameter>
+	<parameter name="title_{lang}">Widget Title in lang {lang}</parameter>
+	<parameter name="pageLink">The code of the Page to link</parameter>
+	<parameter name="linkDescr_{lang}">Link description in lang {lang}</parameter>
+	<action name="rowListViewerConfig" />
+</config>

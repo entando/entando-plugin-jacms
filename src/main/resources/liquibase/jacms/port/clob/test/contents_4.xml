@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="EVN20" typecode="EVN" typedescr="Evento">
+    <descr>Mostra zootecnica</descr>
+    <groups mainGroup="free" />
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Mostra Zootecnica</text>
+            <text lang="en">Zootechnical exposure</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[<p>Annuncio svolgimento mostra zootecnicaMostra</p>]]></hypertext>
+        </attribute>
+        <attribute name="DataInizio" attributetype="Date">
+            <date>20060214</date>
+        </attribute>
+        <attribute name="DataFine" attributetype="Date">
+            <date>20060220</date>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <list attributetype="Monolist" name="LinkCorrelati" nestedtype="Link" />
+    </attributes>
+    <status>DRAFT</status>
+</content>

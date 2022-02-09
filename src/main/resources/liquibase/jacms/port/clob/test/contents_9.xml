@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content id="RAH1" typecode="RAH" typedescr="Tipo_Semplice">
+    <descr>Articolo</descr>
+    <groups mainGroup="free" />
+    <categories />
+    <attributes>
+        <attribute name="Titolo" attributetype="Text">
+            <text lang="it">Un bel titolo</text>
+        </attribute>
+        <attribute name="CorpoTesto" attributetype="Hypertext">
+            <hypertext lang="it"><![CDATA[test test]]></hypertext>
+        </attribute>
+        <attribute name="Foto" attributetype="Image" />
+        <attribute name="email" attributetype="Monotext" />
+        <attribute name="Numero" attributetype="Number" />
+        <attribute name="Correlati" attributetype="Link" />
+        <attribute name="Allegati" attributetype="Attach">
+            <resource resourcetype="Attach" id="7" lang="it" />
+            <text lang="it">lop</text>
+            <text lang="en">linux</text>
+        </attribute>
+        <attribute name="Checkbox" attributetype="CheckBox" />
+    </attributes>
+    <status>DRAFT</status>
+</content>
