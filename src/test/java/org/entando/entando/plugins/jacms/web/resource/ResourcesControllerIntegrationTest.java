@@ -110,7 +110,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    void testGetAssetsGetImageInstanceFileName() throws Exception {
+    void testGetAssetsGetImagesFileName() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
                 .build();
@@ -125,7 +125,7 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
     }
 
     @Test
-    void testGetAssetsGetFileInstanceFileName() throws Exception {
+    void testGetAssetsGetFilesFileName() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
                 .build();
