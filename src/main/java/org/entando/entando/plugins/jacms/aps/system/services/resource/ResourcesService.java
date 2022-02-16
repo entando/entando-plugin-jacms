@@ -32,15 +32,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -646,8 +643,10 @@ public class ResourcesService implements IComponentExistsService {
                 .version(ImageMetadataDto.builder()
                         .path(resource.getImagePath("0"))
                         .size(resource.getDefaultInstance().getFileLength())
+                        .fileName(resource.getDefaultInstance().getFileName())
                         .build())
                 .owner(resource.getOwner())
+                .fileName(resource.getMasterFileName())
                 .folderPath(resource.getFolderPath());
 
         for (ImageResourceDimension dimensions : getImageDimensions()) {
@@ -662,6 +661,7 @@ public class ResourcesService implements IComponentExistsService {
             builder.version(ImageMetadataDto.builder()
                     .path(resource.getImagePath(String.valueOf(dimensions.getIdDim())))
                     .size(instance.getFileLength())
+                    .fileName(instance.getFileName())
                     .dimensions(String.format("%dx%d px", dimensions.getDimx(), dimensions.getDimy()))
                     .build());
         }
@@ -684,6 +684,7 @@ public class ResourcesService implements IComponentExistsService {
                         .map(Category::getCode).collect(Collectors.toList()))
                 .owner(resource.getOwner())
                 .folderPath(resource.getFolderPath())
+                .fileName(resource.getInstance().getFileName())
                 .build();
     }
 

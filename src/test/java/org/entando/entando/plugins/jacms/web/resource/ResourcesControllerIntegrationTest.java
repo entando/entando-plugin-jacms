@@ -36,7 +36,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -45,8 +44,7 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -109,6 +107,32 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
         performGetResources(user, "image", null)
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetAssetsGetImageInstanceFileName() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
+                .build();
+        performGetResources(user, "image", null)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload[0].fileName", is(not(nullValue()))))
+                .andExpect(jsonPath("$.payload[0].versions[0].fileName",is(not(nullValue()))))
+                .andExpect(jsonPath("$.payload[0].versions[1].fileName",is(not(nullValue()))))
+                .andExpect(jsonPath("$.payload[0].versions[2].fileName",is(not(nullValue()))))
+                .andExpect(jsonPath("$.payload[0].versions[3].fileName",is(not(nullValue()))));
+    }
+
+    @Test
+    void testGetAssetsGetFileInstanceFileName() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_SUPERVISOR)
+                .build();
+        performGetResources(user, "file", null)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload[0].fileName", is(not(nullValue()))));
     }
 
     @Test
