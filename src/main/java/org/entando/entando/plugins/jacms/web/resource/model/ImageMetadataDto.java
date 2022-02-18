@@ -9,4 +9,5 @@ public class ImageMetadataDto {
     private String dimensions;
     private String path;
     private String size;
+    private String fileName;
 }
