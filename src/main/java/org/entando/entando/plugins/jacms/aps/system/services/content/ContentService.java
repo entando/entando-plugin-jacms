@@ -368,7 +368,10 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         if (null != contentIds) {
             contentIds.stream().forEach(i -> {
                 try {
-                    dtoList.add(this.getDtoBuilder().convert(this.getContentManager().loadContent(i, true)));
+                    Content content = this.getContentManager().loadContent(i, true);
+                    if (content != null) {
+                        dtoList.add(this.getDtoBuilder().convert(content));
+                    }
                 } catch (EntException e) {
                     logger.error("error loading content {}", i, e);
                 }
