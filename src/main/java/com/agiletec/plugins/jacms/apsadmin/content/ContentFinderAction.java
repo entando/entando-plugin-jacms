@@ -196,6 +196,7 @@ public class ContentFinderAction extends AbstractApsEntityFinderAction {
                 searchInfo = new ContentFinderSearchInfo();
                 this.getRequest().getSession().setAttribute(ContentFinderSearchInfo.SESSION_NAME, searchInfo);
             }
+            this.createFilters();
             this.restoreCommonSearchState(searchInfo);
             this.restoreCategorySearchState(searchInfo);
             this.restoreEntitySearchState(searchInfo);
