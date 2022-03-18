@@ -119,6 +119,7 @@
 
 .bs-cropping-modal .toolbar-container .btn-primary {
     background: transparent;
+    background-color: transparent !important;
     color: #363636;
     font-size: 20px;
     border: none;
