@@ -353,7 +353,17 @@ class TestContentFinderAction extends AbstractBaseTestContentAction {
 		contents = action.getContents();
 		assertEquals(0, contents.size());
 	}
-	
+
+	@Test
+	void testGetPaginatedContentsIdAfterLoadingResults() throws Throwable {
+		this.initAction("/do/jacms/Content", "results");
+		this.setUserOnSession("admin");
+		String result = this.executeAction();
+		assertEquals(Action.SUCCESS, result);
+		ContentFinderAction action = (ContentFinderAction) this.getAction();
+		action.getPaginatedContentsId(10);
+	}
+
 	private void executeSearch(String currentUserName, Map<String, String> params) throws Throwable {
 		this.initAction("/do/jacms/Content", "search");
 		this.setUserOnSession(currentUserName);
