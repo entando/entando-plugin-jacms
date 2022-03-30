@@ -118,6 +118,9 @@
 					<s:elseif test="#attribute.type == 'Timestamp'">
 						<s:include value="/WEB-INF/apsadmin/jsp/entity/modules/timestampAttribute.jsp" />
 					</s:elseif>
+					<s:elseif test="#attribute.type == 'Email'">
+						<s:include value="/WEB-INF/apsadmin/jsp/entity/modules/monotextAttribute.jsp" />
+					</s:elseif>
 					<wpsa:hookPoint key="jacms.entryContent.attributeExtra" objectName="hookPointElements_jacms_entryContent_attributeExtra">
 						<s:iterator value="#hookPointElements_jacms_entryContent_attributeExtra" var="hookPointElement">
 							<wpsa:include value="%{#hookPointElement.filePath}"></wpsa:include>
