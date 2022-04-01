@@ -134,7 +134,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
 
             Map<String, String> imgMetadata = new HashMap<>();
 
-            if(!bean.getMimeType().contains("svg")) {
+            if(!bean.getMimeType().contains("image/svg")) {
                 imgMetadata = getImgMetadata(tempMasterFile, ignoreMetadataKeys);
             }
 
@@ -177,7 +177,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
                 }
             }
         } catch (ImageProcessingException|IOException ex) {
-            logger.error("Error reading image metadata for file {}", file.getName(), ex);
+            logger.warn("Error reading image metadata for file {}", file.getName(), ex);
         }
         return meta;
     }
