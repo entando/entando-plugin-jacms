@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,14 @@ public class ImageResource extends AbstractMultiInstanceResource {
         logger.debug("Get image Metadata in Resource Action");
         Map<String, String> meta = new HashMap<>();
         try {
+
+            String extension = FilenameUtils.getExtension(file.getName());
+
+            if (extension.equalsIgnoreCase("svg")){
+                System.out.println("return Collections.emptyMap())");
+                return Collections.emptyMap();
+            }
+
             Metadata metadata = ImageMetadataReader.readMetadata(file);
 
             for (Directory directory : metadata.getDirectories()) {
