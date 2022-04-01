@@ -473,13 +473,12 @@ jQuery(document).ready(function ($) {
             case 'crop':
 
                 if ($('.singleImageUpload').length === 1) {
-                    var imageData = "";
                     if (file) {
-                        imageData = file.cropper.getCroppedCanvas().toDataURL(file.type);
-                        file.fileInput = dataURLtoFile(imageData, file.name);
-                        file.cropper.replace(imageData);
-                        file.imageData = imageData;
-                        fileUploadManager.files[fileId] = file;
+                        var imageData = file.cropper.getCroppedCanvas().toDataURL(file.type);
+                        var fileInput = dataURLtoFile(imageData, file.name);
+                        var croppedFile = fileUploadManager.prepareFile(fileInput);
+                        croppedFile.uploadId = file.uploadId;
+                        fileUploadManager.files[fileId] = croppedFile;
                     }
 
                     // DOMToastSuccess("Image cropped!");
@@ -720,15 +719,16 @@ jQuery(document).ready(function ($) {
         if (imagePath) {
             toDataUrl(imagePath, function (imageData) {
 
-                var name = $('#descr_0').val();
+                var name = $('#fileUploadName_0').val();
+                var description = $('#descr_0').val();
                 var imageData = imageData;
                 var type = imageData.substring("data:".length, imageData.indexOf(";base64"));
 
                 var newFile = fileUploadManager.prepareFile(dataURLtoFile(imageData, name));
                 newFile.name = name;
+                newFile.description = description;
                 newFile.domElements.$formGroup = $('#formGroup-0');
                 newFile.imageData = imageData;
-
 
                 var newFileId = fileUploadManager.insertFile(newFile);
                 var tabResult = addTab(newFileId);
@@ -745,6 +745,19 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    var singleAttachEdit = $('#attachUrl');
+
+    if (singleAttachEdit.length === 1) {
+        var attachPath = singleAttachEdit.data('value');
+        if (attachPath) {
+            toDataUrl(attachPath, function (attachData) {
+                var name = $('#fileUploadName_0').val();
+                var file = fileUploadManager.prepareFile(dataURLtoFile(attachData, name));
+                file.description = $('#descr_0').val();
+                fileUploadManager.insertFile(file);
+            });
+        }
+    }
 
 });
 

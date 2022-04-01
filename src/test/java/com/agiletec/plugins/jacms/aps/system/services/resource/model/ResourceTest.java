@@ -1,11 +1,9 @@
 package com.agiletec.plugins.jacms.aps.system.services.resource.model;
 
-import org.junit.*;
 import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.entando.entando.ent.exception.EntException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
