@@ -720,7 +720,7 @@
 
 <s:set var="resourceToShowVar" value="%{loadResource(resourceId)}"/>
 <s:set var="resourceMimeType" value="#resourceToShowVar.getDefaultInstance().getMimeType()"/>
-<s:if test="getStrutsAction() == 2 && !%{#resourceMimeType.contains(\"image/svg\")}">
+<s:if test="getStrutsAction() == 2 && !#resourceMimeType.contains(\"image/svg\")">
     <div class="col-xs-12 no-padding">
         <h2><s:text name="title.metadata"/></h2>
     </div>
