@@ -311,8 +311,8 @@
                                  cssClass="form-control fileUploadId"
                                  value="%{#uploadIdFieldVar}"/>
 
-                    <s:if test="%{'' != getFileName(#ctr.count - 1)}">
-                        <s:set var="fileNameFieldVar" value="%{getFileName(#ctr.count - 1)}"/></s:if>
+                    <s:if test="%{'' != getFileUploadFileName(#ctr.count - 1)}">
+                        <s:set var="fileNameFieldVar" value="%{getFileUploadFileName(#ctr.count - 1)}"/></s:if>
                     <s:else>
                         <s:set var="paramNameVarFileName" value="%{'fileUploadName_' + (#ctr.count - 1)}"/>
                         <s:set var="fileNameFieldVar" value="%{#parameters[#paramNameVarFileName][0]}"/>
@@ -712,7 +712,7 @@
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-sm-12 margin-small-vertical">
-                <input id="submit" type="submit" value="<s:property value="%{getText('label.' + resourceTypeCode + '.new')}" escapeXml="true" />" class="btn btn-primary pull-right">
+                <input id="submit" type="submit" value="<s:property value="%{getText('label.' + resourceTypeCode + '.save')}" escapeXml="true" />" class="btn btn-primary pull-right">
             </div>
         </div>
     </div>
@@ -746,13 +746,18 @@
             <tbody>
         </table>
     </div>
-
-    <span
-            id="imageUrl"
-            data-value="<s:property value="%{#resourceToShowVar.getImagePath(0)}"/>"
-            class="hidden"
-    >
-    </span>
+</s:if>
+<s:if test="getStrutsAction() == 2>
+    <s:if test="%{resourceTypeCode == 'Image'}">
+        <span id="imageUrl"
+              data-value="<s:property value="%{#resourceToShowVar.getImagePath(0)}"/>"
+              class="hidden"></span>
+    </s:if>
+    <s:if test="%{resourceTypeCode == 'Attach'}">
+        <span id="attachUrl"
+              data-value="<s:property value="%{#resourceToShowVar.getAttachPath()}"/>"
+              class="hidden"></span>
+    </s:if>
 </s:if>
 
 <div class="toast-pf alert alert-success alert-dismissable toast-crop-editor-success toast-success-blueprint hidden">

@@ -24,7 +24,6 @@ import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class MultipleResourceAction extends ResourceAction {
@@ -182,6 +181,7 @@ public class MultipleResourceAction extends ResourceAction {
             this.setMainGroup(resource.getMainGroup());
             this.setStrutsAction(ApsAdminSystemConstants.EDIT);
             this.setMetadata(resource.getMetadata());
+            this.setFileUploadFileNames(Collections.singletonList(resource.getMasterFileName()));
         } catch (Throwable t) {
             logger.error("error in edit", t);
             return FAILURE;
