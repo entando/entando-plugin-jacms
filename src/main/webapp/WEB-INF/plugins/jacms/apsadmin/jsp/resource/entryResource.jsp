@@ -747,7 +747,7 @@
         </table>
     </div>
 </s:if>
-<s:if test="getStrutsAction() == 2>
+<s:if test="getStrutsAction() == 2">
     <s:if test="%{resourceTypeCode == 'Image'}">
         <span id="imageUrl"
               data-value="<s:property value="%{#resourceToShowVar.getImagePath(0)}"/>"
