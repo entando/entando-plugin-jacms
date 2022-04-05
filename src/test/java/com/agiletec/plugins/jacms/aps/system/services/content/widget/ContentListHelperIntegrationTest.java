@@ -235,7 +235,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    void testGetContents_3() throws Throwable {
+    synchronized void testGetContents_3() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;
