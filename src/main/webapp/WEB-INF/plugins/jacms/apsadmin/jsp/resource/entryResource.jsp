@@ -718,8 +718,9 @@
     </div>
 </s:form>
 
-<s:if test="getStrutsAction() == 2 ">
-
+<s:set var="resourceToShowVar" value="%{loadResource(resourceId)}"/>
+<s:set var="resourceMimeType" value="#resourceToShowVar.getDefaultInstance().getMimeType()"/>
+<s:if test="getStrutsAction() == 2 && !#resourceMimeType.contains(\"image/svg\")">
     <div class="col-xs-12 no-padding">
         <h2><s:text name="title.metadata"/></h2>
     </div>
@@ -745,8 +746,8 @@
             <tbody>
         </table>
     </div>
-
-    <s:set var="resourceToShowVar" value="%{loadResource(resourceId)}"/>
+</s:if>
+<s:if test="getStrutsAction() == 2">
     <s:if test="%{resourceTypeCode == 'Image'}">
         <span id="imageUrl"
               data-value="<s:property value="%{#resourceToShowVar.getImagePath(0)}"/>"

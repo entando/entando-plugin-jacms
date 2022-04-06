@@ -2,7 +2,7 @@
 <%@ taglib uri="/apsadmin-core" prefix="wpsa" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- tabs --%>
-<script src="<wp:resourceURL />administration/js/jquery.entando.js"/>
+<script src="<wp:resourceURL />administration/js/jquery.entando.js"></script>
 <script>
 	jQuery(function(){
 		<%--
@@ -22,6 +22,10 @@
 				var toggler = $('[href="#'+ tabId +'"][data-toggle="tab"]', tabTogglersContainer).first();
 				if (toggler.length==1) {
 					$(toggler).tab('show');
+					// restore scroll position triggering hash change
+					var targetElement = document.location.hash;
+					location.href = "#";
+					location.href = targetElement;
 				}
 			}
 		}

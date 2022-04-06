@@ -132,7 +132,13 @@ public class ImageResource extends AbstractMultiInstanceResource {
                 ((BaseResourceDataBean)bean).setFile(tempMasterFile);
             }
 
-            setMetadata(getImgMetadata(tempMasterFile, ignoreMetadataKeys));
+            Map<String, String> imgMetadata = new HashMap<>();
+
+            if(!bean.getMimeType().contains("image/svg")) {
+                imgMetadata = getImgMetadata(tempMasterFile, ignoreMetadataKeys);
+            }
+
+            setMetadata(imgMetadata);
             ResourceInstance instance = new ResourceInstance();
             instance.setSize(0);
             instance.setFileName(masterImageFileName);
@@ -171,7 +177,7 @@ public class ImageResource extends AbstractMultiInstanceResource {
                 }
             }
         } catch (ImageProcessingException|IOException ex) {
-            logger.error("Error reading image metadata for file {}", file.getName(), ex);
+            logger.warn("Error reading image metadata for file {}", file.getName(), ex);
         }
         return meta;
     }
