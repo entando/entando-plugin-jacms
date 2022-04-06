@@ -345,7 +345,7 @@ class ContentSettingsControllerIntegrationTest extends AbstractControllerIntegra
             .andDo(print())
             .andExpect(status().isOk());
 		synchronized (this) {
-			this.wait(1000);
+			this.wait(100);
 		}
         performGetContentSettings(user)
             .andDo(print())
