@@ -235,6 +235,8 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    // synchronized modifier is used here to avoid issues caused by concurrent calls of
+    // helper.getContentsId() method when running tests in CI environment
     synchronized void testGetContents_3() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
