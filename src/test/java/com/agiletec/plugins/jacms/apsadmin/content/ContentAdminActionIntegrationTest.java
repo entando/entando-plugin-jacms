@@ -17,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.ApsEntityManager;
+import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.apsadmin.system.BaseAction;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
@@ -37,6 +39,7 @@ import org.junit.jupiter.api.Test;
 class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
 
     private IResourceManager resourceManager;
+    private ConfigInterface configManager;
 
     @Test
     void testOpenIndexProspect() throws Throwable {
@@ -170,6 +173,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     @Test
     void testAddValidAspectRatio() throws Throwable {
         Map<String, List<String>> defaultMapping = this.resourceManager.getMetadataMapping();
+        String xmlParams = this.configManager.getConfigItem(SystemConstants.CONFIG_ITEM_PARAMS);
         try {
             this.initAction("/do/jacms/Content/Admin", "updateSystemParams");
             this.setUserOnSession("admin");
@@ -184,6 +188,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
             throw e;
         } finally {
             this.resourceManager.updateMetadataMapping(defaultMapping);
+            this.configManager.updateConfigItem(SystemConstants.CONFIG_ITEM_PARAMS, xmlParams);
         }
     }
 
@@ -275,6 +280,7 @@ class ContentAdminActionIntegrationTest extends AbstractBaseTestContentAction {
     protected void init() throws Exception {
         try {
             this.resourceManager = (IResourceManager) this.getService(JacmsSystemConstants.RESOURCE_MANAGER);
+            this.configManager = (ConfigInterface) this.getApplicationContext().getBean(SystemConstants.BASE_CONFIG_MANAGER);
         } catch (Throwable t) {
             throw new Exception(t);
         }
