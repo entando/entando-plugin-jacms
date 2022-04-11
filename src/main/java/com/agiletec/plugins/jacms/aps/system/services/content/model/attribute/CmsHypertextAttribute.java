@@ -13,13 +13,6 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 
-import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
 import com.agiletec.aps.system.common.entity.model.attribute.HypertextAttribute;
@@ -32,7 +25,14 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.util.HypertextAttributeUtil;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.util.SymbolicLinkValidator;
-import org.entando.entando.ent.exception.EntRuntimeException;
+import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Rappresenta una informazione di tipo "ipertesto" specifico per il cms.
@@ -219,4 +219,13 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
     private transient IPageManager pageManager;
     private transient IResourceManager resourceManager;
 
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+        this.setContentManager(ctx.getBean(IContentManager.class));
+        this.setPageManager(ctx.getBean(IPageManager.class));
+        this.setResourceManager(ctx.getBean(IResourceManager.class));
+        this.setLangManager(ctx.getBean(ILangManager.class));
+    }
 }
