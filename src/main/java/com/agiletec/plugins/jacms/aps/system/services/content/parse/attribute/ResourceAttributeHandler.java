@@ -163,6 +163,10 @@ public class ResourceAttributeHandler extends TextAttributeHandler {
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+        if (ctx == null) {
+            _logger.warn("Null WebApplicationContext during deserialization");
+            return;
+        }
         this.setResourceManager(ctx.getBean(IResourceManager.class));
     }
 }

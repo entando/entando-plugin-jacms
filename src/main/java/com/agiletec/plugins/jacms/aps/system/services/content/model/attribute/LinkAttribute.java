@@ -13,18 +13,9 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content.model.attribute;
 
-import com.agiletec.aps.system.common.entity.model.FieldError;
-import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jdom.Element;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
 import com.agiletec.aps.system.common.entity.model.AttributeFieldError;
 import com.agiletec.aps.system.common.entity.model.AttributeTracer;
+import com.agiletec.aps.system.common.entity.model.FieldError;
 import com.agiletec.aps.system.common.entity.model.attribute.AbstractJAXBAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.TextAttribute;
 import com.agiletec.aps.system.services.lang.ILangManager;
@@ -36,11 +27,18 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.util.SymbolicLinkValidator;
 import com.agiletec.plugins.jacms.aps.system.services.linkresolver.ILinkResolverManager;
+import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.exception.EntRuntimeException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.jdom.Element;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -322,6 +320,10 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+        if (ctx == null) {
+            logger.warn("Null WebApplicationContext during deserialization");
+            return;
+        }
         this.setContentManager(ctx.getBean(IContentManager.class));
         this.setPageManager(ctx.getBean(IPageManager.class));
         this.setLinkResolverManager(ctx.getBean(ILinkResolverManager.class));

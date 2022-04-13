@@ -17,9 +17,12 @@ import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.ContextLoader;
 
-public class AttributeSerializationIntegrationTest extends BaseTestCase {
+class AttributeSerializationIntegrationTest extends BaseTestCase {
 
     private ConfigInterface configManager;
     private ILangManager langManager;
@@ -46,6 +49,9 @@ public class AttributeSerializationIntegrationTest extends BaseTestCase {
         attribute = testSerializeAndDeserialize(attribute);
         Assertions.assertNotNull(attribute.getResourceManager());
         Assertions.assertNotNull(attribute.getConfigManager());
+        attribute = testSerializeAndDeserializeNullApplicationContext(attribute);
+        Assertions.assertNull(attribute.getResourceManager());
+        Assertions.assertNull(attribute.getConfigManager());
     }
 
     @Test
@@ -60,6 +66,10 @@ public class AttributeSerializationIntegrationTest extends BaseTestCase {
         Assertions.assertNotNull(attribute.getPageManager());
         Assertions.assertNotNull(attribute.getResourceManager());
         Assertions.assertNotNull(ReflectionTestUtils.invokeGetterMethod(attribute, "langManager"));
+        attribute = testSerializeAndDeserializeNullApplicationContext(attribute);
+        Assertions.assertNull(attribute.getContentManager());
+        Assertions.assertNull(attribute.getPageManager());
+        Assertions.assertNull(attribute.getResourceManager());
     }
 
     @Test
@@ -76,6 +86,12 @@ public class AttributeSerializationIntegrationTest extends BaseTestCase {
         Assertions.assertNotNull(attribute.getResourceManager());
         Assertions.assertNotNull(attribute.getLinkResolverManager());
         Assertions.assertNotNull(ReflectionTestUtils.invokeGetterMethod(attribute, "langManager"));
+        attribute = testSerializeAndDeserializeNullApplicationContext(attribute);
+        Assertions.assertNull(attribute.getContentManager());
+        Assertions.assertNull(attribute.getPageManager());
+        Assertions.assertNull(attribute.getResourceManager());
+        Assertions.assertNull(attribute.getLinkResolverManager());
+        Assertions.assertNull(ReflectionTestUtils.invokeGetterMethod(attribute, "langManager"));
     }
 
     @Test
@@ -84,6 +100,15 @@ public class AttributeSerializationIntegrationTest extends BaseTestCase {
         attributeHandler.setResourceManager(resourceManager);
         attributeHandler = testSerializeAndDeserialize(attributeHandler);
         Assertions.assertNotNull(ReflectionTestUtils.invokeGetterMethod(attributeHandler, "resourceManager"));
+        attributeHandler = testSerializeAndDeserializeNullApplicationContext(attributeHandler);
+        Assertions.assertNull(ReflectionTestUtils.invokeGetterMethod(attributeHandler, "resourceManager"));
+    }
+
+    private <T> T testSerializeAndDeserializeNullApplicationContext(T attribute) throws Exception {
+        try (MockedStatic<ContextLoader> contextLoader = Mockito.mockStatic(ContextLoader.class)) {
+            contextLoader.when(() -> ContextLoader.getCurrentWebApplicationContext()).thenReturn(null);
+            return testSerializeAndDeserialize(attribute);
+        }
     }
 
     private <T> T testSerializeAndDeserialize(T object) throws Exception {

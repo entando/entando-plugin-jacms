@@ -223,6 +223,10 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+        if (ctx == null) {
+            logger.warn("Null WebApplicationContext during deserialization");
+            return;
+        }
         this.setContentManager(ctx.getBean(IContentManager.class));
         this.setPageManager(ctx.getBean(IPageManager.class));
         this.setResourceManager(ctx.getBean(IResourceManager.class));

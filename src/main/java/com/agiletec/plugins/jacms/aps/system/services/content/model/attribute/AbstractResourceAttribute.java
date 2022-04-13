@@ -456,6 +456,10 @@ public abstract class AbstractResourceAttribute extends TextAttribute
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+        if (ctx == null) {
+            logger.warn("Null WebApplicationContext during deserialization");
+            return;
+        }
         this.setConfigManager(ctx.getBean(ConfigInterface.class));
         this.setResourceManager(ctx.getBean(IResourceManager.class));
     }
