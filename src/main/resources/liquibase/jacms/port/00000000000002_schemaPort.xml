@@ -6,13 +6,13 @@
            http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
     <changeSet id="00000000000002_jacms_schemaPort" author="entando">
-        <addNotNullConstraint tableName="contentattributeroles" columnName="attrname"></addNotNullConstraint>
-        <addNotNullConstraint tableName="contentattributeroles" columnName="rolename"></addNotNullConstraint>
-        <addNotNullConstraint tableName="contentsearch" columnName="attrname"></addNotNullConstraint>
-        <addNotNullConstraint tableName="workcontentattributeroles" columnName="attrname"></addNotNullConstraint>
-        <addNotNullConstraint tableName="workcontentattributeroles" columnName="rolename"></addNotNullConstraint>
-        <addNotNullConstraint tableName="workcontentsearch" columnName="attrname"></addNotNullConstraint>
-        <addNotNullConstraint tableName="resourcerelations" columnName="refcategory"></addNotNullConstraint>
+        <addNotNullConstraint tableName="contentattributeroles" columnName="attrname" columnDataType="varchar(30)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="contentattributeroles" columnName="rolename" columnDataType="varchar(50)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="contentsearch" columnName="attrname" columnDataType="varchar(30)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="workcontentattributeroles" columnName="attrname" columnDataType="varchar(30)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="workcontentattributeroles" columnName="rolename" columnDataType="varchar(30)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="workcontentsearch" columnName="attrname" columnDataType="varchar(30)"></addNotNullConstraint>
+        <addNotNullConstraint tableName="resourcerelations" columnName="refcategory" columnDataType="varchar(30)"></addNotNullConstraint>
     </changeSet>
 
 </databaseChangeLog>
