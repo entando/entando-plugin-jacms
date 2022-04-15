@@ -224,22 +224,18 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
     @Override
     @Deprecated
     public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager) {
-        logger.warn("{} expects BeanFactory to be passed to validate method", this.getClass().getName());
         return this.validate(tracer, langManager, null);
     }
 
     @Override
     public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager, BeanFactory beanFactory) {
-        List<AttributeFieldError> errors = super.validate(tracer, langManager);
+        List<AttributeFieldError> errors = super.validate(tracer, langManager, beanFactory);
         try {
             SymbolicLink symbolicLink = this.getSymbolicLink();
             if (null == symbolicLink) {
                 return errors;
             }
-            IContentManager contentManager = beanFactory == null ? this.getContentManager() : beanFactory.getBean(IContentManager.class);
-            IPageManager pageManager = beanFactory == null ? this.getPageManager() : beanFactory.getBean(IPageManager.class);
-            IResourceManager resourceManager = beanFactory == null ? this.getResourceManager() : beanFactory.getBean(IResourceManager.class);
-            SymbolicLinkValidator sler = new SymbolicLinkValidator(contentManager, pageManager, resourceManager);
+            SymbolicLinkValidator sler = this.getSymbolicLinkValidator(beanFactory);
             AttributeFieldError attributeError = sler.scan(symbolicLink, (Content) this.getParentEntity());
             if (null != attributeError) {
                 AttributeFieldError error = new AttributeFieldError(this, attributeError.getErrorCode(), tracer);
@@ -260,6 +256,14 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
             }
         }
         return errors;
+    }
+
+    private SymbolicLinkValidator getSymbolicLinkValidator(BeanFactory beanFactory) {
+        return new SymbolicLinkValidator(
+                beanFactory == null ? this.contentManager : beanFactory.getBean(IContentManager.class),
+                beanFactory == null ? this.pageManager : beanFactory.getBean(IPageManager.class),
+                beanFactory == null ? this.resourceManager : beanFactory.getBean(IResourceManager.class)
+        );
     }
 
     /**
@@ -343,10 +347,10 @@ public class LinkAttribute extends TextAttribute implements IReferenceableAttrib
             logger.warn("Null WebApplicationContext during deserialization");
             return;
         }
-        this.setContentManager(ctx.getBean(IContentManager.class));
-        this.setPageManager(ctx.getBean(IPageManager.class));
-        this.setLinkResolverManager(ctx.getBean(ILinkResolverManager.class));
-        this.setResourceManager(ctx.getBean(IResourceManager.class));
+        this.contentManager = ctx.getBean(IContentManager.class);
+        this.pageManager = ctx.getBean(IPageManager.class);
+        this.linkResolverManager = ctx.getBean(ILinkResolverManager.class);
+        this.resourceManager = ctx.getBean(IResourceManager.class);
         this.setLangManager(ctx.getBean(ILangManager.class));
     }
 }

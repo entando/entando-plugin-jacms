@@ -124,6 +124,7 @@ public class ResourceAttributeHandler extends TextAttributeHandler {
      *
      * @return Il Manager delle risorse.
      */
+    @Deprecated
     protected IResourceManager getResourceManager() {
         return this.resourceManager;
     }
@@ -133,6 +134,7 @@ public class ResourceAttributeHandler extends TextAttributeHandler {
      *
      * @param resourceManager Il manager delle risorse.
      */
+    @Deprecated
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
@@ -167,6 +169,6 @@ public class ResourceAttributeHandler extends TextAttributeHandler {
             _logger.warn("Null WebApplicationContext during deserialization");
             return;
         }
-        this.setResourceManager(ctx.getBean(IResourceManager.class));
+        this.resourceManager = ctx.getBean(IResourceManager.class);
     }
 }

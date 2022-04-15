@@ -436,18 +436,22 @@ public abstract class AbstractResourceAttribute extends TextAttribute
         return this.resources;
     }
 
+    @Deprecated
     protected ConfigInterface getConfigManager() {
         return configManager;
     }
 
+    @Deprecated
     public void setConfigManager(ConfigInterface configManager) {
         this.configManager = configManager;
     }
 
+    @Deprecated
     protected IResourceManager getResourceManager() {
         return resourceManager;
     }
 
+    @Deprecated
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
@@ -460,7 +464,7 @@ public abstract class AbstractResourceAttribute extends TextAttribute
             logger.warn("Null WebApplicationContext during deserialization");
             return;
         }
-        this.setConfigManager(ctx.getBean(ConfigInterface.class));
-        this.setResourceManager(ctx.getBean(IResourceManager.class));
+        this.configManager = ctx.getBean(ConfigInterface.class);
+        this.resourceManager = ctx.getBean(IResourceManager.class);
     }
 }

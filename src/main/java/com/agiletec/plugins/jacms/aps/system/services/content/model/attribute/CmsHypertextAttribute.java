@@ -154,13 +154,12 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
     @Override
     @Deprecated
     public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager) {
-        logger.warn("{} expects BeanFactory to be passed to validate method", this.getClass().getName());
         return this.validate(tracer, langManager, null);
     }
 
     @Override
     public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager, BeanFactory beanFactory) {
-        List<AttributeFieldError> errors = super.validate(tracer, langManager);
+        List<AttributeFieldError> errors = super.validate(tracer, langManager, beanFactory);
         try {
             List<Lang> langs = langManager.getLangs();
             for (Lang lang : langs) {
@@ -172,11 +171,8 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
                 }
                 List<SymbolicLink> links = HypertextAttributeUtil.getSymbolicLinksOnText(text);
                 if (null != links && !links.isEmpty()) {
-                    IContentManager contentManager = beanFactory == null ? this.getContentManager() : beanFactory.getBean(IContentManager.class);
-                    IPageManager pageManager = beanFactory == null ? this.getPageManager() : beanFactory.getBean(IPageManager.class);
-                    IResourceManager resourceManager = beanFactory == null ? this.getResourceManager() : beanFactory.getBean(IResourceManager.class);
-                    SymbolicLinkValidator sler = new SymbolicLinkValidator(contentManager, pageManager, resourceManager);
                     for (SymbolicLink symbLink : links) {
+                        SymbolicLinkValidator sler = this.getSymbolicLinkValidator(beanFactory);
                         AttributeFieldError attributeError = sler.scan(symbLink, (Content) this.getParentEntity());
                         if (null != attributeError) {
                             AttributeFieldError error = new AttributeFieldError(this, attributeError.getErrorCode(), textTracer);
@@ -195,6 +191,14 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
             throw new RuntimeException("Error validating Attribute '" + this.getName() + "'", t);
         }
         return errors;
+    }
+
+    private SymbolicLinkValidator getSymbolicLinkValidator(BeanFactory beanFactory) {
+        return new SymbolicLinkValidator(
+                beanFactory == null ? this.contentManager : beanFactory.getBean(IContentManager.class),
+                beanFactory == null ? this.pageManager : beanFactory.getBean(IPageManager.class),
+                beanFactory == null ? this.resourceManager : beanFactory.getBean(IResourceManager.class)
+        );
     }
 
     @Deprecated
@@ -244,9 +248,9 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
             logger.warn("Null WebApplicationContext during deserialization");
             return;
         }
-        this.setContentManager(ctx.getBean(IContentManager.class));
-        this.setPageManager(ctx.getBean(IPageManager.class));
-        this.setResourceManager(ctx.getBean(IResourceManager.class));
+        this.contentManager = ctx.getBean(IContentManager.class);
+        this.pageManager = ctx.getBean(IPageManager.class);
+        this.resourceManager = ctx.getBean(IResourceManager.class);
         this.setLangManager(ctx.getBean(ILangManager.class));
     }
 }
