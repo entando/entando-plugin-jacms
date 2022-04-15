@@ -90,7 +90,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
             contentId = this.extractContentId(contentId, widgetConfig, reqCtx);
             modelId = this.extractModelId(contentId, modelId, widgetConfig, reqCtx);
             if (contentId != null && modelId != null) {
-                long longModelId = new Long(modelId).longValue();
+                long longModelId = Long.parseLong(modelId);
                 this.setStylesheet(longModelId, reqCtx);
                 renderizationInfo = this.getContentDispenser().getRenderizationInfo(contentId, longModelId, langCode, reqCtx, true);
                 if (null == renderizationInfo) {
@@ -102,7 +102,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
                 renderizationInfo.replacePlaceholder(JacmsSystemConstants.CSP_NONCE_PLACEHOLDER, cspToken);
                 this.manageAttributeValues(renderizationInfo, publishExtraTitle, reqCtx);
             } else {
-                logger.warn("Parametri visualizzazione contenuto incompleti: " + "contenuto={} modello={}", contentId, modelId);
+                logger.warn("Incomplete content visualization parameters: contentId={} modelId={}", contentId, modelId);
             }
         } catch (Throwable t) {
             logger.error("Error extracting renderization info", t);
@@ -207,6 +207,7 @@ public class ContentViewerHelper implements IContentViewerHelper {
         if (null == modelId && null != contentId) {
             modelId = this.getContentManager().getDefaultModel(contentId);
         }
+        modelId = this.checkModelId(contentId, modelId);
         return modelId;
     }
 
