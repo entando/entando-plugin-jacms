@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -151,7 +152,14 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
     }
 
     @Override
+    @Deprecated
     public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager) {
+        logger.warn("{} expects BeanFactory to be passed to validate method", this.getClass().getName());
+        return this.validate(tracer, langManager, null);
+    }
+
+    @Override
+    public List<AttributeFieldError> validate(AttributeTracer tracer, ILangManager langManager, BeanFactory beanFactory) {
         List<AttributeFieldError> errors = super.validate(tracer, langManager);
         try {
             List<Lang> langs = langManager.getLangs();
@@ -164,7 +172,10 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
                 }
                 List<SymbolicLink> links = HypertextAttributeUtil.getSymbolicLinksOnText(text);
                 if (null != links && !links.isEmpty()) {
-                    SymbolicLinkValidator sler = new SymbolicLinkValidator(this.getContentManager(), this.getPageManager(), this.getResourceManager());
+                    IContentManager contentManager = beanFactory == null ? this.getContentManager() : beanFactory.getBean(IContentManager.class);
+                    IPageManager pageManager = beanFactory == null ? this.getPageManager() : beanFactory.getBean(IPageManager.class);
+                    IResourceManager resourceManager = beanFactory == null ? this.getResourceManager() : beanFactory.getBean(IResourceManager.class);
+                    SymbolicLinkValidator sler = new SymbolicLinkValidator(contentManager, pageManager, resourceManager);
                     for (SymbolicLink symbLink : links) {
                         AttributeFieldError attributeError = sler.scan(symbLink, (Content) this.getParentEntity());
                         if (null != attributeError) {
@@ -186,26 +197,32 @@ public class CmsHypertextAttribute extends HypertextAttribute implements IRefere
         return errors;
     }
 
+    @Deprecated
     protected IContentManager getContentManager() {
         return contentManager;
     }
 
+    @Deprecated
     public void setContentManager(IContentManager contentManager) {
         this.contentManager = contentManager;
     }
 
+    @Deprecated
     protected IPageManager getPageManager() {
         return pageManager;
     }
 
+    @Deprecated
     public void setPageManager(IPageManager pageManager) {
         this.pageManager = pageManager;
     }
 
+    @Deprecated
     public IResourceManager getResourceManager() {
         return resourceManager;
     }
 
+    @Deprecated
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
