@@ -75,6 +75,7 @@ public class SearchEngineManager extends AbstractService
     public void init() throws Exception {
         this.setIndexerDao(this.getFactory().getIndexer());
         this.setSearcherDao(this.getFactory().getSearcher());
+        this.startReloadContentsReferences();
     }
 
     @Override
