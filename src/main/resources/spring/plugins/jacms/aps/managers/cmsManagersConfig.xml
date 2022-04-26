@@ -270,5 +270,8 @@
             </map>
         </property>
     </bean>
-    
+    <bean id="jacmsIInitContentsIndex" class="com.agiletec.plugins.jacms.aps.system.services.searchengine.InitContentsIndex"
+          parent="abstractService" >
+    </bean>
+
 </beans>

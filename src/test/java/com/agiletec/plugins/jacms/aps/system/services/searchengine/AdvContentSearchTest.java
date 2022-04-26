@@ -19,8 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.agiletec.aps.BaseTestCase;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
+
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
@@ -32,8 +33,7 @@ import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
-import java.util.Collection;
-import java.util.Date;
+
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
@@ -58,8 +58,6 @@ class AdvContentSearchTest extends BaseTestCase {
             this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
         } catch (Exception e) {
             throw e;
@@ -339,18 +337,34 @@ class AdvContentSearchTest extends BaseTestCase {
         DateAttribute dateAttribute = (DateAttribute) masterContent.getAttribute("DataInizio");
         dateAttribute.setDate(DateConverter.parseDate("17/06/2019", "dd/MM/yyyy"));
         try {
-            this.contentManager.saveContent(masterContent);
+            String id = this.contentManager.saveContent(masterContent);
             this.contentManager.insertOnLineContent(masterContent);
+            Content content = this.contentManager.loadContent(id,true);
             this.waitNotifyingThread();
-            
+
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("NEW Contents : "+ content.getId() + " " +content.getStatus() );
+
+
+
             SearchEngineFilter filterForDate = new SearchEngineFilter("DataInizio", true);
             filterForDate.setOrder(EntitySearchFilter.DESC_ORDER);
+
             SearchEngineFilter typeFilter = new SearchEngineFilter(IContentManager.ENTITY_TYPE_CODE_FILTER_KEY, false, "EVN");
             SearchEngineFilter[] filters = {filterForDate, typeFilter};
             FacetedContentsResult result = this.searchEngineManager.searchFacetedEntities(filters, categoriesFilters, null);
             List<String> contents = result.getContentsId();
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("Contents : "+ contents);
+            System.out.println("Contents size : "+ contents.size());
+
             String[] expectedFreeOrderedContentsId = {"EVN194", masterContent.getId(), "EVN193", "EVN24",
                 "EVN23", "EVN25", "EVN20", "EVN21", "EVN192", "EVN191"};
+            System.out.println("expectedFreeOrderedContentsId : ");
+                    Arrays.stream(expectedFreeOrderedContentsId).forEach(v-> System.out.print(v + ", "));
+            System.out.println("expectedFreeOrderedContentsId size : "+ expectedFreeOrderedContentsId.length);
+
+            System.out.println("-------------------------------------------------------------------");
             assertEquals(expectedFreeOrderedContentsId.length, contents.size());
             for (int i = 0; i < expectedFreeOrderedContentsId.length; i++) {
                 assertEquals(expectedFreeOrderedContentsId[i], contents.get(i));

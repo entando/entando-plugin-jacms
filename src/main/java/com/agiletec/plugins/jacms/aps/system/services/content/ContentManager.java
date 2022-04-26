@@ -344,7 +344,10 @@ public class ContentManager extends ApsEntityManager
             }
             id = content.getId();
             this.notifyPublicContentChanging(content, operationEventCode);
+            System.out.println("notifyPublicContentChanging operationEventCode" + operationEventCode);
+
         } catch (Throwable t) {
+            System.out.println("Error while inserting content on line");
             logger.error("Error while inserting content on line", t);
             throw new EntException("Error while inserting content on line", t);
         }
