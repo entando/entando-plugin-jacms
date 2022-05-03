@@ -122,7 +122,6 @@ class ContentControllerTest extends AbstractControllerTest {
         }
         return mockMvc.perform(
                 get(path, code)
-                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 
@@ -132,7 +131,6 @@ class ContentControllerTest extends AbstractControllerTest {
                 post("/plugins/cms/contents")
                 .content(jsonContent)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 
@@ -142,7 +140,6 @@ class ContentControllerTest extends AbstractControllerTest {
                 put("/plugins/cms/contents/{code}", code)
                 .content(jsonContent)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 
