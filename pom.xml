@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.0.1-ENG-3504-PR-100</version>
+        <version>7.0.2</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
     <packaging>war</packaging>
-    <version>7.0.1</version>
+    <version>7.0.2</version>
     <name>Entando Plugin: CMS</name>
     <description>Allows registered users to manage dynamic contents and digital assets</description>
     <url>http://www.entando.com/</url>
