@@ -85,7 +85,7 @@ var FileUploadManager = function (config) {
 
         $formGroup = $(this.generateFormGroupById(newId));
         $formGroup.appendTo('#fields-container');
-
+        showHideDeleteActions();
         return $formGroup;
     };
 
@@ -346,10 +346,13 @@ jQuery(document).ready(function ($) {
         stopAction: 'stopUploadAndDelete.action'
     });
 
+    showHideDeleteActions();
+
     // Listen to add fields button click events and action on it.
     $('#add-fields').on('click', function (e) {
         e.preventDefault();
         fileUploadManager.addFormGroupForNewFile();
+        showHideDeleteActions();
     });
 
 
@@ -364,7 +367,19 @@ jQuery(document).ready(function ($) {
         } else {
             fileUploadManager.deleteFile(fileId);
         }
+        showHideDeleteActions();
+
     });
+
+    function showHideDeleteActions() {
+        const numFiles = $("#fields-container").children(".form-group:visible").length;
+        if (numFiles === 1) {
+            $(".delete-fields").hide();
+        }
+        else {
+            $(".delete-fields").show();
+        }
+    }
 
     // Listen to edit fields kebab menu item click events
     // and open related storeItem in modal.
@@ -395,34 +410,42 @@ jQuery(document).ready(function ($) {
             if (files.length > 0) {
                 // Change file input for currently selected file
                 var $target = $(e.target);
+                 if ($target.attr('id') !== 'newFileUpload-multiple') {
+                     $currentlyClickedFormGroup = $(e.target).closest('.form-group');
+                     var fileIndex = $currentlyClickedFormGroup.data('fileId');
+                     fileUploadManager.updateFile($currentlyClickedFormGroup.data('fileId'), files[0], $currentlyClickedFormGroup);
+                     var fileInput = fileUploadManager.files[fileIndex].fileInput;
+                     if (cropEditorEnabled) {
+                         readAsDataUrl(fileIndex, fileInput, function (fileIndex, imageData) {
+                             fileUploadManager.files[fileIndex].imageData = imageData;
+                             console.log("Will call addTab");
+                             var tabResult = addTab(fileIndex);
+                             fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
+                             fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
+                             // files.splice(0, 1);
+                         })
+                     }
+                 }
+                else {
+                    if (files.length > 0) {
+                        var offset = fileUploadManager.files.length;
+                        fileUploadManager.insertFiles(fileUploadManager.prepareFiles(files));
+                        if (cropEditorEnabled) {
+                            for (var i = 0; i < files.length; i++) {
+                                var fileInput = fileUploadManager.files[offset + i].fileInput;
+                                readAsDataUrl(offset + i, fileInput, function (fileIndex, imageData) {
+                                    fileUploadManager.files[fileIndex].imageData = imageData;
+                                    console.log("Will call addTab");
+                                    var tabResult = addTab(fileIndex);
+                                    fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
+                                    fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
 
-                // if ($target.attr('id') !== 'newFileUpload-multiple') {
-                //     $currentlyClickedFormGroup = $(e.target).closest('.form-group');
-                //     fileUploadManager.updateFile($currentlyClickedFormGroup.data('fileId'), files[0], $currentlyClickedFormGroup);
-                //     files.splice(0, 1);
-                // }
+                                })
+                            }
 
-                if (files.length > 0) {
-                    console.log("INSERT");
-                    var offset = fileUploadManager.files.length;
-                    fileUploadManager.insertFiles(fileUploadManager.prepareFiles(files));
-
-                    if (cropEditorEnabled) {
-                        for (var i = 0; i < files.length; i++) {
-                            var fileInput = fileUploadManager.files[offset + i].fileInput;
-                            readAsDataUrl(offset + i, fileInput, function (fileIndex, imageData) {
-                                fileUploadManager.files[fileIndex].imageData = imageData;
-                                console.log("Will call addTab");
-                                var tabResult = addTab(fileIndex);
-                                fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
-                                fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
-
-                            })
                         }
                     }
-                }
-
-
+                 }
             }
         }
     });
@@ -761,6 +784,15 @@ jQuery(document).ready(function ($) {
 
 });
 
+function showHideDeleteActions() {
+    const numFiles = $("#fields-container").children(".form-group:visible").length;
+    if (numFiles<2) {
+        $(".delete-fields").hide();
+    }
+    else {
+        $(".delete-fields").show();
+    }
+}
 
 // function deleteFile(fileId, stopUploadAndDeleteAction) {
 //     var formdata = new FormData();
