@@ -13,37 +13,30 @@
  */
 package org.entando.entando.plugins.jacms.web.content;
 
-import com.agiletec.aps.system.services.group.Group;
-import com.agiletec.aps.system.services.role.Permission;
-import com.agiletec.aps.system.services.user.UserDetails;
-import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
-import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
-import javax.servlet.http.HttpSession;
-import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
-import org.entando.entando.web.AbstractControllerTest;
-import org.entando.entando.web.utils.OAuth2TestUtils;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
 import static org.mockito.Mockito.when;
-
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.agiletec.aps.system.services.group.Group;
+import com.agiletec.aps.system.services.role.Permission;
+import com.agiletec.aps.system.services.user.UserDetails;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
+import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
+import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
+import org.entando.entando.web.AbstractControllerTest;
+import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,9 +47,6 @@ class ContentControllerTest extends AbstractControllerTest {
 
     @Mock
     private IContentService contentService;
-
-    @Mock
-    private HttpSession httpSession;
 
     @InjectMocks
     private ContentController controller;
@@ -72,7 +62,6 @@ class ContentControllerTest extends AbstractControllerTest {
     @Test
     public void shouldGetExistingContent() throws Exception {
         UserDetails user = this.createUser(true);
-        when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART123", IContentService.STATUS_DRAFT)).thenReturn(true);
         when(this.contentService.getContent(Mockito.eq("ART123"), Mockito.isNull(),
                 Mockito.eq("draft"), Mockito.isNull(), Mockito.anyBoolean(), Mockito.any(UserDetails.class))).thenReturn(new ContentDto());
@@ -83,7 +72,6 @@ class ContentControllerTest extends AbstractControllerTest {
     @Test
     void testUnexistingContent() throws Exception {
         UserDetails user = this.createUser(true);
-        Mockito.lenient().when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentValidator.existContent("ART098", IContentService.STATUS_ONLINE)).thenReturn(false);
         ResultActions result = performGetContent("ART098", null, true, null, user);
         result.andExpect(status().isNotFound());
@@ -92,7 +80,6 @@ class ContentControllerTest extends AbstractControllerTest {
     @Test
     void testAddContent() throws Exception {
         UserDetails user = this.createUser(true);
-        when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.addContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
                 .thenReturn(new ContentDto());
         String mockJson = "[{\n"
@@ -109,7 +96,6 @@ class ContentControllerTest extends AbstractControllerTest {
     @Test
     void testUpdateContent() throws Exception {
         UserDetails user = this.createUser(true);
-        when(this.httpSession.getAttribute("user")).thenReturn(user);
         when(this.contentService.updateContent(Mockito.any(ContentDto.class), Mockito.any(UserDetails.class), Mockito.any(BindingResult.class)))
                 .thenReturn(new ContentDto());
         String mockJson = "{\n"
@@ -136,7 +122,7 @@ class ContentControllerTest extends AbstractControllerTest {
         }
         return mockMvc.perform(
                 get(path, code)
-                .sessionAttr("user", user)
+                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 
@@ -146,7 +132,7 @@ class ContentControllerTest extends AbstractControllerTest {
                 post("/plugins/cms/contents")
                 .content(jsonContent)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .sessionAttr("user", user)
+                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 
@@ -156,7 +142,7 @@ class ContentControllerTest extends AbstractControllerTest {
                 put("/plugins/cms/contents/{code}", code)
                 .content(jsonContent)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .sessionAttr("user", user)
+                .requestAttr("user", user)
                 .header("Authorization", "Bearer " + accessToken));
     }
 

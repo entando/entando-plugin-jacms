@@ -13,6 +13,23 @@
  */
 package org.entando.entando.plugins.jacms.web.content;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
@@ -21,7 +38,12 @@ import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
-import com.agiletec.aps.system.services.page.*;
+import com.agiletec.aps.system.services.page.IPage;
+import com.agiletec.aps.system.services.page.IPageManager;
+import com.agiletec.aps.system.services.page.Page;
+import com.agiletec.aps.system.services.page.PageMetadata;
+import com.agiletec.aps.system.services.page.PageTestUtil;
+import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
@@ -35,6 +57,13 @@ import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInt
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
@@ -56,20 +85,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.io.InputStream;
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.agiletec.aps.system.SystemConstants;
 
 class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
@@ -2471,7 +2486,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         String accessToken = mockOAuthInterceptor(user);
         return mockMvc.perform(
                 get(path, code)
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
     }
 
@@ -2604,7 +2618,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filter[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filter[0].operator", "eq")
                         .param("filter[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(status().isOk());
         System.out.println(result.andReturn().getResponse().getContentAsString());
@@ -2629,7 +2642,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filter[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filter[0].operator", "eq")
                         .param("filter[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result
                 .andDo(print())
@@ -2664,7 +2676,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8));
@@ -2679,7 +2690,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("status", IContentService.STATUS_ONLINE)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult2 = result.andReturn().getResponse().getContentAsString();
         int payloadSize2 = JsonPath.read(bodyResult2, "$.payload.size()");
@@ -2698,7 +2708,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
                         .param("pageSize", "20")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2722,7 +2731,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
                         .param("pageSize", "20")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2755,7 +2763,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].operator", "lt")
                         .param("filters[1].type", "date")
                         .param("filters[1].value", "2020-09-19 01:00:00")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2791,7 +2798,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[2].operator", "lt")
                         .param("filters[2].type", "date")
                         .param("filters[2].value", "2020-09-19 01:00:00")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2818,7 +2824,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2846,7 +2851,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(status().isOk());
         String[] expectedFreeOrderedContentsId_1 = {"EVN191", "EVN192",
@@ -2870,7 +2874,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(status().isOk());
         String[] expectedFreeOrderedContentsId_2 = {"EVN191", "EVN192", "EVN193", "EVN194", "EVN24"};
@@ -2895,7 +2898,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].operator", "eq")
                         .param("filters[1].value", "EVN")
                         .param("pageSize", "5")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2919,7 +2921,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].operator", "eq")
                         .param("filters[1].value", "EVN")
                         .param("pageSize", "6")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -2954,7 +2955,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                             .param("filters[0].value", "EVN")
                             .param("filters[1].entityAttr", "DataInizio")
                             .param("filters[1].order", FieldSearchFilter.DESC_ORDER)
-                            .sessionAttr("user", user)
                             .header("Authorization", "Bearer " + accessToken));
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             result.andExpect(status().isOk());
@@ -2990,7 +2990,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3020,7 +3019,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3042,7 +3040,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -3062,7 +3059,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -3091,7 +3087,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -3120,7 +3115,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -3149,7 +3143,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -3176,7 +3169,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("direction", FieldSearchFilter.DESC_ORDER)
                         .param("filters[0].attribute", "description")
                         .param("filters[0].value", "Sagra")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3197,7 +3189,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("direction", FieldSearchFilter.DESC_ORDER)
                         .param("filters[0].attribute", "id")
                         .param("filters[0].value", "EVN194")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3216,7 +3207,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("status", IContentService.STATUS_ONLINE)
                         .param("filters[0].attribute", "firsteditor")
                         .param("filters[0].value", "admin")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3238,7 +3228,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].attribute", "firsteditor")
                         .param("filters[1].value", "editor1")
                         .param("filters[1].operator", "eq")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3260,7 +3249,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].attribute", "firsteditor")
                         .param("filters[1].value", "editor2")
                         .param("filters[1].operator", "eq")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3281,7 +3269,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].value", "EVN")
                         .param("filters[1].attribute", "firsteditor")
                         .param("filters[1].value", "editor2")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3303,7 +3290,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].attribute", "firsteditor")
                         .param("filters[1].value", "editor1")
                         .param("filters[1].operator", "not")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3325,7 +3311,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].attribute", "mainGroup")
                         .param("filters[1].value", "free")
                         .param("filters[1].operator", "eq")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3347,7 +3332,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].attribute", "mainGroup")
                         .param("filters[1].value", "free")
                         .param("filters[1].operator", "not")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3367,7 +3351,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
                         .param("categories[0]", "general_cat1")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3388,7 +3371,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].value", "EVN")
                         .param("categories[0]", "general_cat1")
                         .param("categories[1]", "general_cat2")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3408,7 +3390,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
                         .param("categories[0]", "general_cat2")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3428,7 +3409,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
                         .param("categories[0]", "general_cat3")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3449,7 +3429,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].value", "EVN")
                         .param("filters[1].attribute", "group")
                         .param("filters[1].value", "group1")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3476,7 +3455,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[3].value", "group2")
                         .param("filters[4].attribute", "group")
                         .param("filters[4].value", "group3")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3497,7 +3475,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].value", "EVN")
                         .param("filters[1].attribute", "restriction")
                         .param("filters[1].value", "OPEN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3518,7 +3495,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].value", "EVN")
                         .param("filters[1].attribute", "restriction")
                         .param("filters[1].value", "RESTRICTED")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
 
         result.andDo(print())
@@ -3537,7 +3513,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "ART")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(status().isOk());
         String bodyResult = result.andReturn().getResponse().getContentAsString();
@@ -3558,7 +3533,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "ART")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3578,7 +3552,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "ART")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(status().isOk());
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(expectedFreeContentsId.size())));
@@ -3602,7 +3575,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .perform(get("/plugins/cms/contents")
                         .param("status", IContentService.STATUS_ONLINE)
                         .param("categories[0]", "evento")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3622,7 +3594,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].operator", "lt")
                         .param("filters[0].type", "date")
                         .param("filters[0].value", "2005-02-13 01:00:00")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3641,7 +3612,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("status", IContentService.STATUS_ONLINE)
                         .param("categories[0]", "general_cat3")
                         .param("categories[1]", "general_cat2")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3656,7 +3626,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("categories[0]", "general_cat3")
                         .param("categories[1]", "general_cat2")
                         .param("orClauseCategoryFilter", "true")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3681,7 +3650,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[1].entityAttr", "Numero")
                         .param("filters[1].type", "number")
                         .param("filters[1].order", FieldSearchFilter.ASC_ORDER)
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         String bodyResult = result.andReturn().getResponse().getContentAsString();
         result.andExpect(status().isOk());
@@ -3906,7 +3874,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             String putPageOnlinePayload = "{\"status\": \"published\"}";
             ResultActions result = mockMvc.perform(
                     put("/pages/{pageCode}/status", pageCode)
-                            .sessionAttr("user", user)
                             .content(putPageOnlinePayload)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + accessToken));
@@ -3953,7 +3920,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             String putPageOnlinePayload = "{\"status\": \"published\"}";
             ResultActions result = mockMvc.perform(
                     put("/pages/{pageCode}/status", pageCode)
-                            .sessionAttr("user", user)
                             .content(putPageOnlinePayload)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + accessToken));
@@ -4195,7 +4161,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
             result = mockMvc
                     .perform(get("/plugins/cms/contents/{code}", newContentId1)
-                            .sessionAttr("user", user)
                             .header("Authorization", "Bearer " + accessToken));
             result
                     .andDo(print())
@@ -4316,7 +4281,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
             result = mockMvc
                     .perform(get("/plugins/cms/contents/{code}", newContentId1)
-                            .sessionAttr("user", user)
                             .header("Authorization", "Bearer " + accessToken));
             result
                     .andDo(print())
@@ -4326,7 +4290,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
             result = mockMvc
                     .perform(get("/plugins/cms/contents/{code}", newContentId2)
-                            .sessionAttr("user", user)
                             .header("Authorization", "Bearer " + accessToken));
             result
                     .andDo(print())
@@ -4392,7 +4355,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("forLinkingWithOwnerGroup", "GROUP1")
                         .param("forLinkingWithExtraGroups[0]", "GROUP2")
                         .param("forLinkingWithExtraGroups[1]", "GROUP3")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -4472,7 +4434,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -4736,7 +4697,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -4766,7 +4726,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
@@ -4789,7 +4748,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filters[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filters[0].operator", "eq")
                         .param("filters[0].value", "EVN")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())

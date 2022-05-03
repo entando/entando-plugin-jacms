@@ -16,6 +16,7 @@ package org.entando.entando.plugins.jacms.aps.system.services;
 import static org.entando.entando.plugins.jacms.web.resource.ResourcesController.ERRCODE_RESOURCE_NOT_FOUND;
 
 import com.agiletec.aps.system.common.entity.IEntityManager;
+import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.services.IComponentExistsService;
@@ -38,7 +39,6 @@ import org.entando.entando.aps.system.services.entity.model.AttributeTypeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeAttributeFullDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypeShortDto;
 import org.entando.entando.aps.system.services.entity.model.EntityTypesStatusDto;
-import org.entando.entando.aps.util.HttpSessionHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.assembler.PagedMetadataMapper;
@@ -58,7 +58,8 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
     private final ContentService contentService;
 
     @Autowired
-    private HttpSession httpSession;
+    private HttpServletRequest httpRequest;
+
     @Autowired
     private PagedMetadataMapper pagedMetadataMapper;
 
@@ -180,7 +181,7 @@ public class ContentTypeService extends AbstractEntityTypeService<Content, Conte
         contentListRequest.setSort("typeCode");
 
         PagedMetadata<ContentDto> pagedData = contentService
-                .getContents(contentListRequest, HttpSessionHelper.extractCurrentUser(httpSession));
+                .getContents(contentListRequest, (UserDetails) httpRequest.getAttribute("user"));
         List<ComponentUsageEntity> componentUsageEntityList = pagedData.getBody().stream()
                 .map(contentDto -> new ComponentUsageEntity(
                         ComponentUsageEntity.TYPE_CONTENT,
