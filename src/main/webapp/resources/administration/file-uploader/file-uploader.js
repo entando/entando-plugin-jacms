@@ -399,11 +399,22 @@ jQuery(document).ready(function ($) {
 
     });
 
+    function getReadAsDataUrlCallback() {
+        return function (fileIndex, imageData) {
+            fileUploadManager.files[fileIndex].imageData = imageData;
+            console.log("Will call addTab");
+            var tabResult = addTab(fileIndex);
+            fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
+            fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
+
+        };
+    }
+
     $('#save').on('change', '.input-file-button', function (e) {
         if ('files' in e.target) {
             var files = [];
-            for (var i = 0; i < e.target.files.length; i++) {
-                files.push(e.target.files[i]);
+            for (var f = 0; f < e.target.files.length; f++) {
+                files.push(e.target.files[f]);
             }
 
             if (files.length > 0) {
@@ -417,14 +428,7 @@ jQuery(document).ready(function ($) {
                      fileUploadManager.updateFile($currentlyClickedFormGroup.data('fileId'), files[0], $currentlyClickedFormGroup);
                      fileInput = fileUploadManager.files[fileId].fileInput;
                      if (cropEditorEnabled) {
-                         readAsDataUrl(fileId, fileInput, function (fileIndex, imageData) {
-                             fileUploadManager.files[fileIndex].imageData = imageData;
-                             console.log("Will call addTab");
-                             var tabResult = addTab(fileIndex);
-                             fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
-                             fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
-                             // files.splice(0, 1);
-                         })
+                         readAsDataUrl(fileId, fileInput, getReadAsDataUrlCallback() )
                      }
                  }
                 else {
@@ -435,14 +439,7 @@ jQuery(document).ready(function ($) {
                         if (cropEditorEnabled) {
                             for (var i = 0; i < files.length; i++) {
                                 fileInput = fileUploadManager.files[offset + i].fileInput;
-                                readAsDataUrl(offset + i, fileInput, function (fileIndex, imageData) {
-                                    fileUploadManager.files[fileIndex].imageData = imageData;
-                                    console.log("Will call addTab");
-                                    var tabResult = addTab(fileIndex);
-                                    fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
-                                    fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
-
-                                })
+                                readAsDataUrl(offset + i, fileInput, getReadAsDataUrlCallback())
                             }
 
                         }
@@ -506,7 +503,6 @@ jQuery(document).ready(function ($) {
                         var croppedFile = fileUploadManager.prepareFile(fileInput);
                         croppedFile.uploadId = file.uploadId;
                         fileUploadManager.files[fileId] = croppedFile;
-                        // alert("Image cropped!");
                         $('.bs-cropping-modal').modal('hide');
                     }
 
