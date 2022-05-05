@@ -85,7 +85,6 @@ var FileUploadManager = function (config) {
 
         $formGroup = $(this.generateFormGroupById(newId));
         $formGroup.appendTo('#fields-container');
-        showHideDeleteActions();
         return $formGroup;
     };
 
@@ -340,6 +339,15 @@ jQuery(document).ready(function ($) {
     console.log(cropEditorEnabled);
     attachmentUploadEnabled = ($('.attachment_upload_enabled').length === 1);
 
+    function showHideDeleteActions() {
+        const numFiles = $("#fields-container").children(".form-group:visible").length;
+        if (numFiles === 1) {
+            $(".delete-fields").hide();
+        }
+        else {
+            $(".delete-fields").show();
+        }
+    }
     fileUploadManager = new FileUploadManager({
         sliceSize: 10485760,
         saveAction: 'upload',
@@ -371,15 +379,6 @@ jQuery(document).ready(function ($) {
 
     });
 
-    function showHideDeleteActions() {
-        const numFiles = $("#fields-container").children(".form-group:visible").length;
-        if (numFiles === 1) {
-            $(".delete-fields").hide();
-        }
-        else {
-            $(".delete-fields").show();
-        }
-    }
 
     // Listen to edit fields kebab menu item click events
     // and open related storeItem in modal.
@@ -410,13 +409,15 @@ jQuery(document).ready(function ($) {
             if (files.length > 0) {
                 // Change file input for currently selected file
                 var $target = $(e.target);
+                var fileInput;
                  if ($target.attr('id') !== 'newFileUpload-multiple') {
-                     $currentlyClickedFormGroup = $(e.target).closest('.form-group');
-                     var fileIndex = $currentlyClickedFormGroup.data('fileId');
+                     // UPDATE
+                     var $currentlyClickedFormGroup = $(e.target).closest('.form-group');
+                     var fileId = $currentlyClickedFormGroup.data('fileId');
                      fileUploadManager.updateFile($currentlyClickedFormGroup.data('fileId'), files[0], $currentlyClickedFormGroup);
-                     var fileInput = fileUploadManager.files[fileIndex].fileInput;
+                     fileInput = fileUploadManager.files[fileId].fileInput;
                      if (cropEditorEnabled) {
-                         readAsDataUrl(fileIndex, fileInput, function (fileIndex, imageData) {
+                         readAsDataUrl(fileId, fileInput, function (fileIndex, imageData) {
                              fileUploadManager.files[fileIndex].imageData = imageData;
                              console.log("Will call addTab");
                              var tabResult = addTab(fileIndex);
@@ -427,12 +428,13 @@ jQuery(document).ready(function ($) {
                      }
                  }
                 else {
+                     // INSERT
                     if (files.length > 0) {
                         var offset = fileUploadManager.files.length;
                         fileUploadManager.insertFiles(fileUploadManager.prepareFiles(files));
                         if (cropEditorEnabled) {
                             for (var i = 0; i < files.length; i++) {
-                                var fileInput = fileUploadManager.files[offset + i].fileInput;
+                                fileInput = fileUploadManager.files[offset + i].fileInput;
                                 readAsDataUrl(offset + i, fileInput, function (fileIndex, imageData) {
                                     fileUploadManager.files[fileIndex].imageData = imageData;
                                     console.log("Will call addTab");
@@ -496,12 +498,16 @@ jQuery(document).ready(function ($) {
             case 'crop':
 
                 if ($('.singleImageUpload').length === 1) {
+                    $('.bs-cropping-modal').modal('hide');
+
                     if (file) {
                         var imageData = file.cropper.getCroppedCanvas().toDataURL(file.type);
                         var fileInput = dataURLtoFile(imageData, file.name);
                         var croppedFile = fileUploadManager.prepareFile(fileInput);
                         croppedFile.uploadId = file.uploadId;
                         fileUploadManager.files[fileId] = croppedFile;
+                        // alert("Image cropped!");
+                        $('.bs-cropping-modal').modal('hide');
                     }
 
                     // DOMToastSuccess("Image cropped!");
@@ -783,16 +789,6 @@ jQuery(document).ready(function ($) {
     }
 
 });
-
-function showHideDeleteActions() {
-    const numFiles = $("#fields-container").children(".form-group:visible").length;
-    if (numFiles<2) {
-        $(".delete-fields").hide();
-    }
-    else {
-        $(".delete-fields").show();
-    }
-}
 
 // function deleteFile(fileId, stopUploadAndDeleteAction) {
 //     var formdata = new FormData();
