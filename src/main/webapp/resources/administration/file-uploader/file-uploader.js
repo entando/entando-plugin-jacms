@@ -402,7 +402,6 @@ jQuery(document).ready(function ($) {
     function getReadAsDataUrlCallback() {
         return function (fileIndex, imageData) {
             fileUploadManager.files[fileIndex].imageData = imageData;
-            console.log("Will call addTab");
             var tabResult = addTab(fileIndex);
             fileUploadManager.files[fileIndex].domElements.$tabNavigationItem = tabResult.$tabNavigationItem;
             fileUploadManager.files[fileIndex].domElements.$tabPane = tabResult.$tabPane;
@@ -413,8 +412,8 @@ jQuery(document).ready(function ($) {
     $('#save').on('change', '.input-file-button', function (e) {
         if ('files' in e.target) {
             var files = [];
-            for (var f = 0; f < e.target.files.length; f++) {
-                files.push(e.target.files[f]);
+            for (let f of e.target.files.length) {
+                files.push(f);
             }
 
             if (files.length > 0) {
