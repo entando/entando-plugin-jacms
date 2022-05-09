@@ -494,15 +494,12 @@ jQuery(document).ready(function ($) {
             case 'crop':
 
                 if ($('.singleImageUpload').length === 1) {
-                    $('.bs-cropping-modal').modal('hide');
-
                     if (file) {
                         var imageData = file.cropper.getCroppedCanvas().toDataURL(file.type);
                         var fileInput = dataURLtoFile(imageData, file.name);
                         var croppedFile = fileUploadManager.prepareFile(fileInput);
                         croppedFile.uploadId = file.uploadId;
                         fileUploadManager.files[fileId] = croppedFile;
-                        $('.bs-cropping-modal').modal('hide');
                     }
 
                     // DOMToastSuccess("Image cropped!");
