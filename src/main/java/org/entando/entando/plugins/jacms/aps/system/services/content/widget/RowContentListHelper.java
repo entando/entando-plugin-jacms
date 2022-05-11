@@ -29,6 +29,7 @@ public class RowContentListHelper {
 		if (StringUtils.isBlank(contentsParameter)) {
 			return contents;
 		}
+        contentsParameter = contentsParameter.replace("}, {", "},{");
 		String parse1 = (contentsParameter.startsWith("[")) ? contentsParameter.substring(1) : contentsParameter;
 		String parse2 = (parse1.endsWith("]")) ? parse1.substring(0, parse1.length()-1) : parse1;
 		if (!StringUtils.isBlank(parse2)) {
