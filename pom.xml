@@ -10,7 +10,7 @@
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
     <packaging>war</packaging>
-    <version>7.0.2</version>
+    <version>7.0.3</version>
     <name>Entando Plugin: CMS</name>
     <description>Allows registered users to manage dynamic contents and digital assets</description>
     <url>http://www.entando.com/</url>
