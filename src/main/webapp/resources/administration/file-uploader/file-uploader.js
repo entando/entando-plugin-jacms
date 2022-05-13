@@ -412,7 +412,7 @@ jQuery(document).ready(function ($) {
     $('#save').on('change', '.input-file-button', function (e) {
         if ('files' in e.target) {
             var files = [];
-            for (let f of e.target.files.length) {
+            for (let f of e.target.files) {
                 files.push(f);
             }
 
