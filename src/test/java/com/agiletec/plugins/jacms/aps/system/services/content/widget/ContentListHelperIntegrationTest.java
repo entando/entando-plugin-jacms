@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2015-Present Entando Inc. (http://www.entando.com) All rights reserved.
  *
@@ -43,13 +44,14 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.cache.CacheManager;
 
 /**
  * @author E.Santoboni
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 class ContentListHelperIntegrationTest extends BaseTestCase {
 
     private IContentManager contentManager;
@@ -60,6 +62,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     private IContentListWidgetHelper helper;
 
     @Test
+    @Order(1)
     void testGetFilters() throws Throwable {
         String filtersShowletParam = "(key=DataInizio;attributeFilter=true;start=21/10/2007;order=DESC)+(key=Titolo;attributeFilter=true;order=ASC)";
         EntitySearchFilter[] filters = this.helper.getFilters("EVN", filtersShowletParam, this.getRequestContext());
@@ -73,6 +76,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(2)
     void testGetFilters_OneDefinition() {
         RequestContext reqCtx = this.getRequestContext();
         String contentType = "ART";
@@ -122,6 +126,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(3)
     void testGetFilters_TwoDefinition() {
         RequestContext reqCtx = this.getRequestContext();
         String contentType = "ART";
@@ -156,6 +161,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(4)
     void testGetContents_1() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
@@ -195,6 +201,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(5)
     void testGetContents_2() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
@@ -235,6 +242,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
+    @Order(6)
     // synchronized modifier is used here to avoid issues caused by concurrent calls of
     // helper.getContentsId() method when running tests in CI environment
     synchronized void testGetContents_3() throws Throwable {
@@ -276,6 +284,7 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
     
     @Test
+    @Order(7)
     void testGetContents_4() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
