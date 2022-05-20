@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2015-Present Entando Inc. (http://www.entando.com) All rights reserved.
  *
@@ -43,8 +44,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.cache.CacheManager;
 
 /**

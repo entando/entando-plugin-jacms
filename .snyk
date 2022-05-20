@@ -49,6 +49,9 @@ ignore:
   SNYK-JAVA-ORGSPRINGFRAMEWORK-2434828:
     - '*':
         reason: '.'
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-2823313:
+    - '*':
+        reason: '.'
   SNYK-JAVA-ORGKEYCLOAK-2805802:
     - '*':
         reason: '.'
@@ -56,5 +59,8 @@ ignore:
     - '*':
         reason: '.'
   SNYK-JAVA-ORGOWASPESAPI-2803305:
+    - '*':
+        reason: '.'
+  SNYK-JAVA-IONETTY-2812456:
     - '*':
         reason: '.'
