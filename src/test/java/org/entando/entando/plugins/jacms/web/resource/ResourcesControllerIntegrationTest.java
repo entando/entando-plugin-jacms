@@ -2044,7 +2044,6 @@ class ResourcesControllerIntegrationTest extends AbstractControllerIntegrationTe
                         .param("forLinkingWithOwnerGroup", "GROUP1")
                         .param("forLinkingWithExtraGroups[0]", "GROUP2")
                         .param("forLinkingWithExtraGroups[1]", "GROUP3")
-                        .sessionAttr("user", user)
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())

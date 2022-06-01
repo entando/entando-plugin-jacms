@@ -14,15 +14,21 @@
 package org.entando.entando.plugins.jacms.web.resource;
 
 import com.agiletec.aps.system.services.role.Permission;
+import com.agiletec.aps.system.services.user.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
-import org.entando.entando.aps.util.HttpSessionHelper;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
@@ -36,19 +42,23 @@ import org.entando.entando.plugins.jacms.web.resource.validator.ResourcesValidat
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ResourcePermissionsException;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
-import org.entando.entando.web.common.model.*;
+import org.entando.entando.web.common.model.PagedMetadata;
+import org.entando.entando.web.common.model.PagedRestResponse;
+import org.entando.entando.web.common.model.RestNamedId;
+import org.entando.entando.web.common.model.RestResponse;
+import org.entando.entando.web.common.model.SimpleRestResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.entando.entando.aps.util.HttpSessionHelper.extractCurrentUser;
 
 @RequiredArgsConstructor
 @RestController
@@ -67,7 +77,6 @@ public class ResourcesController {
 
     @NonNull private final ResourcesService service;
     @NonNull private final ResourcesValidator resourceValidator;
-    @NonNull private final HttpSession httpSession;
 
     @ApiOperation(value = "LIST Resources", nickname = "listResources", tags = {"resources-controller"})
     @ApiResponses(value = {
@@ -75,11 +84,11 @@ public class ResourcesController {
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/plugins/cms/assets")
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
-    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(ListResourceRequest requestList) {
+    public ResponseEntity<PagedRestResponse<AssetDto>> listAssets(ListResourceRequest requestList, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("REST request - list image resources");
 
         resourceValidator.validateRestListRequest(requestList, AssetDto.class);
-        PagedMetadata<AssetDto> result = service.listAssets(requestList,HttpSessionHelper.extractCurrentUser(httpSession));
+        PagedMetadata<AssetDto> result = service.listAssets(requestList, userDetails);
         resourceValidator.validateRestListResult(requestList, result);
         return ResponseEntity.ok(new PagedRestResponse<>(result));
     }
@@ -136,7 +145,8 @@ public class ResourcesController {
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
     public ResponseEntity<SimpleRestResponse<AssetDto>> createAsset(
             @RequestParam(value = "metadata") String request,
-            @RequestParam(value = "file") MultipartFile file) throws JsonProcessingException {
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestAttribute("user") UserDetails userDetails) throws JsonProcessingException {
         logger.debug("REST request - create new resource");
 
         CreateResourceRequest resourceRequest = new ObjectMapper().readValue(request, CreateResourceRequest.class);
@@ -148,8 +158,8 @@ public class ResourcesController {
                 .collect(Collectors.toList());
 
         AssetDto result = service
-                .createAsset(resourceRequest.getCorrelationCode(), resourceRequest.getType(), file, resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(),
-                        extractCurrentUser(httpSession));
+                .createAsset(resourceRequest.getCorrelationCode(), resourceRequest.getType(), file,
+                        resourceRequest.getGroup(), categoriesList, resourceRequest.getFolderPath(), userDetails);
         return ResponseEntity.ok(new SimpleRestResponse<>(result));
     }
 
@@ -205,9 +215,9 @@ public class ResourcesController {
             @ApiResponse(code = 404, message = "Not Found")})
     @DeleteMapping("/plugins/cms/assets/{resourceIdOrCC}")
     @RestAccessControl(permission = {Permission.MANAGE_RESOURCES, Permission.CONTENT_SUPERVISOR, Permission.CONTENT_EDITOR})
-
     public ResponseEntity<SimpleRestResponse<Map<String, String>>> deleteAsset(
-            @PathVariable("resourceIdOrCC") RestNamedId resourceIdOrCC)
+            @PathVariable("resourceIdOrCC") RestNamedId resourceIdOrCC,
+            @RequestAttribute("user") UserDetails userDetails)
             throws EntException {
         //-
         logger.debug("REST request - delete resource with id {}", resourceIdOrCC);
@@ -220,7 +230,7 @@ public class ResourcesController {
         DataBinder binder = new DataBinder(resourceId);
         BindingResult bindingResult = binder.getBindingResult();
 
-        if (!resourceValidator.isResourceDeletableByUser(resourceId, correlationCode, extractCurrentUser(httpSession))) {
+        if (!resourceValidator.isResourceDeletableByUser(resourceId, correlationCode, userDetails)) {
             bindingResult.reject(ERRCODE_RESOURCE_FORBIDDEN, new String[]{resourceIdOrCC.value}, "plugins.jacms.resources.resourceManager.error.delete");
             throw new ResourcePermissionsException(bindingResult);
         }
