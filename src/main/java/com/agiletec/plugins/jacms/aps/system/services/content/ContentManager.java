@@ -43,6 +43,7 @@ import java.util.Set;
 import org.entando.entando.aps.system.services.cache.CacheInfoEvict;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.springframework.cache.annotation.CacheEvict;
@@ -438,9 +439,21 @@ public class ContentManager extends ApsEntityManager
      * @param contentId the content ID whose content type is extracted.
      * @return The content type requested
      */
-    private Content getTypeById(String contentId) {
+    protected Content getTypeById(String contentId) {
         String typeCode = contentId.substring(0, 3);
-        return (Content) super.getEntityTypes().get(typeCode);
+        return this.getContentType(typeCode);
+    }
+    
+    protected Content getContentType(String typeCode) {
+        Content type = null;
+        try {
+            type = (Content) this.getEntityTypeFactory().extractEntityType(typeCode, this.getEntityClass(), 
+                    this.getConfigItemName(), this.getEntityTypeDom(), super.getName(), this.getEntityDom());
+        } catch (EntException e) {
+            logger.error("Error while extracting content type {}", typeCode, e);
+            throw new EntRuntimeException("Error while extracting content type " + typeCode, e);
+        }
+        return type;
     }
 
     /**

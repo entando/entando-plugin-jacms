@@ -35,9 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import org.entando.entando.ent.exception.EntRuntimeException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -143,5 +146,15 @@ class ContentManagerTest {
         content.setDefaultModel(defaultModel);
         return content;
     }
+    
+    @Test
+    void failGetDefaultModelById() throws Exception {
+        Assertions.assertThrows(EntRuntimeException.class, () -> {
+            when(this.entityTypeFactory.extractEntityType(Mockito.anyString(), Mockito.any(Class.class), 
+                    Mockito.anyString(), Mockito.eq(this.entityTypeDom), Mockito.eq(this.beanName), Mockito.eq(this.entityDom))).thenThrow(EntException.class);
+            String modelId = this.contentManager.getDefaultModel("ART123");
+        });
+    }
+    
 }
 
