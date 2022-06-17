@@ -22,11 +22,14 @@ import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.renderer.EntityWrapper;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
+import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.DateConverter;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Rappresenta un contenuto nella forma utilizzabile al servizio di renderizzazione. 
@@ -83,6 +86,22 @@ public class ContentWrapper extends EntityWrapper {
 			return null;
         }
     }
+    
+	/**
+	 * Return the categories list of the content.
+	 * @return The list of categories.
+	 */
+	public List<Category> getCategories() {
+		List<Category> categories = new ArrayList<Category>();
+		List<Category> contentCategories = ((Content) super.getEntity()).getCategories();
+		for (int i=0; i<contentCategories.size(); i++) {
+            Category cat = contentCategories.get(i);
+			Category clone = cat.getCloneForWrapper();
+			clone.setRenderingLang(super.getRenderingLang());
+			categories.add(clone);
+		}
+		return categories;
+	}
 
     /**
      * Return the nonce placeholder.

@@ -304,6 +304,27 @@ class TestContentDispenser extends BaseTestCase {
         return input;
     }
     
+    @Test
+    void testRenderCategories() throws Throwable {
+        String contentId = "ART120";
+        String contentShapeModel = "#foreach ($contentCategory in $content.getCategories()) <p>$contentCategory.title</p> #end";
+        int modelId = 1955;
+        try {
+            this.addNewContentModel(modelId, contentShapeModel, "ART");
+            RequestContext reqCtx = this.getRequestContext();
+            this.setUserOnSession("admin");
+            ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo(contentId, modelId, "en", reqCtx);
+            assertEquals("<p>Category 2</p>  <p>Category 3</p>", outputInfo.getCachedRenderedContent());
+        } catch (Throwable t) {
+            throw t;
+        } finally {
+            ContentModel model = this._contentModelManager.getContentModel(modelId);
+            if (null != model) {
+                this._contentModelManager.removeContentModel(model);
+            }
+        }
+    }
+    
     @BeforeEach
     private void init() throws Exception {
         try {
@@ -348,7 +369,7 @@ class TestContentDispenser extends BaseTestCase {
             + "Eugenio;\n"
             + "William;\n"
             + "Titolo Contenuto 2 Coach;\n"
-            + "Home jAPS,#!U;http://www.japsportal.org!#;\n"
+            + "Home Entando,#!U;http://www.entando.com!#;\n"
             + ",;\n"
             + formatMediumDate("4-gen-2007") + ";";
 
@@ -359,32 +380,32 @@ class TestContentDispenser extends BaseTestCase {
             + "Eugenio;\n"
             + "William;\n"
             + "Titolo Contenuto 2 Coach;\n"
-            + "Home jAPS,http://www.japsportal.org;\n"
+            + "Home Entando,http://www.entando.com;\n"
             + ",;\n"
             + formatMediumDate("4-gen-2007") + ";";
 
     private String _attendedItART120_cached
             = "ART120;\n"
             + "Titolo Contenuto degli &quot;Amministratori&quot;;\n"
-            + "Pagina Iniziale jAPSPortal,#!U;http://www.japsportal.org!#;\n,;\n"
+            + "Pagina Iniziale Entando Portal,#!U;http://www.entando.com!#;\n,;\n"
             + formatMediumDate("28-mar-2009") + ";";
 
     private String _attendedItART120
             = "ART120;\n"
             + "Titolo Contenuto degli &quot;Amministratori&quot;;\n"
-            + "Pagina Iniziale jAPSPortal,http://www.japsportal.org;\n,;\n"
+            + "Pagina Iniziale Entando Portal,http://www.entando.com;\n,;\n"
             + formatMediumDate("28-mar-2009") + ";";
 
     private String _attendedEnART120_cached
             = "ART120;\n"
             + "Title of Administrator's Content;\n"
-            + "jAPSPortal HomePage,#!U;http://www.japsportal.org!#;\n,;\n"
+            + "jAPSPortal HomePage,#!U;http://www.entando.com!#;\n,;\n"
             + "Mar 28, 2009;";
 
     private String _attendedEnART120
             = "ART120;\n"
             + "Title of Administrator's Content;\n"
-            + "jAPSPortal HomePage,http://www.japsportal.org;\n,;\n"
+            + "jAPSPortal HomePage,http://www.entando.com;\n,;\n"
             + "Mar 28, 2009;";
 
     private String _attendedItART121_cached
