@@ -307,14 +307,14 @@ class TestContentDispenser extends BaseTestCase {
     @Test
     void testRenderCategories() throws Throwable {
         String contentId = "ART120";
-        String contentShapeModel = "#foreach ($contentCategory in $content.getCategories()) <p>$contentCategory.title</p> #end";
+        String contentShapeModel = "#foreach($contentCategory in $content.getCategories())<p>$contentCategory.title</p>#end";
         int modelId = 1955;
         try {
             this.addNewContentModel(modelId, contentShapeModel, "ART");
             RequestContext reqCtx = this.getRequestContext();
             this.setUserOnSession("admin");
             ContentRenderizationInfo outputInfo = this._contentDispenser.getRenderizationInfo(contentId, modelId, "en", reqCtx);
-            assertEquals("<p>Category 2</p>  <p>Category 3</p>", outputInfo.getCachedRenderedContent());
+            assertEquals("<p>Category 2</p><p>Category 3</p>", outputInfo.getCachedRenderedContent());
         } catch (Throwable t) {
             throw t;
         } finally {
