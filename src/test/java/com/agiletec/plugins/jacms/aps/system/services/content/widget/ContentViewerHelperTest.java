@@ -138,7 +138,7 @@ class ContentViewerHelperTest {
     }
     
     @Test
-    public void getRenderizationInfo() throws Exception {
+    void getRenderizationInfo() throws Exception {
         ContentModel model = Mockito.mock(ContentModel.class);
         when(this.contentModelManager.getContentModel(Mockito.anyLong())).thenReturn(model);
         when(this.contentManager.getDefaultModel(Mockito.anyString())).thenReturn("68");
@@ -158,7 +158,7 @@ class ContentViewerHelperTest {
     }
 
     @Test
-    public void getAuthorizationInfo() throws Exception {
+    void getAuthorizationInfo() throws Exception {
         PublicContentAuthorizationInfo pcaiMock = Mockito.mock(PublicContentAuthorizationInfo.class);
         when(this.contentAuthorizationHelper.getAuthorizationInfo("EVN100", true)).thenReturn(pcaiMock);
         Widget currentWidget = new Widget();
@@ -172,7 +172,7 @@ class ContentViewerHelperTest {
     }
 
     @Test
-    public void getNullAuthorizationInfo() throws Exception {
+    void getNullAuthorizationInfo() throws Exception {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         when(mockRequest.getParameter(SystemConstants.K_CONTENT_ID_PARAM)).thenReturn(null);
         when(this.reqCtx.getRequest()).thenReturn(mockRequest);
@@ -188,7 +188,7 @@ class ContentViewerHelperTest {
     }
 
     @Test
-    public void getAuthorizationInfoWithError() throws Exception {
+    void getAuthorizationInfoWithError() throws Exception {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         when(mockRequest.getParameter(SystemConstants.K_CONTENT_ID_PARAM)).thenReturn("ART123");
         when(this.reqCtx.getRequest()).thenReturn(mockRequest);
@@ -201,5 +201,16 @@ class ContentViewerHelperTest {
         });
         Mockito.verify(reqCtx, Mockito.times(1)).getRequest();
     }
-    
+
+    @Test
+    void getRenderizationInfo_ModelIdParamNotNumeric_ShouldReturnNull() throws Exception {
+
+        HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
+        when(this.reqCtx.getRequest()).thenReturn(mockRequest);
+        when(mockRequest.getParameter("modelId")).thenReturn("foo");
+
+        ContentRenderizationInfo renderizationInfo = contentViewerHelper.getRenderizationInfo("ART123", null, false, reqCtx);
+
+        Assertions.assertNull(renderizationInfo);
+    }
 }

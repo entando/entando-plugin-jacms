@@ -17,39 +17,50 @@ import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
-import io.swagger.annotations.ApiOperation;
-import org.entando.entando.aps.util.HttpSessionHelper;
-import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
-
-import java.util.*;
+import io.swagger.annotations.ApiOperation;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
+import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
+import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
+import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
+import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
+import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.annotation.RestAccessControl;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
-import org.entando.entando.web.common.model.*;
+import org.entando.entando.web.common.model.PagedMetadata;
+import org.entando.entando.web.common.model.PagedRestResponse;
+import org.entando.entando.web.common.model.RestResponse;
+import org.entando.entando.web.common.model.SimpleRestResponse;
+import org.entando.entando.web.common.validator.AbstractPaginationValidator;
 import org.entando.entando.web.entity.validator.EntityValidator;
-import org.entando.entando.plugins.jacms.web.content.validator.ContentValidator;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import org.entando.entando.plugins.jacms.aps.system.services.content.model.ContentsStatusDto;
-
-import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
-import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
-import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
-import org.entando.entando.web.common.validator.AbstractPaginationValidator;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author E.Santoboni
@@ -67,9 +78,6 @@ public class ContentController {
     public static final String ERRCODE_INVALID_MODEL = "5";
     public static final String ERRCODE_INVALID_LANG_CODE = "6";
     public static final String ERRCODE_CONTENT_REFERENCES = "7";
-
-    @Autowired
-    private HttpSession httpSession;
 
     // ?status=draft|published
     @Autowired
@@ -125,14 +133,14 @@ public class ContentController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Return a list of paginated contents.")
-    public ResponseEntity<PagedRestResponse<ContentDto>> getContents(RestContentListRequest requestList) {
+    public ResponseEntity<PagedRestResponse<ContentDto>> getContents(RestContentListRequest requestList, @RequestAttribute(value = "user", required = false) UserDetails userDetails) {
         logger.debug("getting contents with request {} - status {}", requestList, requestList.getStatus());
         requestList.setSort(normalizeAttributeNames(requestList.getSort()));
         Optional.ofNullable(requestList.getFilters()).map(Arrays::stream).orElseGet(Stream::empty).forEach(filter -> {
             filter.setAttribute(normalizeAttributeNames(filter.getAttribute()));
         });
         this.getPaginationValidator().validateRestListRequest(requestList, ContentDto.class);
-        PagedMetadata<ContentDto> result = this.getContentService().getContents(requestList, HttpSessionHelper.extractCurrentUser(httpSession));
+        PagedMetadata<ContentDto> result = this.getContentService().getContents(requestList, userDetails);
         return new ResponseEntity<>(new PagedRestResponse<>(result), HttpStatus.OK);
     }
 
@@ -164,21 +172,21 @@ public class ContentController {
     @GetMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> getContent(@PathVariable String code,
             @RequestParam(name = "status", required = false, defaultValue = IContentService.STATUS_DRAFT) String status,
-            @RequestParam(name = "lang", required = false) String lang) {
-        return this.getContent(code, null, status, false, lang);
+            @RequestParam(name = "lang", required = false) String lang, @RequestAttribute("user") UserDetails userDetails) {
+        return this.getContent(code, null, status, false, lang, userDetails);
     }
 
     @GetMapping(value = "/{code}/model/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> getContent(@PathVariable String code, @PathVariable String modelId,
             @RequestParam(name = "status", required = false, defaultValue = IContentService.STATUS_DRAFT) String status,
             @RequestParam(name = "resolveLinks", required = false, defaultValue = "false") boolean resolveLinks,
-            @RequestParam(name = "lang", required = false) String lang) {
+            @RequestParam(name = "lang", required = false) String lang, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Requested content -> {} - model {} - status {}", code, modelId, status);
         ContentDto dto;
         if (!this.getContentValidator().existContent(code, status)) {
             throw new ResourceNotFoundException(EntityValidator.ERRCODE_ENTITY_DOES_NOT_EXIST, "Content", code);
         } else {
-            dto = this.getContentService().getContent(code, modelId, status, lang, resolveLinks, HttpSessionHelper.extractCurrentUser(httpSession));
+            dto = this.getContentService().getContent(code, modelId, status, lang, resolveLinks, userDetails);
         }
         logger.debug("Main Response -> {}", dto);
         return new ResponseEntity<>(new SimpleRestResponse<>(dto), HttpStatus.OK);
@@ -186,7 +194,8 @@ public class ContentController {
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SimpleRestResponse<List<ContentDto>>> addContent(@Valid @RequestBody List<ContentDto> bodyRequest, BindingResult bindingResult) {
+    public ResponseEntity<SimpleRestResponse<List<ContentDto>>> addContent(@Valid @RequestBody List<ContentDto> bodyRequest,
+            BindingResult bindingResult, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Add new content -> {}", bodyRequest);
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
@@ -198,7 +207,7 @@ public class ContentController {
                 if (bindingResult.hasErrors()) {
                     throw new ValidationGenericException(bindingResult);
                 }
-                ContentDto result = this.getContentService().addContent(content, HttpSessionHelper.extractCurrentUser(httpSession), bindingResult);
+                ContentDto result = this.getContentService().addContent(content, userDetails, bindingResult);
                 if (bindingResult.hasErrors()) {
                     throw new ValidationGenericException(bindingResult);
                 }
@@ -212,13 +221,13 @@ public class ContentController {
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PutMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<ContentDto>> updateContent(@PathVariable String code,
-                                                                        @Valid @RequestBody ContentDto bodyRequest, BindingResult bindingResult) {
+            @Valid @RequestBody ContentDto bodyRequest, BindingResult bindingResult, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Update content -> {}", bodyRequest);
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
         this.getContentValidator().validateBodyName(code, bodyRequest, bindingResult);
-        ContentDto response = this.getContentService().updateContent(bodyRequest, HttpSessionHelper.extractCurrentUser(httpSession), bindingResult);
+        ContentDto response = this.getContentService().updateContent(bodyRequest, userDetails, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
@@ -228,13 +237,12 @@ public class ContentController {
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SimpleRestResponse<List<ContentDto>>> updateContents(
-            @Valid @RequestBody List<ContentDto> bodyRequest, BindingResult bindingResult) {
+            @Valid @RequestBody List<ContentDto> bodyRequest, BindingResult bindingResult, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Update content -> {}", bodyRequest);
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
 
-        UserDetails userDetails = HttpSessionHelper.extractCurrentUser(httpSession);
         List<ContentDto> response = bodyRequest.stream()
             .map(content -> {
                 ContentDto result = this.getContentService().updateContent(content, userDetails, bindingResult);
@@ -251,14 +259,15 @@ public class ContentController {
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PutMapping(value = "/{code}/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestResponse<ContentDto, Map<String, String>>> updateContentStatus(@PathVariable String code,
-            @Valid @RequestBody ContentStatusRequest contentStatusRequest, BindingResult bindingResult) {
+            @Valid @RequestBody ContentStatusRequest contentStatusRequest, BindingResult bindingResult,
+            @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("changing status for content {} with request {}", code, contentStatusRequest);
         Map<String, String> metadata = new HashMap<>();
         //field validations
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
-        ContentDto contentDto = this.getContentService().updateContentStatus(code, contentStatusRequest.getStatus(), HttpSessionHelper.extractCurrentUser(httpSession));
+        ContentDto contentDto = this.getContentService().updateContentStatus(code, contentStatusRequest.getStatus(), userDetails);
         metadata.put("status", contentStatusRequest.getStatus());
         return new ResponseEntity<>(new RestResponse<>(contentDto, metadata), HttpStatus.OK);
     }
@@ -266,7 +275,8 @@ public class ContentController {
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PutMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestResponse<List<ContentDto>, Map<String, String>>> updateContentsStatus(
-            @Valid @RequestBody BatchContentStatusRequest batchContentStatusRequest, BindingResult bindingResult) {
+            @Valid @RequestBody BatchContentStatusRequest batchContentStatusRequest, BindingResult bindingResult,
+            @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("changing status for contents with request {}", batchContentStatusRequest);
         Map<String, String> metadata = new HashMap<>();
         //field validations
@@ -275,7 +285,7 @@ public class ContentController {
         }
 
         List<ContentDto> response = this.getContentService().updateContentsStatus(batchContentStatusRequest.getCodes(),
-                batchContentStatusRequest.getStatus(), HttpSessionHelper.extractCurrentUser(httpSession));
+                batchContentStatusRequest.getStatus(), userDetails);
         metadata.put("status", batchContentStatusRequest.getStatus());
 
         return new ResponseEntity<>(new RestResponse<>(response, metadata), HttpStatus.OK);
@@ -283,7 +293,7 @@ public class ContentController {
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @DeleteMapping(value = "/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SimpleRestResponse<?>> deleteContent(@PathVariable String code) {
+    public ResponseEntity<SimpleRestResponse<?>> deleteContent(@PathVariable String code, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Deleting content -> {}", code);
         DataBinder binder = new DataBinder(code);
         BindingResult bindingResult = binder.getBindingResult();
@@ -291,7 +301,7 @@ public class ContentController {
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
-        this.getContentService().deleteContent(code, HttpSessionHelper.extractCurrentUser(httpSession));
+        this.getContentService().deleteContent(code, userDetails);
         Map<String, String> payload = new HashMap<>();
         payload.put("code", code);
         return new ResponseEntity<>(new SimpleRestResponse<>(payload), HttpStatus.OK);
@@ -299,10 +309,9 @@ public class ContentController {
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SimpleRestResponse<?>> deleteContents(@RequestBody List<String> codes) {
+    public ResponseEntity<SimpleRestResponse<?>> deleteContents(@RequestBody List<String> codes, @RequestAttribute("user") UserDetails userDetails) {
         logger.debug("Deleting contents -> {}", codes);
 
-        UserDetails userDetails = HttpSessionHelper.extractCurrentUser(httpSession);
         List<String> payload = codes.stream()
             .peek(code -> this.getContentService().deleteContent(code, userDetails))
             .collect(Collectors.toList());
@@ -312,10 +321,9 @@ public class ContentController {
 
     @RestAccessControl(permission = Permission.CONTENT_EDITOR)
     @PostMapping(value = "/{code}/clone", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SimpleRestResponse<ContentDto>> cloneContent(@PathVariable String code) {
+    public ResponseEntity<SimpleRestResponse<ContentDto>> cloneContent(@PathVariable String code, @RequestAttribute("user") UserDetails userDetails) {
         DataBinder binder = new DataBinder(code);
         BindingResult bindingResult = binder.getBindingResult();
-        UserDetails userDetails = HttpSessionHelper.extractCurrentUser(httpSession);
         ContentDto response = contentService.cloneContent(code, userDetails, bindingResult);
         return new ResponseEntity<>(new SimpleRestResponse<>(response), HttpStatus.OK);
     }

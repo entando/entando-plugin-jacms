@@ -13,13 +13,31 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content;
 
+import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.PUBLISHED;
+import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.PUBLISHED_WITH_NEW_VERSION_IN_DRAFT_STATE;
+import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.PUBLISHED_WITH_NEW_VERSION_IN_READY_STATE;
+import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.READY;
+import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.UNPUBLISHED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.entando.entando.aps.system.services.mockhelper.PageMockHelper;
 import org.entando.entando.aps.system.services.userprofile.MockUser;
+import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
 import org.entando.entando.plugins.jacms.aps.system.services.assertionhelper.ContentTypeAssertionHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.mockhelper.ContentMockHelper;
 import org.entando.entando.plugins.jacms.aps.system.services.mockhelper.ContentTypeMockHelper;
@@ -29,26 +47,12 @@ import org.entando.entando.web.common.model.PagedMetadata;
 import org.entando.entando.web.common.model.RestListRequest;
 import org.entando.entando.web.component.ComponentUsageEntity;
 import org.entando.entando.web.page.model.PageSearchRequest;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import javax.servlet.http.HttpSession;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
-
-import static com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ContentStatusState.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -58,7 +62,7 @@ class ContentTypeServiceTest {
     private RestListRequest restListRequest;
 
     @Mock
-    private HttpSession httpSession;
+    private HttpServletRequest httpRequest;
     @Mock
     private ContentService contentService;
     @Mock
@@ -69,20 +73,18 @@ class ContentTypeServiceTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-
-        Mockito.lenient().when(this.httpSession.getAttribute(anyString())).thenReturn(new MockUser());
+        Mockito.lenient().when(this.httpRequest.getAttribute("user")).thenReturn(new MockUser());
         this.restListRequest = ContentTypeMockHelper.mockRestListRequest();
 
-        Field f = this.contentTypeService.getClass().getDeclaredField("httpSession");
+        Field f = this.contentTypeService.getClass().getDeclaredField("httpRequest");
         f.setAccessible(true);
-        f.set(this.contentTypeService, this.httpSession);
+        f.set(this.contentTypeService, this.httpRequest);
 
         Field fp = this.contentTypeService.getClass().getDeclaredField("pagedMetadataMapper");
         fp.setAccessible(true);
         fp.set(this.contentTypeService, this.pagedMetadataMapper);
 
     }
-
 
     @Test
     public void getContentTypeUsageForNonExistingCodeShouldReturnZero() {

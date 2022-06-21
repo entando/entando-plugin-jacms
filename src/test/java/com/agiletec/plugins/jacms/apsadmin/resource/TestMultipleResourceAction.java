@@ -167,9 +167,11 @@ class TestMultipleResourceAction extends ApsAdminBaseTestCase {
         this.entryEditResource("44", "admin");
 
         MultipleResourceAction action = (MultipleResourceAction) this.getAction();
+        assertNotNull(action.getFileUploadFileName(0));
         Map<String, String> params = new HashMap<String, String>();
         params.put("resourceId", action.getResourceId());
         params.put("strutsAction", String.valueOf(action.getStrutsAction()));
+        params.put("fileUploadName_0", action.getFileUploadFileName(0));
         params.put("descr_0", action.getFileDescription(0));
         params.put("mainGroup", action.getMainGroup());
         Iterator<String> iter = action.getCategoryCodes().iterator();

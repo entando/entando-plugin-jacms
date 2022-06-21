@@ -89,6 +89,9 @@
 			<s:elseif test="#attribute.type == 'Timestamp'">
 				<s:include value="/WEB-INF/apsadmin/jsp/entity/modules/timestampAttribute.jsp" />
 			</s:elseif>
+			<s:elseif test="#attribute.type == 'Email'">
+                                <s:include value="/WEB-INF/apsadmin/jsp/entity/modules/monotextAttribute.jsp" />
+			</s:elseif>
 
 			<%-- jacms attribute types --%>
 				<s:elseif test="#attribute.type == 'Image'">

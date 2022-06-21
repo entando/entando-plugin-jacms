@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2015-Present Entando Inc. (http://www.entando.com) All rights reserved.
  *
@@ -43,8 +44,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.ArrayList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.cache.CacheManager;
 
 /**
@@ -235,7 +235,9 @@ class ContentListHelperIntegrationTest extends BaseTestCase {
     }
 
     @Test
-    void testGetContents_3() throws Throwable {
+    // synchronized modifier is used here to avoid issues caused by concurrent calls of
+    // helper.getContentsId() method when running tests in CI environment
+    synchronized void testGetContents_3() throws Throwable {
         String newContentId = null;
         String pageCode = "pagina_1";
         int frame = 1;
