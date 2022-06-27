@@ -23,9 +23,9 @@
         </list>
         <attribute name="VediAnche" attributetype="Link">
             <link type="external">
-                <urldest>http://www.japsportal.org</urldest>
+                <urldest>http://www.entando.com</urldest>
             </link>
-            <text lang="it">Home jAPS</text>
+            <text lang="it">Home Entando</text>
         </attribute>
         <attribute name="CorpoTesto" attributetype="Hypertext">
             <hypertext lang="it"><![CDATA[Corpo Testo Contenuto&nbsp;2 Coach]]></hypertext>
