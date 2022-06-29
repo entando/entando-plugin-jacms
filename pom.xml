@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.1.0-ENG-3828-PR-120</version>
+        <version>7.0.3-ENG-3839-PR-127</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
     <packaging>war</packaging>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>7.0.3</version>
     <name>Entando Plugin: CMS</name>
     <description>Allows registered users to manage dynamic contents and digital assets</description>
     <url>http://www.entando.com/</url>
@@ -38,7 +38,7 @@
         <owaspSuppressionFileLocation>
             https://raw.githubusercontent.com/entando/entando-core-parent/v${project.parent.version}/owasp-dependency-check-suppression.xml
         </owaspSuppressionFileLocation>
-        <entando-core-bom.version>7.1.0-ENG-3828</entando-core-bom.version>
+        <entando-core-bom.version>7.0.3-ENG-3839</entando-core-bom.version>
     </properties>
     <build>
         <resources>
