@@ -86,12 +86,6 @@
         </c:if>
         <c:if test="${isSuperUser}">
             <li class="list-group-item">
-                <a href="<s:url action="viewItem" namespace="/do/jpcontentscheduler/config" />">
-                    <span class="list-group-item-value"><s:text name="jpcontentscheduler.admin.menu" /></span>
-                </a>
-            </li>
-
-            <li class="list-group-item">
                 <s:if test="#appBuilderIntegrationEnabled == 'true'">
                     <a href='<c:out value="${appBuilderBaseURL}"/>cms/content-types'>
                         <span class="list-group-item-value"><s:text name="menu.APPS.CMS.contentTypes" /></span>
