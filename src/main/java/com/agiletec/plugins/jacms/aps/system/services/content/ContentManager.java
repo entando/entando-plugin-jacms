@@ -41,11 +41,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.entando.entando.aps.system.services.cache.CacheInfoEvict;
+import org.entando.entando.aps.system.services.cache.CacheInfoManager;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 
 /**
@@ -56,7 +58,10 @@ public class ContentManager extends ApsEntityManager
                             implements IContentManager, GroupUtilizer<String>, PageUtilizer, ContentUtilizer, ResourceUtilizer, CategoryUtilizer {
 
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentManager.class);
+    
     private static final String ERROR_WHILE_LOADING_CONTENTS = "Error while loading contents";
+
+    public static final String CONTENT_TYPE_CACHE_PREFIX = "jacms_ContentType_";
 
     private IContentDAO contentDAO;
 
@@ -65,6 +70,8 @@ public class ContentManager extends ApsEntityManager
     private IContentSearcherDAO publicContentSearcherDAO;
 
     private IContentUpdaterService contentUpdaterService;
+    
+    private ICacheInfoManager cacheInfoManager;
 
     @Override
     protected String getConfigItemName() {
@@ -441,21 +448,32 @@ public class ContentManager extends ApsEntityManager
      */
     protected Content getTypeById(String contentId) {
         String typeCode = contentId.substring(0, 3);
-        return this.getContentType(typeCode);
+        return this.getEntityPrototype(typeCode);
     }
     
-    protected Content getContentType(String typeCode) {
+    @Override
+    public Content getEntityPrototype(String typeCode) {
         Content type = null;
         try {
-            type = (Content) this.getEntityTypeFactory().extractEntityType(typeCode, this.getEntityClass(), 
-                    this.getConfigItemName(), this.getEntityTypeDom(), super.getName(), this.getEntityDom());
-        } catch (EntException e) {
+            String cacheKey = CONTENT_TYPE_CACHE_PREFIX + typeCode;
+            type = (Content) ((CacheInfoManager) this.getCacheInfoManager()).getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey);
+            if (null == type) {
+                type = (Content) super.getEntityPrototype(typeCode);
+                if (null != type) {
+                    String typeGroupKey = JacmsSystemConstants.CONTENT_TYPE_CACHE_GROUP_PREFIX + typeCode;
+                    ((CacheInfoManager) this.getCacheInfoManager()).putInCache(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey, type, new String[]{typeGroupKey});
+                }
+            }
+            if (null != type) {
+                return (Content) type.getEntityPrototype();
+            }
+        } catch (Exception e) {
             logger.error("Error while extracting content type {}", typeCode, e);
             throw new EntRuntimeException("Error while extracting content type " + typeCode, e);
         }
         return type;
     }
-
+    
     /**
      * Deletes a content from the DB.
      *
@@ -662,6 +680,20 @@ public class ContentManager extends ApsEntityManager
         return status;
     }
 
+    @Override
+    public void removeEntityPrototype(String entityTypeCode) throws EntException {
+        super.removeEntityPrototype(entityTypeCode);
+        String cacheKey = CONTENT_TYPE_CACHE_PREFIX + entityTypeCode;
+        this.getCacheInfoManager().flushEntry(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey);
+    }
+
+    @Override
+    public void updateEntityPrototype(IApsEntity entityType) throws EntException {
+        super.updateEntityPrototype(entityType);
+        String cacheKey = CONTENT_TYPE_CACHE_PREFIX + entityType.getTypeCode();
+        this.getCacheInfoManager().flushEntry(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey);
+    }
+
     /**
      * Return the DAO which handles all the operations on the contents.
      *
@@ -726,6 +758,14 @@ public class ContentManager extends ApsEntityManager
     @Deprecated
     public int getState() {
         return super.getStatus();
+    }
+
+    protected ICacheInfoManager getCacheInfoManager() {
+        return this.cacheInfoManager;
+    }
+    @Autowired
+    public void setCacheInfoManager(ICacheInfoManager cacheInfoManager) {
+        this.cacheInfoManager = cacheInfoManager;
     }
 
 }
