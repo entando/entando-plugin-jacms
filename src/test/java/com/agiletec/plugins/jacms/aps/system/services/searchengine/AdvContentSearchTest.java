@@ -37,8 +37,11 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import org.entando.entando.aps.system.services.searchengine.FacetedContentsResult;
 import org.entando.entando.aps.system.services.searchengine.SearchEngineFilter;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Rewriting of some default test for content manager
@@ -51,15 +54,27 @@ class AdvContentSearchTest extends BaseTestCase {
     private ICategoryManager categoryManager;
     
     private List<String> allowedGroup = new ArrayList<>();
+    
+    @BeforeAll
+    public static void setUp() throws Exception {
+        BaseTestCase.setUp();
+        ApplicationContext context = BaseTestCase.getApplicationContext();
+        ICmsSearchEngineManager extractedService = context.getBean(ICmsSearchEngineManager.class);
+        Thread thread = extractedService.startReloadContentsReferences();
+        thread.join();
+    }
+    
+    @AfterAll
+    public static void tearDown() throws Exception {
+        BaseTestCase.tearDown();
+    }
 
     @BeforeEach
     protected void init() throws Exception {
         try {
-            this.contentManager = (IContentManager) this.getService(JacmsSystemConstants.CONTENT_MANAGER);
+            this.contentManager = (IContentManager) BaseTestCase.getService(JacmsSystemConstants.CONTENT_MANAGER);
             this.searchEngineManager = (ICmsSearchEngineManager) this.getService(JacmsSystemConstants.SEARCH_ENGINE_MANAGER);
             this.categoryManager = (ICategoryManager) this.getService(SystemConstants.CATEGORY_MANAGER);
-            Thread thread = this.searchEngineManager.startReloadContentsReferences();
-            thread.join();
             allowedGroup.add(Group.ADMINS_GROUP_NAME);
         } catch (Exception e) {
             throw e;
