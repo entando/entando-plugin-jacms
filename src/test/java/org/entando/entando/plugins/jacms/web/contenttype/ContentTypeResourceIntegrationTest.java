@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
+import com.agiletec.aps.system.common.notify.NotifyManager;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.FileTextReader;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
@@ -72,12 +73,12 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
     private IContentManager contentManager;
 
     @BeforeEach
-    public void setupTest() {
+    public void setupTest() throws Throwable {
         mockMvcHelper = new MockMvcHelper(mockMvc);
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         accessToken = mockOAuthInterceptor(user);
     }
-
+    
     @Test
     void testGetReturnsList() throws Exception {
         mockMvc.perform(
@@ -151,6 +152,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -182,6 +184,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -205,6 +208,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -227,6 +231,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
             throw e;
         }
@@ -280,6 +285,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -311,6 +317,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -675,6 +682,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -699,6 +707,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -725,6 +734,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -751,6 +761,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -790,6 +801,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -810,6 +822,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -858,6 +871,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -881,6 +895,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -979,6 +994,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
@@ -1045,10 +1061,11 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
-
+    
     @Test
     void testContentTypeAttributeNameToNamesFallback() throws Exception {
         String typeCode = "TX7";
@@ -1058,7 +1075,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             attribute.setCode("MyAttribute");
             attribute.setType("Text");
             attribute.setName("Italian Name");
-
+            
             mockMvc.perform(
                     post("/plugins/cms/contentTypes/{code}/attributes", contentType.getCode())
                             .header("Authorization", "Bearer " + accessToken)
@@ -1122,10 +1139,11 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
             if (null != this.contentManager.getEntityPrototype(typeCode)) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(typeCode);
             }
+            waitNotifyingThread();
             Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         }
     }
-
+    
     @Test
     void testComponentExistenceAnalysis() throws Exception {
         // should return DIFF for existing component
@@ -1161,7 +1179,7 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
         result.andDo(print()).andExpect(expected);
         return result;
     }
-
+    
     private ContentTypeDto createContentType(String typeCode) throws Exception {
         Assertions.assertNull(this.contentManager.getEntityPrototype(typeCode));
         Content content = new Content();
@@ -1238,6 +1256,25 @@ class ContentTypeResourceIntegrationTest extends AbstractControllerIntegrationTe
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload.size()", is(0)))
                 .andReturn();
+    }
+
+    protected void waitNotifyingThread() throws InterruptedException {
+        synchronized (this) {
+            this.wait(1000);
+        }
+        waitThreads(NotifyManager.NOTIFYING_THREAD_NAME);
+    }
+
+    protected void waitThreads(String threadNamePrefix) throws InterruptedException {
+        Thread[] threads = new Thread[Thread.activeCount()];
+        Thread.enumerate(threads);
+        for (int i = 0; i < threads.length; i++) {
+            Thread currentThread = threads[i];
+            if (currentThread != null
+                    && currentThread.getName().startsWith(threadNamePrefix)) {
+                currentThread.join();
+            }
+        }
     }
 
 }
