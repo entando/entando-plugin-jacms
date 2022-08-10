@@ -14,9 +14,9 @@
         <list attributetype="Monolist" name="Autori" nestedtype="Monotext" />
         <attribute name="VediAnche" attributetype="Link">
             <link type="external">
-                <urldest>http://www.japsportal.org</urldest>
+                <urldest>http://www.entando.com</urldest>
             </link>
-            <text lang="it">Pagina Iniziale jAPSPortal</text>
+            <text lang="it">Pagina Iniziale Entando Portal</text>
             <text lang="en">jAPSPortal HomePage</text>
         </attribute>
         <attribute name="CorpoTesto" attributetype="Hypertext">

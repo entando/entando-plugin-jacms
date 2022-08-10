@@ -55,7 +55,7 @@ class TestUrlLinkAction extends AbstractBaseTestContentAction {
 		String contentOnSessionMarker = this.initJoinLinkTest("ART1", "VediAnche", "it");
 
 		this.initContentAction("/do/jacms/Content/Link", "joinUrlLink", contentOnSessionMarker);
-		this.addParameter("url", "http://www.japsportal.org");
+		this.addParameter("url", "http://www.entando.com");
 		String result = this.executeAction();
 		assertEquals(Action.SUCCESS, result);
 
@@ -65,7 +65,7 @@ class TestUrlLinkAction extends AbstractBaseTestContentAction {
 		assertNotNull(symbolicLink);
 		assertNull(symbolicLink.getPageDest());
 		assertNull(symbolicLink.getContentDest());
-		assertEquals("http://www.japsportal.org", symbolicLink.getUrlDest());
+		assertEquals("http://www.entando.com", symbolicLink.getUrlDest());
 	}
 
 	private String initJoinLinkTest(String contentId, String simpleLinkAttributeName, String langCode) throws Throwable {
