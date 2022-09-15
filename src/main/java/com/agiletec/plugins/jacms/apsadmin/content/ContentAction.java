@@ -34,6 +34,7 @@ import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +115,11 @@ public class ContentAction extends AbstractContentAction {
             content.setId(null);
             content.setVersion(Content.INIT_VERSION);
             content.setDescription(this.getText("label.copyOf") + " " + content.getDescription());
+            content.setCreated(new Date());
+            content.setLastModified(null);
+            content.setPublished(null);
             content.setFirstEditor(this.getCurrentUser().getUsername());
+            content.setLastEditor(null);
             super.setContentOnSessionMarker(marker);
             this.getRequest().getSession().setAttribute(ContentActionConstants.SESSION_PARAM_NAME_CURRENT_CONTENT_PREXIX + marker, content);
         } catch (Throwable t) {
