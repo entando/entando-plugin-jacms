@@ -13,6 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.servlet;
 
+import com.agiletec.aps.system.RequestContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -86,12 +87,12 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 if (this.isAuthOnProtectedRes(currentUser, resId, uriSegments[segments - 1])) {
                     isAuthForProtectedRes = true;
                 } else {
-                    this.executeLoginRedirect(request, response);
-                    return true;
+                    return handleRedirect(currentUser, request, response);
                 }
             }
             ResourceInterface resource = this.getResourceManager().loadResource(resId);
             if (resource == null) {
+                this.executeNotFoundRedirect(request, response);
                 return false;
             }
             IAuthorizationManager authManager = this.getAuthorizationManager();
@@ -113,8 +114,7 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 this.createResponse(response, resource, instance);
                 return true;
             } else {
-                this.executeLoginRedirect(request, response);
-                return true;
+                return handleRedirect(currentUser, request, response);
             }
         } catch (Throwable t) {
             logger.error("Error extracting protected resource", t);
@@ -155,20 +155,42 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
             out.close();
         }
     }
+    
+    protected boolean handleRedirect(UserDetails currentUser, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        if (null == currentUser || currentUser.getUsername().equals(SystemConstants.GUEST_USER_NAME)) {
+            this.executeNotFoundRedirect(request, response);
+        } else {
+            this.executeErrorRedirect(request, response);
+        }
+        return true;
+    }
 
-    protected void executeLoginRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void executeErrorRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        Map<String, String> params = new HashMap<>();
+        params.put(RequestContext.PAR_REDIRECT_FLAG, "1");
+        params.put("userUnauthorized", Boolean.TRUE.toString());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        this.executeRedirect(request, response, IPageManager.CONFIG_PARAM_ERROR_PAGE_CODE, params);
+    }
+
+    protected void executeNotFoundRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        this.executeRedirect(request, response, IPageManager.CONFIG_PARAM_NOT_FOUND_PAGE_CODE, null);
+    }
+
+    protected void executeRedirect(HttpServletRequest request, HttpServletResponse response, String destPageParam, Map<String, String> params) throws ServletException {
         try {
-            StringBuilder targetUrl = new StringBuilder(request.getRequestURL());
-            Map<String, String> params = new HashMap<>();
-            params.put("returnUrl", targetUrl.toString());
-            String loginPageCode = this.getPageManager().getConfig(IPageManager.CONFIG_PARAM_LOGIN_PAGE_CODE);
-            IPage page = this.getPageManager().getOnlinePage(loginPageCode);
+            String pageCode = this.getPageManager().getConfig(destPageParam);
+            IPage page = this.getPageManager().getOnlinePage(pageCode);
+            if (null == page) {
+                throw new EntException("Destination target null - param " + destPageParam + " - pagecode " + pageCode);
+            }
             Lang defaultLang = this.getLangManager().getDefaultLang();
             String url = this.getUrlManager().createURL(page, defaultLang, params);
             response.sendRedirect(url);
         } catch (Exception t) {
-            logger.error("Error executing redirect login page", t);
-            throw new ServletException("Error executing redirect login page", t);
+            logger.error("Error executing redirect", t);
+            throw new ServletException("Error executing redirect", t);
         }
     }
 
