@@ -4765,6 +4765,81 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[10].id", is("EVN41")));
     }
 
+    @Test
+    void testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImage() throws Exception {
+        String newContentId = null;
+        String resourceId = null;
+        String accessToken = this.createAccessToken();
+        String contentType = "MCI";
+        try {
+            Assertions.assertNull(this.contentManager.getEntityPrototype(contentType));
+
+            this.executeContentTypePost("1_POST_type_with_monolist_composite_image.json", accessToken,
+                    status().isCreated());
+            Assertions.assertNotNull(this.contentManager.getEntityPrototype(contentType));
+
+            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application"
+                    + "/jpeg");
+
+            resourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(), "$.payload.id");
+
+            ResultActions result = this.executeContentPost("1_POST_valid_with_monolist_composite_image.json",
+                    accessToken,
+                    status().isOk(), resourceId);
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is(contentType)))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Content Type MCI")))
+                    .andExpect(jsonPath("$.payload[0].description", is("1st monolist attribute")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is(
+                            "image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.type",
+                            is("image")));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+            Content newContent = this.contentManager.loadContent(newContentId, false);
+
+            Assertions.assertNotNull(newContent);
+
+            this.executeContentPut("1_PUT_valid_with_monolist_composite_image.json", newContentId, accessToken,
+                            status().isOk(), resourceId)
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is(contentType)))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Content Type MCI")))
+                    .andExpect(jsonPath("$.payload[0].description", is("1st monolist attribute")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(2)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is(
+                            "image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.type",
+                            is("image")));
+
+        } finally {
+            if (null != resourceId) {
+                performDeleteResource(accessToken, "image", resourceId)
+                        .andExpect(status().isOk());
+            }
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype(contentType)) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(contentType);
+            }
+        }
+    }
+
     void testContentRelationForGroup() throws Exception {
         String newContentId = null;
         try {

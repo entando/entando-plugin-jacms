@@ -1,0 +1,23 @@
+{
+    "code": "MCI",
+    "name": "Content Type MCI",
+    "attributes": [
+        {
+            "code": "mono-compo-image",
+            "type": "Monolist",
+            "name": "Monolist Composition Image Description",
+            "nestedAttribute": {
+                "code": "compo-image",
+                "type": "Composite",
+                "name": "Composition Image Description",
+                "compositeAttributes":[
+                    {
+                        "code": "image",
+                        "type": "Image",
+                        "name": "Image Description"
+                    }
+                ]
+            }
+        }
+    ]
+}
