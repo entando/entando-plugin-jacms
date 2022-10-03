@@ -186,7 +186,7 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 throw new EntException("Destination target null - param " + destPageParam + " - pagecode " + pageCode);
             }
             Lang defaultLang = this.getLangManager().getDefaultLang();
-            String url = this.getUrlManager().createURL(page, defaultLang, params);
+            String url = this.getUrlManager().createURL(page, defaultLang, params, false, request);
             response.sendRedirect(url);
         } catch (Exception t) {
             logger.error("Error executing redirect", t);
