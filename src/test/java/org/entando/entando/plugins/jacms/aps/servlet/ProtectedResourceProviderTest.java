@@ -82,9 +82,12 @@ public class ProtectedResourceProviderTest {
         Mockito.when(this.request.getSession()).thenReturn(this.session);
         Mockito.lenient().when(request.getRequestURL()).thenReturn(new StringBuffer("https://www.entando.com"));
         Mockito.lenient().when(pageManager.getConfig(IPageManager.CONFIG_PARAM_LOGIN_PAGE_CODE)).thenReturn("login");
+        Mockito.lenient().when(pageManager.getConfig(IPageManager.CONFIG_PARAM_ERROR_PAGE_CODE)).thenReturn("error");
+        Mockito.lenient().when(pageManager.getConfig(IPageManager.CONFIG_PARAM_NOT_FOUND_PAGE_CODE)).thenReturn("notFound");
         Mockito.lenient().when(pageManager.getOnlinePage(Mockito.anyString())).thenReturn(Mockito.mock(IPage.class));
         Mockito.lenient().when(langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
-        Mockito.lenient().when(urlManager.createURL(Mockito.any(IPage.class), Mockito.any(Lang.class), Mockito.any())).thenReturn("https://www.entando.com/en/login.page");
+        Mockito.lenient().when(urlManager.createURL(Mockito.any(IPage.class), Mockito.any(Lang.class), Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn("https://www.entando.com/en/login.page");
+        Mockito.lenient().when(this.user.getUsername()).thenReturn("username");
     }
     
     @Test
@@ -139,6 +142,7 @@ public class ProtectedResourceProviderTest {
         Mockito.when(this.session.getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER)).thenReturn(null);
         UserDetails guestUser = Mockito.mock(UserDetails.class);
         Mockito.when(this.userManager.getGuestUser()).thenReturn(guestUser);
+        Mockito.when(guestUser.getUsername()).thenReturn(SystemConstants.GUEST_USER_NAME);
         PublicContentAuthorizationInfo publicContentAuthorizationInfo = Mockito.mock(PublicContentAuthorizationInfo.class);
         Mockito.when(this.contentAuthorizationHelper.getAuthorizationInfo("ART1234")).thenReturn(publicContentAuthorizationInfo);
         Mockito.when(publicContentAuthorizationInfo.isProtectedResourceReference("21")).thenReturn(true);
@@ -166,7 +170,7 @@ public class ProtectedResourceProviderTest {
         boolean result = this.protectedResourceProvider.provideProtectedResource(this.request, this.response);
         Assertions.assertFalse(result);
         Mockito.verify(this.userManager, Mockito.never()).getGuestUser();
-        Mockito.verify(this.response, Mockito.times(0)).sendRedirect(Mockito.anyString());
+        Mockito.verify(this.response, Mockito.times(1)).sendRedirect(Mockito.anyString());
         Mockito.verify(this.contentAuthorizationHelper, Mockito.times(1)).getAuthorizationInfo("ART12345");
         Mockito.verify(this.resourceManager, Mockito.times(1)).loadResource("22");
         Mockito.verify(this.response, Mockito.never()).setContentType(Mockito.anyString());
@@ -178,7 +182,7 @@ public class ProtectedResourceProviderTest {
         Mockito.when(this.session.getAttribute(SystemConstants.SESSIONPARAM_CURRENT_USER)).thenReturn(user);
         boolean result = this.protectedResourceProvider.provideProtectedResource(this.request, this.response);
         Assertions.assertFalse(result);
-        Mockito.verify(this.response, Mockito.times(0)).sendRedirect(Mockito.anyString());
+        Mockito.verify(this.response, Mockito.times(1)).sendRedirect(Mockito.anyString());
         Mockito.verify(this.contentAuthorizationHelper, Mockito.never()).getAuthorizationInfo(Mockito.anyString());
         Mockito.verifyZeroInteractions(contentAuthorizationHelper, authorizationManager);
         Mockito.verify(this.resourceManager, Mockito.times(1)).loadResource("22X");
