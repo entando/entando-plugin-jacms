@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.1.0</version>
+        <version>7.1.0-ENG-4293-PR-144</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -38,7 +38,7 @@
         <owaspSuppressionFileLocation>
             https://raw.githubusercontent.com/entando/entando-core-parent/v${project.parent.version}/owasp-dependency-check-suppression.xml
         </owaspSuppressionFileLocation>
-        <entando-core-bom.version>7.1.1-ENG-4199-PR-27</entando-core-bom.version>
+        <entando-core-bom.version>7.1.0-ENG-4293</entando-core-bom.version>
     </properties>
     <build>
         <resources>
