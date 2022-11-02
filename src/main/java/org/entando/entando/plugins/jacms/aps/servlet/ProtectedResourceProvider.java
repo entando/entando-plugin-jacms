@@ -13,6 +13,7 @@
  */
 package org.entando.entando.plugins.jacms.aps.servlet;
 
+import com.agiletec.aps.system.RequestContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.servlet.IProtectedResourceProvider;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
@@ -87,12 +87,12 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 if (this.isAuthOnProtectedRes(currentUser, resId, uriSegments[segments - 1])) {
                     isAuthForProtectedRes = true;
                 } else {
-                    this.executeLoginRedirect(request, response);
-                    return true;
+                    return handleRedirect(currentUser, request, response);
                 }
             }
             ResourceInterface resource = this.getResourceManager().loadResource(resId);
             if (resource == null) {
+                this.executeNotFoundRedirect(request, response);
                 return false;
             }
             IAuthorizationManager authManager = this.getAuthorizationManager();
@@ -113,12 +113,13 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
                 }
                 this.createResponse(response, resource, instance);
                 return true;
+            } else {
+                return handleRedirect(currentUser, request, response);
             }
         } catch (Throwable t) {
             logger.error("Error extracting protected resource", t);
             throw new EntException("Error extracting protected resource", t);
         }
-        return false;
     }
 
     protected boolean isAuthOnProtectedRes(UserDetails currentUser, String resourceId, String contentId) {
@@ -154,20 +155,42 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
             out.close();
         }
     }
+    
+    protected boolean handleRedirect(UserDetails currentUser, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        if (null == currentUser || currentUser.getUsername().equals(SystemConstants.GUEST_USER_NAME)) {
+            this.executeNotFoundRedirect(request, response);
+        } else {
+            this.executeErrorRedirect(request, response);
+        }
+        return true;
+    }
 
-    protected void executeLoginRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void executeErrorRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        Map<String, String> params = new HashMap<>();
+        params.put(RequestContext.PAR_REDIRECT_FLAG, "1");
+        params.put("userUnauthorized", Boolean.TRUE.toString());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        this.executeRedirect(request, response, IPageManager.CONFIG_PARAM_ERROR_PAGE_CODE, params);
+    }
+
+    protected void executeNotFoundRedirect(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        this.executeRedirect(request, response, IPageManager.CONFIG_PARAM_NOT_FOUND_PAGE_CODE, null);
+    }
+
+    protected void executeRedirect(HttpServletRequest request, HttpServletResponse response, String destPageParam, Map<String, String> params) throws ServletException {
         try {
-            StringBuilder targetUrl = new StringBuilder(request.getRequestURL());
-            Map<String, String> params = new HashMap<>();
-            params.put("returnUrl", targetUrl.toString());
-            String loginPageCode = this.getPageManager().getConfig(IPageManager.CONFIG_PARAM_LOGIN_PAGE_CODE);
-            IPage page = this.getPageManager().getOnlinePage(loginPageCode);
+            String pageCode = this.getPageManager().getConfig(destPageParam);
+            IPage page = this.getPageManager().getOnlinePage(pageCode);
+            if (null == page) {
+                throw new EntException("Destination target null - param " + destPageParam + " - pagecode " + pageCode);
+            }
             Lang defaultLang = this.getLangManager().getDefaultLang();
-            String url = this.getUrlManager().createURL(page, defaultLang, params);
+            String url = this.getUrlManager().createURL(page, defaultLang, params, false, request);
             response.sendRedirect(url);
-        } catch (Throwable t) {
-            logger.error("Error executing redirect login page", t);
-            throw new ServletException("Error executing redirect login page", t);
+        } catch (Exception t) {
+            logger.error("Error executing redirect", t);
+            throw new ServletException("Error executing redirect", t);
         }
     }
 
@@ -178,7 +201,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IResourceManager getResourceManager() {
         return resourceManager;
     }
-
     public void setResourceManager(IResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
@@ -186,7 +208,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IContentAuthorizationHelper getContentAuthorizationHelper() {
         return contentAuthorizationHelper;
     }
-
     public void setContentAuthorizationHelper(IContentAuthorizationHelper contentAuthorizationHelper) {
         this.contentAuthorizationHelper = contentAuthorizationHelper;
     }
@@ -194,7 +215,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IUserManager getUserManager() {
         return userManager;
     }
-
     public void setUserManager(IUserManager userManager) {
         this.userManager = userManager;
     }
@@ -202,7 +222,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IAuthorizationManager getAuthorizationManager() {
         return authorizationManager;
     }
-
     public void setAuthorizationManager(IAuthorizationManager authorizationManager) {
         this.authorizationManager = authorizationManager;
     }
@@ -210,7 +229,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IURLManager getUrlManager() {
         return urlManager;
     }
-
     public void setUrlManager(IURLManager urlManager) {
         this.urlManager = urlManager;
     }
@@ -218,7 +236,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected IPageManager getPageManager() {
         return pageManager;
     }
-
     public void setPageManager(IPageManager pageManager) {
         this.pageManager = pageManager;
     }
@@ -226,7 +243,6 @@ public class ProtectedResourceProvider implements IProtectedResourceProvider {
     protected ILangManager getLangManager() {
         return langManager;
     }
-
     public void setLangManager(ILangManager langManager) {
         this.langManager = langManager;
     }
