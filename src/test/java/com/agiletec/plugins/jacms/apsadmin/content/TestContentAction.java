@@ -36,8 +36,11 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.Li
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -562,6 +565,56 @@ class TestContentAction extends AbstractBaseTestContentAction {
             throw t;
         } finally {
             this.removeTestContent(descr);
+        }
+    }
+
+    @Test
+    void testSaveClonedContent() throws Throwable {
+        String contentId = "ART112";
+        String contentOnSessionMarker = AbstractContentAction.buildContentOnSessionMarker(contentId, "ART", ApsAdminSystemConstants.PASTE);
+        String descr = "Content for test coned content";
+        EntitySearchFilter filter = new EntitySearchFilter(IContentManager.CONTENT_DESCR_FILTER_KEY, false, descr, false);
+        EntitySearchFilter[] filters = {filter};
+        try {
+            String markerParamName = ContentActionConstants.SESSION_PARAM_NAME_CURRENT_CONTENT_PREXIX + contentOnSessionMarker;
+            Assertions.assertNull(this.getRequest().getSession().getAttribute(markerParamName));
+            this.initContentAction("/do/jacms/Content", "copyPaste", null);
+            this.addParameter("contentId", contentId);
+            this.addParameter("copyPublicVersion", "true");
+            this.setUserOnSession("admin");
+            String result = this.executeAction();
+            Assertions.assertEquals(Action.SUCCESS, result);
+
+            Content contentOnSession = (Content) this.getRequest().getSession().getAttribute(markerParamName);
+            Assertions.assertNotNull(contentOnSession);
+            
+            List<String> contentsId = this.getContentManager().searchId(filters);
+            Assertions.assertEquals(0, contentsId.size());
+
+            this.initContentAction("/do/jacms/Content", "save", contentOnSessionMarker);
+            this.addParameter("descr", descr);
+            this.addParameter("Text:it_Titolo", descr);
+            result = this.executeAction();
+            assertEquals(Action.SUCCESS, result);
+            
+            contentsId = this.getContentManager().searchId(filters);
+            Assertions.assertEquals(1, contentsId.size());
+            Content content = this.getContentManager().loadContent(contentsId.get(0), false);
+            Date creation = content.getCreated();
+            Assertions.assertNotNull(creation);
+            Calendar checkDate = Calendar.getInstance();
+            checkDate.add(Calendar.HOUR, -1);
+            Assertions.assertTrue(creation.after(checkDate.getTime()));
+            
+            Date lastModified = content.getLastModified();
+            Assertions.assertNotNull(lastModified);
+            Assertions.assertTrue(lastModified.after(checkDate.getTime()));
+        } catch (Throwable t) {
+            throw t;
+        } finally {
+            this.removeTestContent(descr);
+            List<String> contentsId = this.getContentManager().searchId(filters);
+            Assertions.assertEquals(0, contentsId.size());
         }
     }
 

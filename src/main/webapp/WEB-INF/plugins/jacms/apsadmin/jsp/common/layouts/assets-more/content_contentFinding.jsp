@@ -50,7 +50,6 @@
             scrollCollapse: true,
             paging: false,
             "bStateSave": true,
-            "autoWidth": false,
             "fnStateSave": function (oSettings, oData) {
                 localStorage.setItem('DataTables', JSON.stringify(oData));
             },

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>7.2.0-ENG-4039-PR-140</version>
+        <version>7.2.0-ENG-4226-PR-145</version>
     </parent>
     <groupId>org.entando.entando.plugins</groupId>
     <artifactId>entando-plugin-jacms</artifactId>
@@ -323,6 +323,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
