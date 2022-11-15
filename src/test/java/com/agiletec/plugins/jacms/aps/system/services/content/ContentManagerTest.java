@@ -150,7 +150,7 @@ class ContentManagerTest {
     @Test
     void failGetDefaultModelById() throws Exception {
         Assertions.assertThrows(EntRuntimeException.class, () -> {
-            when(this.entityTypeFactory.extractEntityType(Mockito.anyString(), Mockito.any(Class.class), 
+            Mockito.lenient().when(this.entityTypeFactory.extractEntityType(Mockito.anyString(), Mockito.any(Class.class), 
                     Mockito.anyString(), Mockito.eq(this.entityTypeDom), Mockito.eq(this.beanName), Mockito.eq(this.entityDom))).thenThrow(EntException.class);
             String modelId = this.contentManager.getDefaultModel("ART123");
         });
