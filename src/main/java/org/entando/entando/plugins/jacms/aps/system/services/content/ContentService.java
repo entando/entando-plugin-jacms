@@ -560,6 +560,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     protected List<String> getAllowedGroups(UserDetails currentUser, boolean requiredOnlineContents) {
         List<String> groupCodes = new ArrayList<>();
+        groupCodes.add(Group.FREE_GROUP_NAME);
         if (null == currentUser) {
             return groupCodes;
         }

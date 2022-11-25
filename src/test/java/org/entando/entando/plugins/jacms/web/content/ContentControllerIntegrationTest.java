@@ -52,9 +52,11 @@ import com.agiletec.aps.util.DateConverter;
 import com.agiletec.aps.util.FileTextReader;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.io.InputStream;
@@ -67,12 +69,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
+import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
 import org.entando.entando.web.AbstractControllerIntegrationTest;
 import org.entando.entando.web.analysis.AnalysisControllerDiffAnalysisEngineTestsStubs;
+import org.entando.entando.web.common.model.PagedRestResponse;
 import org.entando.entando.web.utils.OAuth2TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -4729,10 +4733,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload.size()", is(3)))
-                .andExpect(jsonPath("$.payload[0].id", is("EVN103")))
-                .andExpect(jsonPath("$.payload[1].id", is("EVN25")))
-                .andExpect(jsonPath("$.payload[2].id", is("EVN41")));
+                .andExpect(jsonPath("$.payload.size()", is(11)));
     }
 
     @Test
@@ -4763,6 +4764,41 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[8].id", is("EVN24")))
                 .andExpect(jsonPath("$.payload[9].id", is("EVN25")))
                 .andExpect(jsonPath("$.payload[10].id", is("EVN41")));
+    }
+
+    @Test
+    void testGetContentsAnonymousUser() throws Exception {
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/contents")
+                        .param("status", "published")
+                        .param("mode", ContentService.MODE_FULL)
+                        .param("page", "1")
+                        .param("pageSize", "500"));
+
+        String stringResponse = result.andDo(resultPrint())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))))
+                .andReturn().getResponse().getContentAsString();
+
+        PagedRestResponse<ContentDto> response = new ObjectMapper().readValue(stringResponse,
+                new TypeReference<PagedRestResponse<ContentDto>>() {
+                });
+
+        // verify that an anonymous user can retrieve only public contents
+        for (ContentDto content : response.getPayload()) {
+            boolean isPublic = content.getMainGroup().equals(Group.FREE_GROUP_NAME);
+            if (!isPublic) {
+                if (content.getGroups() != null) {
+                    for (String group : content.getGroups()) {
+                        if (group.equals(Group.FREE_GROUP_NAME)) {
+                            isPublic = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            Assertions.assertTrue(isPublic);
+        }
     }
 
     void testContentRelationForGroup() throws Exception {
