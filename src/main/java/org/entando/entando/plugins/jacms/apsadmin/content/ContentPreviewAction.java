@@ -38,76 +38,76 @@ import org.entando.entando.ent.exception.EntException;
  */
 public class ContentPreviewAction extends AbstractContentAction implements ServletResponseAware {
 
-	private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentPreviewAction.class);
-	
-	public String preview() {
-		Content content = this.getContent();
-		this.getContentActionHelper().updateEntity(content, this.getRequest());
-		try {
-			String previewLangCode = this.extractPreviewLangCode();
-			this.setPreviewLangCode(previewLangCode);
-			String previewPageCode = this.getRequest().getParameter(PAGE_CODE_PARAM_PREFIX + "_" + previewLangCode);
-			if (null == previewPageCode) {
-				previewPageCode = this.getRequest().getParameter(PAGE_CODE_PARAM_PREFIX);
-			}
-			this.setPreviewPageCode(previewPageCode);
-		} catch (Throwable t) {
-			_logger.error("error in preview", t);
-			return FAILURE;
-		}
-		return SUCCESS;
-	}
-	
-	private String extractPreviewLangCode() {
-		String previewLangCode = null;
-		Enumeration<String> attributeEnum = this.getRequest().getAttributeNames();
-		if (null != attributeEnum) {
-			while (attributeEnum.hasMoreElements()) {
-				String attributeName = attributeEnum.nextElement();
-				if (attributeName.startsWith(LANG_CODE_PARAM_PREFIX + "_")) {
-					previewLangCode = (String) this.getRequest().getAttribute(attributeName);
-					break;
-				}
-			}
-		}
-		if (null == previewLangCode || previewLangCode.trim().length() == 0) {
-			previewLangCode = this.getLangManager().getDefaultLang().getCode();
-		}
-		return previewLangCode;
-	}
-	
-	public String executePreview() {
-		try {
-			String pageDestCode = this.getCheckPageDestinationCode();
+    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(ContentPreviewAction.class);
+
+    public String preview() {
+        Content content = this.getContent();
+        this.getContentActionHelper().updateEntity(content, this.getRequest());
+        try {
+            String previewLangCode = this.extractPreviewLangCode();
+            this.setPreviewLangCode(previewLangCode);
+            String previewPageCode = this.getRequest().getParameter(PAGE_CODE_PARAM_PREFIX + "_" + previewLangCode);
+            if (null == previewPageCode) {
+                previewPageCode = this.getRequest().getParameter(PAGE_CODE_PARAM_PREFIX);
+            }
+            this.setPreviewPageCode(previewPageCode);
+        } catch (Throwable t) {
+            _logger.error("error in preview", t);
+            return FAILURE;
+        }
+        return SUCCESS;
+    }
+
+    private String extractPreviewLangCode() {
+        String previewLangCode = null;
+        Enumeration<String> attributeEnum = this.getRequest().getAttributeNames();
+        if (null != attributeEnum) {
+            while (attributeEnum.hasMoreElements()) {
+                String attributeName = attributeEnum.nextElement();
+                if (attributeName.startsWith(LANG_CODE_PARAM_PREFIX + "_")) {
+                    previewLangCode = (String) this.getRequest().getAttribute(attributeName);
+                    break;
+                }
+            }
+        }
+        if (null == previewLangCode || previewLangCode.trim().length() == 0) {
+            previewLangCode = this.getLangManager().getDefaultLang().getCode();
+        }
+        return previewLangCode;
+    }
+
+    public String executePreview() {
+        try {
+            String pageDestCode = this.getCheckPageDestinationCode();
 			if (null == pageDestCode) return INPUT;
-			this.prepareForward(pageDestCode);
-			this.getRequest().setCharacterEncoding("UTF-8");
-		} catch (Throwable t) {
-			_logger.error("error in executePreview", t);
-			throw new RuntimeException("error in executePreview", t);
-		}
-		return null;
-	}
-	
-	protected String getCheckPageDestinationCode() {
-		IPageManager pageManager = this.getPageManager();
-		String pageDestCode = this.getPreviewPageCode();
-		if (null == pageDestCode || pageDestCode.trim().length() == 0) {
-			pageDestCode = this.getContent().getViewPage();
-			if (null == pageDestCode || null == pageManager.getOnlinePage(pageDestCode)) {
-				String[] args = {pageDestCode};
-				this.addFieldError("previewPageCode", this.getText("error.content.preview.pageNotValid", args));
-				return null;
-			}
-		}
-		if (null == pageManager.getOnlinePage(pageDestCode)) {
-			String[] args = {pageDestCode};
-			this.addFieldError("previewPageCode", this.getText("error.content.preview.pageNotFound", args));
-			return null;
-		}
-		return pageDestCode;
-	}
-	
+            this.prepareForward(pageDestCode);
+            this.getRequest().setCharacterEncoding("UTF-8");
+        } catch (Throwable t) {
+            _logger.error("error in executePreview", t);
+            throw new RuntimeException("error in executePreview", t);
+        }
+        return null;
+    }
+
+    protected String getCheckPageDestinationCode() {
+        IPageManager pageManager = this.getPageManager();
+        String pageDestCode = this.getPreviewPageCode();
+        if (null == pageDestCode || pageDestCode.trim().length() == 0) {
+            pageDestCode = this.getContent().getViewPage();
+            if (null == pageDestCode || null == pageManager.getOnlinePage(pageDestCode)) {
+                String[] args = {pageDestCode};
+                this.addFieldError("previewPageCode", this.getText("error.content.preview.pageNotValid", args));
+                return null;
+            }
+        }
+        if (null == pageManager.getOnlinePage(pageDestCode)) {
+            String[] args = {pageDestCode};
+            this.addFieldError("previewPageCode", this.getText("error.content.preview.pageNotFound", args));
+            return null;
+        }
+        return pageDestCode;
+    }
+
     private void prepareForward(String pageDestCode) throws IOException, EntException {
         Lang currentLang = this.getLangManager().getLang(this.getPreviewLangCode());
         if (null == currentLang) {
@@ -120,53 +120,53 @@ public class ContentPreviewAction extends AbstractContentAction implements Servl
         String redirectUrl = this.getUrlManager().createURL(pageDest, currentLang, parameters, false, this.getRequest());
         this.getServletResponse().sendRedirect(redirectUrl);
     }
-	
-	@Override
-	public void setServletResponse(HttpServletResponse response) {
-		this._response = response;
-	}
-	public HttpServletResponse getServletResponse() {
-		return _response;
-	}
-	
-	public String getPreviewPageCode() {
-		return _previewPageCode;
-	}
-	public void setPreviewPageCode(String previewPageCode) {
-		this._previewPageCode = previewPageCode;
-	}
-	
-	public String getPreviewLangCode() {
-		return _previewLangCode;
-	}
-	public void setPreviewLangCode(String previewLangCode) {
-		this._previewLangCode = previewLangCode;
-	}
-	
-	protected IPageManager getPageManager() {
-		return _pageManager;
-	}
-	public void setPageManager(IPageManager pageManager) {
-		this._pageManager = pageManager;
-	}
-	
-	public IURLManager getUrlManager() {
-		return _urlManager;
-	}
-	public void setUrlManager(IURLManager urlManager) {
-		this._urlManager = urlManager;
-	}
-	
-	private HttpServletResponse _response;
-	
-	private String _previewPageCode;
-	private String _previewLangCode;
-	
-	private IPageManager _pageManager;
-	private IURLManager _urlManager;
-	
-	public static final String PAGE_CODE_PARAM_PREFIX = "jacmsPreviewActionPageCode";
-	
-	public static final String LANG_CODE_PARAM_PREFIX = "jacmsPreviewActionLangCode";
-	
+
+    @Override
+    public void setServletResponse(HttpServletResponse response) {
+        this._response = response;
+    }
+    public HttpServletResponse getServletResponse() {
+        return _response;
+    }
+
+    public String getPreviewPageCode() {
+        return _previewPageCode;
+    }
+    public void setPreviewPageCode(String previewPageCode) {
+        this._previewPageCode = previewPageCode;
+    }
+
+    public String getPreviewLangCode() {
+        return _previewLangCode;
+    }
+    public void setPreviewLangCode(String previewLangCode) {
+        this._previewLangCode = previewLangCode;
+    }
+
+    protected IPageManager getPageManager() {
+        return _pageManager;
+    }
+    public void setPageManager(IPageManager pageManager) {
+        this._pageManager = pageManager;
+    }
+
+    public IURLManager getUrlManager() {
+        return _urlManager;
+    }
+    public void setUrlManager(IURLManager urlManager) {
+        this._urlManager = urlManager;
+    }
+
+    private HttpServletResponse _response;
+
+    private String _previewPageCode;
+    private String _previewLangCode;
+
+    private IPageManager _pageManager;
+    private IURLManager _urlManager;
+
+    public static final String PAGE_CODE_PARAM_PREFIX = "jacmsPreviewActionPageCode";
+
+    public static final String LANG_CODE_PARAM_PREFIX = "jacmsPreviewActionLangCode";
+
 }
