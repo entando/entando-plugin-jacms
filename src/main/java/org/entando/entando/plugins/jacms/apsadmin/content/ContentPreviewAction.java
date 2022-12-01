@@ -30,6 +30,7 @@ import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.url.IURLManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.apsadmin.content.AbstractContentAction;
+import org.entando.entando.ent.exception.EntException;
 
 /**
  * Classe action delegate alla gestione della funzione di preview contenuti.
@@ -107,18 +108,18 @@ public class ContentPreviewAction extends AbstractContentAction implements Servl
 		return pageDestCode;
 	}
 	
-	private void prepareForward(String pageDestCode) throws IOException {
-		Lang currentLang = this.getLangManager().getLang(this.getPreviewLangCode());
-		if (null == currentLang) {
-			currentLang = this.getLangManager().getDefaultLang();
-		}
-		IPageManager pageManager = this.getPageManager();
-		IPage pageDest = pageManager.getOnlinePage(pageDestCode);
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("contentOnSessionMarker", this.getContentOnSessionMarker());
-		String redirectUrl = this.getUrlManager().createURL(pageDest, currentLang, parameters, false);
-		this.getServletResponse().sendRedirect(redirectUrl);
-	}
+    private void prepareForward(String pageDestCode) throws IOException, EntException {
+        Lang currentLang = this.getLangManager().getLang(this.getPreviewLangCode());
+        if (null == currentLang) {
+            currentLang = this.getLangManager().getDefaultLang();
+        }
+        IPageManager pageManager = this.getPageManager();
+        IPage pageDest = pageManager.getOnlinePage(pageDestCode);
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("contentOnSessionMarker", this.getContentOnSessionMarker());
+        String redirectUrl = this.getUrlManager().createURL(pageDest, currentLang, parameters, false, this.getRequest());
+        this.getServletResponse().sendRedirect(redirectUrl);
+    }
 	
 	@Override
 	public void setServletResponse(HttpServletResponse response) {
