@@ -2552,7 +2552,12 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         return result;
     }
 
+
     private ResultActions performCreateResource(String accessToken, String type, String group, String mimeType) throws Exception {
+        return performCreateResource(accessToken, type, group, mimeType, null);
+    }
+
+    private ResultActions performCreateResource(String accessToken, String type, String group, String mimeType, String correlationCode) throws Exception {
         String path = String.format("/plugins/cms/assets", type);
         String contents = "content";
 
@@ -2560,6 +2565,9 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         resourceRequest.setType(type);
         resourceRequest.setCategories(new ArrayList<>());
         resourceRequest.setGroup(group);
+        if (StringUtils.isNotBlank(correlationCode)) {
+            resourceRequest.setCorrelationCode(correlationCode);
+        }
 
         MockMultipartFile file;
         if ("image".equals(type)) {
@@ -4846,6 +4854,100 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
             if (null != this.contentManager.getEntityPrototype("TST")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("TST");
+            }
+        }
+    }
+
+    @Test
+    void shouldBindAResourceToAMonolistCompositeImageAttribute() throws Throwable {
+
+        String imageResourceId = null;
+        String newImageResourceId = null;
+        String newContentId = null;
+        String accessToken = this.createAccessToken();
+        String contentType = "TST";
+        String correlationCodeOne = "corrCode";
+        String correlationCodeTwo = "corrCodeTwo";
+
+        try {
+            // create an image
+            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg",
+                    correlationCodeOne);
+            imageResourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(),
+                    "$.payload.id");
+
+            Assertions.assertNull(this.contentManager.getEntityPrototype(contentType));
+
+            // create content type
+            this.executeContentTypePost("1_POST_type_with_monolist_composite_image.json", accessToken,
+                    status().isCreated());
+
+            // create content
+            ResultActions result = this.executeContentPost("1_POST_valid_with_monolist_composite_image.json",
+                    accessToken, status().isOk(), correlationCodeOne);
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is(contentType)))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Test content type")))
+                    .andExpect(jsonPath("$.payload[0].description", is("Test content")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is(
+                            "mimg")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.correlationCode", is(correlationCodeOne)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.name", is("image_test.jpeg")));
+
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
+
+            Content newContent = this.contentManager.loadContent(newContentId, false);
+            Assertions.assertNotNull(newContent);
+
+            // create a new image
+            resourceResult = this.performCreateResource(accessToken, "file", "free", "application/pdf", correlationCodeTwo);
+            resourceResult.andDo(print());
+            newImageResourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(),
+                    "$.payload.id");
+
+            // update content
+            result = this.executeContentPut("1_POST_valid_with_monolist_composite_image.json",
+                    newContentId, accessToken, status().isOk(), correlationCodeTwo);
+            result.andDo(print())
+                    .andExpect(jsonPath("$.payload.size()", is(1)))
+                    .andExpect(jsonPath("$.errors.size()", is(0)))
+                    .andExpect(jsonPath("$.metaData.size()", is(0)))
+                    .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
+                    .andExpect(jsonPath("$.payload[0].typeCode", is(contentType)))
+                    .andExpect(jsonPath("$.payload[0].typeDescription", is("Test content type")))
+                    .andExpect(jsonPath("$.payload[0].description", is("Test content")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements.size()", is(1)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is(
+                            "mimg")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.correlationCode", is(correlationCodeTwo)))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.name", is("file_test.jpeg")));
+
+
+        } finally {
+            if (null != imageResourceId) {
+                performDeleteResource(accessToken, "image", imageResourceId)
+                        .andExpect(status().isOk());
+            }
+            if (null != newImageResourceId) {
+                performDeleteResource(accessToken, "image", newImageResourceId)
+                        .andExpect(status().isOk());
+            }
+            if (null != newContentId) {
+                Content newContent = this.contentManager.loadContent(newContentId, false);
+                if (null != newContent) {
+                    this.contentManager.deleteContent(newContent);
+                }
+            }
+            if (null != this.contentManager.getEntityPrototype(contentType)) {
+                ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype(contentType);
             }
         }
     }

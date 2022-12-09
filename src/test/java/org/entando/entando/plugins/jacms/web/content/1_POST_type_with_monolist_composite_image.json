@@ -1,0 +1,43 @@
+{
+  "code": "TST",
+  "name": "Test content type",
+  "status": "0",
+  "attributes": [
+    {
+      "code": "links",
+      "type": "Monolist",
+      "names": {
+        "en": "links"
+      },
+      "mandatory": false,
+      "listFilter": false,
+      "indexable": false,
+      "nestedAttribute": {
+        "code": "links",
+        "type": "Composite",
+        "name": null,
+        "names": {
+          "en": "links"
+        },
+        "roles": [],
+        "mandatory": false,
+        "listFilter": false,
+        "indexable": false,
+        "compositeAttributes": [
+          {
+            "code": "mimg",
+            "type": "Image",
+            "name": "icona link",
+            "names": {
+              "en": "mimg"
+            },
+            "roles": [],
+            "mandatory": false,
+            "listFilter": false,
+            "indexable": false
+          }
+        ]
+      }
+    }
+  ]
+}

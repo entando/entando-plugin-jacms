@@ -1,0 +1,36 @@
+[
+  {
+    "id": "TST153",
+    "typeCode": "TST",
+    "description": "Test content",
+    "mainGroup": "free",
+    "status": "PUBLIC",
+    "attributes": [
+      {
+        "code": "links",
+        "value": null,
+        "values": {},
+        "elements": [
+          {
+            "code": "links",
+            "value": null,
+            "values": {},
+            "elements": [],
+            "compositeelements": [
+              {
+                "code": "mimg",
+                "value": null,
+                "values": {
+                  "it": {
+                    "correlationCode": "resourceIdPlaceHolder",
+                    "name": "Template esempio"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
