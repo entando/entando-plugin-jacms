@@ -36,7 +36,9 @@ public class PublicContentSearcherDAO extends AbstractContentSearcherDAO impleme
     public List<String> loadContentsId(String[] categories, 
 			boolean orClauseCategoryFilter, EntitySearchFilter[] filters, Collection<String> userGroupCodes) {
         Set<String> groupCodes = new HashSet<>();
-		if (null != userGroupCodes) {
+		if (userGroupCodes == null || userGroupCodes.isEmpty()) {
+			return new ArrayList<>();
+		} else {
 			groupCodes.addAll(userGroupCodes);
 		}
 		EntitySearchFilter onLineFilter = new EntitySearchFilter(IContentManager.CONTENT_ONLINE_FILTER_KEY, false);

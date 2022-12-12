@@ -44,6 +44,9 @@ public abstract class AbstractContentSearcherDAO extends AbstractEntitySearcherD
     @Override
     public int countContents(String[] categories, boolean orClauseCategoryFilter, 
             EntitySearchFilter[] filters, Collection<String> userGroupCodes) {
+		if (userGroupCodes == null || userGroupCodes.isEmpty()) {
+			return 0;
+		}
         Connection conn = null;
         int count = 0;
         PreparedStatement stat = null;
