@@ -19,6 +19,7 @@ import static org.entando.entando.plugins.jacms.web.content.ContentController.ER
 import com.agiletec.aps.system.common.IManager;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
+import com.agiletec.aps.system.common.entity.model.attribute.AbstractComplexAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
 import com.agiletec.aps.system.common.entity.model.attribute.BooleanAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.CheckBoxAttribute;
@@ -109,7 +110,6 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     private final EntLogger logger = EntLogFactory.getSanitizedLogger(getClass());
 
     private ICategoryManager categoryManager;
-    private ILangManager langManager;
     private IContentManager contentManager;
     private IContentModelManager contentModelManager;
     private IAuthorizationManager authorizationManager;
@@ -130,14 +130,6 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
 
     public void setCategoryManager(ICategoryManager categoryManager) {
         this.categoryManager = categoryManager;
-    }
-
-    public ILangManager getLangManager() {
-        return langManager;
-    }
-
-    public void setLangManager(ILangManager langManager) {
-        this.langManager = langManager;
     }
 
     protected IContentManager getContentManager() {
@@ -192,9 +184,9 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         return new DtoBuilder<Content, ContentDto>() {
             @Override
             protected ContentDto toDto(Content src) {
-                ContentDto content = new ContentDto(src);
-                fillAttributes(src.getAttributeList(), content.getAttributes());
-                return content;
+                ContentDto contentDto = new ContentDto(src);
+                fillAttributes(src.getAttributeList(), contentDto.getAttributes());
+                return contentDto;
             }
         };
     }
@@ -800,16 +792,24 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     @Override
     public ContentDto cloneContent(String code, UserDetails user, BindingResult bindingResult) {
         try {
-            boolean online = contentManager.loadContentVO(code).isOnLine();
-            Content content = contentManager.loadContent(code, online);
-            ContentDto contentDto = new ContentDto(content);
-            contentDto.setId(null);
-            return addContent(contentDto, user, bindingResult);
+            boolean online = this.contentManager.loadContentVO(code).isOnLine();
+            Content content = this.contentManager.loadContent(code, online);
+            if (!this.getAuthorizationManager().isAuthOnGroup(user, content.getMainGroup())) {
+                bindingResult.reject(ContentController.ERRCODE_UNAUTHORIZED_CONTENT, new String[]{content.getMainGroup()},
+                        "plugins.jacms.content.group.unauthorized");
+                throw new ResourcePermissionsException(bindingResult);
+            }
+            content.setId(null);
+            content.setFirstEditor(user.getUsername());
+            content.setLastEditor(user.getUsername());
+            content.setRestriction(ContentRestriction.getRestrictionValue(content.getMainGroup()));
+            String id = this.contentManager.addContent(content);
+            content.setId(id);
+            return this.buildEntityDto(content);
         } catch (EntException e) {
             throw new RestServerError("Error cloning content: " + code, e);
         }
     }
-
 
     @Override
     public PagedMetadata<?> getContentReferences(String code, String managerName, UserDetails user,
@@ -865,16 +865,19 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     @Override
     protected void scanEntity(Content currentEntity, BindingResult bindingResult) {
         super.scanEntity(currentEntity, bindingResult);
-
-        //Validate Resources Main Group
         for (AttributeInterface attr : currentEntity.getAttributeList()) {
-            if (scanAbstractResourceAttribute(currentEntity, bindingResult, attr)) {
-                return;
-            } else if (MonoListAttribute.class.isAssignableFrom(attr.getClass())) {
-                MonoListAttribute monoListAttribute = (MonoListAttribute) attr;
-                for (AttributeInterface element : monoListAttribute.getAttributes()) {
-                    scanAbstractResourceAttribute(currentEntity, bindingResult, element);
-                }
+            this.scanResourceElement(currentEntity, bindingResult, attr);
+        }
+    }
+    
+    protected void scanResourceElement(Content currentEntity, BindingResult bindingResult, AttributeInterface attr) {
+        if (attr.isSimple()) {
+            this.scanAbstractResourceAttribute(currentEntity, bindingResult, attr);
+        } else {
+            List<AttributeInterface> elements = ((AbstractComplexAttribute) attr).getAttributes();
+            for (int i = 0; i < elements.size(); i++) {
+                AttributeInterface element = elements.get(i);
+                this.scanResourceElement(currentEntity, bindingResult, element);
             }
         }
     }
@@ -882,7 +885,6 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     private boolean scanAbstractResourceAttribute(Content currentEntity, BindingResult bindingResult, AttributeInterface attr) {
         if (AbstractResourceAttribute.class.isAssignableFrom(attr.getClass())) {
             AbstractResourceAttribute resAttr = (AbstractResourceAttribute) attr;
-
             for (ResourceInterface res : resAttr.getResources().values()) {
                 String idOrCode = res.getId() == null ? res.getCorrelationCode() : res.getId();
                 AssetDto resource;
@@ -895,9 +897,7 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
                             "Resource not found - " + idOrCode);
                     return true;
                 }
-
                 String resourceMainGroup = resource.getGroup();
-
                 if (!resourceMainGroup.equals(Group.FREE_GROUP_NAME)
                         && !resourceMainGroup.equals(currentEntity.getMainGroup())
                         && !currentEntity.getGroups().contains(resourceMainGroup)) {

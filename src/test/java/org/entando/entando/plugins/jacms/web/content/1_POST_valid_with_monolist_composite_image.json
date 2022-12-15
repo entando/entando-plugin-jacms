@@ -1,36 +1,36 @@
 [
-  {
-    "id": "TST153",
-    "typeCode": "TST",
-    "description": "Test content",
-    "mainGroup": "free",
-    "status": "PUBLIC",
-    "attributes": [
-      {
-        "code": "links",
-        "value": null,
-        "values": {},
-        "elements": [
-          {
-            "code": "links",
-            "value": null,
-            "values": {},
-            "elements": [],
-            "compositeelements": [
-              {
-                "code": "mimg",
+    {
+        "id": "MCI153",
+        "typeCode": "MCI",
+        "description": "1st monolist attribute",
+        "mainGroup": "free",
+        "status": "PUBLIC",
+        "attributes": [
+            {
+                "code": "mono-compo-image",
                 "value": null,
-                "values": {
-                  "it": {
-                    "correlationCode": "resourceIdPlaceHolder",
-                    "name": "Template esempio"
-                  }
-                }
-              }
-            ]
-          }
+                "values": {},
+                "elements": [
+                    {
+                        "code": "mono-compo-image",
+                        "value": null,
+                        "values": {},
+                        "elements": [],
+                        "compositeelements": [
+                            {
+                                "code": "image",
+                                "value": null,
+                                "values": {
+                                    "it": {
+                                        "id": "resourceIdPlaceHolder",
+                                        "name": "Entando test"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  }
+    }
 ]

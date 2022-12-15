@@ -1,0 +1,30 @@
+[
+    {
+        "mainGroup":"free",
+        "description":"1st monolist attribute",
+        "attributes":[
+            {
+                "code":"mono-compo-image",
+                "elements":[
+                    {
+                        "code":"mono-compo-image",
+                        "compositeelements":[
+                            {
+                                "code":"image",
+                                "values":{
+                                    "it":{
+                                        "correlationCode": "test_correlCode",
+                                        "name": "Entando test"
+                                    }
+                                }
+                            }
+                        ],
+                        "name":"CompositeOfImages"
+                    }
+                ],
+                "name":"MonolistOfImages"
+            }
+        ],
+        "typeCode":"MCI"
+    }
+]
