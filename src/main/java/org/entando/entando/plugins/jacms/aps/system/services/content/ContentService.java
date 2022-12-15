@@ -59,11 +59,13 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
@@ -76,7 +78,6 @@ import org.entando.entando.aps.system.services.entity.model.EntityAttributeDto;
 import org.entando.entando.aps.system.services.entity.model.EntityDto;
 import org.entando.entando.aps.system.services.group.GroupServiceUtilizer;
 import org.entando.entando.aps.system.services.page.PageServiceUtilizer;
-import org.entando.entando.aps.util.GenericResourceUtils;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
@@ -388,9 +389,17 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     @Override
     public PagedMetadata<ContentDto> getContents(RestContentListRequest request, UserDetails user) {
         try {
-            List<String> contentIds = getContentIds(request, user);
-            List<ContentDto> result = toContentDto(request, user, contentIds);
-            return toPagedMetadata(request, contentIds, result);
+            boolean online = isStatusOnline(request.getStatus());
+            if (!StringUtils.isBlank(request.getText()) && online) {
+                List<String> contentIds = getContentIdsForFullTextSearch(request, user);
+                List<String> sublist = request.getSublist(contentIds);
+                List<ContentDto> result = toContentDto(request, user, sublist);
+                return toPagedMetadata(request, result, contentIds.size());
+            } else {
+                SearcherDaoPaginatedResult<String> paginatedContentIds = getPaginatedContentIds(request, user, online);
+                List<ContentDto> result = toContentDto(request, user, paginatedContentIds.getList());
+                return toPagedMetadata(request, result, paginatedContentIds.getCount());
+            }
         } catch (ResourceNotFoundException | ValidationGenericException e) {
             throw e;
         } catch (Exception t) {
@@ -399,30 +408,43 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         }
     }
 
-    private List<String> getContentIds(RestContentListRequest request, UserDetails user) throws EntException {
-        boolean online = isStatusOnline(request.getStatus());
-        EntitySearchFilter[] filters = getEntitySearchFilters(request);
-        List<String> allowedGroups = this.getAllowedGroups(user, online);
-        List<String> result = online
-                ? this.getContentManager()
-                        .loadPublicContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
-                                filters, allowedGroups)
-                : this.getContentManager()
-                        .loadWorkContentsId(request.getCategories(), request.isOrClauseCategoryFilter(),
-                                filters, allowedGroups);
-        if (!StringUtils.isBlank(request.getText()) && online) {
-            String langCode
-                    = (StringUtils.isBlank(request.getLang())) ? this.getLangManager().getDefaultLang().getCode()
-                    : request.getLang();
-            List<String> fullTextResult = this.getSearchEngineManager()
-                    .searchEntityId(langCode, request.getText(), allowedGroups);
-            result.removeIf(i -> !fullTextResult.contains(i));
+    private SearcherDaoPaginatedResult<String> getPaginatedContentIds(RestContentListRequest request, UserDetails user,
+            boolean online) throws EntException {
+        if (!online) {
+            logger.warn("Filter on join groups not available on content API for draft contents");
         }
+        EntitySearchFilter[] filters = getEntitySearchFilters(request);
+        List<String> groups = this.getGroups(request, user, online);
+        return online
+                ? this.getContentManager().getPaginatedPublicContentsId(request.getCategories(),
+                request.isOrClauseCategoryFilter(), filters, groups)
+                : this.getContentManager().getPaginatedWorkContentsId(request.getCategories(),
+                        request.isOrClauseCategoryFilter(), filters, groups);
+    }
+
+    private List<String> getContentIdsForFullTextSearch(RestContentListRequest request, UserDetails user)
+            throws EntException {
+        EntitySearchFilter[] filters = getEntitySearchFilters(request);
+        List<String> groups = this.getGroups(request, user, true);
+        List<String> result = this.getContentManager().loadPublicContentsId(request.getCategories(),
+                request.isOrClauseCategoryFilter(), filters, groups);
+        String langCode
+                = (StringUtils.isBlank(request.getLang())) ? this.getLangManager().getDefaultLang().getCode()
+                : request.getLang();
+        List<String> fullTextResult = this.getSearchEngineManager()
+                .searchEntityId(langCode, request.getText(), groups);
+        result.removeIf(i -> !fullTextResult.contains(i));
         return result;
     }
 
     private EntitySearchFilter[] getEntitySearchFilters(RestContentListRequest request) {
         List<EntitySearchFilter> filters = request.buildEntitySearchFilters();
+        if (request.getPage() != null) {
+            int pageSize = request.getPageSize() == null ? RestListRequest.PAGE_SIZE_DEFAULT : request.getPageSize();
+            EntitySearchFilter<?> paginationFilter = new EntitySearchFilter<>(
+                    pageSize, (request.getPage() - 1) * pageSize);
+            filters.add(paginationFilter);
+        }
         EntitySearchFilter[] filtersArr = new EntitySearchFilter[filters.size()];
         filtersArr = filters.toArray(filtersArr);
         return filtersArr;
@@ -439,19 +461,12 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     private List<ContentDto> toContentDto(RestContentListRequest request, UserDetails user, List<String> contentIds) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(request, "content");
         boolean full = isModeFull(request.getMode());
-        List<ContentDto> masterList = new ArrayList<>();
-        for (String contentId : request.getSublist(contentIds)) {
-            ContentDto dto = full ? buildFullContentDto(user, bindingResult, contentId,
-                    isStatusOnline(request.getStatus()),
-                    request.getModel(), request.getLang(), request.isResolveLink()) : buildLightContentDto(contentId);
-
-            boolean compatible = isCompatibleWithLinkabilityFilter(dto, request);
-
-            if (compatible) {
-                masterList.add(dto);
-            }
-        }
-        return masterList;
+        return contentIds.stream()
+                .map(contentId -> full ? buildFullContentDto(user, bindingResult, contentId,
+                        isStatusOnline(request.getStatus()),
+                        request.getModel(), request.getLang(), request.isResolveLink()) :
+                        buildLightContentDto(contentId))
+                .collect(Collectors.toList());
     }
 
     private ContentDto buildFullContentDto(UserDetails user, BeanPropertyBindingResult bindingResult, String contentId,
@@ -522,24 +537,10 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
     }
 
     private PagedMetadata<ContentDto> toPagedMetadata(RestContentListRequest request,
-            List<String> contentIds, List<ContentDto> result) {
-        PagedMetadata<ContentDto> pagedMetadata = new PagedMetadata<>(request, contentIds.size());
+            List<ContentDto> result, int totalItems) {
+        PagedMetadata<ContentDto> pagedMetadata = new PagedMetadata<>(request, totalItems);
         pagedMetadata.setBody(result);
         return pagedMetadata;
-    }
-
-    private boolean isCompatibleWithLinkabilityFilter(ContentDto dto, RestContentListRequest requestList) {
-        if (requestList.getForLinkingWithOwnerGroup() == null) {
-            return true;
-        }
-
-        return GenericResourceUtils.isResourceLinkableByContent(
-                dto.getMainGroup(),
-                dto.getGroups(),
-                requestList.getForLinkingWithOwnerGroup(),
-                Optional.ofNullable(requestList.getForLinkingWithExtraGroups())
-                        .orElse(null)
-        );
     }
 
     @Override
@@ -558,8 +559,23 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
         }
     }
 
-    protected List<String> getAllowedGroups(UserDetails currentUser, boolean requiredOnlineContents) {
-        List<String> groupCodes = new ArrayList<>();
+    private List<String> getGroups(RestContentListRequest request, UserDetails currentUser, boolean requiredOnlineContents) {
+        Set<String> allowedGroups = this.getAllowedGroups(currentUser, requiredOnlineContents);
+        Set<String> requestedGroups = this.getRequestedGroups(request);
+
+        if (requestedGroups.isEmpty()) {
+            return new ArrayList<>(allowedGroups);
+        }
+
+        // intersection between allowed groups and requested groups
+        allowedGroups.retainAll(requestedGroups);
+        // by default free group is always included
+        allowedGroups.add(Group.FREE_GROUP_NAME);
+        return new ArrayList<>(allowedGroups);
+    }
+
+    private Set<String> getAllowedGroups(UserDetails currentUser, boolean requiredOnlineContents) {
+        Set<String> groupCodes = new HashSet<>();
         groupCodes.add(Group.FREE_GROUP_NAME);
         if (null == currentUser) {
             return groupCodes;
@@ -573,6 +589,17 @@ public class ContentService extends AbstractEntityService<Content, ContentDto>
             groupCodes.addAll(groupsByPermission.stream().map(Group::getName).collect(Collectors.toList()));
         }
         return groupCodes;
+    }
+
+    private Set<String> getRequestedGroups(RestContentListRequest request) {
+        Set<String> requestedGroups = new HashSet<>();
+        if (request.getForLinkingWithOwnerGroup() != null) {
+            requestedGroups.add(request.getForLinkingWithOwnerGroup());
+        }
+        if (request.getForLinkingWithExtraGroups() != null && !request.getForLinkingWithExtraGroups().isEmpty()) {
+            requestedGroups.addAll(request.getForLinkingWithExtraGroups());
+        }
+        return requestedGroups;
     }
 
     @Override

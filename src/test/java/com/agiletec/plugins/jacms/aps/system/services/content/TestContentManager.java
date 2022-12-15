@@ -1285,13 +1285,13 @@ class TestContentManager extends BaseTestCase {
     @Test
     void testLoadPublicContentsForCategory() throws EntException {
         String[] categories1 = {"evento"};
-        List<String> contents = _contentManager.loadPublicContentsId(categories1, null, null);
+        List<String> contents = _contentManager.loadPublicContentsId(categories1, null, freeGroup);
         assertEquals(2, contents.size());
         assertTrue(contents.contains("EVN192"));
         assertTrue(contents.contains("EVN193"));
 
         String[] categories2 = {"cat1"};
-        contents = _contentManager.loadPublicContentsId(categories2, null, null);
+        contents = _contentManager.loadPublicContentsId(categories2, null, freeGroup);
         assertEquals(1, contents.size());
         assertTrue(contents.contains("ART180"));
     }
@@ -1299,7 +1299,7 @@ class TestContentManager extends BaseTestCase {
     @Test
     void testLoadPublicEventsForCategory_1() throws EntException {
         String[] categories = {"evento"};
-        List<String> contents = _contentManager.loadPublicContentsId("EVN", categories, null, null);
+        List<String> contents = _contentManager.loadPublicContentsId("EVN", categories, null, freeGroup);
         assertEquals(2, contents.size());
         assertTrue(contents.contains("EVN192"));
         assertTrue(contents.contains("EVN193"));
@@ -1308,7 +1308,7 @@ class TestContentManager extends BaseTestCase {
         EntitySearchFilter filter = new EntitySearchFilter("DataInizio", true, null, today);
         filter.setOrder(EntitySearchFilter.ASC_ORDER);
         EntitySearchFilter[] filters = {filter};
-        contents = _contentManager.loadPublicContentsId("EVN", categories, filters, null);
+        contents = _contentManager.loadPublicContentsId("EVN", categories, filters, freeGroup);
         assertEquals(1, contents.size());
         assertTrue(contents.contains("EVN192"));
     }
@@ -1742,7 +1742,26 @@ class TestContentManager extends BaseTestCase {
             }
         }
     }
-    
+
+    @Test
+    void testLoadContentsWithoutGroupFilter() throws Exception {
+        SearcherDaoPaginatedResult<String> workContentResult = this._contentManager.getPaginatedWorkContentsId(null, false, null, null);
+        assertEquals(0, workContentResult.getCount());
+        assertEquals(0, workContentResult.getList().size());
+
+        workContentResult = this._contentManager.getPaginatedWorkContentsId(null, false, null, List.of());
+        assertEquals(0, workContentResult.getCount());
+        assertEquals(0, workContentResult.getList().size());
+
+        SearcherDaoPaginatedResult<String> publishedContentResult = this._contentManager.getPaginatedPublicContentsId(null, false, null, null);
+        assertEquals(0, publishedContentResult.getCount());
+        assertEquals(0, publishedContentResult.getList().size());
+
+        publishedContentResult = this._contentManager.getPaginatedPublicContentsId(null, false, null, List.of());
+        assertEquals(0, publishedContentResult.getCount());
+        assertEquals(0, publishedContentResult.getList().size());
+    }
+
     protected String[] addDraftContentsForTest(String[] masterContentIds, boolean publish) throws Throwable {
         String[] newContentIds = new String[masterContentIds.length];
         for (int i = 0; i < masterContentIds.length; i++) {

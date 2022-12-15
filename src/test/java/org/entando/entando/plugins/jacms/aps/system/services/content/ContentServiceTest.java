@@ -13,12 +13,15 @@
  */
 package org.entando.entando.plugins.jacms.aps.system.services.content;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.agiletec.aps.system.RequestContext;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
+import com.agiletec.aps.system.common.model.dao.SearcherDaoPaginatedResult;
 import com.agiletec.aps.system.services.authorization.IAuthorizationManager;
 import com.agiletec.aps.system.services.category.CategoryUtilizer;
+import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.lang.Lang;
@@ -30,6 +33,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.helper.IContentAut
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.PublicContentAuthorizationInfo;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentDto;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.ContentModel;
 import com.agiletec.plugins.jacms.aps.system.services.contentmodel.IContentModelManager;
 import com.agiletec.plugins.jacms.aps.system.services.dispenser.ContentRenderizationInfo;
@@ -41,9 +45,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.entando.entando.aps.system.exception.ResourceNotFoundException;
 import org.entando.entando.aps.system.exception.RestServerError;
 import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.plugins.jacms.aps.system.services.ContentTypeService;
 import org.entando.entando.plugins.jacms.web.content.validator.RestContentListRequest;
 import org.entando.entando.web.common.exceptions.ValidationGenericException;
 import org.entando.entando.web.common.model.Filter;
@@ -84,6 +90,8 @@ class ContentServiceTest {
     @Mock
     private IContentDispenser contentDispenser;
     @Mock
+    private ContentTypeService contentTypeService;
+    @Mock
     private ApplicationContext applicationContext;
     @Mock
     private ICmsSearchEngineManager searchEngineManager;
@@ -100,9 +108,9 @@ class ContentServiceTest {
 
     @Test
     void getGroupUtilizer() throws Exception {
-        List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3"); // ART3 is unpublished
+        List<String> contentsId = Arrays.asList("ART1", FOUND_CONTENT_01, "ART3"); // ART3 is unpublished
         when(((GroupUtilizer) this.contentManager).getGroupUtilizers(Mockito.anyString())).thenReturn(contentsId);
-        when(this.contentManager.loadContent(AdditionalMatchers.or(Mockito.eq("ART1"), Mockito.eq("ART2")),
+        when(this.contentManager.loadContent(AdditionalMatchers.or(Mockito.eq("ART1"), Mockito.eq(FOUND_CONTENT_01)),
                 Mockito.eq(true))).thenReturn(Mockito.mock(Content.class));
         List<ContentDto> dtos = this.contentService.getGroupUtilizer("groupName");
         Assertions.assertEquals(2, dtos.size());
@@ -143,7 +151,7 @@ class ContentServiceTest {
 
     @Test
     void getPageUtilizer() throws Exception {
-        List<String> contentsId = Arrays.asList("ART1111", "ART2222", "ART333", "ART444", "ART5");
+        List<String> contentsId = Arrays.asList("ART1111", "ART2222", "ART333", "ART444", FOUND_CONTENT_02);
         when(((PageUtilizer) this.contentManager).getPageUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.mock(Content.class));
         List<ContentDto> dtos = this.contentService.getPageUtilizer("pageCode");
@@ -164,7 +172,7 @@ class ContentServiceTest {
 
     @Test
     void getContentUtilizer() throws Exception {
-        List<String> contentsId = Arrays.asList("ART1111", "ART2222", "ART333", "ART444", "ART5", "ART6");
+        List<String> contentsId = Arrays.asList("ART1111", "ART2222", "ART333", "ART444", FOUND_CONTENT_02, FOUND_CONTENT_03);
         when(((ContentUtilizer) this.contentManager).getContentUtilizers(Mockito.anyString())).thenReturn(contentsId);
         when(this.contentManager.loadContent(Mockito.anyString(), Mockito.eq(true))).thenReturn(Mockito.mock(Content.class));
         List<ContentDto> dtos = this.contentService.getContentUtilizer("NEW456");
@@ -191,9 +199,12 @@ class ContentServiceTest {
         UserDetails user = Mockito.mock(UserDetails.class);
         when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
-        List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3", "ART4", "ART5", "ART6");
-        when((this.contentManager).loadPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
-                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(contentsId);
+        List<String> contentsId = Arrays.asList("ART1", FOUND_CONTENT_01);
+        SearcherDaoPaginatedResult<String> paginatedResult = new SearcherDaoPaginatedResult<>();
+        paginatedResult.setList(contentsId);
+        paginatedResult.setCount(6);
+        when((this.contentManager).getPaginatedPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
+                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(paginatedResult);
         when((this.contentDispenser).getRenderizationInfo(Mockito.nullable(String.class), Mockito.anyLong(),
                 Mockito.nullable(String.class), Mockito.nullable(UserDetails.class), Mockito.anyBoolean())).thenReturn(Mockito.mock(ContentRenderizationInfo.class));
         this.createMockContent("ART");
@@ -220,42 +231,103 @@ class ContentServiceTest {
     }
 
     @Test
-    void testGetLinkableContentsViaOwnerGroup() throws Exception {
+    void testGetContentsFullSearchText() throws Exception {
         UserDetails user = Mockito.mock(UserDetails.class);
         RestContentListRequest requestList = prepareGetContentTest(user);
         requestList.setForLinkingWithOwnerGroup("GROUP1");
+        requestList.setPage(1);
+        requestList.setPageSize(2);
 
-        this.addMockedContent("ART2", "ART", "GROUP1", null);
-        this.addMockedContent("ART5", "ART", "GROUP1", null);
-        this.addMockedContent("ART6", "ART", "GROUP2", null);
+        when(this.contentManager.loadContent(FOUND_CONTENT_01, true)).thenReturn(Mockito.mock(Content.class));
+        when(this.contentManager.loadContent(FOUND_CONTENT_02, true)).thenReturn(Mockito.mock(Content.class));
 
-        // test
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
 
         List<ContentDto> body = metadata.getBody();
         Assertions.assertEquals(2, body.size());
-        Assertions.assertEquals("GROUP1", body.get(0).getMainGroup());
-        Assertions.assertEquals("GROUP1", body.get(1).getMainGroup());
+        Assertions.assertEquals(3, metadata.getTotalItems());
     }
 
     @Test
-    void testGetLinkableContentsViaExtraGroup() throws Exception {
-        UserDetails user = Mockito.mock(UserDetails.class);
-        RestContentListRequest requestList = prepareGetContentTest(user);
+    void testGetContentsGenericUser() throws Exception {
+        RestContentListRequest requestList = this.createContentsRequest();
+        List<String> userGroups = List.of("GROUP1", "GROUP2");
+        List<String> expectedGroups = List.of(Group.FREE_GROUP_NAME, "GROUP1", "GROUP2");
+        this.testGetLinkableContentsViaOwnerGroup(requestList, userGroups, expectedGroups);
+    }
+
+    @Test
+    void testGetLinkableContentsGenericUser() throws Exception {
+        RestContentListRequest requestList = this.createContentsRequest();
         requestList.setForLinkingWithOwnerGroup("GROUP1");
-        requestList.setForLinkingWithExtraGroups(Arrays.asList("GROUP2"));
+        requestList.setForLinkingWithExtraGroups(List.of("GROUP2", "GROUP4"));
 
-        this.addMockedContent(FOUND_CONTENT_01, "ART", "GROUP1", "GROUP2");
-        this.addMockedContent(FOUND_CONTENT_02, "ART", "GROUP1", null);
-        this.addMockedContent(FOUND_CONTENT_03, "ART", "GROUP2", "GROUP1");
+        List<String> userGroups = List.of("GROUP1", "GROUP2", "GROUP3");
+        // Free group is always included by default
+        // GROUP3 is excluded because has not been requested in linkability filter
+        // GROUP4 is excluded because the user doesn't belong to it
+        List<String> expectedGroups = List.of(Group.FREE_GROUP_NAME, "GROUP1", "GROUP2");
 
-        // test
+        this.testGetLinkableContentsViaOwnerGroup(requestList, userGroups, expectedGroups);
+    }
+
+    @Test
+    void testContentsAnonymousUser() throws Exception {
+        RestContentListRequest requestList = this.createContentsRequest();
+        List<String> userGroups = List.of();
+        List<String> expectedGroups = List.of(Group.FREE_GROUP_NAME);
+        this.testGetLinkableContentsViaOwnerGroup(requestList, userGroups, expectedGroups);
+    }
+
+    @Test
+    void testGetLinkableContentsAnonymousUser() throws Exception {
+
+        RestContentListRequest requestList = this.createContentsRequest();
+        requestList.setForLinkingWithOwnerGroup("GROUP1");
+        requestList.setForLinkingWithExtraGroups(List.of("GROUP2"));
+
+        List<String> userGroups = List.of();
+        // linkability filters different from free group are ignored
+        List<String> expectedGroups = List.of(Group.FREE_GROUP_NAME);
+
+        this.testGetLinkableContentsViaOwnerGroup(requestList, userGroups, expectedGroups);
+    }
+
+    private void testGetLinkableContentsViaOwnerGroup(RestContentListRequest requestList, List<String> userGroups, List<String> expectedGroups) throws Exception {
+        UserDetails user = Mockito.mock(UserDetails.class);
+
+        requestList.setStatus(IContentService.STATUS_ONLINE);
+        requestList.setMode(ContentService.MODE_LIST);
+
+        List<Group> authorizedGroups = userGroups
+                .stream().map(groupName -> {
+                    Group group1 = new Group();
+                    group1.setName(groupName);
+                    return group1;
+                }).collect(Collectors.toList());
+
+        when(this.authorizationManager.getUserGroups(user)).thenReturn(authorizedGroups);
+        List<String> contentsId = List.of(FOUND_CONTENT_01, FOUND_CONTENT_02);
+
+        SearcherDaoPaginatedResult<String> paginatedResult = new SearcherDaoPaginatedResult<>();
+        paginatedResult.setList(contentsId);
+        paginatedResult.setCount(2);
+
+        when((this.contentManager).getPaginatedPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
+                Mockito.nullable(EntitySearchFilter[].class), Mockito.anyCollection())).thenReturn(paginatedResult);
+
+        this.addMockedLightweightContent(FOUND_CONTENT_01, "ART");
+        this.addMockedLightweightContent(FOUND_CONTENT_02, "ART");
+
         PagedMetadata<ContentDto> metadata = this.contentService.getContents(requestList, user);
 
         List<ContentDto> body = metadata.getBody();
         Assertions.assertEquals(2, body.size());
-        Assertions.assertEquals("GROUP1", body.get(0).getMainGroup());
-        Assertions.assertEquals("GROUP2", body.get(1).getMainGroup());
+
+        verify(this.contentManager).getPaginatedPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
+                Mockito.nullable(EntitySearchFilter[].class), Mockito.argThat(groups -> {
+                    return groups.size() == expectedGroups.size() && groups.containsAll(expectedGroups);
+                }));
     }
 
     @Test
@@ -266,9 +338,12 @@ class ContentServiceTest {
         UserDetails user = Mockito.mock(UserDetails.class);
         Mockito.lenient().when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
-        List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3", "ART4", "ART5", "ART6");
-        when((this.contentManager).loadPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
-                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(contentsId);
+        List<String> contentsId = Arrays.asList("ART1", FOUND_CONTENT_01, "ART3", "ART4", FOUND_CONTENT_02, FOUND_CONTENT_03);
+        SearcherDaoPaginatedResult<String> paginatedResult = new SearcherDaoPaginatedResult<>();
+        paginatedResult.setList(contentsId);
+        paginatedResult.setCount(6);
+        when((this.contentManager).getPaginatedPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
+                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(paginatedResult);
         this.createMockContent("ART");
         this.createMockContentModel("ART");
         when(this.contentModelManager.getContentModel(34)).thenReturn(null);
@@ -289,9 +364,12 @@ class ContentServiceTest {
         UserDetails user = Mockito.mock(UserDetails.class);
         Mockito.lenient().when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));
         when(this.authorizationManager.getUserGroups(user)).thenReturn(new ArrayList<>());
-        List<String> contentsId = Arrays.asList("ART1", "ART2", "ART3", "ART4", "ART5", "ART6");
-        when((this.contentManager).loadPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
-                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(contentsId);
+        List<String> contentsId = Arrays.asList("ART1", FOUND_CONTENT_01, "ART3", "ART4", FOUND_CONTENT_02, FOUND_CONTENT_03);
+        SearcherDaoPaginatedResult<String> paginatedResult = new SearcherDaoPaginatedResult<>();
+        paginatedResult.setList(contentsId);
+        paginatedResult.setCount(6);
+        when((this.contentManager).getPaginatedPublicContentsId(Mockito.nullable(String[].class), Mockito.anyBoolean(),
+                Mockito.nullable(EntitySearchFilter[].class), Mockito.any(List.class))).thenReturn(paginatedResult);
         this.createMockContent("ART");
         this.createMockContentModel("NEW");
         Assertions.assertThrows(ValidationGenericException.class, () -> {
@@ -334,6 +412,13 @@ class ContentServiceTest {
         } else {
             when(this.contentManager.loadContent(id, true)).thenReturn(mockContent);
         }
+    }
+
+    private void addMockedLightweightContent(String id, String typeCode) throws Exception {
+        ContentRecordVO contentRecord = new ContentRecordVO();
+        contentRecord.setTypeCode(typeCode);
+        contentRecord.setVersion("1.5");
+        when(this.contentManager.loadContentVO(id)).thenReturn(contentRecord);
     }
 
     protected void createMockContentModel(String typeCode) throws Exception {
@@ -400,6 +485,7 @@ class ContentServiceTest {
         RestContentListRequest requestList = this.createContentsRequest();
         requestList.setStatus(IContentService.STATUS_ONLINE);
         requestList.setModel(null);
+        requestList.setPage(1);
         requestList.setPageSize(5);
         requestList.setText("text");
         when(this.langManager.getDefaultLang()).thenReturn(Mockito.mock(Lang.class));

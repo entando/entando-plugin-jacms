@@ -69,7 +69,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
-import org.entando.entando.plugins.jacms.aps.system.services.content.ContentService;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
@@ -114,6 +113,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .withAuthorization(Group.FREE_GROUP_NAME, "editor", Permission.CONTENT_EDITOR)
                 .build();
         ResultActions result = this.performGetContent("ART180", "1", true, null, true, user);
+        result.andDo(print());
         String result1 = result.andReturn().getResponse().getContentAsString();
         System.out.println(result1);
         result.andExpect(status().isOk());
@@ -4364,13 +4364,23 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         .param("filter[0].attribute", IContentManager.ENTITY_TYPE_CODE_FILTER_KEY)
                         .param("filter[0].operator", "eq")
                         .param("filter[0].value", "EVN")
-                        .param("forLinkingWithOwnerGroup", "GROUP1")
-                        .param("forLinkingWithExtraGroups[0]", "GROUP2")
-                        .param("forLinkingWithExtraGroups[1]", "GROUP3")
+                        .param("status", "published")
+                        .param("forLinkingWithOwnerGroup", "group1")
+                        .param("forLinkingWithExtraGroups[0]", "group2")
+                        .param("forLinkingWithExtraGroups[1]", "group3")
+                        .param("page", "1")
+                        .param("pageSize", "5")
                         .header("Authorization", "Bearer " + accessToken));
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
+                // checking pagination
+                .andExpect(jsonPath("$.payload", Matchers.hasSize(5)))
+                .andExpect(jsonPath("$.metaData.pageSize", Matchers.equalTo(5)))
+                .andExpect(jsonPath("$.metaData.totalItems", Matchers.equalTo(9)))
+                // checking owner group filter
+                .andExpect(jsonPath("$.payload[?(@.mainGroup == 'free')]", Matchers.hasSize(Matchers.greaterThan(0))))
+                // checking join groups filter
+                .andExpect(jsonPath("$.payload[?(@.mainGroup == 'coach')].groups[*]", Matchers.hasItem("group1")));
     }
 
     @Test
@@ -4778,8 +4788,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     void testGetContentsAnonymousUser() throws Exception {
         ResultActions result = mockMvc
                 .perform(get("/plugins/cms/contents")
-                        .param("status", "published")
-                        .param("mode", ContentService.MODE_FULL)
+                        .param("status", IContentService.STATUS_ONLINE)
+                        .param("mode", IContentService.MODE_FULL)
                         .param("page", "1")
                         .param("pageSize", "500"));
 
@@ -4807,6 +4817,23 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
             Assertions.assertTrue(isPublic);
         }
+    }
+
+    @Test
+    void testGetDraftContents() throws Exception {
+        UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
+        String accessToken = mockOAuthInterceptor(user);
+
+        ResultActions result = mockMvc
+                .perform(get("/plugins/cms/contents")
+                        .param("status", IContentService.STATUS_DRAFT)
+                        .param("mode", IContentService.MODE_LIST)
+                        .header("Authorization", "Bearer " + accessToken));
+
+        result.andDo(resultPrint())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload[?(@.onLine == false)]",
+                        Matchers.hasSize(Matchers.greaterThan(0))));
     }
 
     void testContentRelationForGroup() throws Exception {
