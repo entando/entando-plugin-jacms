@@ -4722,7 +4722,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         ResultActions result = null;
         try {
             UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
-                .withAuthorization(Group.FREE_GROUP_NAME, "custom_role", Permission.ENTER_BACKEND)
+                .withAuthorization(Group.FREE_GROUP_NAME, "custom_role", Permission.CONTENT_EDITOR, Permission.ENTER_BACKEND)
                 .build();
             String accessToken = mockOAuthInterceptor(user);
             String contentToClone = "RAH101";
