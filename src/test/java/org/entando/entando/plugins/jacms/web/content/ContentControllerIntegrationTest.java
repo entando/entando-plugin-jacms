@@ -3179,6 +3179,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[8].id", is("EVN191")));
     }
 
+    @Test
     void testFilteredContent_1() throws Throwable {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
                 .withAuthorization(Group.FREE_GROUP_NAME, "tempRole", Permission.BACKOFFICE).build();
@@ -3808,6 +3809,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         }
     }
 
+    @Test
     void testGetPageOfflineNoWidgetErrorMessage() throws Exception {
         String pageCode = "page_error_test";
         try {
@@ -4579,7 +4581,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload.total", is(total)))
                 .andExpect(jsonPath("$.payload.latestModificationDate", is(dateString)));
     }
-
+    
     @Test
     void testAddCloneDeleteContent() throws Exception {
         String newContentId = null;
@@ -4712,6 +4714,28 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             if (null != this.contentManager.getEntityPrototype("AL2")) {
                 ((IEntityTypesConfigurer) this.contentManager).removeEntityPrototype("AL2");
             }
+        }
+    }
+
+    @Test
+    void testCloneUnauthorizedContent() throws Exception {
+        ResultActions result = null;
+        try {
+            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
+                .withAuthorization(Group.FREE_GROUP_NAME, "custom_role", Permission.ENTER_BACKEND)
+                .build();
+            String accessToken = mockOAuthInterceptor(user);
+            String contentToClone = "RAH101";
+            result = mockMvc
+                    .perform(post("/plugins/cms/contents/{code}/clone", contentToClone)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andDo(print()).andExpect(status().isForbidden());
+        } catch(Exception e) {
+            String bodyResult = result.andReturn().getResponse().getContentAsString();
+            String clonedContentId = JsonPath.read(bodyResult, "$.payload.id");
+            this.contentManager.deleteContent(clonedContentId);
+            throw e;
         }
     }
 
