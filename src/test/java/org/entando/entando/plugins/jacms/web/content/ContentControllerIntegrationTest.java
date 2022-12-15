@@ -4869,6 +4869,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                         Matchers.hasSize(Matchers.greaterThan(0))));
     }
 
+    @Test
     void testContentRelationForGroup() throws Exception {
         String newContentId = null;
         try {
