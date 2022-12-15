@@ -13,7 +13,8 @@
                                 "code":"image",
                                 "values":{
                                     "it":{
-                                        "id":"resourceIdPlaceHolder"
+                                        "id":"resourceIdPlaceHolder",
+                                        "name": "Entando test"
                                     }
                                 }
                             }

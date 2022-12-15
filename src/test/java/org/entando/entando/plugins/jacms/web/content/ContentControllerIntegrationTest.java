@@ -34,8 +34,11 @@ import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.entity.IEntityManager;
 import com.agiletec.aps.system.common.entity.IEntityTypesConfigurer;
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
+import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
+import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.DateAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
+import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.group.GroupUtilizer;
 import com.agiletec.aps.system.services.page.IPage;
@@ -52,6 +55,7 @@ import com.agiletec.aps.util.DateConverter;
 import com.agiletec.aps.util.FileTextReader;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.ImageAttribute;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.resource.model.ResourceInterface;
 import com.agiletec.plugins.jacms.aps.system.services.searchengine.ICmsSearchEngineManager;
@@ -68,6 +72,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.widgettype.IWidgetTypeManager;
 import org.entando.entando.plugins.jacms.aps.system.services.content.IContentService;
+import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import org.entando.entando.plugins.jacms.web.content.validator.BatchContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.content.validator.ContentStatusRequest;
 import org.entando.entando.plugins.jacms.web.resource.request.CreateResourceRequest;
@@ -92,6 +97,9 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     private IContentManager contentManager;
 
     @Autowired
+    private IResourceManager resourceManager;
+
+    @Autowired
     private ICmsSearchEngineManager searchEngineManager;
 
     @Autowired
@@ -103,7 +111,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
     private ObjectMapper mapper = new ObjectMapper();
 
     public static final String PLACEHOLDER_STRING = "resourceIdPlaceHolder";
-
+    
     @Test
     void testGetContentWithModel() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24")
@@ -784,7 +792,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
         }
     }
-
+    
     @Test
     void testAddContentWithImageAttributeWithAllFields() throws Exception {
         String newContentId = null;
@@ -796,8 +804,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
             this.executeContentTypePost("1_POST_type_with_image.json", accessToken, status().isCreated());
             Assertions.assertNotNull(this.contentManager.getEntityPrototype("IMG"));
-
-            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application/jpeg");
+            
+            ResultActions resourceResult = this.performCreateResource(accessToken, "image", null, "free", null, null, "application/jpeg");
 
             resourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(), "$.payload.id");
 
@@ -832,8 +840,9 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             result = mockMvc
                     .perform(post("/plugins/cms/contents/{code}/clone", newContentId)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("Authorization", "Bearer " + accessToken))
-                    .andDo(print())
+                            .header("Authorization", "Bearer " + accessToken));
+            
+            result.andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.payload.id", not(newContentId)))
                     .andExpect(jsonPath("$.payload.attributes[0].code", is("img1")))
@@ -877,7 +886,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
         }
     }
-
+    
     @Test
     void testAddContentWithImageAttributeWithoutMetadata() throws Exception {
         String newContentId = null;
@@ -2463,7 +2472,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
         }
     }
-
+    
     private String createAccessToken() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
         return mockOAuthInterceptor(user);
@@ -2547,7 +2556,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         result.andExpect(expected);
         return result;
     }
-
+    
     private ResultActions performCreateResource(String accessToken, String type, String group, String mimeType) throws Exception {
         String path = String.format("/plugins/cms/assets", type);
         String contents = "content";
@@ -2575,7 +2584,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
         return mockMvc.perform(request);
     }
-
+    
     private ResultActions performCreateResource(String accessToken, String type, String correlationCode, String group, List<String> categories, String mimeType) throws Exception {
         return performCreateResource(accessToken, type, correlationCode, group, categories, null, mimeType);
     }
@@ -2606,7 +2615,7 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
 
         return mockMvc.perform(request);
     }
-
+    
     @Test
     void testGetContents() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
@@ -2623,14 +2632,14 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
         System.out.println(result.andReturn().getResponse().getContentAsString());
         result.andExpect(jsonPath("$.payload", Matchers.hasSize(Matchers.greaterThan(0))));
     }
-
+    
     private ResultActions performDeleteResource(String accessToken, String type, String resourceId) throws Exception {
         String path = String.format("/plugins/cms/assets/%s", resourceId);
         return mockMvc.perform(
                 delete(path)
                         .header("Authorization", "Bearer " + accessToken));
     }
-
+    
     @Test
     void testGetContentsPaginated() throws Exception {
         UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
@@ -3869,8 +3878,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             IPage draftPage = this.pageManager.getDraftPage(pageCode);
             assertThat(draftPage, CoreMatchers.is(not(nullValue())));
 
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
-
             String putPageOnlinePayload = "{\"status\": \"published\"}";
             ResultActions result = mockMvc.perform(
                     put("/pages/{pageCode}/status", pageCode)
@@ -3914,8 +3921,6 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             assertThat(onlinePage, CoreMatchers.is(nullValue()));
             IPage draftPage = this.pageManager.getDraftPage(pageCode);
             assertThat(draftPage, CoreMatchers.is(not(nullValue())));
-
-            UserDetails user = new OAuth2TestUtils.UserBuilder("jack_bauer", "0x24").grantedToRoleAdmin().build();
 
             String putPageOnlinePayload = "{\"status\": \"published\"}";
             ResultActions result = mockMvc.perform(
@@ -4764,9 +4769,18 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                 .andExpect(jsonPath("$.payload[9].id", is("EVN25")))
                 .andExpect(jsonPath("$.payload[10].id", is("EVN41")));
     }
-
+    
     @Test
-    void testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImage() throws Exception {
+    void testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImageWithId() throws Exception {
+        this.testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImage(false);
+    }
+    
+    @Test
+    void testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImageWithCorrelation() throws Exception {
+        this.testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImage(true);
+    }
+    
+    private void testAddUpdateDeleteContentWithMonolistOfCompositeOfAttributeImage(boolean useCorrelation) throws Exception {
         String newContentId = null;
         String resourceId = null;
         String accessToken = this.createAccessToken();
@@ -4778,14 +4792,18 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                     status().isCreated());
             Assertions.assertNotNull(this.contentManager.getEntityPrototype(contentType));
 
-            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "free", "application"
-                    + "/jpeg");
-
+            ResultActions resourceResult = this.performCreateResource(accessToken, "image", "test_correlCode", "free", null, null, "application/jpeg");
+            
             resourceId = JsonPath.read(resourceResult.andReturn().getResponse().getContentAsString(), "$.payload.id");
+            ResourceInterface resource = this.resourceManager.loadResource(resourceId);
+            Assertions.assertNotNull(resource);
+            Assertions.assertEquals("test_correlCode", resource.getCorrelationCode());
 
-            ResultActions result = this.executeContentPost("1_POST_valid_with_monolist_composite_image.json",
-                    accessToken,
-                    status().isOk(), resourceId);
+            ResultActions result = (useCorrelation) ?
+                    this.executeContentPost("1_POST_valid_with_monolist_composite_image_cor.json",
+                    accessToken, status().isOk()) : 
+                    this.executeContentPost("1_POST_valid_with_monolist_composite_image.json",
+                    accessToken, status().isOk(), resourceId);
             result.andDo(print())
                     .andExpect(jsonPath("$.payload.size()", is(1)))
                     .andExpect(jsonPath("$.errors.size()", is(0)))
@@ -4796,20 +4814,33 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                     .andExpect(jsonPath("$.payload[0].description", is("1st monolist attribute")))
                     .andExpect(jsonPath("$.payload[0].attributes[0].elements.size()", is(1)))
                     .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements.size()", is(1)))
-                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is(
-                            "image")))
-                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.type",
-                            is("image")));
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].code", is("image")))
+                    .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.type", is("image")));
 
             String bodyResult = result.andReturn().getResponse().getContentAsString();
             newContentId = JsonPath.read(bodyResult, "$.payload[0].id");
             Content newContent = this.contentManager.loadContent(newContentId, false);
-
             Assertions.assertNotNull(newContent);
-
-            this.executeContentPut("1_PUT_valid_with_monolist_composite_image.json", newContentId, accessToken,
-                            status().isOk(), resourceId)
-                    .andExpect(jsonPath("$.payload.size()", is(1)))
+            AttributeInterface attr = newContent.getAttribute("mono-compo-image");
+            Assertions.assertTrue(attr instanceof MonoListAttribute);
+            List<AttributeInterface> attributes = ((MonoListAttribute) attr).getAttributes();
+            Assertions.assertEquals(1, attributes.size());
+            for (int i = 0; i < attributes.size(); i++) {
+                AttributeInterface element = attributes.get(i);
+                Assertions.assertTrue(element instanceof CompositeAttribute);
+                Map<String, AttributeInterface> map = ((CompositeAttribute) element).getAttributeMap();
+                Assertions.assertEquals(1, map.size());
+                ImageAttribute imageAttr = (ImageAttribute) map.get("image");
+                Assertions.assertEquals(resourceId, imageAttr.getResource().getId());
+                Assertions.assertEquals("Entando test", imageAttr.getTextForLang("it"));
+            }
+            
+            ResultActions resultPut = (useCorrelation) ? 
+                    this.executeContentPut("1_PUT_valid_with_monolist_composite_image_cor.json", 
+                            newContentId, accessToken, status().isOk()) : 
+                    this.executeContentPut("1_PUT_valid_with_monolist_composite_image.json", 
+                            newContentId, accessToken, status().isOk(), resourceId);
+            resultPut.andExpect(jsonPath("$.payload.size()", is(1)))
                     .andExpect(jsonPath("$.errors.size()", is(0)))
                     .andExpect(jsonPath("$.metaData.size()", is(0)))
                     .andExpect(jsonPath("$.payload[0].id", Matchers.anything()))
@@ -4822,7 +4853,21 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
                             "image")))
                     .andExpect(jsonPath("$.payload[0].attributes[0].elements[0].compositeelements[0].values.it.type",
                             is("image")));
-
+            newContent = this.contentManager.loadContent(newContentId, false);
+            Assertions.assertNotNull(newContent);
+            attr = newContent.getAttribute("mono-compo-image");
+            Assertions.assertTrue(attr instanceof MonoListAttribute);
+             attributes = ((MonoListAttribute) attr).getAttributes();
+            Assertions.assertEquals(2, attributes.size());
+            for (int i = 0; i < attributes.size(); i++) {
+                AttributeInterface element = attributes.get(i);
+                Assertions.assertTrue(element instanceof CompositeAttribute);
+                Map<String, AttributeInterface> map = ((CompositeAttribute) element).getAttributeMap();
+                Assertions.assertEquals(1, map.size());
+                ImageAttribute imageAttr = (ImageAttribute) map.get("image");
+                Assertions.assertEquals(resourceId, imageAttr.getResource().getId());
+                Assertions.assertEquals("Entando test " + (i+1), imageAttr.getTextForLang("it"));
+            }
         } finally {
             if (null != resourceId) {
                 performDeleteResource(accessToken, "image", resourceId)
@@ -4839,7 +4884,8 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
         }
     }
-
+    
+    @Test
     void testContentRelationForGroup() throws Exception {
         String newContentId = null;
         try {
@@ -4888,5 +4934,5 @@ class ContentControllerIntegrationTest extends AbstractControllerIntegrationTest
             }
         }
     }
-
+    
 }

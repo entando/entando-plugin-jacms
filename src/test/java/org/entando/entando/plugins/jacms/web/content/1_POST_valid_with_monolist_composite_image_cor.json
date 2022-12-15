@@ -1,6 +1,5 @@
 [
     {
-        "id":"**MARKER**",
         "mainGroup":"free",
         "description":"1st monolist attribute",
         "attributes":[
@@ -14,23 +13,8 @@
                                 "code":"image",
                                 "values":{
                                     "it":{
-                                        "id": "resourceIdPlaceHolder",
-                                        "name": "Entando test 1"
-                                    }
-                                }
-                            }
-                        ],
-                        "name":"CompositeOfImages"
-                    },
-                    {
-                        "code":"compo-image",
-                        "compositeelements":[
-                            {
-                                "code":"image",
-                                "values":{
-                                    "it":{
-                                        "id":"resourceIdPlaceHolder",
-                                        "name": "Entando test 2"
+                                        "correlationCode": "test_correlCode",
+                                        "name": "Entando test"
                                     }
                                 }
                             }
