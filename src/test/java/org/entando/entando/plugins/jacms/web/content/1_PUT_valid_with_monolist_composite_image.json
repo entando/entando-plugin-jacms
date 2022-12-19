@@ -1,0 +1,46 @@
+[
+    {
+        "typeCode":"MCI",
+        "id":"**MARKER**",
+        "mainGroup":"free",
+        "description":"1st monolist attribute",
+        "attributes":[
+            {
+                "code":"mono-compo-image",
+                "elements":[
+                    {
+                        "code":"mono-compo-image",
+                        "compositeelements":[
+                            {
+                                "code":"image",
+                                "values":{
+                                    "it":{
+                                        "id": "resourceIdPlaceHolder",
+                                        "name": "Entando test 1"
+                                    }
+                                }
+                            }
+                        ],
+                        "name":"CompositeOfImages"
+                    },
+                    {
+                        "code":"mono-compo-image",
+                        "compositeelements":[
+                            {
+                                "code":"image",
+                                "values":{
+                                    "it":{
+                                        "id":"resourceIdPlaceHolder",
+                                        "name": "Entando test 2"
+                                    }
+                                }
+                            }
+                        ],
+                        "name":"CompositeOfImages"
+                    }
+                ],
+                "name":"MonolistOfImages"
+            }
+        ]
+    }
+]

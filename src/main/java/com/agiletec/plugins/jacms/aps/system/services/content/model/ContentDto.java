@@ -268,32 +268,10 @@ public class ContentDto extends EntityDto implements Serializable {
         if (AbstractResourceAttribute.class.isAssignableFrom(attribute.getClass())) {
             AbstractResourceAttribute resourceAttribute = (AbstractResourceAttribute) attribute;
             for (Entry<String, Object> resourceEntry : attributeDto.getValues().entrySet()) {
-                if (LinkedHashMap.class.isAssignableFrom(resourceEntry.getValue().getClass())) {
-                    Map<String, Object> resource = (Map<String, Object>) resourceEntry.getValue();
-                    setResourceAttribute(resourceAttribute, resource, resourceEntry.getKey());
-                } else if (ImageResource.class.isAssignableFrom(resourceEntry.getValue().getClass())) {
-                    ImageResource resource = (ImageResource) resourceEntry.getValue();
-                    setResourceAttribute(resourceAttribute, resource, resourceEntry.getKey());
-                }
+                Map<String, Object> resourceMap = (Map<String, Object>) resourceEntry.getValue();
+                this.setResourceAttribute(resourceAttribute, resourceMap, resourceEntry.getKey());
             }
         }
-    }
-
-    private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, ImageResource resource,
-            String langCode) {
-        String correlationCode = resource.getCorrelationCode();
-        String resourceId = resource.getId();
-        String name = resource.getDescription();
-
-        if (name != null) {
-            resourceAttribute.setText(name, langCode);
-        }
-
-        ResourceInterface resourceInterface = new AttachResource();
-        resourceInterface.setId(resourceId);
-        resourceInterface.setCorrelationCode(correlationCode);
-
-        resourceAttribute.setResource(resourceInterface, langCode);
     }
 
     private void setResourceAttribute(AbstractResourceAttribute resourceAttribute, Map<String, Object> resource,
@@ -301,19 +279,14 @@ public class ContentDto extends EntityDto implements Serializable {
         String correlationCode = (String) resource.get("correlationCode");
         String resourceId = (String) resource.get("id");
         String name = (String) resource.get("name");
-
         if (name != null) {
             resourceAttribute.setText(name, langCode);
         }
-
         ResourceInterface resourceInterface = new AttachResource();
         resourceInterface.setId(resourceId);
         resourceInterface.setCorrelationCode(correlationCode);
-
         resourceAttribute.setResource(resourceInterface, langCode);
-
         Map<String, Object> values = (Map<String, Object>) resource.get("metadata");
-
         if (values != null) {
             Map<String, String> metadata = values.entrySet().stream()
                     .collect(Collectors.toMap(Entry::getKey, e -> (String) e.getValue()));

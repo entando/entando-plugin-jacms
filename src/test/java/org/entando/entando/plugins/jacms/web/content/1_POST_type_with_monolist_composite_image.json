@@ -1,0 +1,43 @@
+{
+    "code": "MCI",
+    "name": "Content Type MCI",
+    "status": "0",
+    "attributes": [
+        {
+            "code": "mono-compo-image",
+            "type": "Monolist",
+            "names": {
+                "en": "links"
+            },
+            "mandatory": false,
+            "listFilter": false,
+            "indexable": false,
+            "nestedAttribute": {
+                "code": "mono-compo-image",
+                "type": "Composite",
+                "name": null,
+                "names": {
+                    "en": "links"
+                },
+                "roles": [],
+                "mandatory": false,
+                "listFilter": false,
+                "indexable": false,
+                "compositeAttributes": [
+                    {
+                        "code": "image",
+                        "type": "Image",
+                        "name": "icona link",
+                        "names": {
+                            "en": "mimg"
+                        },
+                        "roles": [],
+                        "mandatory": false,
+                        "listFilter": false,
+                        "indexable": false
+                    }
+                ]
+            }
+        }
+    ]
+}
