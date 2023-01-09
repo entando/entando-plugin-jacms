@@ -103,8 +103,11 @@
             <i class="fa fa-asterisk required-icon"></i>
         </label>
         <div class="col-sm-10">
-            <wpsf:select name="mainGroup" id="mainGroup" list="allowedGroups" listKey="name" listValue="description"
-                         disabled="%{lockGroupSelect}" cssClass="combobox form-control"></wpsf:select>
+            <select name="mainGroup" id="mainGroup" class="combobox form-control" <s:if test="%{lockGroupSelect}">disabled</s:if> >
+                <s:iterator value="allowedGroups" var="allowedGroupsVar">
+                <option value="<s:property  value="#allowedGroupsVar.name" />" <s:if test="%{mainGroup == #allowedGroupsVar.name}"> selected="selected"</s:if>><s:property  value="#allowedGroupsVar.description" /></option>
+                </s:iterator>
+            </select>
             <s:if test="#hasFieldErrorVar">
             <span class="help-block text-danger">
                 <s:iterator value="%{#fieldErrorsVar}">
