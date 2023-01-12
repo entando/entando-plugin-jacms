@@ -33,7 +33,7 @@ public class RemoveOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
     @Override
     protected boolean apply(Content content) throws EntException {
         if (!this.validateContent(content)) {
-            this.getErrors().put(content.getId(), ApsCommandErrorCode.NOT_APPLICABLE);
+            markErrorNotApplicable(content.getId());
             return false;
         } else {
             this.getApplier().removeOnLineContent(content);
@@ -47,12 +47,12 @@ public class RemoveOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
     }
 
     protected IContentHelper getContentHelper() {
-        return _contentHelper;
+        return contentHelper;
     }
     public void setContentHelper(IContentHelper contentHelper) {
-        this._contentHelper = contentHelper;
+        this.contentHelper = contentHelper;
     }
 
-    private IContentHelper _contentHelper;
+    private IContentHelper contentHelper;
 
 }

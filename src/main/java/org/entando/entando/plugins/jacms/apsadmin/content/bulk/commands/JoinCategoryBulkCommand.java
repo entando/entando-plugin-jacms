@@ -28,23 +28,11 @@ public class JoinCategoryBulkCommand extends BaseContentPropertyBulkCommand<Cate
     public String getName() {
         return COMMAND_NAME;
     }
-
-    @Override
-    protected boolean apply(Content content) throws EntException {
-        Collection<Category> categories = this.getItemProperties();
-        if (null == categories || categories.isEmpty()) {
-            this.getErrors().put(content.getId(), ApsCommandErrorCode.PARAMS_NOT_VALID);
-            return false;
-        } else {
-            for (Category category : categories) {
-                if (null != category && !category.getCode().equals(category.getParentCode())
-                        && !content.getCategories().stream().anyMatch(cat -> cat.getCode().equals(category.getCode()))) {
-                    content.addCategory(category);
-                }
-            }
-            this.getApplier().saveContent(content);
+    
+    protected void manageValidItem(Content content, Category category) {
+        if (null != category && !category.getCode().equals(category.getParentCode())
+                && content.getCategories().stream().noneMatch(cat -> cat.getCode().equals(category.getCode()))) {
+            content.addCategory(category);
         }
-        return true;
     }
-
 }

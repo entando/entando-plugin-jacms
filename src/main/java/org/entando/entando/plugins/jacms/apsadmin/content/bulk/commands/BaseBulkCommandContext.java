@@ -23,16 +23,16 @@ public class BaseBulkCommandContext<I> implements BulkCommandContext<I> {
 
     @Override
     public Collection<I> getItems() {
-        return _items;
+        return items;
     }
     /**
      * Sets the items on which to apply the command.
      * @param items The items on which to apply the command.
      */
     public void setItems(Collection<I> items) {
-        this._items = items;
+        this.items = items;
     }
 
-    private Collection<I> _items;
+    private Collection<I> items;
 
 }

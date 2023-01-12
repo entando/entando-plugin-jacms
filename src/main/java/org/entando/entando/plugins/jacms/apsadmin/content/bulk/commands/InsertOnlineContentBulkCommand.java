@@ -35,7 +35,7 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
     @Override
     protected boolean apply(Content content) throws EntException {
         if (!this.validateContent(content)) {
-            this.getErrors().put(content.getId(), ApsCommandErrorCode.NOT_APPLICABLE);
+            markErrorNotApplicable(content.getId());
             return false;
         } else {
             this.getApplier().insertOnLineContent(content);
@@ -64,10 +64,10 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
     }
 
     protected IGroupManager getGroupManager() {
-        return _groupManager;
+        return groupManager;
     }
     public void setGroupManager(IGroupManager groupManager) {
-        this._groupManager = groupManager;
+        this.groupManager = groupManager;
     }
 
     protected ILangManager getLangManager() {
@@ -77,7 +77,7 @@ public class InsertOnlineContentBulkCommand extends BaseContentBulkCommand<Conte
         this.langManager = langManager;
     }
 
-    private IGroupManager _groupManager;
+    private IGroupManager groupManager;
     private ILangManager langManager;
 
 }

@@ -25,12 +25,12 @@ public class ContentBulkCommandContext extends BaseBulkCommandContext<String> {
     }
 
     public UserDetails getCurrentUser() {
-        return _currentUser;
+        return currentUser;
     }
     public void setCurrentUser(UserDetails currentUser) {
-        this._currentUser = currentUser;
+        this.currentUser = currentUser;
     }
 
-    private UserDetails _currentUser;
+    private UserDetails currentUser;
 
 }

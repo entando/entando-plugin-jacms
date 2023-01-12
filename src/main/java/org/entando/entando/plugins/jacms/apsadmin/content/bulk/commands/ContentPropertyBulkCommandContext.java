@@ -25,12 +25,12 @@ public class ContentPropertyBulkCommandContext<P> extends ContentBulkCommandCont
     }
 
     public Collection<P> getItemProperties() {
-        return _itemProperties;
+        return itemProperties;
     }
     protected void setItemProperties(Collection<P> itemProperties) {
-        this._itemProperties = itemProperties;
+        this.itemProperties = itemProperties;
     }
 
-    private Collection<P> _itemProperties;
+    private Collection<P> itemProperties;
 
 }

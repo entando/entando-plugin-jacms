@@ -20,9 +20,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.report.DefaultBulkCommandReport;
 
@@ -37,14 +34,12 @@ import org.entando.entando.plugins.jacms.apsadmin.content.bulk.report.DefaultBul
  */
 public abstract class BaseBulkCommand<I, A, C extends BulkCommandContext<I>> implements ApsCommand<C> {
 
-    private static final EntLogger _logger = EntLogFactory.getSanitizedLogger(BaseBulkCommand.class);
-
     @Override
     public void init(C context) {
         this.setContext(context);
     }
 
-    public DefaultBulkCommandReport getReport() {
+    public DefaultBulkCommandReport<I> getReport() {
         DefaultBulkCommandReport<I> report = new DefaultBulkCommandReport<>();
         report.setApplyErrors(this.getErrors().size());
         report.setApplySuccesses(this.getSuccesses().size());
@@ -72,14 +67,14 @@ public abstract class BaseBulkCommand<I, A, C extends BulkCommandContext<I>> imp
      * @return The applier of the command (for example: the Content Manager that execute the update of a Content)
      */
     public A getApplier() {
-        return _applier;
+        return applier;
     }
     /**
      * Sets the applier of the command (for example: the Content Manager that execute the update of a Content)
      * @param applier The applier of the command (for example: the Content Manager that execute the update of a Content)
      */
     protected void setApplier(A applier) {
-        this._applier = applier;
+        this.applier = applier;
     }
 
     /**
@@ -100,10 +95,10 @@ public abstract class BaseBulkCommand<I, A, C extends BulkCommandContext<I>> imp
     }
 
     protected C getContext() {
-        return _context;
+        return context;
     }
     protected void setContext(C context) {
-        this._context = context;
+        this.context = context;
     }
 
     public List<I> getSuccesses() {
@@ -120,10 +115,10 @@ public abstract class BaseBulkCommand<I, A, C extends BulkCommandContext<I>> imp
         this.errors = errors;
     }
 
-    private A _applier;
+    private A applier;
     private Date endingTime;
 
-    private C _context;
+    private C context;
 
     private List<I> successes = new CopyOnWriteArrayList<>();
     private Map<I, ApsCommandErrorCode> errors = new ConcurrentHashMap<>();

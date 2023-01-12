@@ -30,20 +30,11 @@ public class RemoveCategoryBulkCommand extends BaseContentPropertyBulkCommand<Ca
     }
 
     @Override
-    protected boolean apply(Content content) throws EntException {
-        Collection<Category> categories = this.getItemProperties();
-        if (null == categories || categories.isEmpty()) {
-            this.getErrors().put(content.getId(), ApsCommandErrorCode.PARAMS_NOT_VALID);
-            return false;
-        } else {
-            for (Category category : categories) {
-                if (null != category && !category.getCode().equals(category.getParentCode())) {
-                    content.removeCategory(category);
-                }
-            }
-            this.getApplier().saveContent(content);
+    protected void manageValidItem(Content content, Category category) {
+        if (null != category && !category.getCode().equals(category.getParentCode())) {
+            content.removeCategory(category);
         }
-        return true;
+
     }
 
 }

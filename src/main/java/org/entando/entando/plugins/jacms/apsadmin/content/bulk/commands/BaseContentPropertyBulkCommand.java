@@ -13,12 +13,39 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands;
 
+import com.agiletec.aps.system.services.category.Category;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.Collection;
+import org.entando.entando.ent.exception.EntException;
 
 public abstract class BaseContentPropertyBulkCommand<P> extends BaseContentBulkCommand<ContentPropertyBulkCommandContext<P>> {
+
+    protected void markErrorNotValid(String key) {
+        this.getErrors().put(key, ApsCommandErrorCode.PARAMS_NOT_VALID);
+    }
 
     public Collection<P> getItemProperties() {
         return this.getContext().getItemProperties();
     }
 
+    protected boolean isItemPropertiesEmpty() {
+        Collection<P> items = this.getContext().getItemProperties();
+        return items == null || items.isEmpty() ;
+    }
+
+    protected boolean apply(Content content) throws EntException {
+        Collection<P> items = this.getItemProperties();
+        if (isItemPropertiesEmpty()) {
+            markErrorNotApplicable(content.getId());
+            return false;
+        } else {
+            for (P item :items) {
+                manageValidItem(content, item);
+            }
+            this.getApplier().saveContent(content);
+        }
+        return true;
+    }
+
+    protected abstract void manageValidItem(Content content, P item);
 }

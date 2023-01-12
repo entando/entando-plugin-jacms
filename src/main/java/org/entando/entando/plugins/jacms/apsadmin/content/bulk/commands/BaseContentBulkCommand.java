@@ -33,6 +33,10 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 
 public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext> extends BaseBulkCommand<String, IContentManager, C> implements ApplicationContextAware {
 
+    protected void markErrorNotApplicable(String key) {
+        this.getErrors().put(key, ApsCommandErrorCode.NOT_APPLICABLE);
+    }
+
     @Override
     public boolean apply(String item) throws EntException {
         boolean performed = false;
@@ -101,21 +105,21 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
     }
 
     protected Collection<ContentUtilizer> getContentUtilizers() {
-        if (this._contentUtilizers == null) {
+        if (this.contentUtilizers == null) {
             Map<String, ContentUtilizer> contentUtilizers = this.getApplicationContext().getBeansOfType(ContentUtilizer.class);
-            this._contentUtilizers = contentUtilizers.values();
+            this.contentUtilizers = contentUtilizers.values();
         }
-        return _contentUtilizers;
+        return contentUtilizers;
     }
     protected void setContentUtilizers(Collection<ContentUtilizer> contentUtilizers) {
-        this._contentUtilizers = contentUtilizers;
+        this.contentUtilizers = contentUtilizers;
     }
 
     protected IContentAuthorizationHelper getContentAuthHelper() {
-        return _contentAuthHelper;
+        return contentAuthHelper;
     }
     public void setContentAuthHelper(IContentAuthorizationHelper contentAuthHelper) {
-        this._contentAuthHelper = contentAuthHelper;
+        this.contentAuthHelper = contentAuthHelper;
     }
 
     public ApplicationContext getApplicationContext() {
@@ -126,8 +130,8 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
         this._applicationContext = applicationContext;
     }
 
-    private Collection<ContentUtilizer> _contentUtilizers;
-    private IContentAuthorizationHelper _contentAuthHelper;
+    private Collection<ContentUtilizer> contentUtilizers;
+    private IContentAuthorizationHelper contentAuthHelper;
     private ApplicationContext _applicationContext;
 
 }
