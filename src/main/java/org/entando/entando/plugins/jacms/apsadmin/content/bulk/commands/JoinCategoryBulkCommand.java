@@ -11,13 +11,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.aps.system.services.content.command.category;
+package org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands;
 
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
-import org.entando.entando.aps.system.common.command.constants.ApsCommandErrorCode;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.BaseContentPropertyBulkCommand;
 
 import java.util.Collection;
 
@@ -35,7 +33,7 @@ public class JoinCategoryBulkCommand extends BaseContentPropertyBulkCommand<Cate
     protected boolean apply(Content content) throws EntException {
         Collection<Category> categories = this.getItemProperties();
         if (null == categories || categories.isEmpty()) {
-            this.getTracer().traceError(content.getId(), ApsCommandErrorCode.PARAMS_NOT_VALID);
+            this.getErrors().put(content.getId(), ApsCommandErrorCode.PARAMS_NOT_VALID);
             return false;
         } else {
             for (Category category : categories) {
@@ -45,7 +43,6 @@ public class JoinCategoryBulkCommand extends BaseContentPropertyBulkCommand<Cate
                 }
             }
             this.getApplier().saveContent(content);
-            this.getTracer().traceSuccess(content.getId());
         }
         return true;
     }

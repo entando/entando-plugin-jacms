@@ -126,7 +126,7 @@
 			<result type="tiles">admin.jacms.content.inspect</result>
 			<interceptor-ref name="entandoDefaultStack"><param name="requestAuth.requiredPermission">editContents</param></interceptor-ref>
 		</action>
-        
+		<!--
 		<action name="bulkOnGroups*" class="jacmsContentFinderAction" method="entryBulkActions" >
         	<result name="input" type="chain">list</result>
 			<result type="chain">
@@ -137,7 +137,7 @@
 			</result>
 			<interceptor-ref name="entandoDefaultStack"><param name="requestAuth.requiredPermission">editContents</param></interceptor-ref>
 		</action>
-        
+		-->
 		<action name="bulkOnCategories*" class="jacmsContentFinderAction" method="entryBulkActions" >
         	<result name="input" type="chain">list</result>
 			<result type="chain">

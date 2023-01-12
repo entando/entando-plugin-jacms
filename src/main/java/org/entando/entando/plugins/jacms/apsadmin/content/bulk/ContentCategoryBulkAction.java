@@ -17,13 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
-import org.entando.entando.aps.system.common.command.tracer.DefaultBulkCommandTracer;
-import org.entando.entando.aps.system.services.command.IBulkCommandManager;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.category.JoinCategoryBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.category.RemoveCategoryBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.BaseContentPropertyBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.ContentPropertyBulkCommandContext;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.ContentBulkActionSummary;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
@@ -37,6 +30,12 @@ import com.agiletec.apsadmin.system.AbstractTreeAction;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.opensymphony.xwork2.Action;
+import java.util.Date;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.BaseContentPropertyBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.ContentPropertyBulkCommandContext;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.JoinCategoryBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.RemoveCategoryBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.report.DefaultBulkCommandReport;
 
 public class ContentCategoryBulkAction extends AbstractTreeAction {
 
@@ -84,8 +83,15 @@ public class ContentCategoryBulkAction extends AbstractTreeAction {
 					return INPUT;
 				} else {
 					BaseContentPropertyBulkCommand<Category> command = this.initBulkCommand(categories);
-					BulkCommandReport<String> report = this.getBulkCommandManager().addCommand(IContentBulkActionHelper.BULK_COMMAND_OWNER, command);
-					this.setCommandId(report.getCommandId());
+					this.getSelectedIds().parallelStream().forEach(contentId -> {
+						try {
+							command.apply(contentId);
+						} catch (Exception e) {
+							_logger.error("Error executing " +command.getClass().getName() + " on contents ");
+						}
+						command.setEndingTime(new Date());
+						this.setReport(command.getReport());
+					});
 				}
 			}
 		} catch (Throwable t) {
@@ -96,14 +102,21 @@ public class ContentCategoryBulkAction extends AbstractTreeAction {
 	}
 
 	private BaseContentPropertyBulkCommand<Category> initBulkCommand(List<Category> categories) {
-		String commandBeanName = ApsAdminSystemConstants.DELETE == this.getStrutsAction() ? 
-				RemoveCategoryBulkCommand.BEAN_NAME : JoinCategoryBulkCommand.BEAN_NAME;
+		String commandBeanName = ApsAdminSystemConstants.DELETE == this.getStrutsAction()
+				? RemoveCategoryBulkCommand.BEAN_NAME : JoinCategoryBulkCommand.BEAN_NAME;
 		WebApplicationContext applicationContext = ApsWebApplicationUtils.getWebApplicationContext(this.getRequest());
 		BaseContentPropertyBulkCommand<Category> command = (BaseContentPropertyBulkCommand<Category>) applicationContext.getBean(commandBeanName);
-		ContentPropertyBulkCommandContext<Category> context = new ContentPropertyBulkCommandContext<Category>(this.getSelectedIds(), 
-				categories, this.getCurrentUser(), new DefaultBulkCommandTracer<String>());
+		ContentPropertyBulkCommandContext<Category> context = new ContentPropertyBulkCommandContext<Category>(this.getSelectedIds(),
+				categories, this.getCurrentUser());
 		command.init(context);
 		return command;
+	}
+
+	public DefaultBulkCommandReport<String> getReport() {
+		return report;
+	}
+	protected void setReport(DefaultBulkCommandReport<String> report) {
+		this.report = report;
 	}
 
 	public ContentBulkActionSummary getSummary() {
@@ -156,14 +169,14 @@ public class ContentCategoryBulkAction extends AbstractTreeAction {
 	public void setStrutsAction(int strutsAction) {
 		this._strutsAction = strutsAction;
 	}
-
-	public String getCommandId() {
-		return _commandId;
-	}
-	public void setCommandId(String commandId) {
-		this._commandId = commandId;
-	}
-
+	/*
+    public String getCommandId() {
+        return _commandId;
+    }
+    public void setCommandId(String commandId) {
+        this._commandId = commandId;
+    }
+    */
 	public Set<String> getCategoryCodes() {
 		return _categoryCodes;
 	}
@@ -184,14 +197,14 @@ public class ContentCategoryBulkAction extends AbstractTreeAction {
 	public void setCategoryManager(ICategoryManager categoryManager) {
 		this._categoryManager = categoryManager;
 	}
-
-	protected IBulkCommandManager getBulkCommandManager() {
-		return _bulkCommandManager;
-	}
-	public void setBulkCommandManager(IBulkCommandManager bulkCommandManager) {
-		this._bulkCommandManager = bulkCommandManager;
-	}
-
+	/*
+        protected IBulkCommandManager getBulkCommandManager() {
+            return _bulkCommandManager;
+        }
+        public void setBulkCommandManager(IBulkCommandManager bulkCommandManager) {
+            this._bulkCommandManager = bulkCommandManager;
+        }
+    */
 	protected IContentManager getContentManager() {
 		return _contentManager;
 	}
@@ -209,14 +222,14 @@ public class ContentCategoryBulkAction extends AbstractTreeAction {
 	private Set<String> _selectedIds;
 
 	private int _strutsAction;
-	private String _commandId;
 
 	private Set<String> _categoryCodes = new TreeSet<String>();
 	private String _categoryCode;
 	private ICategoryManager _categoryManager;
 
-	private IBulkCommandManager _bulkCommandManager;
 	private IContentManager _contentManager;
 	private IContentBulkActionHelper _bulkActionHelper;
+
+	private DefaultBulkCommandReport<String> report;
 
 }

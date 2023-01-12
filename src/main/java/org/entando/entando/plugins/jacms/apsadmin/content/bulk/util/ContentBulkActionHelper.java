@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
+
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 
@@ -79,7 +79,7 @@ public class ContentBulkActionHelper implements IContentBulkActionHelper {
 	@Override
 	public List<Category> getCategoriesToManage(Collection<String> categoryCodes, ValidationAware validation, TextProvider textProvider) {
 		boolean allowed = true;
-		List<Category> categories = new ArrayList<Category>();
+		List<Category> categories = new ArrayList<>();
 		if (categoryCodes == null || categoryCodes.isEmpty()) {
 			validation.addActionError(textProvider.getText("error.bulk.categories.empty"));
 			allowed = false;
@@ -121,24 +121,8 @@ public class ContentBulkActionHelper implements IContentBulkActionHelper {
 		return summary;
 	}
 
-	@Override
-	public SmallBulkCommandReport getSmallReport(BulkCommandReport<?> report) {
-		SmallBulkCommandReport smallReport = null;
-		if (report != null) {
-			smallReport = new SmallBulkCommandReport();
-			smallReport.setCommandId(report.getCommandId());
-			smallReport.setStatus(report.getStatus());
-			smallReport.setEndingTime(report.getEndingTime());
-			smallReport.setTotal(report.getTotal());
-			smallReport.setApplyTotal(report.getApplyTotal());
-			smallReport.setApplySuccesses(report.getApplySuccesses());
-			smallReport.setApplyErrors(report.getApplyErrors());
-		}
-		return smallReport;
-	}
-
 	protected List<String> getAllowedGroupNames(Collection<Group> allowedGroups) {
-		List<String> groupNames = new ArrayList<String>(allowedGroups != null ? allowedGroups.size() : 0);
+		List<String> groupNames = new ArrayList<>(allowedGroups != null ? allowedGroups.size() : 0);
 		for (Group group : allowedGroups) {
 			groupNames.add(group.getAuthority());
 		}

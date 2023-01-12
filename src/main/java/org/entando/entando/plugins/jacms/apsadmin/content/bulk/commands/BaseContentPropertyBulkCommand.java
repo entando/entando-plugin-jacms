@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package org.entando.entando.plugins.jacms.aps.system.services.content.command.common;
+package org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands;
 
 import java.util.Collection;
 
 public abstract class BaseContentPropertyBulkCommand<P> extends BaseContentBulkCommand<ContentPropertyBulkCommandContext<P>> {
 
-	public Collection<P> getItemProperties() {
-		return this.getContext().getItemProperties();
-	}
+    public Collection<P> getItemProperties() {
+        return this.getContext().getItemProperties();
+    }
 
 }

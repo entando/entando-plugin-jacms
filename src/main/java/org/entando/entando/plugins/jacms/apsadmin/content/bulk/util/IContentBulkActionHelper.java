@@ -16,8 +16,6 @@ package org.entando.entando.plugins.jacms.apsadmin.content.bulk.util;
 import java.util.Collection;
 import java.util.List;
 
-import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
-
 import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.aps.system.services.group.Group;
 import com.opensymphony.xwork2.TextProvider;
@@ -34,9 +32,7 @@ public interface IContentBulkActionHelper {
 	public List<Category> getCategoriesToManage(Collection<String> categoryCodes, ValidationAware validation, TextProvider textProvider);
 	
 	public ContentBulkActionSummary getSummary(Collection<String> contentIds);
-	
-	public SmallBulkCommandReport getSmallReport(BulkCommandReport<?> report);
-	
+
 	public static final String BULK_COMMAND_OWNER = "jacms";
 	
 }

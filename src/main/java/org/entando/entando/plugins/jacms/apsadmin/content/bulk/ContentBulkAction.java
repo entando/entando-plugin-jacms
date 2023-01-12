@@ -15,18 +15,6 @@ package org.entando.entando.plugins.jacms.apsadmin.content.bulk;
 
 import java.util.Set;
 
-import org.entando.entando.aps.system.common.command.BaseBulkCommand;
-import org.entando.entando.aps.system.common.command.report.BulkCommandReport;
-import org.entando.entando.aps.system.common.command.tracer.DefaultBulkCommandTracer;
-import org.entando.entando.aps.system.services.command.IBulkCommandManager;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.DeleteContentBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.InsertOnlineContentBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.RemoveOnlineContentBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.BaseContentBulkCommand;
-import org.entando.entando.plugins.jacms.aps.system.services.content.command.common.ContentBulkCommandContext;
-import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.ContentBulkActionSummary;
-import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
-import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.SmallBulkCommandReport;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,6 +22,15 @@ import org.springframework.web.context.WebApplicationContext;
 import com.agiletec.aps.util.ApsWebApplicationUtils;
 import com.agiletec.apsadmin.system.BaseAction;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
+import java.util.Date;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.BaseContentBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.ContentBulkCommandContext;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.DeleteContentBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.InsertOnlineContentBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands.RemoveOnlineContentBulkCommand;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.report.DefaultBulkCommandReport;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.ContentBulkActionSummary;
+import org.entando.entando.plugins.jacms.apsadmin.content.bulk.util.IContentBulkActionHelper;
 
 public class ContentBulkAction extends BaseAction {
 
@@ -61,8 +58,15 @@ public class ContentBulkAction extends BaseAction {
 				return "list";
 			} else {
 				BaseContentBulkCommand<ContentBulkCommandContext> command = this.initBulkCommand(commandBeanName);
-				BulkCommandReport<String> report = this.getBulkCommandManager().addCommand(this.getCommandOwner(), command);
-				this.setCommandId(report.getCommandId());
+				this.getSelectedIds().parallelStream().forEach(id -> {
+					try {
+						command.apply(id);
+					} catch (Exception e) {
+						_logger.error("Error executing " + command.getClass().getName() + " on content " + id);
+					}
+				});
+				command.setEndingTime(new Date());
+				this.setReport(command.getReport());
 			}
 		} catch (Throwable t) {
 			_logger.error("Error occurred applying command {}", commandBeanName, t);
@@ -74,7 +78,7 @@ public class ContentBulkAction extends BaseAction {
 	protected BaseContentBulkCommand<ContentBulkCommandContext> initBulkCommand(String commandBeanName) {
 		WebApplicationContext applicationContext = ApsWebApplicationUtils.getWebApplicationContext(this.getRequest());
 		BaseContentBulkCommand<ContentBulkCommandContext> command = (BaseContentBulkCommand<ContentBulkCommandContext>) applicationContext.getBean(commandBeanName);
-		ContentBulkCommandContext context = new ContentBulkCommandContext(this.getSelectedIds(), this.getCurrentUser(), new DefaultBulkCommandTracer<String>());
+		ContentBulkCommandContext context = new ContentBulkCommandContext(this.getSelectedIds(), this.getCurrentUser());
 		command.init(context);
 		return command;
 	}
@@ -83,28 +87,19 @@ public class ContentBulkAction extends BaseAction {
 		return this.getReport() == null ? "expired" : SUCCESS;
 	}
 
+	public DefaultBulkCommandReport<String> getReport() {
+		return report;
+	}
+	protected void setReport(DefaultBulkCommandReport<String> report) {
+		this.report = report;
+	}
+
 	public ContentBulkActionSummary getSummary() {
 		return this.getBulkActionHelper().getSummary(this.getSelectedIds());
 	}
 
-	public BaseBulkCommand<?, ?, ?> getCommand() {
-		return this.getBulkCommandManager().getCommand(this.getCommandOwner(), this.getCommandId());
-	}
-
-	public BulkCommandReport<?> getReport() {
-		return this.getBulkCommandManager().getCommandReport(this.getCommandOwner(), this.getCommandId());
-	}
-
-	public SmallBulkCommandReport getSmallReport() {
-		return this.getBulkActionHelper().getSmallReport(this.getReport());
-	}
-
 	protected boolean checkAllowedContents() {
 		return this.getBulkActionHelper().checkAllowedContents(this.getSelectedIds(), this, this);
-	}
-
-	protected String getCommandOwner() {
-		return IContentBulkActionHelper.BULK_COMMAND_OWNER;
 	}
 
 	public Set<String> getSelectedIds() {
@@ -112,20 +107,6 @@ public class ContentBulkAction extends BaseAction {
 	}
 	public void setSelectedIds(Set<String> selectedIds) {
 		this._selectedIds = selectedIds;
-	}
-
-	public String getCommandId() {
-		return _commandId;
-	}
-	public void setCommandId(String commandId) {
-		this._commandId = commandId;
-	}
-
-	protected IBulkCommandManager getBulkCommandManager() {
-		return _bulkCommandManager;
-	}
-	public void setBulkCommandManager(IBulkCommandManager bulkCommandManager) {
-		this._bulkCommandManager = bulkCommandManager;
 	}
 
 	protected IContentManager getContentManager() {
@@ -144,10 +125,9 @@ public class ContentBulkAction extends BaseAction {
 
 	private Set<String> _selectedIds;
 
-	private String _commandId;
-
-	private IBulkCommandManager _bulkCommandManager;
 	private IContentManager _contentManager;
 	private IContentBulkActionHelper _bulkActionHelper;
+
+	private DefaultBulkCommandReport<String> report;
 
 }
