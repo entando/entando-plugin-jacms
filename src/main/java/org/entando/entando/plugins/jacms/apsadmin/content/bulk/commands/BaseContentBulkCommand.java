@@ -106,8 +106,8 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
 
     protected Collection<ContentUtilizer> getContentUtilizers() {
         if (this.contentUtilizers == null) {
-            Map<String, ContentUtilizer> contentUtilizers = this.getApplicationContext().getBeansOfType(ContentUtilizer.class);
-            this.contentUtilizers = contentUtilizers.values();
+            Map<String, ContentUtilizer> tempContentUtilizers = this.getApplicationContext().getBeansOfType(ContentUtilizer.class);
+            this.contentUtilizers = tempContentUtilizers.values();
         }
         return contentUtilizers;
     }
@@ -123,15 +123,15 @@ public abstract class BaseContentBulkCommand<C extends ContentBulkCommandContext
     }
 
     public ApplicationContext getApplicationContext() {
-        return _applicationContext;
+        return applicationContext;
     }
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this._applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
     private Collection<ContentUtilizer> contentUtilizers;
     private IContentAuthorizationHelper contentAuthHelper;
-    private ApplicationContext _applicationContext;
+    private ApplicationContext applicationContext;
 
 }

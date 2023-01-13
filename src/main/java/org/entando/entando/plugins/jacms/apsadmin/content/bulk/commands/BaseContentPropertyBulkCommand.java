@@ -13,7 +13,6 @@
  */
 package org.entando.entando.plugins.jacms.apsadmin.content.bulk.commands;
 
-import com.agiletec.aps.system.services.category.Category;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import java.util.Collection;
 import org.entando.entando.ent.exception.EntException;
