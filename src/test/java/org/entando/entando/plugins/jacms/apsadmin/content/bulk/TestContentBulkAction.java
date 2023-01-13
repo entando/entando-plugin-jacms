@@ -90,6 +90,31 @@ class TestContentBulkAction extends ApsAdminBaseTestCase {
     }
 
     @Test
+    void applyRemoveOnlineShouldNotRemove() throws Throwable {
+        String currentUser = "admin";
+        List<String> contentList = new ArrayList<>();
+        try {
+            List<String> validContents = this.addContents("ART1", 9);
+            contentList.addAll(validContents);
+
+            String[] contentIds = contentList.toArray(new String[0]);
+            String result = this.executeGroupAction(currentUser, "applyOnline", contentIds);
+            Assertions.assertEquals(Action.SUCCESS, result);
+
+            result = this.executeGroupAction(currentUser, "applyRemove", contentIds);
+            Assertions.assertEquals(Action.SUCCESS, result);
+            for (int i = 0; i < contentList.size(); i++) {
+                String newId = contentList.get(i);
+                Assertions.assertNotNull(this._contentManager.loadContent(newId, true));
+            }
+
+        } catch (Exception e) {
+            this.deleteContents(contentList);
+            throw e;
+        }
+    }
+
+    @Test
     void testApplyAddFailure() throws Throwable {
         String currentUser = "admin";
         List<String> contentList = new ArrayList<>();
