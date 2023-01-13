@@ -114,6 +114,7 @@ class TestContentBulkAction extends ApsAdminBaseTestCase {
         }
     }
 
+    
     @Test
     void testApplyAddFailure() throws Throwable {
         String currentUser = "admin";
