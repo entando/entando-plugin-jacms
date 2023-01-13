@@ -68,7 +68,6 @@ class TestContentBulkActionHelper extends ApsAdminBaseTestCase {
 
         categories = actionHelper.getCategoriesToManage(new ArrayList<>(), validator, validator);
         assertNull(categories);
-
     }
 
     @BeforeEach
