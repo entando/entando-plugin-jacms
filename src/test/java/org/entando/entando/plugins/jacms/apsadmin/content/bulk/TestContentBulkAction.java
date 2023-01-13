@@ -22,6 +22,7 @@ import com.opensymphony.xwork2.Action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.plugins.jacms.apsadmin.content.bulk.report.DefaultBulkCommandReport;
 import org.junit.jupiter.api.Assertions;
@@ -65,6 +66,22 @@ class TestContentBulkAction extends ApsAdminBaseTestCase {
             }
             this.checkReport(size, size, size, 0, null, null);
 
+        } catch (Exception e) {
+            this.deleteContents(contentList);
+            throw e;
+        }
+    }
+
+    @Test
+    void applyOnlineContentShouldCheck() throws Throwable {
+        String currentUser = "admin";
+        int size = 8;
+        List<String> contentList = null;
+        try {
+            contentList = this.addContents("ART1", size, Group.ADMINS_GROUP_NAME);
+            String[] contentIds = contentList.toArray(new String[0]);
+            String result = this.executeGroupAction(currentUser, "applyOnline", contentIds);
+            Assertions.assertEquals(Action.SUCCESS, result);
         } catch (Exception e) {
             this.deleteContents(contentList);
             throw e;
@@ -141,10 +158,17 @@ class TestContentBulkAction extends ApsAdminBaseTestCase {
     }
 
     private List<String> addContents(String masterContentId, int size) throws EntException {
+        return addContents(masterContentId, size, null);
+    }
+
+    private List<String> addContents(String masterContentId, int size, String group) throws EntException {
         List<String> contentIds = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Content current = this._contentManager.loadContent(masterContentId, false);
             current.setId(null);
+            if(StringUtils.isNotBlank(group)) {
+                current.setMainGroup(group);
+            }
             this._contentManager.addContent(current);
             contentIds.add(current.getId());
         }

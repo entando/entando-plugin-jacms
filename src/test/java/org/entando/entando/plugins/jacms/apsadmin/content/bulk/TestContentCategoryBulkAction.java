@@ -86,6 +86,16 @@ class TestContentCategoryBulkAction extends ApsAdminBaseTestCase {
 	}
 
 	@Test
+	void applyShouldManageContentNotFoundOrContentNotAuth() throws Throwable {
+		String currentUser = "editorCustomers";
+		String[] contentIds = new String[] {"ART1_NOT_FOUND","EVN193"};
+		String[] categoryCodes = new String[] {"cat1", "evento"};
+
+		String result = this.executeApply(currentUser, ApsAdminSystemConstants.ADD, contentIds, categoryCodes);
+		assertEquals(Action.SUCCESS, result);
+
+	}
+	@Test
 	void testJoinDisjoin() throws Throwable {
 		String[] contentIds = new String[] {"ART1", "RAH101", "EVN103"};
 		String[] categoryCodes = new String[] {"cat1", "evento"};
