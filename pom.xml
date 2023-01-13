@@ -109,6 +109,7 @@
                         <shutdown>exit</shutdown>
                         <parallel>methods</parallel>
                         <threadCount>8</threadCount>
+                        <skipAfterFailureCount>1</skipAfterFailureCount>
                         <excludes>
                             <exclude>**/*BaseTestCase*</exclude>
                             <exclude>**/Abstract*</exclude>

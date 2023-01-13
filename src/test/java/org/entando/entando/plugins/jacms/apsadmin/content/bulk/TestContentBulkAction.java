@@ -86,6 +86,7 @@ class TestContentBulkAction extends ApsAdminBaseTestCase {
             this.deleteContents(contentList);
             throw e;
         }
+        this.deleteContents(contentList);
     }
 
     @Test
