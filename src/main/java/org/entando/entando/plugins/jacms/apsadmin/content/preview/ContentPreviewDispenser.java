@@ -50,7 +50,7 @@ public class ContentPreviewDispenser extends BaseContentDispenser {
         } catch (Throwable t) {
             _logger.error("error in getAuthorizationInfo for content {}", contentId, t);
         }
-        return this.getRenderizationInfo(authInfo, contentId, modelId, langCode, reqCtx);
+        return this.getRenderizationInfo(authInfo, contentId, modelId, langCode, reqCtx, false);
     }
 
     @Override

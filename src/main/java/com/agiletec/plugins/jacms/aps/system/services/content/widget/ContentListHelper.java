@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.ListUtils;
-import org.entando.entando.aps.system.services.cache.CacheableInfo;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.aps.system.services.searchengine.IEntitySearchEngineManager;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
@@ -38,9 +37,11 @@ import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.Widget;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.aps.util.ApsProperties;
+import com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.helper.BaseContentListHelper;
 import com.agiletec.plugins.jacms.aps.system.services.content.widget.util.FilterUtils;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -87,16 +88,30 @@ public class ContentListHelper extends BaseContentListHelper implements IContent
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             key = "T(com.agiletec.plugins.jacms.aps.system.services.content.widget.ContentListHelper).buildCacheKey(#bean, #reqCtx)",
             condition = "#bean.cacheable && !T(com.agiletec.plugins.jacms.aps.system.services.content.widget.ContentListHelper).isUserFilterExecuted(#bean)")
-    @CacheableInfo(groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentListCacheGroupsCsv(#bean, #reqCtx)", expiresInMinute = 30)
     public List<String> getContentsId(IContentListTagBean bean, RequestContext reqCtx) throws Throwable {
+        String key = ContentListHelper.buildCacheKey(bean, reqCtx);
         this.releaseCache(bean, reqCtx);
+        boolean cacheable = bean.isCacheable() && !isUserFilterExecuted(bean);
         List<String> contentsId = null;
+        if (cacheable) {
+            contentsId = (List<String>) this.getCacheInfoManager().getFromCache(ICacheInfoManager.DEFAULT_CACHE_NAME, key);
+            if (null != contentsId) {
+                return contentsId;
+            }
+        }
         try {
             contentsId = this.extractContentsId(bean, reqCtx);
             contentsId = this.executeFullTextSearch(bean, contentsId, reqCtx);
         } catch (Throwable t) {
             _logger.error("Error extracting contents id", t);
             throw new EntException("Error extracting contents id", t);
+        }
+        if (cacheable) {
+            String[] groups = CmsCacheWrapperManager.getContentListCacheGroups(bean, reqCtx);
+            this.getCacheInfoManager().putInCache(ICacheInfoManager.DEFAULT_CACHE_NAME, key, contentsId, groups);
+            Calendar expiration = Calendar.getInstance();
+            expiration.add(Calendar.MINUTE, 30);
+            this.getCacheInfoManager().setExpirationTime(ICacheInfoManager.DEFAULT_CACHE_NAME, key, expiration.getTime());
         }
         return contentsId;
     }
