@@ -16,7 +16,6 @@ package com.agiletec.plugins.jacms.aps.system.services.content.helper;
 import java.util.List;
 import java.util.Set;
 
-import org.entando.entando.aps.system.services.cache.CacheableInfo;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
@@ -27,8 +26,10 @@ import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.lang.ILangManager;
 import com.agiletec.aps.system.services.user.UserDetails;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
+import com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
@@ -111,28 +112,16 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
     @Override
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)")
-    @CacheableInfo(groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsCsv(#contentId)")
     public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId) {
-        PublicContentAuthorizationInfo authInfo = null;
-        try {
-            Content content = this.getContentManager().loadContent(contentId, true);
-            if (null == content) {
-                _logger.debug("public content {} doesn't exist", contentId);
-                return null;
-            }
-            authInfo = new PublicContentAuthorizationInfo(content, this.getLangManager().getLangs());
-        } catch (Throwable t) {
-            _logger.error("error in getAuthorizationInfo for content {}", contentId, t);
-        }
-        return authInfo;
+        return this.getAuthorizationInfo(contentId, true);
     }
 
     @Override
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, condition = "#cacheable",
             key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)")
-    @CacheableInfo(groups = "T(com.agiletec.plugins.jacms.aps.system.services.cache.CmsCacheWrapperManager).getContentCacheGroupsCsv(#contentId)")
     public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, boolean cacheable) {
         PublicContentAuthorizationInfo authInfo = null;
+        String cacheKey = JacmsSystemConstants.CONTENT_AUTH_INFO_CACHE_PREFIX + contentId;
         try {
             Content content = this.getContentManager().loadContent(contentId, true);
             if (null == content) {
@@ -140,6 +129,10 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
                 return null;
             }
             authInfo = new PublicContentAuthorizationInfo(content, this.getLangManager().getLangs());
+            if (cacheable) {
+                String[] groups = CmsCacheWrapperManager.getContentCacheGroups(contentId);
+                this.getCacheInfoManager().putInGroup(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey, groups);
+            }
         } catch (Throwable t) {
             _logger.error("error in getAuthorizationInfo for content {}", contentId, t);
         }
@@ -170,8 +163,18 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
         this._authorizationManager = authorizationManager;
     }
 
+    public ICacheInfoManager getCacheInfoManager() {
+        return cacheInfoManager;
+    }
+    @Autowired
+    public void setCacheInfoManager(ICacheInfoManager cacheInfoManager) {
+        this.cacheInfoManager = cacheInfoManager;
+    }
+
     private IContentManager _contentManager;
     private ILangManager _langManager;
     private IAuthorizationManager _authorizationManager;
+
+    private ICacheInfoManager cacheInfoManager;
 
 }

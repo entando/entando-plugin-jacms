@@ -105,20 +105,18 @@ public class CmsCacheWrapperManager extends AbstractService
 		this.getCacheInfoManager().flushGroup(ICacheInfoManager.DEFAULT_CACHE_NAME, JacmsSystemConstants.CONTENTS_ID_CACHE_GROUP_PREFIX + content.getTypeCode());
 		this.getCacheInfoManager().flushEntry(ICacheInfoManager.DEFAULT_CACHE_NAME, JacmsSystemConstants.CONTENT_CACHE_PREFIX + content.getId());
 	}
-	
-	public static String getContentCacheGroupsCsv(String contentId) {
-		StringBuilder builder = new StringBuilder();
-		if (StringUtils.isNotEmpty(contentId)) {
-			String typeCode = contentId.substring(0, 3);
-			String contentCacheGroupId = JacmsSystemConstants.CONTENT_CACHE_GROUP_PREFIX + contentId;
-			String typeCacheGroupId = JacmsSystemConstants.CONTENT_TYPE_CACHE_GROUP_PREFIX + typeCode;
-			builder.append(contentCacheGroupId).append(",").append(typeCacheGroupId);
+
+	public static String[] getContentCacheGroups(String contentId) {
+		if (StringUtils.isEmpty(contentId)) {
+			return new String[0];
 		}
-		return builder.toString();
+		String typeCode = contentId.substring(0, 3);
+		String contentCacheGroupId = JacmsSystemConstants.CONTENT_CACHE_GROUP_PREFIX + contentId;
+		String typeCacheGroupId = JacmsSystemConstants.CONTENT_TYPE_CACHE_GROUP_PREFIX + typeCode;
+		return new String[]{contentCacheGroupId, typeCacheGroupId};
 	}
-	
-	public static String getContentListCacheGroupsCsv(IContentListTagBean bean, RequestContext reqCtx) {
-		StringBuilder builder = new StringBuilder();
+
+	public static String[] getContentListCacheGroups(IContentListTagBean bean, RequestContext reqCtx) {
 		IPage page = (null != reqCtx) ? (IPage) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE) : null;
 		String pageCacheGroupName = SystemConstants.PAGES_CACHE_GROUP_PREFIX;
 		if (null != page) {
@@ -127,24 +125,21 @@ public class CmsCacheWrapperManager extends AbstractService
 			pageCacheGroupName += "UNDEFINED";
 		}
 		String contentTypeCacheGroupName = JacmsSystemConstants.CONTENTS_ID_CACHE_GROUP_PREFIX + bean.getContentType();
-		builder.append(pageCacheGroupName).append(",").append(contentTypeCacheGroupName);
-		return builder.toString();
+		return new String[]{pageCacheGroupName, contentTypeCacheGroupName};
 	}
-	
-    public static String getContentCacheGroupsToEvictCsv(String contentId) {
-        String typeCode = contentId.substring(0, 3);
-        return getContentCacheGroupsToEvictCsv(contentId, typeCode);
-    }
-	
-	public static String getContentCacheGroupsToEvictCsv(String contentId, String typeCode) {
-		StringBuilder builder = new StringBuilder();
+
+	public static String[] getContentCacheGroupsToEvict(String contentId) {
+		String typeCode = contentId.substring(0, 3);
+		return getContentCacheGroupsToEvict(contentId, typeCode);
+	}
+
+	public static String[] getContentCacheGroupsToEvict(String contentId, String typeCode) {
 		String contentsIdCacheGroupId = JacmsSystemConstants.CONTENTS_ID_CACHE_GROUP_PREFIX + typeCode;
-		builder.append(contentsIdCacheGroupId);
 		if (null != contentId) {
 			String contentCacheGroupId = JacmsSystemConstants.CONTENT_CACHE_GROUP_PREFIX + contentId;
-			builder.append(",").append(contentCacheGroupId);
+			return new String[]{contentsIdCacheGroupId, contentCacheGroupId};
 		}
-		return builder.toString();
+		return new String[]{contentsIdCacheGroupId};
 	}
 	
 	protected IContentManager getContentManager() {
