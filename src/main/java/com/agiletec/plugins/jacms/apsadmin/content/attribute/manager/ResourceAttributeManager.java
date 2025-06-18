@@ -40,20 +40,25 @@ public class ResourceAttributeManager extends TextAttributeManager {
         super.updateAttribute(attribute, tracer, request);
         IResourceManager resourceManager = (IResourceManager) ApsWebApplicationUtils.getBean(JacmsSystemConstants.RESOURCE_MANAGER, request);
         AbstractResourceAttribute resourceAttribute = (AbstractResourceAttribute) attribute;
-        if (null != resourceAttribute.getMetadatas()) {
-            resourceAttribute.getMetadatas().clear();
-        }
+
         Map<String, List<String>> mapping = resourceManager.getMetadataMapping();
         if (null == mapping || mapping.isEmpty()) {
             return;
         }
+
         List<Lang> langs = this.getLangManager().getLangs();
         for (Lang currentLang : langs) {
             tracer.setLang(currentLang);
             String formFieldPrefix = tracer.getFormFieldName(attribute) + "_metadata_";
             mapping.keySet().stream().forEach(key -> {
                 String value = request.getParameter(formFieldPrefix + key);
-                if (!StringUtils.isBlank(value)) {
+                if ( value != null) {
+                    // all this update is heavily based on metadata presents in the http request.
+                    // So I will skip update metadata if a particular key is not present inside the current http request.
+                    // solution proposed by Eugenio
+                    if (value.trim().length() == 0) {
+                        value = "";
+                    }
                     resourceAttribute.setMetadata(key, currentLang.getCode(), value);
                 }
             });
