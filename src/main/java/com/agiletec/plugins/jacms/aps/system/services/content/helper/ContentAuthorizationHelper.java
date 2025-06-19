@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
- * Return informations of content authorization
+ * Return information of content authorization
  *
  * @author E.Santoboni
  */
@@ -111,14 +111,16 @@ public class ContentAuthorizationHelper implements IContentAuthorizationHelper {
 
     @Override
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME,
-            key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)")
+            key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)",
+            unless="#result == null")
     public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId) {
         return this.getAuthorizationInfo(contentId, true);
     }
 
     @Override
     @Cacheable(value = ICacheInfoManager.DEFAULT_CACHE_NAME, condition = "#cacheable",
-            key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)")
+            key = "T(com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants).CONTENT_AUTH_INFO_CACHE_PREFIX.concat(#contentId)",
+            unless="#result == null")
     public PublicContentAuthorizationInfo getAuthorizationInfo(String contentId, boolean cacheable) {
         PublicContentAuthorizationInfo authInfo = null;
         String cacheKey = JacmsSystemConstants.CONTENT_AUTH_INFO_CACHE_PREFIX + contentId;
