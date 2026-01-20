@@ -41,6 +41,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.exception.EntRuntimeException;
@@ -676,6 +680,48 @@ public class ContentManager extends ApsEntityManager
         String cacheKey = CONTENT_TYPE_CACHE_PREFIX + entityType.getTypeCode();
         this.getCacheInfoManager().flushEntry(ICacheInfoManager.DEFAULT_CACHE_NAME, cacheKey);
     }
+
+
+    private static final int PARSING_THREAD_POOL_SIZE =
+            Math.max(2, Runtime.getRuntime().availableProcessors() - 1);
+
+    private final ExecutorService parsingExecutor =
+            Executors.newFixedThreadPool(PARSING_THREAD_POOL_SIZE);
+
+    @Override
+    public Map<String, Content> loadContents(Collection<String> ids, boolean onLine) throws EntException {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        try {
+            Map<String, ContentRecordVO> contentVOs = this.getContentDAO().loadContentRecordVOs(ids);
+
+            Map<String, CompletableFuture<Content>> futures = new HashMap<>();
+            for (Map.Entry<String, ContentRecordVO> entry : contentVOs.entrySet()) {
+                futures.put(entry.getKey(), CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return this.createContent(entry.getValue(), onLine);
+                    } catch (EntException e) {
+                        logger.error("Error creating content from VO: {}", entry.getKey(), e);
+                        return null;
+                    }
+                }, parsingExecutor));
+            }
+
+            Map<String, Content> result = new HashMap<>();
+            for (Map.Entry<String, CompletableFuture<Content>> entry : futures.entrySet()) {
+                Content content = entry.getValue().join();
+                if (content != null) {
+                    result.put(entry.getKey(), content);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            logger.error("Error loading contents for ids: {}", ids, e);
+            throw new EntException("Error loading contents", e);
+        }
+    }
+
 
     /**
      * Return the DAO which handles all the operations on the contents.

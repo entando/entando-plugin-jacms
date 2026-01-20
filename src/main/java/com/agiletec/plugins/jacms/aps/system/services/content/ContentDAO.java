@@ -19,12 +19,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
@@ -826,6 +822,41 @@ public class ContentDAO extends AbstractEntityDAO implements IContentDAO {
 		}
 		return lastModified;
 	}
+
+	@Override
+	public Map<String, ContentRecordVO> loadContentRecordVOs(Collection<String> ids) {
+		if (ids == null || ids.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		Map<String, ContentRecordVO> result = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement stat = null;
+		ResultSet res = null;
+		try {
+			conn = this.getConnection();
+			String inClause = ids.stream()
+					.map(id -> "?")
+					.collect(Collectors.joining(", "));
+			String query = LOAD_CONTENTS_VO_MAIN_BLOCK + " WHERE contents.contentid IN (" + inClause + ")";
+			stat = conn.prepareStatement(query);
+			int index = 1;
+			for (String id : ids) {
+				stat.setString(index++, id);
+			}
+			res = stat.executeQuery();
+			while (res.next()) {
+				ContentRecordVO vo = (ContentRecordVO) this.createEntityRecord(res);
+				result.put(vo.getId(), vo);
+			}
+		} catch (Throwable t) {
+			_logger.error("Error loading content records for ids: {}", ids, t);
+			throw new RuntimeException("Error loading content records", t);
+		} finally {
+			closeDaoResources(res, stat, conn);
+		}
+		return result;
+	}
+
 
 	@Override
 	protected String getAddingSearchRecordQuery() {

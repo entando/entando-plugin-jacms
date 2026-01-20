@@ -13,10 +13,13 @@
  */
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.agiletec.aps.system.common.entity.IEntityDAO;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 
 /**
  * Basic interface for the Data Access Objects for the 'content' objects. 
@@ -87,5 +90,12 @@ public interface IContentDAO extends IEntityDAO {
 	public void updateContent(Content content, boolean updateDate);
 
 	public ContentsStatus loadContentStatus();
+
+	/**
+	 * Load multiple content records in a single batch operation.
+	 * @param ids Collection of content IDs to load.
+	 * @return Map of content ID to ContentRecordVO object.
+	 */
+	public Map<String, ContentRecordVO> loadContentRecordVOs(Collection<String> ids);
 	
 }

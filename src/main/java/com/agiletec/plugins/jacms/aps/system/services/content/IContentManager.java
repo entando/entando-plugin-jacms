@@ -242,6 +242,16 @@ public interface IContentManager extends IEntityManager {
     public int getState();
 
     /**
+     * Load multiple contents in a single batch operation.
+     * @param ids Collection of content IDs to load.
+     * @param onLine true for published version, false for work version.
+     * @return Map of content ID to Content object.
+     * @throws EntException In case of error.
+     */
+    public Map<String, Content> loadContents(Collection<String> ids, boolean onLine) throws EntException;
+
+
+    /**
      * Identificativo stato servizio: stato pronto.
      *
      * @deprecated From jAPS 2.0 version 2.0.9, use {@link IEntityManager}

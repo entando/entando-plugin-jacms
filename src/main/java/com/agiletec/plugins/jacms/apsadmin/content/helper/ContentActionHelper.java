@@ -13,10 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -213,6 +210,7 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
      * @param action L'action da valorizzare con i messaggi di errore.
      * @throws EntException In caso di errore.
      */
+    /*
     @Override
     public void scanReferences(Content content, ActionSupport action) throws EntException {
         if (!Group.FREE_GROUP_NAME.equals(content.getMainGroup()) && !content.getGroups().contains(Group.FREE_GROUP_NAME)) {
@@ -267,7 +265,90 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
                 throw new EntException("Error in hasReferencingObject method", t);
             }
         }
+    } */
+    @Override
+    public void scanReferences(Content content, ActionSupport action) throws EntException {
+        if (!Group.FREE_GROUP_NAME.equals(content.getMainGroup()) && !content.getGroups().contains(Group.FREE_GROUP_NAME)) {
+            HttpServletRequest request = ServletActionContext.getRequest();
+            try {
+                String[] defNames = ApsWebApplicationUtils.getWebApplicationContext(request).getBeanNamesForType(ContentUtilizer.class);
+
+                Set<String> contentIdsToLoad = new HashSet<>();
+                Map<String, List<Object>> utilizerResults = new HashMap<>();
+
+                for (int i = 0; i < defNames.length; i++) {
+                    Object service = null;
+                    try {
+                        service = ApsWebApplicationUtils.getWebApplicationContext(request).getBean(defNames[i]);
+                    } catch (Throwable t) {
+                        logger.error("error loading ReferencingObject ", t);
+                        service = null;
+                    }
+                    if (service != null) {
+                        ContentUtilizer contentUtilizer = (ContentUtilizer) service;
+                        List<Object> utilizers = contentUtilizer.getContentUtilizers(content.getId());
+                        utilizerResults.put(defNames[i], utilizers);
+
+                        if (service instanceof IContentManager && utilizers != null) {
+                            for (Object obj : utilizers) {
+                                if (obj instanceof String) {
+                                    contentIdsToLoad.add((String) obj);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Map<String, Content> referencedContents = Collections.emptyMap();
+                if (!contentIdsToLoad.isEmpty()) {
+                    referencedContents = this.getContentManager().loadContents(contentIdsToLoad, true);
+                }
+
+                for (int i = 0; i < defNames.length; i++) {
+                    Object service = null;
+                    try {
+                        service = ApsWebApplicationUtils.getWebApplicationContext(request).getBean(defNames[i]);
+                    } catch (Throwable t) {
+                        service = null;
+                    }
+                    List<Object> utilizers = utilizerResults.get(defNames[i]);
+                    if (utilizers == null) {
+                        continue;
+                    }
+                    Lang lang = this.getLangManager().getDefaultLang();
+                    for (int j = 0; j < utilizers.size(); j++) {
+                        Object object = utilizers.get(j);
+                        if (service instanceof IContentManager && object instanceof String) {
+                            Content refContent = referencedContents.get(object.toString());
+                            if (refContent != null) {
+                                if (!content.getMainGroup().equals(refContent.getMainGroup()) && !content.getGroups().contains(refContent
+                                        .getMainGroup())) {
+                                    String[] args = {this.getGroupManager().getGroup(refContent.getMainGroup()).getDescription(), object
+                                            .toString() + " '" + refContent.getDescription() + "'"};
+                                    action.addFieldError(MAIN_GROUP, action.getText("error.content.referencedContent.wrongGroups", args));
+                                }
+                            }
+                        } else if (object instanceof IPage) {
+                            IPage page = (IPage) object;
+                            if (!CmsPageUtil.isContentPublishableOnPageOnline(content, page)) {
+                                PageMetadata metadata = page.getMetadata();
+                                List<String> pageGroups = new ArrayList<>();
+                                pageGroups.add(page.getGroup());
+                                if (metadata != null && null != metadata.getExtraGroups()) {
+                                    pageGroups.addAll(metadata.getExtraGroups());
+                                }
+                                String[] args = {pageGroups.toString(), page.getTitle(lang.getCode())};
+                                action.addFieldError(MAIN_GROUP, action.getText("error.content.referencedPage.wrongGroups", args));
+                            }
+                        }
+                    }
+                }
+            } catch (Throwable t) {
+                throw new EntException("Error in hasReferencingObject method", t);
+            }
+        }
     }
+
 
     @Override
     public ActivityStreamInfo createActivityStreamInfo(Content content, int strutsAction, boolean addLink) {
