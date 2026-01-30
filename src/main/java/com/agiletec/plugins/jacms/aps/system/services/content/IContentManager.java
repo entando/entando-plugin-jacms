@@ -101,6 +101,8 @@ public interface IContentManager extends IEntityManager {
      */
     public Content loadContent(String id, boolean onLine) throws EntException;
 
+    Content loadAndCacheContent(String id, boolean onLine) throws EntException;
+
     /**
      * Restituisce un VO contenente le informazioni del record su db
      * corrispondente al contenuto di cui all'id inserito.
@@ -110,6 +112,12 @@ public interface IContentManager extends IEntityManager {
      * @throws EntException In caso di errore in accesso al db.
      */
     public ContentRecordVO loadContentVO(String id) throws EntException;
+
+    ContentRecordVO loadAndCacheContentVO(String id) throws EntException;
+
+    void evict(String key);
+
+    void evict(List<String> keys);
 
     /**
      * Salva un contenuto sul DB. Il metodo viene utilizzato sia nel caso di

@@ -29,7 +29,7 @@ import com.agiletec.plugins.jacms.apsadmin.content.helper.IContentActionHelper;
 
 /**
  * Classi action base delegata 
- * alla gestione delle operazione sugli attributi di contenuto tipo lista.
+ * alla gestione delle operazioni sugli attributi di contenuto tipo lista.
  * @author E.Santoboni
  */
 public class ListAttributeAction extends com.agiletec.apsadmin.system.entity.attribute.action.list.ListAttributeAction {

@@ -14,6 +14,7 @@
 package com.agiletec.plugins.jacms.aps.system.services.content;
 
 import com.agiletec.aps.system.ApsSystemUtils;
+import com.agiletec.aps.system.ApsSystemUtils.ApsDeepDebug;
 import com.agiletec.aps.system.SystemConstants;
 import com.agiletec.aps.system.common.entity.ApsEntityManager;
 import com.agiletec.aps.system.common.entity.IEntityDAO;
@@ -33,6 +34,7 @@ import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SmallContentType;
 import com.agiletec.plugins.jacms.aps.system.services.resource.ResourceUtilizer;
+import com.github.benmanes.caffeine.cache.Cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.aps.system.services.cache.ICacheInfoManager;
 import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.exception.EntRuntimeException;
@@ -54,7 +57,7 @@ import org.springframework.cache.annotation.CacheEvict;
  * the contents.
  */
 public class ContentManager extends ApsEntityManager
-                            implements IContentManager, GroupUtilizer<String>, PageUtilizer, ContentUtilizer, ResourceUtilizer, CategoryUtilizer {
+        implements IFContentLocalCache, IContentManager, GroupUtilizer<String>, PageUtilizer, ContentUtilizer, ResourceUtilizer, CategoryUtilizer {
 
     private static final EntLogger logger = EntLogFactory.getSanitizedLogger(ContentManager.class);
     
@@ -71,6 +74,8 @@ public class ContentManager extends ApsEntityManager
     private IContentUpdaterService contentUpdaterService;
     
     private ICacheInfoManager cacheInfoManager;
+
+    private com.github.benmanes.caffeine.cache.Cache<String, Object> localCache;
 
     @Override
     protected String getConfigItemName() {
@@ -91,8 +96,8 @@ public class ContentManager extends ApsEntityManager
     }
 
     /**
-     * Return a list of the of the content types in a 'small form'. 'Small form'
-     * mans that the contents returned are purged from all unnecessary
+     * Return a list of the content types in a 'small form'. 'Small form'
+     * means that the contents returned are purged from all unnecessary
      * information (eg. attributes).
      *
      * @return The list of the types in a (small form).
@@ -187,6 +192,17 @@ public class ContentManager extends ApsEntityManager
         }
     }
 
+    @Override
+    public Content loadAndCacheContent(String id, boolean onLine) throws EntException {
+        try {
+            ContentRecordVO contentVo = this.loadAndCacheContentVO(id);
+            return this.createContent(contentVo, onLine);
+        } catch (EntException e) {
+            logger.error("Error while loading content : id {}", id, e);
+            throw new EntException("Error while loading content : id " + id, e);
+        }
+    }
+
     protected Content createContent(ContentRecordVO contentVo, boolean onLine) throws EntException {
         Content content = null;
         try {
@@ -238,7 +254,7 @@ public class ContentManager extends ApsEntityManager
 
     /**
      * Return a {@link ContentRecordVO} (shortly: VO) containing the all content
-     * informations stored in the DB.
+     * information stored in the DB.
      *
      * @param id The id of the requested content.
      * @return The VO object corresponding to the wanted content.
@@ -247,11 +263,34 @@ public class ContentManager extends ApsEntityManager
     @Override
     public ContentRecordVO loadContentVO(String id) throws EntException {
         try {
+            ApsDeepDebug.print("cms-local-cache", "cache IGNORE " + id);
             return (ContentRecordVO) this.getContentDAO().loadEntityRecord(id);
         } catch (Throwable t) {
             logger.error("Error while loading content vo : id {}", id, t);
             throw new EntException("Error while loading content vo : id " + id, t);
         }
+    }
+
+    @Override
+    public ContentRecordVO loadAndCacheContentVO(String id) throws EntException {
+
+        try {
+            return IFContentLocalCache.loadAndCacheContentVO(id, localCache,
+                    () -> (ContentRecordVO) this.getContentDAO().loadEntityRecord(id));
+        } catch (Throwable t) {
+            logger.error("Error while loading content vo : id {}", id, t);
+            throw new EntException("Error while loading content vo : id " + id, t);
+        }
+    }
+
+    @Override
+    public void evict(String key) {
+        IFContentLocalCache.evict(key, localCache);
+    }
+
+    @Override
+    public void evict(List<String> keys) {
+        IFContentLocalCache.evict(keys, localCache);
     }
 
     /**
@@ -271,7 +310,7 @@ public class ContentManager extends ApsEntityManager
     }
 
     /**
-     * Save a content in the DB. Hopefully this method has no annotation
+     * Save a content in the DB. Hopefully, this method has no annotation
      * attached
      */
     @Override
@@ -280,6 +319,7 @@ public class ContentManager extends ApsEntityManager
     }
 
     private void addUpdateContent(Content content, boolean updateDate) throws EntException {
+        IFContentLocalCache.evict(content, localCache);
         try {
             content.setLastModified(new Date());
             if (updateDate) {
@@ -751,4 +791,11 @@ public class ContentManager extends ApsEntityManager
         this.cacheInfoManager = cacheInfoManager;
     }
 
+    public Cache<String, Object> getLocalCache() {
+        return localCache;
+    }
+
+    public void setLocalCache(Cache<String, Object> localCache) {
+        this.localCache = localCache;
+    }
 }

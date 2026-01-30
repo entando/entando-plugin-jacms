@@ -286,6 +286,11 @@
         	<interceptor-ref name="entandoValidationStack"><param name="requestAuth.requiredPermission">validateContents</param></interceptor-ref>
         </action>
 		
+		<action name="leave" class="jacmsContentAction" method="leave">
+			<result type="redirectAction">results</result>
+			<interceptor-ref name="entandoDefaultStack"><param name="requestAuth.requiredPermission">editContents</param></interceptor-ref>
+		</action>
+		
         <!-- ######## INIZIO GESTIONE ATTRIBUTI IN LISTA ######## -->
         
         <action name="addListElement*" class="jacmsListAttributeAction" method="addListElement">

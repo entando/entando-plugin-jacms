@@ -13,6 +13,7 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
+import com.agiletec.aps.system.ApsSystemUtils.ApsDeepDebug;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
@@ -303,6 +304,11 @@ public class ContentAction extends AbstractContentAction {
             _logger.error("error in suspend", t);
             return FAILURE;
         }
+        return SUCCESS;
+    }
+
+    public String leave() {
+        ApsDeepDebug.print("cms-local-cache", "leaving content edit");
         return SUCCESS;
     }
 
