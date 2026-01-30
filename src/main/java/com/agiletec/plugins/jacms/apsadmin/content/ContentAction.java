@@ -13,9 +13,6 @@
  */
 package com.agiletec.plugins.jacms.apsadmin.content;
 
-import com.agiletec.aps.system.ApsSystemUtils.ApsDeepDebug;
-import com.agiletec.plugins.jacms.aps.system.services.content.IFContentLocalCache;
-import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
 import com.agiletec.aps.system.services.page.IPage;
@@ -25,19 +22,20 @@ import com.agiletec.aps.util.SelectItem;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.JacmsSystemConstants;
 import com.agiletec.plugins.jacms.aps.system.services.content.ContentUtilizer;
+import com.agiletec.plugins.jacms.aps.system.services.content.IFContentLocalCache;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.resource.IResourceManager;
 import com.agiletec.plugins.jacms.apsadmin.util.ResourceIconUtil;
-import org.apache.commons.lang.StringUtils;
-import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
-import org.entando.entando.ent.util.EntLogging.EntLogger;
-import org.entando.entando.ent.util.EntLogging.EntLogFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.entando.entando.ent.exception.EntException;
+import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.plugins.jacms.aps.util.CmsPageUtil;
 
 /**
  * Action principale per la redazione contenuti.
