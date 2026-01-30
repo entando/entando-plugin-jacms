@@ -14,6 +14,7 @@
 package com.agiletec.plugins.jacms.apsadmin.content;
 
 import com.agiletec.aps.system.ApsSystemUtils.ApsDeepDebug;
+import com.agiletec.plugins.jacms.aps.system.services.content.IFContentLocalCache;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.aps.system.services.group.Group;
@@ -270,6 +271,8 @@ public class ContentAction extends AbstractContentAction {
         } catch (Throwable t) {
             _logger.error("error in saveContent", t);
             return FAILURE;
+        } finally {
+            IFContentLocalCache.flushReferences(this.getContent(), this.getContentManager());
         }
         return SUCCESS;
     }
@@ -303,12 +306,14 @@ public class ContentAction extends AbstractContentAction {
         } catch (Throwable t) {
             _logger.error("error in suspend", t);
             return FAILURE;
+        } finally {
+            IFContentLocalCache.flushReferences(this.getContent(), this.getContentManager());
         }
         return SUCCESS;
     }
 
     public String leave() {
-        ApsDeepDebug.print("cms-local-cache", "leaving content edit");
+        IFContentLocalCache.flushReferences(this.getContent(), this.getContentManager());
         return SUCCESS;
     }
 
