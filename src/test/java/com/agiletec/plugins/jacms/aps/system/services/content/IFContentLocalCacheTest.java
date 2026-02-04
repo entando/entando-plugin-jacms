@@ -9,18 +9,26 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.agiletec.aps.system.common.entity.model.attribute.AttributeInterface;
+import com.agiletec.aps.system.common.entity.model.attribute.CompositeAttribute;
+import com.agiletec.aps.system.common.entity.model.attribute.ListAttribute;
+import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
 import com.agiletec.aps.system.services.keygenerator.KeyGeneratorManager;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.ContentRecordVO;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
+import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import org.entando.entando.ent.exception.EntException;
@@ -111,6 +119,31 @@ class IFContentLocalCacheTest {
             assertEquals(contentVOMock, result);
             // verify that the supplier has been called to collect the data even if it's been cached
             verify(actionMock, times(1)).get();
+            // verify that the cache was NOT used to get the value
+            // (we can check if the internal logic was bypassed by ensuring cache hit logic didn't trigger, 
+            // but the fact that supplier was called is already a good indicator)
+        }
+    }
+
+    @Test
+    void loadAndCacheContentVO_featureFlagDisabled() {
+        String contentId = "ART2381";
+        
+        try (MockedStatic<IFContentLocalCache> mockedStatic = mockStatic(IFContentLocalCache.class)) {
+            // Specifically testing when checkEnabled() returns false
+            mockedStatic.when(IFContentLocalCache::checkEnabled).thenReturn(false);
+            mockedStatic.when(() -> IFContentLocalCache.loadAndCacheContentVO(anyString(), any(Cache.class), any(Supplier.class)))
+                    .thenCallRealMethod();
+            
+            when(actionMock.get()).thenReturn(contentVOMock);
+            
+            ContentRecordVO result = IFContentLocalCache.loadAndCacheContentVO(contentId, localCache, actionMock);
+            
+            assertEquals(contentVOMock, result);
+            verify(actionMock, times(1)).get();
+            // Verify that the cache was not even checked (if we were using a mock cache)
+            // Since we use a real cache in setUp, we rely on the fact that actionMock.get() is called 
+            // even if we were to put something in localCache.
         }
     }
 
@@ -390,5 +423,72 @@ class IFContentLocalCacheTest {
         } catch (EntException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Test
+    void testGetContentReferences() {
+        // Scenario 1: content null
+        List<String> refs = IFContentLocalCache.getContentReferences(null);
+        assertNotNull(refs);
+        assertTrue(refs.isEmpty());
+
+        // Scenario 2: content without attributes
+        Content content = new Content();
+        refs = IFContentLocalCache.getContentReferences(content);
+        assertNotNull(refs);
+        assertTrue(refs.isEmpty());
+
+        // Scenario 3: content with LinkAttribute
+        String refId1 = "REF1";
+        LinkAttribute linkAttr = createLinkAttribute("link1", refId1);
+        content.addAttribute(linkAttr);
+
+        refs = IFContentLocalCache.getContentReferences(content);
+        assertEquals(1, refs.size());
+        assertTrue(refs.contains(refId1));
+
+        // Scenario 4: content with CompositeAttribute containing LinkAttribute
+        String refId2 = "REF2";
+        CompositeAttribute compositeAttr = mock(CompositeAttribute.class);
+        LinkAttribute subLink1 = createLinkAttribute("subLink1", refId2);
+        when(compositeAttr.getAttributes()).thenReturn(Arrays.asList(subLink1));
+        content.addAttribute(compositeAttr);
+
+        refs = IFContentLocalCache.getContentReferences(content);
+        assertEquals(2, refs.size());
+        assertTrue(refs.contains(refId1));
+        assertTrue(refs.contains(refId2));
+
+        // Scenario 5: content with ListAttribute containing LinkAttribute
+        String refId3 = "REF3";
+        ListAttribute listAttr = mock(ListAttribute.class);
+        LinkAttribute listLink1 = createLinkAttribute("listLink1", refId3);
+        when(listAttr.getAttributes()).thenReturn(Arrays.asList(listLink1));
+        content.addAttribute(listAttr);
+
+        refs = IFContentLocalCache.getContentReferences(content);
+        assertEquals(3, refs.size());
+        assertTrue(refs.contains(refId3));
+
+        // Scenario 6: content with MonoListAttribute containing CompositeAttribute
+        String refId4 = "REF4";
+        MonoListAttribute monoListAttr = mock(MonoListAttribute.class);
+        CompositeAttribute subComposite = mock(CompositeAttribute.class);
+        LinkAttribute subLink2 = createLinkAttribute("subLink2", refId4);
+        when(subComposite.getAttributes()).thenReturn(Arrays.asList(subLink2));
+        when(monoListAttr.getAttributes()).thenReturn(Arrays.asList(subComposite));
+        content.addAttribute(monoListAttr);
+
+        refs = IFContentLocalCache.getContentReferences(content);
+        assertEquals(4, refs.size());
+        assertTrue(refs.contains(refId4));
+    }
+
+    private LinkAttribute createLinkAttribute(String name, String contentId) {
+        LinkAttribute linkAttr = new LinkAttribute();
+        linkAttr.setName(name);
+        SymbolicLink symbolicLink = new SymbolicLink();
+        symbolicLink.setDestinationToContent(contentId);
+        linkAttr.setSymbolicLink(symbolicLink);
+        return linkAttr;
     }
 }

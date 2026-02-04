@@ -19,9 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-import java.util.Map;
-
 import com.agiletec.aps.system.common.entity.model.EntitySearchFilter;
 import com.agiletec.aps.system.common.entity.model.attribute.BooleanAttribute;
 import com.agiletec.aps.system.common.entity.model.attribute.MonoListAttribute;
@@ -30,15 +27,20 @@ import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.apsadmin.system.ApsAdminSystemConstants;
 import com.agiletec.apsadmin.system.BaseAction;
 import com.agiletec.plugins.jacms.aps.system.services.content.IContentManager;
+import com.agiletec.plugins.jacms.aps.system.services.content.IFContentLocalCache;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.Content;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.SymbolicLink;
 import com.agiletec.plugins.jacms.aps.system.services.content.model.attribute.LinkAttribute;
 import com.agiletec.plugins.jacms.apsadmin.content.util.AbstractBaseTestContentAction;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author E.Santoboni
@@ -603,6 +605,72 @@ class TestContentAction extends AbstractBaseTestContentAction {
         } catch (Throwable t) {
             this.getContentManager().saveContent(master);
             throw t;
+        }
+    }
+
+    @Test
+    void testConfigureMainGroup() throws Throwable {
+        String contentId = "ART1";
+        String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
+
+        // mainGroup is correctly assigned when the content does not have one
+        this.executeEdit(contentId, "admin");
+        Content contentOnSession = this.getContentOnEdit(contentOnSessionMarker);
+        assertNotNull(contentOnSession);
+        String originalMainGroup = contentOnSession.getMainGroup();
+        assertNotNull(originalMainGroup);
+
+        // Force mainGroup to null to test loading from the parameter
+        contentOnSession.setMainGroup(null);
+
+        String newMainGroup = "customers";
+        this.initContentAction("/do/jacms/Content", "configureMainGroup", contentOnSessionMarker);
+        this.addParameter("mainGroup", newMainGroup);
+        String result = this.executeAction();
+        assertEquals(Action.SUCCESS, result);
+        contentOnSession = this.getContentOnEdit(contentOnSessionMarker);
+        assertEquals(newMainGroup, contentOnSession.getMainGroup());
+
+        // the mainGroup is not overwritten if it is already present in the content
+        this.initContentAction("/do/jacms/Content", "configureMainGroup", contentOnSessionMarker);
+        this.addParameter("mainGroup", "coach");
+        result = this.executeAction();
+        assertEquals(Action.SUCCESS, result);
+        contentOnSession = this.getContentOnEdit(contentOnSessionMarker);
+        assertEquals(newMainGroup, contentOnSession.getMainGroup()); // resta customers
+
+        // mainGroup is not set if the group does not exist
+        contentOnSession.setMainGroup(null);
+        this.initContentAction("/do/jacms/Content", "configureMainGroup", contentOnSessionMarker);
+        this.addParameter("mainGroup", "nonExistentGroup");
+        result = this.executeAction();
+        assertEquals(Action.SUCCESS, result);
+        contentOnSession = this.getContentOnEdit(contentOnSessionMarker);
+        assertNull(contentOnSession.getMainGroup());
+    }
+
+    @Test
+    void testLeave() throws Throwable {
+        String contentId = "ART1";
+        String contentOnSessionMarker = this.extractSessionMarker(contentId, ApsAdminSystemConstants.EDIT);
+
+        this.executeEdit(contentId, "admin");
+        
+        try (MockedStatic<IFContentLocalCache> mockedStatic = Mockito.mockStatic(IFContentLocalCache.class)) {
+            mockedStatic.when(IFContentLocalCache::checkEnabled).thenReturn(true);
+            mockedStatic.when(() -> IFContentLocalCache.flushReferences(Mockito.any(), Mockito.any())).thenCallRealMethod();
+            mockedStatic.when(() -> IFContentLocalCache.getContentReferences(Mockito.any())).thenCallRealMethod();
+
+            this.initContentAction("/do/jacms/Content", "leave", contentOnSessionMarker);
+            
+            ContentAction action = (ContentAction) this.getAction();
+            IContentManager contentManagerMock = Mockito.mock(IContentManager.class);
+            action.setContentManager(contentManagerMock);
+            
+            String result = this.executeAction();
+            assertEquals(Action.SUCCESS, result);
+
+            Mockito.verify(contentManagerMock, Mockito.atLeastOnce()).evict(Mockito.anyList());
         }
     }
     
