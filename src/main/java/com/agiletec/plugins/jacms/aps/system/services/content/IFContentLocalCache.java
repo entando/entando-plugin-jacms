@@ -21,6 +21,8 @@ import org.entando.entando.aps.system.services.IFeatureFlag;
 public interface IFContentLocalCache extends IFeatureFlag {
     boolean LOCAL_CMS_CACHE_ENABLED = checkEnabled(); // useful for test
 
+    String CMS_LOCAL_CACHE = "cms-local-cache";
+
     default boolean isEnabled() {
         return LOCAL_CMS_CACHE_ENABLED;
     }
@@ -44,11 +46,11 @@ public interface IFContentLocalCache extends IFeatureFlag {
             return null;
         if (checkEnabled()
                 && localCache != null) {
-            if (ApsDeepDebug.isTagEnabled("cms-local-cache")) {
+            if (ApsDeepDebug.isTagEnabled(CMS_LOCAL_CACHE)) {
                 if (localCache.asMap().containsKey(id)) {
-                    ApsDeepDebug.print("cms-local-cache","cache HIT " + id);
+                    ApsDeepDebug.print(CMS_LOCAL_CACHE,"cache HIT " + id);
                 } else {
-                    ApsDeepDebug.print("cms-local-cache","cache miss " + id);
+                    ApsDeepDebug.print(CMS_LOCAL_CACHE,"cache miss " + id);
                 }
             }
             return (ContentRecordVO) localCache.get(id, key -> action.get());
@@ -77,7 +79,7 @@ public interface IFContentLocalCache extends IFeatureFlag {
         if (checkEnabled()
                 && localCache != null
                 && StringUtils.isNotBlank(key)) {
-            ApsDeepDebug.print("cms-local-cache", "Evicting key from cache: " + key);
+            ApsDeepDebug.print(CMS_LOCAL_CACHE, "Evicting key from cache: " + key);
             localCache.invalidate(key);
         }
     }
@@ -91,7 +93,7 @@ public interface IFContentLocalCache extends IFeatureFlag {
         if (checkEnabled()
                 && localCache != null
                 && keys != null) {
-            ApsDeepDebug.print("cms-local-cache", "Evicting keys from cache: " + keys);
+            ApsDeepDebug.print(CMS_LOCAL_CACHE, "Evicting keys from cache: " + keys);
             localCache.invalidateAll(keys);
         }
     }
@@ -109,7 +111,7 @@ public interface IFContentLocalCache extends IFeatureFlag {
                 cm.evict(refs);
             }
         } catch (Exception e) {
-            ApsDeepDebug.print("cms-local-cache", "Error cleaning cache when flushing references from action");
+            ApsDeepDebug.print(CMS_LOCAL_CACHE, "Error cleaning cache when flushing references from action");
         }
     }
 

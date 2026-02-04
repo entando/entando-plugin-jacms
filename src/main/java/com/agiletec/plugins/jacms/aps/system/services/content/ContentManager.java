@@ -74,7 +74,7 @@ public class ContentManager extends ApsEntityManager
     
     private ICacheInfoManager cacheInfoManager;
 
-    private com.github.benmanes.caffeine.cache.Cache<String, Object> localCache;
+    private transient com.github.benmanes.caffeine.cache.Cache<String, Object> localCache;
 
     @Override
     protected String getConfigItemName() {
@@ -275,7 +275,7 @@ public class ContentManager extends ApsEntityManager
         try {
             return IFContentLocalCache.loadAndCacheContentVO(id, localCache,
                     () -> (ContentRecordVO) this.getContentDAO().loadEntityRecord(id));
-        } catch (Throwable t) {
+        } catch (Exception t) {
             logger.error("Error while loading content vo : id {}", id, t);
             throw new EntException("Error while loading content vo : id " + id, t);
         }
