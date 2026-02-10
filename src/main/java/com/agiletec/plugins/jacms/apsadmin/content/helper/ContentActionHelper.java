@@ -203,10 +203,10 @@ public class ContentActionHelper extends EntityActionHelper implements IContentA
      * ripubblicazione di contenuti non del gruppo ad accesso libero.
      * L'operazione si rende necessaria per ovviare a casi nel cui il contenuto,
      * di un particolare gruppo, sia stato pubblicato precedentemente in una
-     * pagina o referenziato in un'altro contenuto grazie alla associazione di
+     * pagina o referenziato in un altro contenuto grazie alla associazione di
      * questo con altri gruppi abilitati alla visualizzazione. Il controllo
      * evidenzia quali devono essere i gruppi al quale il contenuto deve essere
-     * necessariamente associato (ed il perchè) per salvaguardare le precedenti
+     * necessariamente associato (e il perché) per salvaguardare le precedenti
      * relazioni.
      *
      * @param content Il contenuto da analizzare.

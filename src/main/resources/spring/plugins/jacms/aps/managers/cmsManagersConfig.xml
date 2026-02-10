@@ -11,6 +11,8 @@
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd" >
     
+    <context:component-scan base-package="org.entando.entando.plugins.jacms.aps.system.config" />
+
     <bean id="jacmsResourceManager" class="com.agiletec.plugins.jacms.aps.system.services.resource.ResourceManager" 
           parent="abstractService" >
         <property name="categoryManager" ref="CategoryManager" />
@@ -70,6 +72,7 @@
         </property>
         <property name="publicContentSearcherDAO" ref="jacmsPublicContentSearcherDAO" />
         <property name="workContentSearcherDAO" ref="jacmsWorkContentSearcherDAO" />
+        <property name="localCache" ref="localEditContentCache" />
     </bean>
     
     <bean id="jacmsPublicContentSearcherDAO" class="com.agiletec.plugins.jacms.aps.system.services.content.PublicContentSearcherDAO">
