@@ -47,6 +47,7 @@ import org.entando.entando.ent.exception.EntException;
 import org.entando.entando.ent.exception.EntRuntimeException;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
+import org.entando.entando.ent.util.LabelSanitizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 
@@ -287,6 +288,7 @@ public class ContentManager extends ApsEntityManager
     private String addUpdateContent(Content content, boolean updateDate) throws EntException {
         String id = null;
         try {
+            content.setDescription(LabelSanitizer.stripMarkup(content.getDescription()));
             content.setLastModified(new Date());
             if (updateDate) {
                 content.incrementVersion(false);

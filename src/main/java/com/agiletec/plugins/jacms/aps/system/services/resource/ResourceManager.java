@@ -39,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
 import org.entando.entando.ent.util.EntSafeXmlUtils;
+import org.entando.entando.ent.util.LabelSanitizer;
 import org.xml.sax.InputSource;
 
 import javax.xml.bind.JAXBContext;
@@ -237,6 +238,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     @Override
     public void addResource(ResourceInterface resource) throws EntException {
+        resource.setDescription(LabelSanitizer.stripMarkup(resource.getDescription()));
         try {
             this.generateAndSetResourceId(resource, resource.getId());
             this.getResourceDAO().addResource(resource);
@@ -261,7 +263,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
         ResourceInterface oldResource = this.loadResource(bean.getResourceId());
         try {
             if (null == bean.getInputStream()) {
-                oldResource.setDescription(bean.getDescr());
+                oldResource.setDescription(LabelSanitizer.stripMarkup(bean.getDescr()));
                 oldResource.setCategories(bean.getCategories());
                 oldResource.setMetadata(bean.getMetadata());
                 oldResource.setMainGroup(bean.getMainGroup());
@@ -292,6 +294,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
      */
     @Override
     public void updateResource(ResourceInterface resource) throws EntException {
+        resource.setDescription(LabelSanitizer.stripMarkup(resource.getDescription()));
         try {
             this.getResourceDAO().updateResource(resource);
             this.notifyResourceChanging(resource, ResourceChangedEvent.UPDATE_OPERATION_CODE);
@@ -303,7 +306,7 @@ public class ResourceManager extends AbstractService implements IResourceManager
 
     protected ResourceInterface createResource(ResourceDataBean bean) throws EntException {
         ResourceInterface resource = this.createResourceType(bean.getResourceType());
-        resource.setDescription(bean.getDescr());
+        resource.setDescription(LabelSanitizer.stripMarkup(bean.getDescr()));
         resource.setMainGroup(bean.getMainGroup());
         resource.setCategories(bean.getCategories());
         resource.setMasterFileName(bean.getFileName());
