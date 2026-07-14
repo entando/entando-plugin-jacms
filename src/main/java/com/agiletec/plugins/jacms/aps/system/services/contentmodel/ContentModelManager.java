@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.entando.entando.ent.util.LabelSanitizer;
 import org.entando.entando.plugins.jacms.aps.system.services.content.widget.RowContentListHelper;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
@@ -101,6 +103,7 @@ public class ContentModelManager extends AbstractService implements IContentMode
      */
     @Override
     public void addContentModel(ContentModel model) throws EntException {
+        model.setDescription(LabelSanitizer.stripMarkup(model.getDescription()));
         try {
             this.getContentModelDAO().addContentModel(model);
             this.getCacheWrapper().addContentModel(model);
@@ -137,6 +140,7 @@ public class ContentModelManager extends AbstractService implements IContentMode
      */
     @Override
     public void updateContentModel(ContentModel model) throws EntException {
+        model.setDescription(LabelSanitizer.stripMarkup(model.getDescription()));
         try {
             this.getContentModelDAO().updateContentModel(model);
             this.getCacheWrapper().updateContentModel(model);
